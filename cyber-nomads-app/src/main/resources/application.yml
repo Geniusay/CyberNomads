@@ -1,0 +1,8 @@
+server:
+  port: ${SERVER_PORT:9000}
+
+spring:
+  config:
+    import: classpath:you-cant-see-that.yml
+  profiles:
+    active: ${ACTIVE:dev}

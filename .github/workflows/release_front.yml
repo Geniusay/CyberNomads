@@ -1,0 +1,66 @@
+name: Genius 前端 [CI|CD]流
+
+on:
+  push:
+    branches:
+      - master
+      -
+jobs:
+    build-frontend:
+        runs-on: ubuntu-latest
+        environment:
+          name: FRONT_END_ENV
+
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v2
+
+
+          - name: Checkout Auto Label
+            run: |
+              if [[ "${{ github.event.head_commit.message }}" == *"<Auto-Frontend>"* ]]; then
+                echo "Commit message contains <Auto>. Proceeding with the workflow."
+              else
+                echo "Commit message does not contain <Auto-Frontend>. Skipping the workflow."
+                exit 78 
+              fi
+
+          - name: Setup Node.js
+            uses: actions/setup-node@v2
+            with:
+              node-version: '16'
+          - name: Install Yarn
+            working-directory: cyber-nomads-web
+            run: npm install -g yarn
+          - name: Install Dependencies
+            working-directory: cyber-nomads-web
+            run: yarn install --ignore-engines
+          - name: Build Frontend
+            working-directory: cyber-nomads-web
+            run: yarn build
+          - name: Log in to Docker Hub
+            run: docker login -u ${{ secrets.DOCKER_REPO }} -p ${{ secrets.DOCKER_PWD }}
+
+          - name: Build Docker image
+            run: docker build -t ${{ secrets.DOCKER_REPO }}/cyber-nomads-web .
+            working-directory: cyber-nomads-web
+
+          - name: Push Docker image
+            run: docker push ${{ secrets.DOCKER_REPO }}/cyber-nomads-web
+
+          - name: SSH into server and deploy
+            uses: appleboy/ssh-action@master
+            with:
+              host: ${{ secrets.SERVER_ADDRESS }}
+              username: root
+              password: ${{ secrets.SERVER_PWD }}
+              script: |
+                stop_docker_name=$(docker ps --filter "expose=9100" --format "{{.Names}}")
+                if [ "$stop_docker_name" != "" ]; then
+                docker stop $stop_docker_name
+                fi
+                docker rm cyber-nomads-web || true
+                docker rmi $(docker images ${{ secrets.DOCKER_REPO }}/cyber-nomads-web -q) || true
+                sleep 3
+                docker pull ${{ secrets.DOCKER_REPO }}/cyber-nomads-web
+                docker run --name cyber-nomads-web -d -p 0.0.0.0:9100:9100 ${{ secrets.DOCKER_REPO }}/cyber-nomads-web

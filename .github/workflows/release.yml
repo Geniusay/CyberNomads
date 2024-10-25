@@ -1,0 +1,140 @@
+name: Genius 多模块项目部署 [CI|CD]流
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+
+      - name: Checkout Auto Label
+        run: |
+          if [[ "${{ github.event.head_commit.message }}" == *"<Auto>"* ]]; then
+            echo "Commit message contains <Auto>. Proceeding with the workflow."
+          else
+            echo "Commit message does not contain <Auto>. Skipping the workflow."
+            exit 78 
+          fi
+
+      - name: Get Commit Info
+        id: extract
+        run: |
+          commit_message="${{ github.event.head_commit.message }}"
+          echo "Commit Message: $commit_message"
+          
+          
+          env=""
+          module="cyber-nomads"
+          module_type=""
+          version=""
+          skip=""
+          docker_env=""
+          run_port=""
+          
+          if [[ "$commit_message" =~ -v:([^\ ]*) ]]; then
+          version="${BASH_REMATCH[1]}"
+          fi
+          
+          if [[ "$commit_message" =~ -skip:([^\ ]*) ]]; then
+          skip="${BASH_REMATCH[1]}"
+          fi
+          
+          if [[ "$commit_message" =~ -rp:([^\ ]*) ]]; then
+          run_port="${BASH_REMATCH[1]}"
+          fi
+    
+          if [[ "$commit_message" =~ -de:\<([^>]+)\> ]]; then
+          
+          docker_env="${BASH_REMATCH[1]}"
+          fi
+          
+          echo "Environment: $env"
+          echo "Module: $module"
+          echo "Module_Type: $module_type"
+          echo "Version: $version"
+          echo "Skip: $skip"
+          echo "Run_Port: $run_port"
+          echo "Docker_Env: $docker_env"
+          echo "Debug_Port: $debug_port"
+          
+          echo "ENV=$env" >> $GITHUB_ENV
+          echo "MODULE=$module" >> $GITHUB_ENV
+          echo "MODULE_TYPE=$module_type" >> $GITHUB_ENV
+          echo "VERSION=$version" >> $GITHUB_ENV
+          echo "SKIP=$skip" >> $GITHUB_ENV
+          echo "RUN_PORT=$run_port" >> $GITHUB_ENV
+          echo "DOCKER_ENV=$docker_env" >> $GITHUB_ENV
+          echo "DEBUG_PORT=$debug_port" >> $GITHUB_ENV
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build with Maven
+        if: ${{ env.SKIP != 'image'}}
+        env:
+          JASYPT_ALGO: ${{ secrets.JASYPT_ALGO }}
+          JASYPT_PWD: ${{ secrets.JASYPT_PWD }}
+        run: |
+          cd cyber-nomads-app
+          echo "jasypt:" > src/main/resources/you-cant-see-that.yml
+          echo "  encryptor:" >> src/main/resources/you-cant-see-that.yml
+          echo "    algorithm: $JASYPT_ALGO" >> src/main/resources/you-cant-see-that.yml
+          echo "    password:  $JASYPT_PWD" >> src/main/resources/you-cant-see-that.yml
+          cd ..
+          mvn package -Dmaven.test.skip=true
+
+      - name: Build and Push Docker Images
+        if: ${{ env.SKIP != 'image'}}
+        env:
+          DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PWD }}
+        run: |
+          echo "Module Name: $MODULE"
+          
+          mkdir docker
+          cp ./Dockerfile ./docker
+          cp ./cyber-nomads-app/target/*.jar ./docker
+          cd docker
+          docker build -t $DOCKER_REPO/$MODULE:$VERSION .
+          docker login -u $DOCKER_REPO -p $DOCKER_PASSWORD
+          docker push $DOCKER_REPO/$MODULE:$VERSION
+
+      - name: Choose the Server Host
+        run: |
+          pwd="${{ secrets.SERVER_PWD }}"
+          host="${{ secrets.SERVER_ADDRESS }}"
+          port="${{ secrets.SERVER_PORT }}"
+          echo "PWD=$pwd" >> $GITHUB_ENV
+          echo "HOST=$host" >> $GITHUB_ENV
+          echo "PORT=$port" >> $GITHUB_ENV
+
+      - name: Connect Server
+        uses: appleboy/ssh-action@master
+        with:
+          # 同上述
+          host: ${{ env.HOST }}
+          username: root
+          password: ${{ env.PWD }}
+          port: ${{ env.PORT }}
+          # ssh进入系统后执行什么样的操作。一般是关闭原有的服务在重启
+          script: |
+            docker pull ${{ secrets.DOCKER_REPO }}/${{ env.MODULE }}:${{ env.VERSION }}
+            if [ "${{ env.RUN_PORT }}" != "" ]; then
+              stop_docker_name=$(docker ps --filter "expose=${{ env.RUN_PORT }}" --format "{{.Names}}")
+              if [ "$stop_docker_name" != "" ]; then
+                 docker stop $stop_docker_name
+              fi
+              docker rm ${{ env.MODULE }}-${{ env.VERSION }}
+              docker run -p ${{env.RUN_PORT}}:${{env.RUN_PORT}} --name ${{ env.MODULE }}-${{ env.VERSION }} ${{env.DOCKER_ENV}} -d ${{ secrets.DOCKER_REPO }}/${{ env.MODULE }}:${{ env.VERSION }}
+            fi

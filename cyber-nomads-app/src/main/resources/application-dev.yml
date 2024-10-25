@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url:
+    username:
+    password:
+  application:
+    name: genius-blog-main
+
+assistant:
+  service:
+    exception:
+      handler:
+        disables: springWebExceptionHandler
