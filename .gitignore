@@ -30,7 +30,17 @@ build/
 
 ### VS Code ###
 .vscode/
-
+.vite_cache
 ### Mac OS ###
 .DS_Store
 you-cant-see-that.yml
+
+node_modules
+.DS_Store
+dist
+dist-ssr
+coverage
+*.local
+typed-router.d.ts
+/cypress/videos/
+/cypress/screenshots/

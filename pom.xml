@@ -1,150 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.geniusay</groupId>
-    <artifactId>CyberNomads</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+  <groupId>io.github.geniusay</groupId>
+  <artifactId>CyberNomads</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
-    <modules>
-        <module>cyber-nomads-app</module>
-    </modules>
+  <name>CyberNomads</name>
+  <url>http://maven.apache.org</url>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.4.1</version>
-        <relativePath/>
-    </parent>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mysql.version>8.0.23</mysql.version>
-        <mybatis.version>2.1.1</mybatis.version>
-        <mybatis-plus.version>3.4.1</mybatis-plus.version>
-        <boot.version>2.3.9.RELEASE</boot.version>
-        <redis.version>2.3.9.RELEASE</redis.version>
-        <io-lettcue.version>6.1.6.RELEASE</io-lettcue.version>
-        <commons-pool2.version>2.9.0</commons-pool2.version>
-        <fastjson.version>1.2.75</fastjson.version>
-        <junit.version>4.12</junit.version>
-        <assistant.version>1.1.1</assistant.version>
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <!--mysql驱动-->
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql.version}</version>
-            </dependency>
-
-            <!--redis-->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-data-redis</artifactId>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>spring-data-redis</artifactId>
-                        <groupId>org.springframework.data</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>lettuce-core</artifactId>
-                        <groupId>io.lettuce</groupId>
-                    </exclusion>
-                </exclusions>
-                <version>${redis.version}</version>
-            </dependency>
-            <!--springBoot-test-->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-test</artifactId>
-                <version>${boot.version}</version>
-            </dependency>
-            <!--mybatis-->
-            <dependency>
-                <groupId>org.mybatis.spring.boot</groupId>
-                <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>${mybatis.version}</version>
-            </dependency>
-            <!--mybatis-plus-->
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.lettuce</groupId>
-                <artifactId>lettuce-core</artifactId>
-                <version>${io-lettcue.version}</version>
-            </dependency>
-            <!--池化技术-->
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-pool2</artifactId>
-                <version>${commons-pool2.version}</version>
-            </dependency>
-            <!--fastjson-->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${fastjson.version}</version>
-            </dependency>
-
-
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!--配置文件加密-->
-            <dependency>
-                <groupId>com.github.ulisesbocchio</groupId>
-                <artifactId>jasypt-spring-boot-starter</artifactId>
-                <version>3.0.3</version> <!-- 使用最新版本 -->
-            </dependency>
-
-            <!--Assistant-->
-            <dependency>
-                <groupId>io.github.geniusay</groupId>
-                <artifactId>assistant-boot-start</artifactId>
-                <version>${assistant.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.github.geniusay</groupId>
-                <artifactId>assistant-cache</artifactId>
-                <version>${assistant.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.github.geniusay</groupId>
-                <artifactId>assistant-service</artifactId>
-                <version>${assistant.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.github.geniusay</groupId>
-                <artifactId>assistant-mysql</artifactId>
-                <version>${assistant.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.github.geniusay</groupId>
-                <artifactId>assistant-plus-generator</artifactId>
-                <version>${assistant.version}</version>
-            </dependency>
-
-        </dependencies>
-    </dependencyManagement>
-
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>
