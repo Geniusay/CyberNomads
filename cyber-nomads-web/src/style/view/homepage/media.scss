@@ -1,0 +1,443 @@
+/*-----------------------------------*\
+  #MEDIA QUERIES
+\*-----------------------------------*/
+
+/**
+ * responsive for larger than 575px screen
+ */
+
+@media (min-width: 575px) {
+
+    /**
+   * CUSTOM PROPERTY
+   */
+
+    :root {
+
+        /**
+     * typography
+     */
+
+        --fs-1: 4rem;
+        --fs-2: 3.4rem;
+
+    }
+
+
+
+    /**
+   * REUSED STYLE
+   */
+
+    .container {
+        max-width: 540px;
+        width: 100%;
+        margin-inline: auto;
+    }
+
+
+
+    /**
+   * HERO
+   */
+
+    .hero-text {
+        --fs-5: 1.2rem;
+    }
+
+}
+
+
+
+
+
+/**
+ * responsive for larger than 768px screen
+ */
+
+@media (min-width: 768px) {
+
+    /**
+   * CUSTOM PROPERTY
+   */
+
+    :root {
+
+        /**
+     * typography
+     */
+
+        --fs-1: 5rem;
+        --fs-2: 4rem;
+
+    }
+
+
+
+    /**
+   * REUSED STYLE
+   */
+
+    .container {
+        max-width: 750px;
+    }
+
+
+
+    /**
+   * HERO
+   */
+
+    .hero-banner {
+        max-width: max-content;
+        margin-inline: auto;
+    }
+
+
+
+    /**
+   * TREND
+   */
+
+    .trend-tab .tab-content {
+        grid-template-columns: 1fr 1fr;
+    }
+
+
+
+    /**
+   * INSTRUCTION
+   */
+
+    .instruction {
+        overflow: hidden;
+    }
+
+    .instruction .section-text {
+        max-width: 40ch;
+        margin-inline: auto;
+    }
+
+    .instruction-list {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .instruction-card {
+        position: relative;
+    }
+
+    .instruction-card::after {
+        content: "";
+        width: 160px;
+        height: 12px;
+        background-image: url('@/assets/images/connect-line.png');
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+        position: absolute;
+        top: 50px;
+        right: -95px;
+    }
+
+    .instruction-list>li:nth-child(even) .instruction-card::after {
+        display: none;
+    }
+
+
+
+    /**
+   * APP
+   */
+
+    .app-banner {
+        max-width: max-content;
+    }
+
+
+
+    /**
+   * FOOTER
+   */
+
+    .footer-top .container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .footer-brand {
+        grid-column: 1 / 3;
+    }
+
+    .footer-bottom .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .copyright {
+        margin-block-end: 0;
+    }
+
+}
+
+
+
+
+
+/**
+ * responsive for larger than 992px screen
+ */
+
+@media (min-width: 992px) {
+
+    /**
+   * REUSED STYLE
+   */
+
+    .container {
+        max-width: 960px;
+    }
+
+
+
+    /**
+   * HEADER
+   */
+
+    .header {
+        padding-block: 5px;
+    }
+
+    .header.active {
+        top: -60px;
+    }
+
+    .header>.container {
+        gap: 50px;
+    }
+
+    .nav-toggle-btn {
+        display: none;
+    }
+
+    .navbar,
+    .navbar.active {
+        all: unset;
+        margin-inline-end: auto;
+    }
+
+    .navbar-list {
+        display: flex;
+        align-items: center;
+    }
+
+    .navbar-item:not(:last-child) {
+        border-block-end: none;
+    }
+
+    .navbar-link {
+        font-size: var(--fs-7);
+        padding: 15px 12px;
+    }
+
+    .navbar-link:is(:hover, :focus, .active) {
+        background-color: var(--blue-crayola);
+        color: var(--white);
+    }
+
+
+
+    /**
+   * HERO
+   */
+
+    .hero .container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .hero-content {
+        margin-block-end: 0;
+    }
+
+
+
+    /**
+   * MARKET
+   */
+
+    .market-tab {
+        padding-block-end: 0;
+    }
+
+
+
+    /**
+   * ABOUT
+   */
+
+    .about .container {
+        display: grid;
+        grid-template-columns: 1fr 0.8fr;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .about-banner {
+        margin-block-end: 0;
+    }
+
+
+
+    /**
+   * APP
+   */
+
+    .app {
+        padding-block: 0;
+    }
+
+    .app .container {
+        display: grid;
+        grid-template-columns: 0.8fr 1fr;
+        align-items: flex-end;
+        gap: 30px;
+    }
+
+    .app-banner {
+        margin-block-start: 0;
+    }
+
+    .app-content {
+        margin-block: 50px;
+    }
+
+}
+
+
+
+
+
+/**
+ * responsive for larger than 1200px screen
+ */
+
+@media (min-width: 1200px) {
+
+    /**
+   * CUSTOM PROPERTY
+   */
+
+    :root {
+
+        /**
+     * typography
+     */
+
+        --fs-1: 6.4rem;
+        --fs-2: 4.8rem;
+
+    }
+
+
+
+    /**
+   * REUSED STYLE
+   */
+
+    .container {
+        max-width: 1280px;
+    }
+
+
+
+    /**
+   * HEADER
+   */
+
+    .header.active {
+        top: -64px;
+    }
+
+    .navbar-link {
+        font-size: unset;
+    }
+
+
+
+    /**
+   * HERO
+   */
+
+    .hero .container {
+        gap: 100px;
+    }
+
+
+
+    /**
+   * TREND
+   */
+
+    .trend-tab .tab-content {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+
+
+    /**
+   * INSTRUCTION
+   */
+
+    .instruction-list {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .instruction-list>li:nth-child(even) .instruction-card::after {
+        display: block;
+    }
+
+    .instruction-list>li:last-child .instruction-card::after {
+        display: none;
+    }
+
+
+
+    /**
+   * ABOUT, APP
+   */
+
+    :is(.about, .app) .container {
+        gap: 60px;
+    }
+
+
+
+    /**
+   * APP
+   */
+
+    .app-content {
+        margin-block: 100px;
+    }
+
+
+
+    /**
+   * FOOTER
+   */
+
+    .footer-top {
+        padding-block: 100px 90px;
+    }
+
+    .footer-top .container {
+        grid-template-columns: 1fr 0.5fr 0.5fr 0.5fr 0.5fr;
+    }
+
+    .footer-brand {
+        grid-column: auto;
+    }
+
+}

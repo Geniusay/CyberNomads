@@ -1,0 +1,217 @@
+/*-----------------------------------*\
+  #style.css
+\*-----------------------------------*/
+
+
+/** 
+ * copyrights 2022 codewithsadee
+ */
+
+/*-----------------------------------*\
+  #RESET
+\*-----------------------------------*/
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+a,
+img,
+svg,
+data,
+span,
+button,
+ion-icon {
+    display: block;
+}
+
+img {
+    height: auto;
+}
+
+button {
+    background: none;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+}
+
+ion-icon {
+    pointer-events: none;
+}
+
+address {
+    font-style: normal;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+.home-container {
+    font-family: var(--ff-dm-sans);
+    font-size: 10px;
+    scroll-behavior: smooth;
+    background-color: var(--eerie-black-2);
+    color: var(--cadet-blue-crayola);
+    font-size: 1.0rem;
+    line-height: 1.4;
+    width: 100%;
+    height: 100%;
+}
+
+
+.home-container.active {
+    overflow: hidden;
+}
+
+
+/*-----------------------------------*\
+  #REUSED STYLE
+\*-----------------------------------*/
+
+.container {
+    padding-inline: 15px;
+}
+
+.btn {
+    color: var(--white);
+    border-radius: 50px;
+}
+
+.btn-outline {
+    font-size: var(--fs-8);
+    font-weight: var(--fw-500);
+    border: 1px solid var(--white);
+    padding: 5px 15px;
+    transition: var(--transition-1);
+}
+
+.btn-outline:is(:hover, :focus) {
+    background-color: var(--blue-crayola);
+    border-color: var(--blue-crayola);
+}
+
+.btn-primary {
+    position: relative;
+    background-color: var(--blue-crayola);
+    max-width: max-content;
+    font-weight: var(--fw-700);
+    padding: 13px 30px;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn-primary::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: -50px;
+    background-image: var(--gradient);
+    transform: translateX(-100%);
+    opacity: 0;
+    z-index: -1;
+    transition: var(--transition-2);
+}
+
+.btn-primary:is(:hover, :focus)::after {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.section {
+    padding-block: var(--section-padding);
+}
+
+[data-section]>* {
+    transform: translateY(50px);
+    opacity: 0;
+    transition: var(--transition-3);
+}
+
+[data-section].active>* {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.h1,
+.h2,
+.h3 {
+    color: var(--white);
+    line-height: 1.1;
+}
+
+.h1 {
+    font-size: var(--fs-1);
+}
+
+.h2 {
+    font-size: var(--fs-2);
+}
+
+.h3 {
+    font-size: var(--fs-3);
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.badge {
+    color: var(--white);
+    font-size: var(--fs-8);
+    font-weight: var(--fw-700);
+    padding: 4px 8px;
+    border-radius: 50px;
+}
+
+.badge.red {
+    background-color: var(--presian-red);
+}
+
+.badge.green {
+    background-color: var(--medium-sea-green);
+}
+
+.last-update.red {
+    color: var(--presian-red);
+}
+
+.last-update.green {
+    color: var(--medium-sea-green);
+}
+
+.section-text {
+    font-size: var(--fs-5);
+    margin-block: 15px 35px;
+}
+
+.section-list {
+    margin-block-end: 35px;
+}
+
+.section-item:not(:last-child) {
+    margin-block-end: 25px;
+}
+
+.section-item .title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-block-end: 15px;
+}
+
+.section-item .title-wrapper ion-icon {
+    flex-shrink: 0;
+    color: var(--blue-crayola);
+    font-size: 24px;
+}
+
+@import "./media.scss"

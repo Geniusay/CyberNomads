@@ -1,0 +1,25 @@
+/*-----------------------------------*\
+  #ABOUT
+\*-----------------------------------*/
+@import "./main.scss";
+
+.about {
+    background-color: var(--eerie-black-1);
+}
+
+.about-banner {
+    margin-block-end: 40px;
+}
+
+.section-title{
+  font-size: var(--fs-3);
+}
+
+.section-text{
+  font-size: var(--fs-9);
+}
+
+.list-title{
+  font-size: var(--fs-6);
+}
+@import "./media.scss"

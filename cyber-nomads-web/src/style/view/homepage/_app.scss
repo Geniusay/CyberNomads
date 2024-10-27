@@ -1,0 +1,37 @@
+
+@import "./main.scss";
+
+/*-----------------------------------*\
+  #APP
+\*-----------------------------------*/
+
+.app {
+    overflow: hidden;
+    padding-block-end: 0;
+}
+
+.app-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+}
+
+.app-banner {
+    position: relative;
+    margin-block-start: 60px;
+}
+
+.app-banner .span {
+    position: absolute;
+    top: 10%;
+    left: 0;
+    color: var(--white);
+    font-size: var(--fs-7);
+    font-weight: var(--fw-700);
+    padding: 8px 15px;
+    border: 2px solid var(--white);
+    border-radius: 50px;
+}
+
+@import "./media.scss"
