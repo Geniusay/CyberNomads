@@ -4,6 +4,12 @@ spring:
     url: ENC(OM5TH03IFE3wOtQWpgfv/vlav8LjpLL1w38Ghi7roSlMYsTLahyO4cbz8rPVoSkuOVGSphZWnwU6XESatLiJGAn2e84VCtk/0jxYwnxIscF+aZJNjOge/V5irZEPZXRtbud7rUeJU3idhqDPQ6q9enoz0rN4B7tQHJoWQ1cslaY=)
     username: ENC(VhV1Y8nhaVU7DFTVjkZSfQs+XWAi3Op+)
     password: ENC(qGtan+Xel4BBnPtrne9ZrR0SLy+7Bw6RDAWTD/p6Xc0=)
+  mail:
+    host: ${EMIAL_HOST:ENC(qMKUwBybaAKewuGZCDYjQw6tCfRVAO5aIQUolS8L06U=)}
+    port: ${EMAIL_PORT:ENC(7RRjEe4cBjcETAkyZ6TBh5zwIw6KrEaz)}
+    username: ${EMAIL_USERNAME:ENC(Ndpes2aPfHdQQLG2Ds47yIxEh5/YB2ywTbf7UZ8Re7JgCTjwemDMQw==)}
+    password: ${EMAIL_PASSWORD:ENC(IFKjNrj7WUsXTiTldZ8TDgHxBxgkYHXBD5RrrjZ2SlGFXMCaObgqgA==)}
+    test-connection: false
 
   application:
     name: genius-blog-main
