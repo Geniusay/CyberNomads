@@ -22,7 +22,6 @@ public class JasyptUtil {
     @Value("${spring.datasource.username}")
     private String pwd;
 
-
     /**
      * 加密，输入空退出
      */

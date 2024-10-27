@@ -20,6 +20,7 @@ assistant:
       handler:
         disables: springWebExceptionHandler
 
+
 captcha:
   mail:
     code-length: 6
