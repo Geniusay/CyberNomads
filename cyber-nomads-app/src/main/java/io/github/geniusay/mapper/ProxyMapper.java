@@ -1,4 +1,4 @@
-package io.github.geniusay.Mapper;
+package io.github.geniusay.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import io.github.geniusay.pojo.Proxy;

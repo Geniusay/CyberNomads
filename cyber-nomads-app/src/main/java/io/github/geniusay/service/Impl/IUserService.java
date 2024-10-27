@@ -1,7 +1,6 @@
 package io.github.geniusay.service.Impl;
 
-import io.github.common.web.Result;
-import io.github.geniusay.Mapper.UserMapper;
+import io.github.geniusay.mapper.UserMapper;
 import io.github.geniusay.pojo.DTO.UserDTO;
 import io.github.geniusay.pojo.VO.LoginRequestVO;
 import io.github.geniusay.pojo.VO.LoginVO;
