@@ -19,3 +19,11 @@ assistant:
     exception:
       handler:
         disables: springWebExceptionHandler
+
+captcha:
+  mail:
+    code-length: 6
+  image-code:
+    width: 180
+    height: 40
+    dot-size: 50
