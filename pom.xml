@@ -28,6 +28,7 @@
     <fastjson.version>1.2.75</fastjson.version>
     <junit.version>4.12</junit.version>
     <assistant.version>1.1.1</assistant.version>
+    <sa-token.version>1.35.0.RC</sa-token.version>
   </properties>
 
   <parent>
@@ -145,6 +146,12 @@
         <version>${assistant.version}</version>
       </dependency>
 
+      <!--        saToken-->
+      <dependency>
+        <groupId>cn.dev33</groupId>
+        <artifactId>sa-token-spring-boot-starter</artifactId>
+        <version>${sa-token.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 </project>
