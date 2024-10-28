@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Snackbar from "@/components/common/Snackbar.vue";
+
 </script>
 
 <template>

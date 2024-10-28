@@ -1,0 +1,53 @@
+::-webkit-scrollbar {
+  width: 7px;
+  background: rgba(var(--v-theme-primary), 0.24);
+}
+
+::-webkit-scrollbar:horizontal {
+  height: 7px;
+  background: rgba(var(--v-theme-primary, 0.24));
+}
+
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-thumb-horizontal {
+  border-radius: 0.5rem;
+  background: rgba(var(--v-theme-primary));
+}
+
+.shadow-1 {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px !important;
+}
+
+.two-line {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.three-line {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+
+
+.h-full {
+  height: 100%;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.w-screen {
+  width: 100vw !important;
+}
+
+.card-title {
+  color: rgba(var(--v-theme-grey-800)) !important;
+  font-weight: bold !important;
+  font-size: 18px !important;
+}

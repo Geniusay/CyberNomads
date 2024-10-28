@@ -1,0 +1,18 @@
+// tailwindcss
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// enforce font globally
+// @use "vuetify/variables";
+@import "./variables";
+@import 'vuetify/styles';
+@import "./override";
+@import "./common/gradients.scss";
+@import "./common/animation.scss";
+@import "./common/beautify.scss";
+
+@import './pages/editor';
+
+@import "./global.scss";
+@import "./font.scss";
