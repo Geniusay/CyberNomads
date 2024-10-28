@@ -18,6 +18,7 @@ import javax.validation.constraints.NotNull;
 @Validated
 public class LoginRequestDTO {
     @Length(min = 4, max = 10, message = "验证码长度必须在4到6之间")
+    @NotNull(message = "code不能为null")
     private String code;
     @NotNull(message = "邮箱不能为空")
     @Length(min = 6, max = 30, message = "邮箱长度必须在6到30之间")
