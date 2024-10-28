@@ -1,7 +1,7 @@
 package io.github.geniusay.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import io.github.geniusay.pojo.DTO.UserDTO;
+import io.github.geniusay.pojo.DO.UserDO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -10,5 +10,5 @@ import org.apache.ibatis.annotations.Mapper;
  * @Date 2024/10/27 22:00
  */
 @Mapper
-public interface UserMapper extends BaseMapper<UserDTO> {
+public interface UserMapper extends BaseMapper<UserDO> {
 }

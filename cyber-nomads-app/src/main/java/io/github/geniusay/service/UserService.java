@@ -1,13 +1,11 @@
 package io.github.geniusay.service;
 
-import com.mysql.cj.log.Log;
-import io.github.geniusay.pojo.VO.LoginRequestVO;
+import io.github.geniusay.pojo.DTO.LoginRequestDTO;
 import io.github.geniusay.pojo.VO.LoginVO;
-import io.github.geniusay.pojo.VO.RegisterRequestVO;
+import io.github.geniusay.pojo.DTO.RegisterRequestDTO;
 import io.github.geniusay.pojo.VO.UserVO;
-import org.apache.catalina.User;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * @Description
@@ -16,13 +14,13 @@ import java.util.List;
  */
 public interface UserService {
 
-    List<UserVO> queryUser();
+    UserVO queryUserById(String uid);
 
-    UserVO queryUserById(Integer uid);
+    LoginVO login(LoginRequestDTO req);
 
-    LoginVO login(LoginRequestVO req);
+    LoginVO register(RegisterRequestDTO req);
 
-    LoginVO register(RegisterRequestVO req);
+    Map<String,String> generateCaptcha();
 
-
+    void generateEmailCode(String email,String pid,String code);
 }

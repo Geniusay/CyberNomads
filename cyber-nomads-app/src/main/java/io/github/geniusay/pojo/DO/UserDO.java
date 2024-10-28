@@ -1,5 +1,6 @@
-package io.github.geniusay.pojo.DTO;
+package io.github.geniusay.pojo.DO;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,14 +11,15 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class UserDTO {
+@TableName("user")
+public class UserDO {
 
     private Long id;
-    private Long uid;
+    private String uid;
     private String avator;
     private String email;
     private String password;
-    private String nickName;
+    private String nickname;
     private String phoneNum;
     private Integer point;
 

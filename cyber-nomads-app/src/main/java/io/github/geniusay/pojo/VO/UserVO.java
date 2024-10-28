@@ -1,6 +1,6 @@
 package io.github.geniusay.pojo.VO;
 
-import io.github.geniusay.pojo.DTO.UserDTO;
+import io.github.geniusay.pojo.DO.UserDO;
 import lombok.Builder;
 import lombok.Data;
 
@@ -21,9 +21,8 @@ public class UserVO {
     private Integer point;
 
 
-    public static UserVO convert(UserDTO userDTO){
-        UserVO build = UserVO.builder().id(userDTO.getId()).avator(userDTO.getAvator()).email(userDTO.getEmail()).point(userDTO.getPoint()).phoneNum(userDTO.getPhoneNum()).build();
-        return build;
+    public static UserVO convert(UserDO userDO){
+        return UserVO.builder().id(userDO.getId()).avator(userDO.getAvator()).email(userDO.getEmail()).point(userDO.getPoint()).phoneNum(userDO.getPhoneNum()).build();
 
     }
 }

@@ -13,6 +13,7 @@ public class CacheUtil {
 
     private static ConcurrentHashMap<String,String> captchaCache = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<String,String> emailCache = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<String,String> tokenCache = new ConcurrentHashMap<>();
 
     public static String getCaptcha(String key){
         return captchaCache.get(key);
@@ -52,9 +53,9 @@ public class CacheUtil {
 
     public static String getEmailAndRemove(String key){
         if(emailCache.get(key)!=null){
-            synchronized (captchaCache.get(key)) {
-                String code = captchaCache.get(key);
-                captchaCache.remove(key);
+            synchronized (emailCache.get(key)) {
+                String code = emailCache.get(key);
+                emailCache.remove(key);
                 return code;
             }
         }else{

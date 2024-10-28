@@ -1,21 +1,15 @@
 package io.github.geniusay.controller;
 import io.github.common.web.Result;
 
-import io.github.geniusay.async.AsyncService;
-import io.github.geniusay.pojo.VO.LoginRequestVO;
-import io.github.geniusay.pojo.VO.RegisterRequestVO;
+import io.github.geniusay.pojo.DTO.LoginRequestDTO;
+import io.github.geniusay.pojo.DTO.RegisterRequestDTO;
 import io.github.geniusay.service.UserService;
-import io.github.geniusay.utils.CacheUtil;
-import io.github.geniusay.utils.ImageUtil;
-import io.github.geniusay.utils.RandomUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
-import java.util.Map;
 
 /**
  * @Description
@@ -23,58 +17,48 @@ import java.util.Map;
  * @Date 2024/10/27 21:34
  */
 
-@RestController("/user")
-@ResponseBody
+@RestController
 @Validated
+@RequestMapping("/user")
 public class UserController {
-
-    private ImageUtil imageUtil;
+    @Resource
     private UserService userService;
-    private AsyncService asyncService;
-    @Autowired
-    public UserController(ImageUtil imageUtil,UserService userService,AsyncService asyncService){
-        this.imageUtil = imageUtil;
-        this.userService = userService;
-        this.asyncService = asyncService;
-    }
 
-    @PostMapping("captcha")
+    @PostMapping("/captcha")
     public Result<?> queryCaptcha(){
-        String pid = RandomUtil.generateRandomString(6);
-        Map<String, String> code = imageUtil.generateCode();
-        CacheUtil.putCaptcha(pid,code.get("code"));
-        code.put("pid",pid);
-        return Result.success(code);
+        return Result.success(userService.generateCaptcha());
     }
 
     @PostMapping("/login")
     public Result<?> login(@RequestBody
                                @Valid
-            LoginRequestVO req){
+                           LoginRequestDTO req){
         return Result.success(userService.login(req));
     }
 
-    @PostMapping("register")
-    public Result<?> register(RegisterRequestVO req){
+    @PostMapping("/register")
+    public Result<?> register(@RequestBody
+                                @Valid
+                              RegisterRequestDTO req){
         return Result.success(userService.register(req));
     }
 
-    @GetMapping("search/{uid}")
-    public Result<?> queryUser(@PathVariable Integer uid){
+    @GetMapping("/search/{uid}")
+    public Result<?> queryUser(@PathVariable String uid){
         return Result.success(userService.queryUserById(uid));
     }
 
-    @GetMapping("search")
-    public Result<?> queryUser(){
-        return Result.success(userService.queryUser());
-    }
-
-    @PostMapping("register/sendCaptcha")
-    public Result<?> preRegister(@RequestParam
-                                     @Valid
+    @PostMapping("/sendCaptcha")
+    public Result<?> preEmail(    @Valid
                                      @NotNull(message = "邮箱不能为空")
-                                     String email){
-        asyncService.sendCodeToEmail(email,RandomUtil.generateRandomString(4));
+                                     String email,
+                                  @Valid
+                                  @NotNull(message = "pid不能为空")
+                                  String pid,
+                                  @Valid
+                                  @NotNull(message = "验证码不能为空")
+                                  String code){
+        userService.generateEmailCode(email,pid,code);
         return Result.success();
     }
 
