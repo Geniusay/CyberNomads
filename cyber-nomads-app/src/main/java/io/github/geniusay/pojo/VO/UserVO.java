@@ -14,7 +14,7 @@ import lombok.Data;
 public class UserVO {
 
     private Long id;
-    private Long uid;
+    private String uid;
     private String avator;
     private String email;
     private String phoneNum;
@@ -22,7 +22,7 @@ public class UserVO {
 
 
     public static UserVO convert(UserDO userDO){
-        return UserVO.builder().id(userDO.getId()).avator(userDO.getAvator()).email(userDO.getEmail()).point(userDO.getPoint()).phoneNum(userDO.getPhoneNum()).build();
+        return UserVO.builder().id(userDO.getId()).uid(userDO.getUid()).avator(userDO.getAvator()).email(userDO.getEmail()).point(userDO.getPoint()).phoneNum(userDO.getPhoneNum()).build();
 
     }
 }

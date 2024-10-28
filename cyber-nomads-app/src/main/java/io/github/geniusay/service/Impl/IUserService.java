@@ -15,6 +15,7 @@ import io.github.geniusay.utils.RandomUtil;
 import io.github.geniusay.utils.TokenUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -35,8 +36,9 @@ public class IUserService implements UserService {
     private AsyncService asyncService;
 
     @Override
-    public UserVO queryUserById(String id) {
-        UserDO dto = userMapper.selectOne(new QueryWrapper<UserDO>().eq("uid",id));
+    public UserVO queryUserById(String uid) {
+        UserDO dto = userMapper.selectOne(new QueryWrapper<UserDO>().eq("uid",uid));
+        Assert.notNull(dto,"用户不存在");
         return UserVO.convert(dto);
     }
 
@@ -54,7 +56,7 @@ public class IUserService implements UserService {
             throw new IllegalArgumentException("账号密码错误或用户不存在");
         }
         String token = TokenUtil.getToken(String.valueOf(user.getId()), user.getEmail());
-        CacheUtil.tokenCache.put(user.getUid(),token);
+        CacheUtil.tokenCache.put(token,user.getUid());
         return LoginVO.builder().userVO(UserVO.convert(user)).token(token).build();
     }
 
@@ -81,15 +83,13 @@ public class IUserService implements UserService {
     @Override
     public Map<String, String> generateCaptcha() {
         String pid = UUID.randomUUID().toString();
-        Map<String, String> code = new HashMap<>(imageUtil.generateCode());
+        Map<String, String> code = imageUtil.generateCode();
         CacheUtil.putCaptcha(pid,code.get("code"));
-        code.put("pid",pid);
-        return code;
+        return Map.of("base64",code.get("base64"),"pid",pid);
     }
 
     @Override
     public void generateEmailCode(String email,String pid,String code) {
-
         if(!Objects.equals(CacheUtil.getCaptchaAndRemove(pid), code)){
             throw new IllegalArgumentException("验证码错误");
         }

@@ -1,6 +1,7 @@
 package io.github.geniusay.controller;
 import io.github.common.web.Result;
 
+import io.github.geniusay.anno.TokenRequire;
 import io.github.geniusay.pojo.DTO.LoginRequestDTO;
 import io.github.geniusay.pojo.DTO.RegisterRequestDTO;
 import io.github.geniusay.service.UserService;
@@ -43,21 +44,22 @@ public class UserController {
         return Result.success(userService.register(req));
     }
 
+    @TokenRequire
     @GetMapping("/search/{uid}")
     public Result<?> queryUser(@PathVariable String uid){
         return Result.success(userService.queryUserById(uid));
     }
 
     @PostMapping("/sendCaptcha")
-    public Result<?> preEmail(    @Valid
-                                     @NotNull(message = "邮箱不能为空")
-                                     String email,
-                                  @Valid
-                                  @NotNull(message = "pid不能为空")
-                                  String pid,
-                                  @Valid
-                                  @NotNull(message = "验证码不能为空")
-                                  String code){
+    public Result<?> preEmail(        @Valid
+                                      @NotNull(message = "邮箱不能为空")
+                                      String email,
+                                      @Valid
+                                      @NotNull(message = "pid不能为空")
+                                      String pid,
+                                      @Valid
+                                      @NotNull(message = "验证码不能为空")
+                                      String code){
         userService.generateEmailCode(email,pid,code);
         return Result.success();
     }
