@@ -31,14 +31,16 @@ public class BilibiliCommentHandler {
     private static final String SEND_COMMENT_URL = "https://api.bilibili.com/x/v2/reply/add";
 
     /**
-     * 发送评论
+     * 发送评论或回复
      *
-     * @param cookie 用户的Cookie（SESSDATA）
+     * @param cookie 用户的Cookie
      * @param oid 视频的oid（目标评论区ID）
      * @param message 发送的评论内容
-     * @return boolean 评论是否发送成功
+     * @param root 根评论的rpid（如果是回复某条评论则传递，否则为null）
+     * @param parent 父评论的rpid（如果是二级或多级回复则传递，否则为null）
+     * @return boolean 评论或回复是否发送成功
      */
-    public static boolean sendComment(String cookie, String oid, String message) {
+    public static boolean sendCommentOrReply(String cookie, String oid, String message, String root, String parent) {
         // 从cookie中提取csrf（bili_jct）
         String csrf = extractCsrfFromCookie(cookie);
         if (csrf == null) {
@@ -47,13 +49,22 @@ public class BilibiliCommentHandler {
         }
 
         // 构建POST请求的表单参数
-        RequestBody formBody = new FormBody.Builder()
+        FormBody.Builder formBuilder = new FormBody.Builder()
                 .add("type", "1")  // type=1 表示视频评论区
                 .add("oid", oid)    // 视频的oid
                 .add("message", message)  // 评论内容
                 .add("plat", "1")  // plat=1 表示web端
-                .add("csrf", csrf)  // CSRF Token
-                .build();
+                .add("csrf", csrf);  // CSRF Token
+
+        // 如果是回复评论，添加root和parent参数
+        if (root != null) {
+            formBuilder.add("root", root);  // 根评论的rpid
+        }
+        if (parent != null) {
+            formBuilder.add("parent", parent);  // 父评论的rpid
+        }
+
+        RequestBody formBody = formBuilder.build();
 
         try {
             // 发送POST请求

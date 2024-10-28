@@ -45,10 +45,10 @@ public class TestAPI {
     @Test
     public void testGetVideoComment() throws Exception {
 
-        String oid = "85440373";
+        String oid = "1154116168";
 
         // 获取第一页的根评论，每页5条，按点赞数排序，不显示热评
-        CommentPage commentPage = BilibiliCommentApi.getComments(cookie, oid, 1, 5, 1, 1);
+        CommentPage commentPage = BilibiliCommentApi.getComments(cookie, oid, 1, 5, 0, 1);
 
         // 输出分页信息
         if (commentPage != null) {
@@ -94,6 +94,13 @@ public class TestAPI {
     @Test
     public void sendComment() throws Exception {
         String oid = "1154116168";
-        boolean isSuccess = BilibiliCommentApi.sendComment(cookie, oid, "Genius666");
+
+        // 发送一级评论
+//        boolean isSuccess = BilibiliCommentApi.sendCommentOrReply(cookie, oid, "Genius666", null, null);
+
+        // 回复某条评论
+        String root = "245458827841";  // 根评论的rpid
+        String parent = "245458827841";  // 父评论的rpid
+        boolean isReplySuccess = BilibiliCommentApi.sendCommentOrReply(cookie, oid, "welsir666", root, parent);
     }
 }

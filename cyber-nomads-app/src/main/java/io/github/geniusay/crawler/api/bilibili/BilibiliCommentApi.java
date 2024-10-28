@@ -41,13 +41,16 @@ public class BilibiliCommentApi {
     }
 
     /**
-     * 发送评论
+     * 发送评论或回复
+     *
      * @param cookie 用户的Cookie
      * @param oid 视频的oid（目标评论区ID）
      * @param message 发送的评论内容
-     * @return boolean 评论是否发送成功
+     * @param root 根评论的rpid（如果是回复某条评论则传递，否则为null）
+     * @param parent 父评论的rpid（如果是二级或多级回复则传递，否则为null）
+     * @return boolean 评论或回复是否发送成功
      */
-    public static boolean sendComment(String cookie, String oid, String message) {
-        return BilibiliCommentHandler.sendComment(cookie, oid, message);
+    public static boolean sendCommentOrReply(String cookie, String oid, String message, String root, String parent) {
+        return BilibiliCommentHandler.sendCommentOrReply(cookie, oid, message, root, parent);
     }
 }
