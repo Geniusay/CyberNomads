@@ -44,8 +44,9 @@
         <span class="line line-2"></span>
         <span class="line line-3"></span>
       </button>
-
-      <a href="#" class="btn btn-outline">登录</a>
+      <router-link to="/login" class="logo">
+        <a class="btn btn-outline">登录</a>
+      </router-link>
     </div>
   </header>
 </template>
