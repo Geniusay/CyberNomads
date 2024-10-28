@@ -9,7 +9,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Component
 public class ProxyManager {
     private final CopyOnWriteArrayList<ProxyClient> proxyPool;
 
