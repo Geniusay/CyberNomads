@@ -15,7 +15,7 @@ public class HttpClientManagerConfig {
     @Resource
     private ProxyMapper proxyMapper;
 
-    @Bean
+    //@Bean
     public ProxyManager httpClientManager() {
         List<Proxy> proxies = proxyMapper.selectList(new LambdaQueryChainWrapper<>(proxyMapper));
         return new ProxyManager(proxies);
