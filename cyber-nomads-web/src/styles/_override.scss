@@ -1,0 +1,107 @@
+html {
+  font-family: $font-family;
+
+  .v-application {
+    [class*="text-"] {
+      font-family: $font-family, sans-serif !important;
+    }
+
+    font-family: $font-family,
+    sans-serif !important;
+  }
+
+  audio,
+  canvas,
+  embed,
+  iframe,
+  img,
+  object,
+  svg,
+  video {
+    display: block;
+
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 500;
+  }
+
+  // tables beautify
+  .v-table {
+    table {
+
+      padding: 4px;
+      padding-bottom: 8px;
+
+      th {
+        font-weight: bold !important;
+        text-transform: capitalize !important;
+        white-space: nowrap;
+      }
+
+      td {
+        border-bottom: 0 !important;
+        padding-top: 4px !important;
+        padding-bottom: 4px !important;
+      }
+
+      tbody {
+        tr {
+
+          font-size: 0.875em;
+          transition: box-shadow 0.2s, transform 0.2s;
+
+
+          &:not(.v-data-table__selected):hover {
+            box-shadow: 0 3px 15px -2px rgba(0, 0, 0, 0.12);
+            transform: translateY(-4px);
+          }
+        }
+      }
+    }
+  }
+
+  // theme : dark
+  .v-theme--dark {
+
+    .v-field--variant-solo,
+    .v-card--variant-elevated,
+    .v-btn--elevated,
+    .v-app-bar {
+      box-shadow: rgb(145 158 171 / 30%) 0px 0px 2px 0px, rgb(145 158 171 / 2%) 0px 12px 24px -4px !important;
+    }
+  }
+
+  // 👉 Button outline with default color border color
+  .v-alert--variant-outlined,
+  .v-avatar--variant-outlined,
+  .v-btn.v-btn--variant-outlined,
+  .v-card--variant-outlined,
+  .v-chip--variant-outlined,
+  .v-list-item--variant-outlined {
+    &:not([class*="text-"]) {
+      border-color: rgba(var(--v-border-color), var(--v-border-opacity));
+    }
+
+    &.text-default {
+      border-color: rgba(var(--v-border-color), var(--v-border-opacity));
+    }
+  }
+
+}

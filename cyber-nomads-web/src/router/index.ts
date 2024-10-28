@@ -1,4 +1,10 @@
 import { createRouter, createWebHashHistory } from "vue-router";
+import UserRoutes from "./user.routes";
+import AuthRoutes from "./auth.routes";
+import LandingRoutes from "./landing.routes";
+import UtilityRoutes from "./utility.routes";
+import AppsRoutes from "./apps.routes";
+import DataRoutes from "./data.routes";
 
 export const routes = [
   {
@@ -8,14 +14,36 @@ export const routes = [
   } as any,
   {
     path: "/home",
-    name: "home-page",
-    component: () => import("@/view/homepage/HomePageView.vue"),
-  } as any,
+    component: () => import("@/views/homepage/HomePageView.vue"),
+  },
   {
-    path: "/login",
-    name: "login-page",
-    component: () => import("@/view/login/LoginView.vue"),
-  } as any,
+    path: "/workplace",
+    component: () => import("@/views/Main.vue"),
+    redirect: "/workplace/dashboard",
+    meta: {},
+    children:[
+      {
+        path: "dashboard",
+        meta: {
+          requiresAuth: true,
+          layout: "landing",
+        },
+        component: () => import("@/views/pages/DashBoard.vue"),
+      },
+      {
+        path: "/:pathMatch(.*)*",
+        name: "error",
+        component: () =>
+          import(/* webpackChunkName: "error" */ "@/views/errors/NotFoundPage.vue"),
+      },
+      ...UserRoutes,
+      ...LandingRoutes,
+      ...AuthRoutes,
+      ...UtilityRoutes,
+      ...AppsRoutes,
+      ...DataRoutes,
+    ]
+  },
 ];
 
 // 动态路由，基于用户权限动态去加载

@@ -1,24 +1,28 @@
-import { defineConfig } from "vite";
+/// <reference types="vitest" />
+// Plugins
 import vue from "@vitejs/plugin-vue";
-import AutoImport from "unplugin-auto-import/vite";
 import vuetify from "vite-plugin-vuetify";
-import prismjs from "vite-plugin-prismjs";
+
+import AutoImport from "unplugin-auto-import/vite";
+
+// Utilities
+import { defineConfig } from "vite";
 import { fileURLToPath, URL } from "node:url";
 
-// https://vite.dev/config/
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-      vue(),
-      vuetify({
-        autoImport: true,
-      }),
-      AutoImport({
-        imports: ["vue", "vue-router", "pinia"],
-      }),
-      prismjs({
-        languages: "all",
-      }),
+    vue(),
+    // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
+    vuetify({
+      autoImport: true,
+      styles: { configFile: "src/styles/variables.scss" },
+    }),
+    AutoImport({
+      imports: ["vue", "vue-router", "pinia"],
+    }),
   ],
+  define: { "process.env": {} },
   resolve: {
     alias: {
       "~": fileURLToPath(new URL("./", import.meta.url)),
@@ -28,12 +32,16 @@ export default defineConfig({
     extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
   },
   server: {
-    port: 9200,
+    host: "0.0.0.0",
+    port: 8080,
+    watch: {
+      usePolling: true,
+    },
     proxy: {
-      "/appApi": {
-        target: "http://127.0.0.1:9000",
+      "/sdApi": {
+        target: "http://me.yunrobot.cn:7860",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/appApi/, ""),
+        rewrite: (path) => path.replace(/^\/sdApi/, ""),
       },
     },
   },
@@ -43,5 +51,4 @@ export default defineConfig({
       css: { charset: false },
     },
   },
-  cacheDir: ".vite_cache",
-})
+});
