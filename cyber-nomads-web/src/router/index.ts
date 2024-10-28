@@ -11,6 +11,11 @@ export const routes = [
     name: "home-page",
     component: () => import("@/view/homepage/HomePageView.vue"),
   } as any,
+  {
+    path: "/login",
+    name: "login-page",
+    component: () => import("@/view/login/LoginView.vue"),
+  } as any,
 ];
 
 // 动态路由，基于用户权限动态去加载
