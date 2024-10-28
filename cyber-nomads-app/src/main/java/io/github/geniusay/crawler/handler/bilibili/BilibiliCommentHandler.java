@@ -29,6 +29,83 @@ public class BilibiliCommentHandler {
     private static final String REPLY_URL = "https://api.bilibili.com/x/v2/reply/reply";
     // 发送评论的URL
     private static final String SEND_COMMENT_URL = "https://api.bilibili.com/x/v2/reply/add";
+    // 点赞评论的URL
+    private static final String LIKE_COMMENT_URL = "https://api.bilibili.com/x/v2/reply/action";
+    // 点踩评论的URL
+    private static final String DISLIKE_COMMENT_URL = "https://api.bilibili.com/x/v2/reply/hate";
+
+    /**
+     * 给某个评论点赞
+     *
+     * @param cookie 用户的Cookie
+     * @param oid 视频的oid（目标评论区ID）
+     * @param rpid 评论的rpid
+     * @return boolean 点赞是否成功
+     */
+    public static boolean likeComment(String cookie, String oid, String rpid) {
+        return sendLikeOrDislikeRequest(cookie, oid, rpid, LIKE_COMMENT_URL, 1);
+    }
+
+    /**
+     * 给某个评论点踩
+     *
+     * @param cookie 用户的Cookie
+     * @param oid 视频的oid（目标评论区ID）
+     * @param rpid 评论的rpid
+     * @return boolean 点踩是否成功
+     */
+    public static boolean dislikeComment(String cookie, String oid, String rpid) {
+        return sendLikeOrDislikeRequest(cookie, oid, rpid, DISLIKE_COMMENT_URL, 1);
+    }
+
+    /**
+     * 发送点赞或点踩的请求
+     *
+     * @param cookie 用户的Cookie
+     * @param oid 视频的oid（目标评论区ID）
+     * @param rpid 评论的rpid
+     * @param url 请求的URL
+     * @param action 操作代码（1表示点赞或点踩，0表示取消）
+     * @return boolean 操作是否成功
+     */
+    private static boolean sendLikeOrDislikeRequest(String cookie, String oid, String rpid, String url, int action) {
+        // 从cookie中提取csrf（bili_jct）
+        String csrf = extractCsrfFromCookie(cookie);
+        if (csrf == null) {
+            System.out.println("无法从Cookie中提取csrf（bili_jct）。");
+            return false;
+        }
+
+        // 构建POST请求的表单参数
+        RequestBody formBody = new FormBody.Builder()
+                .add("type", "1")  // type=1 表示视频评论区
+                .add("oid", oid)    // 视频的oid
+                .add("rpid", rpid)  // 评论的rpid
+                .add("action", String.valueOf(action))  // 操作代码（1表示点赞或点踩，0表示取消）
+                .add("csrf", csrf)  // CSRF Token
+                .build();
+
+        try {
+            // 发送POST请求
+            String response = HttpClientUtil.sendPostRequest(url, formBody, cookie);
+            return parseLikeOrDislikeResponse(response);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 解析点赞或点踩的响应
+     *
+     * @param response JSON响应
+     * @return boolean 是否操作成功
+     */
+    private static boolean parseLikeOrDislikeResponse(String response) {
+        JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
+        int code = jsonObject.get("code").getAsInt();
+        return code == 0;  // code为0表示成功
+    }
 
     /**
      * 发送评论或回复

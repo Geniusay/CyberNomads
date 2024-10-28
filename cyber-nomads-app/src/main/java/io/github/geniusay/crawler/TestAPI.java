@@ -103,4 +103,18 @@ public class TestAPI {
         String parent = "245458827841";  // 父评论的rpid
         boolean isReplySuccess = BilibiliCommentApi.sendCommentOrReply(cookie, oid, "welsir666", root, parent);
     }
+
+    @Test
+    public void likeComment() throws Exception {
+        String oid = "1154116168";
+        String parent = "245458827841";
+        boolean isReplySuccess = BilibiliCommentApi.likeComment(cookie, oid, parent);
+    }
+
+    @Test
+    public void dislikeComment() throws Exception {
+        String oid = "1154116168";
+        String parent = "245458827841";
+        boolean isReplySuccess = BilibiliCommentApi.dislikeComment(cookie, oid, parent);
+    }
 }

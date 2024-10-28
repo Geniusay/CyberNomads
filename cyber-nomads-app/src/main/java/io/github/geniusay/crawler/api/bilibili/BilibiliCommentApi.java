@@ -53,4 +53,28 @@ public class BilibiliCommentApi {
     public static boolean sendCommentOrReply(String cookie, String oid, String message, String root, String parent) {
         return BilibiliCommentHandler.sendCommentOrReply(cookie, oid, message, root, parent);
     }
+
+    /**
+     * 给某个评论点赞
+     *
+     * @param cookie 用户的Cookie
+     * @param oid 视频的oid（目标评论区ID）
+     * @param rpid 评论的rpid
+     * @return boolean 点赞是否成功
+     */
+    public static boolean likeComment(String cookie, String oid, String rpid) {
+        return BilibiliCommentHandler.likeComment(cookie, oid, rpid);
+    }
+
+    /**
+     * 给某个评论点踩
+     *
+     * @param cookie 用户的Cookie
+     * @param oid 视频的oid（目标评论区ID）
+     * @param rpid 评论的rpid
+     * @return boolean 点踩是否成功
+     */
+    public static boolean dislikeComment(String cookie, String oid, String rpid) {
+        return BilibiliCommentHandler.dislikeComment(cookie, oid, rpid);
+    }
 }
