@@ -22,7 +22,9 @@ public class RegisterRequestDTO {
     @Email( message = "参数必须为邮箱")
     private String email;
     @Length(min = 8, max = 16, message = "密码长度必须在8到16之间")
+    @NotNull(message = "密码不能为空")
     private String password;
     @Length(min = 4, max = 10, message = "验证码长度必须在4到6之间")
+    @NotNull(message = "code不能为空")
     private String code;
 }

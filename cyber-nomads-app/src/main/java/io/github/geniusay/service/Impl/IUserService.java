@@ -46,8 +46,8 @@ public class IUserService implements UserService {
     @Override
     public LoginVO login(LoginRequestDTO req) {
         String code = req.getCode();
-
-        if(!Objects.equals(CacheUtil.getEmailAndRemove(req.getEmail()), code)){
+        String emailCode = CacheUtil.getEmailAndRemove(req.getEmail());
+        if(!Objects.equals(emailCode, code)){
             throw new IllegalArgumentException("验证码错误");
         }
 
@@ -92,7 +92,6 @@ public class IUserService implements UserService {
         if(!Objects.equals(CacheUtil.getCaptchaAndRemove(pid), code)){
             throw new IllegalArgumentException("验证码错误");
         }
-
         String emailCode = RandomUtil.generateRandomString(6);
         CacheUtil.putEmail(email,emailCode);
         asyncService.sendCodeToEmail(email, emailCode);
