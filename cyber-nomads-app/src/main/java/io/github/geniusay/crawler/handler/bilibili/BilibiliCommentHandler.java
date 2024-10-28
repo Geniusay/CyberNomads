@@ -13,8 +13,8 @@ import okhttp3.RequestBody;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static io.github.geniusay.crawler.util.bilibili.BilibiliUtils.*;
 
 /**
  * 描述: B站评论相关爬虫处理器
@@ -96,18 +96,6 @@ public class BilibiliCommentHandler {
     }
 
     /**
-     * 解析点赞或点踩的响应
-     *
-     * @param response JSON响应
-     * @return boolean 是否操作成功
-     */
-    private static boolean parseLikeOrDislikeResponse(String response) {
-        JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
-        int code = jsonObject.get("code").getAsInt();
-        return code == 0;  // code为0表示成功
-    }
-
-    /**
      * 发送评论或回复
      *
      * @param cookie 用户的Cookie
@@ -151,34 +139,6 @@ public class BilibiliCommentHandler {
             e.printStackTrace();
             return false;
         }
-    }
-
-    /**
-     * 从Cookie中提取csrf（bili_jct）
-     *
-     * @param cookie 用户的Cookie
-     * @return String 提取的csrf值
-     */
-    private static String extractCsrfFromCookie(String cookie) {
-        // 使用正则表达式提取bili_jct的值
-        Pattern pattern = Pattern.compile("bili_jct=([^;]+)");
-        Matcher matcher = pattern.matcher(cookie);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return null;  // 如果没有找到bili_jct，返回null
-    }
-
-    /**
-     * 解析发送评论的响应
-     *
-     * @param response JSON响应
-     * @return boolean 是否发送成功
-     */
-    private static boolean parseSendCommentResponse(String response) {
-        JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
-        int code = jsonObject.get("code").getAsInt();
-        return code == 0;  // code为0表示成功
     }
 
     /**

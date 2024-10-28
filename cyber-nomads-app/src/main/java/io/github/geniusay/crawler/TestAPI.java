@@ -96,12 +96,12 @@ public class TestAPI {
         String oid = "1154116168";
 
         // 发送一级评论
-//        boolean isSuccess = BilibiliCommentApi.sendCommentOrReply(cookie, oid, "Genius666", null, null);
+        boolean isSuccess = BilibiliCommentApi.sendCommentOrReply(cookie, oid, "Genius 80我", null, null);
 
-        // 回复某条评论
-        String root = "245458827841";  // 根评论的rpid
-        String parent = "245458827841";  // 父评论的rpid
-        boolean isReplySuccess = BilibiliCommentApi.sendCommentOrReply(cookie, oid, "welsir666", root, parent);
+//        // 回复某条评论
+//        String root = "245458827841";  // 根评论的rpid
+//        String parent = "245458827841";  // 父评论的rpid
+//        boolean isReplySuccess = BilibiliCommentApi.sendCommentOrReply(cookie, oid, "welsir666", root, parent);
     }
 
     @Test
@@ -116,5 +116,17 @@ public class TestAPI {
         String oid = "1154116168";
         String parent = "245458827841";
         boolean isReplySuccess = BilibiliCommentApi.dislikeComment(cookie, oid, parent);
+    }
+
+    @Test
+    public void likeVideo() throws Exception {
+        String oid = "1154116168";
+        boolean isReplySuccess = BilibiliVideoApi.likeVideo(cookie, oid, 1);
+    }
+
+    @Test
+    public void disLikeVideo() throws Exception {
+        String bvid = "BV1TZ421E7Ci";
+        boolean isReplySuccess = BilibiliVideoApi.likeVideo(cookie, bvid, 2);
     }
 }

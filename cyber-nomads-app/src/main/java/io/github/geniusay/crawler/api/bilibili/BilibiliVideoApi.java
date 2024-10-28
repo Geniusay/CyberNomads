@@ -20,4 +20,16 @@ public class BilibiliVideoApi {
     public static VideoDetail getVideoDetailById(String cookie, String id) {
         return BilibiliVideoHandler.getVideoDetailById(cookie, id);
     }
+
+    /**
+     * 点赞或取消点赞视频
+     *
+     * @param cookie 用户的Cookie
+     * @param id 视频的bvid或aid
+     * @param like 1表示点赞，2表示取消赞
+     * @return boolean 点赞或取消点赞是否成功
+     */
+    public static boolean likeVideo(String cookie, String id, int like) {
+        return BilibiliVideoHandler.likeVideo(cookie, id, like);
+    }
 }
