@@ -129,4 +129,16 @@ public class TestAPI {
         String bvid = "BV1TZ421E7Ci";
         boolean isReplySuccess = BilibiliVideoApi.likeVideo(cookie, bvid, 2);
     }
+
+    @Test
+    public void coinVideo() throws Exception {
+        String bvid = "BV1TZ421E7Ci";
+        boolean isReplySuccess = BilibiliVideoApi.coinVideo(cookie, bvid, 2, 1);
+    }
+
+    @Test
+    public void favVideo() throws Exception {
+        String aid = "1154116168";
+        boolean isReplySuccess = BilibiliVideoApi.favVideo(cookie, aid, "1273098564", null);
+    }
 }

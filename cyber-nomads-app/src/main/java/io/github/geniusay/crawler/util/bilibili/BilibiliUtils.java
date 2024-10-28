@@ -49,12 +49,12 @@ public class BilibiliUtils {
     }
 
     /**
-     * 解析点赞或取消点赞的响应
+     * 解析视频相关的一些操作的响应
      *
      * @param response JSON响应
      * @return boolean 是否操作成功
      */
-    public static boolean parseLikeVideoResponse(String response) {
+    public static boolean parseVideoResponse(String response) {
         JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
         int code = jsonObject.get("code").getAsInt();
         return code == 0;  // code为0表示成功
