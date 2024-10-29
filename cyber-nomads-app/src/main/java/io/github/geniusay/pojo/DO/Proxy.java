@@ -1,4 +1,4 @@
-package io.github.geniusay.pojo;
+package io.github.geniusay.pojo.DO;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;

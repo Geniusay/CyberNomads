@@ -1,8 +1,7 @@
 package io.github.geniusay.proxy;
 
 import io.github.geniusay.mapper.ProxyMapper;
-import io.github.geniusay.pojo.Proxy;
-import okhttp3.OkHttpClient;
+import io.github.geniusay.pojo.DO.Proxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

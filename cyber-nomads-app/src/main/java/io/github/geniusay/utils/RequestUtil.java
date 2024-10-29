@@ -105,17 +105,12 @@ public class RequestUtil {
 
     public OkHttpClient getClient(){
         String uid = ThreadUtil.getUid();
-        if(proxyCache.containsKey(uid)) return proxyCache.get(uid).getClient();
-        else {
-            ProxyClient client = proxyManager.getClient();
-            proxyCache.put(uid, client);
-            return client.getClient();
-        }
+        return proxyCache.computeIfAbsent(uid, k -> proxyCache.get(uid)).getClient();
     }
 
     private void nextClient(){
         String uid = ThreadUtil.getUid();
-        if(proxyCache.containsKey(uid)) return;
+        if(!proxyCache.containsKey(uid)) return;
         addRetryTask(proxyCache.get(uid));
         proxyManager.unavailableProxies(proxyCache.get(uid));
         proxyCache.put(uid, proxyManager.getClient());
