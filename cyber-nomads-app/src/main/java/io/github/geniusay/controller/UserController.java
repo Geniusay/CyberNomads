@@ -63,5 +63,4 @@ public class UserController {
         userService.generateEmailCode(email,pid,code);
         return Result.success();
     }
-
 }
