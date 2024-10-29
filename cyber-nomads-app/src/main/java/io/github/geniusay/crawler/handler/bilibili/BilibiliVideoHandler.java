@@ -27,6 +27,8 @@ public class BilibiliVideoHandler {
     private static final String COIN_VIDEO_URL = "https://api.bilibili.com/x/web-interface/coin/add";
     // 收藏视频的URL
     private static final String FAV_VIDEO_URL = "https://api.bilibili.com/x/v3/fav/resource/deal";
+    // 一键三连URL
+    private static final String TRIPLE_ACTION_URL = "https://api.bilibili.com/x/web-interface/archive/like/triple";
 
     /**
      * 通过bvid或aid获取视频详细信息
@@ -172,6 +174,44 @@ public class BilibiliVideoHandler {
         try {
             // 发送POST请求
             String response = HttpClientUtil.sendPostRequest(FAV_VIDEO_URL, formBody, cookie);
+            return parseVideoResponse(response);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 一键三连（点赞、投币、收藏）
+     *
+     * @param cookie 用户的Cookie
+     * @param id 视频的bvid或aid
+     * @return boolean 一键三连是否成功
+     */
+    public static boolean tripleAction(String cookie, String id) {
+        // 从cookie中提取csrf（bili_jct）
+        String csrf = extractCsrfFromCookie(cookie);
+        if (csrf == null) {
+            System.out.println("无法从Cookie中提取csrf（bili_jct）。");
+            return false;
+        }
+
+        // 构建POST请求的表单参数
+        FormBody.Builder formBuilder = new FormBody.Builder()
+                .add("csrf", csrf);  // CSRF Token
+
+        // 根据id判断是bvid还是aid
+        if (id.startsWith("BV")) {
+            formBuilder.add("bvid", id);
+        } else {
+            formBuilder.add("aid", id);
+        }
+
+        RequestBody formBody = formBuilder.build();
+
+        try {
+            // 发送POST请求
+            String response = HttpClientUtil.sendPostRequest(TRIPLE_ACTION_URL, formBody, cookie);
             return parseVideoResponse(response);
         } catch (IOException e) {
             e.printStackTrace();

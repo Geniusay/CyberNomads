@@ -1,9 +1,7 @@
-package io.github.geniusay.crawler;
+package io.github.geniusay.crawler.test.bilibili;
 
-import io.github.geniusay.crawler.api.bilibili.BilibiliBarrageApi;
 import io.github.geniusay.crawler.api.bilibili.BilibiliCommentApi;
 import io.github.geniusay.crawler.api.bilibili.BilibiliVideoApi;
-import io.github.geniusay.crawler.po.bilibili.Barrage;
 import io.github.geniusay.crawler.po.bilibili.CommentDetail;
 import io.github.geniusay.crawler.po.bilibili.CommentPage;
 import io.github.geniusay.crawler.po.bilibili.VideoDetail;
@@ -13,10 +11,10 @@ import java.util.List;
 
 import static io.github.geniusay.crawler.BCookie.cookie;
 
-public class TestAPI {
+public class TestVideoAPI {
 
     @Test
-    public void testGetVideoInfo() throws Exception {
+    public void getVideoInfo() throws Exception {
         // 通过bvid获取视频详细信息
         VideoDetail videoDetailByBvid = BilibiliVideoApi.getVideoDetailById(cookie, "BV1AV411Q7dg");
 
@@ -45,7 +43,7 @@ public class TestAPI {
     }
 
     @Test
-    public void testGetVideoComment() throws Exception {
+    public void getVideoComment() throws Exception {
 
         String oid = "1154116168";
 
@@ -94,33 +92,6 @@ public class TestAPI {
     }
 
     @Test
-    public void sendComment() throws Exception {
-        String oid = "1154116168";
-
-        // 发送一级评论
-        boolean isSuccess = BilibiliCommentApi.sendCommentOrReply(cookie, oid, "Genius 80我", null, null);
-
-//        // 回复某条评论
-//        String root = "245458827841";  // 根评论的rpid
-//        String parent = "245458827841";  // 父评论的rpid
-//        boolean isReplySuccess = BilibiliCommentApi.sendCommentOrReply(cookie, oid, "welsir666", root, parent);
-    }
-
-    @Test
-    public void likeComment() throws Exception {
-        String oid = "1154116168";
-        String parent = "245458827841";
-        boolean isReplySuccess = BilibiliCommentApi.likeComment(cookie, oid, parent);
-    }
-
-    @Test
-    public void dislikeComment() throws Exception {
-        String oid = "1154116168";
-        String parent = "245458827841";
-        boolean isReplySuccess = BilibiliCommentApi.dislikeComment(cookie, oid, parent);
-    }
-
-    @Test
     public void likeVideo() throws Exception {
         String oid = "1154116168";
         boolean isReplySuccess = BilibiliVideoApi.likeVideo(cookie, oid, 1);
@@ -145,12 +116,8 @@ public class TestAPI {
     }
 
     @Test
-    public void getBarrage() throws Exception {
-        String cid = "1413629350";
-        List<Barrage> realTimeBarrageByOid = BilibiliBarrageApi.getRealTimeBarrageByCid(cookie, cid);
-
-        for (Barrage barrage : realTimeBarrageByOid) {
-            System.out.println(barrage);
-        }
+    public void tripleAction() throws Exception {
+        String bvid = "BV1MLmjY9ES9";
+        boolean isReplySuccess = BilibiliVideoApi.tripleAction(cookie, bvid);
     }
 }

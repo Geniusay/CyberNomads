@@ -58,4 +58,15 @@ public class BilibiliVideoApi {
     public static boolean favVideo(String cookie, String rid, String addMediaIds, String delMediaIds) {
         return BilibiliVideoHandler.favVideo(cookie, rid, addMediaIds, delMediaIds);
     }
+
+    /**
+     * 一键三连（点赞、投币、收藏）
+     *
+     * @param cookie 用户的Cookie
+     * @param id 视频的bvid或aid
+     * @return boolean 一键三连是否成功
+     */
+    public static boolean tripleAction(String cookie, String id) {
+        return BilibiliVideoHandler.tripleAction(cookie, id);
+    }
 }
