@@ -1,5 +1,7 @@
 package io.github.geniusay.pojo.DO;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,11 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 @NoArgsConstructor
 @Builder
 public class PointRecord {
+    @TableId(value = "id", type = IdType.AUTO)
     private Long recordId;
 
     private String uid;
 
-    private String recordOption;
+    private String pointOption;
 
     private Integer point;
 }

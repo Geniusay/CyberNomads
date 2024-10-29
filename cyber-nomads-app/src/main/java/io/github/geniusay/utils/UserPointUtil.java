@@ -1,4 +1,4 @@
-package io.github.geniusay.point;
+package io.github.geniusay.utils;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -6,7 +6,6 @@ import io.github.geniusay.mapper.PointRecordMapper;
 import io.github.geniusay.mapper.UserMapper;
 import io.github.geniusay.pojo.DO.PointRecord;
 import io.github.geniusay.pojo.DO.UserDO;
-import io.github.geniusay.utils.ThreadUtil;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -14,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
-public class UserPointManager {
+public class UserPointUtil {
     @Resource
     private PointRecordMapper pointRecordMapper;
 
@@ -28,7 +27,7 @@ public class UserPointManager {
     public boolean reduce(Integer point, String option){
         return option(PointRecord.builder()
                 .uid(ThreadUtil.getUid())
-                .recordOption(option)
+                .pointOption(option)
                 .point(-point)
                 .build());
     }
@@ -36,7 +35,7 @@ public class UserPointManager {
     public boolean increase(Integer point, String option){
         return option(PointRecord.builder()
                 .uid(ThreadUtil.getUid())
-                .recordOption(option)
+                .pointOption(option)
                 .point(point)
                 .build());
     }
@@ -65,8 +64,8 @@ public class UserPointManager {
     private boolean option(Integer point){
         AtomicInteger balance = getPoint();
         int currentBalance;
-        while((currentBalance = balance.get()) >= point){
-            if(balance.compareAndSet(currentBalance, currentBalance - point))
+        while((currentBalance = balance.get()) >= -point){
+            if(balance.compareAndSet(currentBalance, currentBalance + point))
                 return true;
         }
         return false;
