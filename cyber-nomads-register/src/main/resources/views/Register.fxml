@@ -2,10 +2,8 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.Color?>
-<?import javafx.scene.shape.Rectangle?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="300" prefWidth="400" fx:controller="io.github.geniusay.loginUtil.LoginController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="300" prefWidth="400" fx:controller="io.github.geniusay.LoginController">
     <children>
         <Label text="B站登录表单" layoutX="150" layoutY="50" style="-fx-font-size: 24;"/>
         <Label text="账号:" layoutX="50" layoutY="100"/>
@@ -17,7 +15,5 @@
         <Button text="登录" layoutX="150" layoutY="200" onAction="#handleLogin"/>
         <Button text="保存Cookie" layoutX="250" layoutY="200" onAction="#saveCookies"/>
 
-        <!-- 关闭按钮 -->
-        <Button text="关闭" layoutX="350" layoutY="10" onAction="#quit"/>
     </children>
 </AnchorPane>

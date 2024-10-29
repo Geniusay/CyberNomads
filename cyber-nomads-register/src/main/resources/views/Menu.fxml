@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.geniusay.MenuController" prefWidth="400" prefHeight="300">
+    <children>
+        <Label text="驱动路径:" layoutX="50" layoutY="100"/>
+        <TextField fx:id="webDriver" layoutX="150" layoutY="100" prefWidth="200"/>
+
+        <Label text="浏览器路径:" layoutX="50" layoutY="150"/>
+        <TextField fx:id="browser" layoutX="150" layoutY="150" prefWidth="200"/>
+
+        <Button text="提交" layoutX="150" layoutY="200" onAction="#handleSubmit"/>
+    </children>
+</AnchorPane>

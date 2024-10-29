@@ -14,9 +14,13 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/test.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Menu.fxml"));
         primaryStage.setScene(new Scene(loader.load()));
-        primaryStage.setTitle("Login Page");
+        primaryStage.setTitle("登号器");
+        primaryStage.setOnCloseRequest(event -> {
+            System.out.println("程序已关闭");
+            System.exit(0);
+        });
         primaryStage.show();
     }
 

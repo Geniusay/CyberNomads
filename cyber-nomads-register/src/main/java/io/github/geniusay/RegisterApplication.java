@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TmlApplication {
+public class RegisterApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(TmlApplication.class, args);
+        SpringApplication.run(RegisterApplication.class, args);
     }
 
 }
