@@ -41,6 +41,25 @@ public class TestBarrageAPI {
 
     }
 
+    @Test
+    public void barrage() throws Exception {
+        String cid = "1413629350";
+        String filePath = "C:\\_data\\" + cid + ".txt";
+        // 逐行读取：从文件中加载弹幕列表
+        List<Barrage> loadedBarrageList = loadBarrageList(filePath);
+        // 打印读取后的弹幕列表
+        if (loadedBarrageList != null) {
+            for (Barrage barrage : loadedBarrageList) {
+                float time = barrage.getTime();
+                int p = (int) (time / 60);
+                int b = (int) (time - p * 60);
+                System.out.print(p + ":" + b + "  | (");
+                System.out.println(barrage.getContent() + ")");
+            }
+        }
+    }
+//1:54  | (主打一个吓死你)
+
     /**
      * 将弹幕列表逐行写入到文本文件
      */
