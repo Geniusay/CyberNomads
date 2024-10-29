@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebElement;
@@ -28,21 +29,25 @@ public class LoginController {
 
     @FXML
     private PasswordField passwordField;
+
+    private String webDriver;
+    private String browser;
     private static final String URL = "https://www.bilibili.com/";
-    private List<HashSet<Cookie>> saveCookies = new ArrayList<>();
+    private HashMap<String,String> commonCookies = new HashMap<>();
     private HashMap<String,HashSet<Cookie>> userCookies = new HashMap<>();
-    @FXML
-    private void handleBack() {
-        // 回退逻辑，示例中只是显示提示
-        showAlert("Back", "Returning to the previous screen...");
+
+    public LoginController() {
     }
     @FXML
     private void handleLogin() throws InterruptedException {
         String username = usernameField.getText();
         String password = passwordField.getText();
-        System.setProperty("webdriver.chrome.driver", "D:\\downLoad\\chromedriver_win32\\chromedriver.exe");
+        if(StringUtils.isBlank(username)|| StringUtils.isBlank(password)){
+            showAlert("提示", "账号或密码不能为空");
+        }
+        System.setProperty("webdriver.chrome.driver", webDriver);
         ChromeOptions options = new ChromeOptions();
-        options.setBinary("C:\\Program Files (x86)\\Chromebrowser\\Chrome.exe");
+        options.setBinary(browser);
         ChromeDriver loginwebDriver = new ChromeDriver(options);
         loginwebDriver.get(URL); //
         loginwebDriver.manage().deleteAllCookies();
@@ -55,22 +60,23 @@ public class LoginController {
         passwordInput.sendKeys(password);
         WebElement loginButton = loginwebDriver.findElement(By.xpath("/html/body/div[4]/div/div[4]/div[2]/div[2]/div[2]"));
         loginButton.click();
-        Thread.sleep(15000L);
+        Thread.sleep(25000L);
         Set<Cookie> cookies = loginwebDriver.manage().getCookies();
         loginwebDriver.quit();
-        System.out.println(cookies);
         ChromeDriver confirmLogin = new ChromeDriver(options);
         confirmLogin.get(URL);
         HashSet<Cookie> set = new HashSet<>();
         confirmLogin.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         confirmLogin.manage().deleteAllCookies();
-
+        StringBuilder sb = new StringBuilder();
         for (Cookie cookie : cookies) {
             if("".equals(cookie.getName())||cookie.getName()==null
                     ||cookie.getValue()==null|| "".equals(cookie.getValue())
                     ||cookie.getPath()==null||"".equals(cookie.getPath())) {
                 continue;
             }
+
+            sb.append(cookie.getName()).append("=").append(cookie.getValue()).append(";");
             set.add(cookie);
             confirmLogin.manage().addCookie(cookie);
         }
@@ -78,7 +84,7 @@ public class LoginController {
         Thread.sleep(2000L);
         WebElement avator = confirmLogin.findElement(By.xpath("/html/body/div[2]/div[2]/div[1]/div[1]/ul[2]/li[1]"));
         if(avator!=null){
-            System.out.println("登陆成功!");
+            commonCookies.put(username,sb.toString());
             userCookies.put(username,set);
             confirmLogin.quit();
         }else{
@@ -96,7 +102,6 @@ public class LoginController {
 
     @FXML
     private void saveCookies(){
-        System.out.println(saveCookies);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("账号Cookies"))) {
             StringBuilder sb = new StringBuilder();
             for (HashMap.Entry<String, HashSet<Cookie>> entry : userCookies.entrySet()) {
@@ -118,11 +123,9 @@ public class LoginController {
 
     }
 
-    @FXML
-    private void quit(){
-        Platform.exit();
-
-        // 退出 JVM
-        System.exit(0);
+    public void set(String webdriver,String browser){
+        this.webDriver = webdriver.replace("\\","/");
+        this.browser = browser.replace("\\","/");
     }
+
 }

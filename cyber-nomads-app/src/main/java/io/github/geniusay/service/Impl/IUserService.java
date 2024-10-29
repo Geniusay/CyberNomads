@@ -37,7 +37,6 @@ public class IUserService implements UserService {
 
     @Override
     public UserVO queryUserById(String uid) {
-
         UserDO dto = userMapper.selectOne(new QueryWrapper<UserDO>().eq("uid",uid));
         Assert.notNull(dto,"用户不存在");
         return UserVO.convert(dto);
@@ -53,7 +52,7 @@ public class IUserService implements UserService {
 
         UserDO user = userMapper.selectOne(new QueryWrapper<UserDO>()
                 .eq("email",req.getEmail()));
-        Assert.notNull(user,"账号密码错误或用户不存在");
+        Assert.notNull(user,"账号错误或用户不存在");
         String token = TokenUtil.getToken(String.valueOf(user.getId()), user.getEmail());
         CacheUtil.tokenCache.put(token,user.getUid());
         return LoginVO.builder().userVO(UserVO.convert(user)).token(token).build();
