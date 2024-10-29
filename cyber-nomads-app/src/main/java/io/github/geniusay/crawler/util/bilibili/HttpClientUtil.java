@@ -31,10 +31,12 @@ public class HttpClientUtil {
      *
      * @param url    请求的URL
      * @param cookie 请求中需要的cookie
-     * @return 解压后的响应体字符串
+     * @return ApiResponse<String> 解压后的响应体字符串
      * @throws IOException
      */
-    public static String sendGetRequestWithDeflate(String url, String cookie) throws IOException {
+    public static ApiResponse<String> sendGetRequestWithDeflate(String url, String cookie) throws IOException {
+        long requestTimestamp = System.currentTimeMillis(); // 记录请求时间
+
         Request request = new Request.Builder()
                 .url(url)
                 .get()
@@ -44,15 +46,21 @@ public class HttpClientUtil {
                 .build();
 
         try (Response response = getClient().newCall(request).execute()) {
+            long responseTimestamp = System.currentTimeMillis(); // 记录响应时间
+            long duration = responseTimestamp - requestTimestamp; // 计算耗时
+
             if (!response.isSuccessful()) {
-                throw new IOException("Unexpected code " + response);
+                return new ApiResponse<>(response.code(), "HTTP请求失败: " + response.message(), false, null, requestTimestamp, responseTimestamp, duration);
             }
 
             // 获取响应体的字节流
             InputStream inputStream = response.body().byteStream();
 
             // 调用手动解压方法
-            return decompressDeflateStream(inputStream);
+            String decompressedResponse = decompressDeflateStream(inputStream);
+
+            // 返回成功的 ApiResponse
+            return new ApiResponse<>(0, "Success", true, decompressedResponse, requestTimestamp, responseTimestamp, duration);
         }
     }
 
@@ -67,6 +75,7 @@ public class HttpClientUtil {
     public static ApiResponse<String> sendGetRequest(String url, String cookie) throws IOException {
         long requestTimestamp = System.currentTimeMillis(); // 记录请求时间
 
+        cookie = cookie == null ? "" : cookie;
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Cookie", cookie)
@@ -88,6 +97,7 @@ public class HttpClientUtil {
     public static ApiResponse<String> sendPostRequest(String url, RequestBody formBody, String cookie) throws IOException {
         long requestTimestamp = System.currentTimeMillis(); // 记录请求时间
 
+        cookie = cookie == null ? "" : cookie;
         Request request = new Request.Builder()
                 .url(url)
                 .post(formBody)

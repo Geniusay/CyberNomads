@@ -2,6 +2,7 @@ package io.github.geniusay.crawler.test.bilibili;
 
 import io.github.geniusay.crawler.api.bilibili.BilibiliBarrageApi;
 import io.github.geniusay.crawler.po.bilibili.Barrage;
+import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import org.junit.Test;
 
 import java.io.*;
@@ -14,24 +15,30 @@ public class TestBarrageAPI {
 
     @Test
     public void getBarrage() throws Exception {
-        String cid = "1413629350";
+        String cid = "26476087566";
         String filePath = "C:\\_data\\" + cid + ".txt";
 
         // 获取弹幕列表
-        List<Barrage> realTimeBarrageByOid = BilibiliBarrageApi.getRealTimeBarrageByCid(cookie, cid);
+        ApiResponse<List<Barrage>> response = BilibiliBarrageApi.getRealTimeBarrageByCid(cookie, cid);
 
-        // 保存弹幕列表到文件
-        saveBarrageList(filePath, realTimeBarrageByOid);
+        if (response.isSuccess()) {
 
-        // 逐行读取：从文件中加载弹幕列表
-        List<Barrage> loadedBarrageList = loadBarrageList(filePath);
+            List realTimeBarrageByOid = response.getData();
 
-        // 打印读取后的弹幕列表
-        if (loadedBarrageList != null) {
-            for (Barrage barrage : loadedBarrageList) {
-                System.out.println(barrage);
+            // 保存弹幕列表到文件
+            saveBarrageList(filePath, realTimeBarrageByOid);
+
+            // 逐行读取：从文件中加载弹幕列表
+            List<Barrage> loadedBarrageList = loadBarrageList(filePath);
+
+            // 打印读取后的弹幕列表
+            if (loadedBarrageList != null) {
+                for (Barrage barrage : loadedBarrageList) {
+                    System.out.println(barrage);
+                }
             }
         }
+
     }
 
     /**
