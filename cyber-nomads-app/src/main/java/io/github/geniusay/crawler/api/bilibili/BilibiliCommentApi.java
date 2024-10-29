@@ -2,6 +2,7 @@ package io.github.geniusay.crawler.api.bilibili;
 
 import io.github.geniusay.crawler.handler.bilibili.BilibiliCommentHandler;
 import io.github.geniusay.crawler.po.bilibili.CommentPage;
+import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 
 
 /**
@@ -20,9 +21,9 @@ public class BilibiliCommentApi {
      * @param size 每页项数
      * @param sort 排序方式（0：按时间，1：按点赞数，2：按回复数）
      * @param nohot 是否显示热评（0：显示，1：不显示）
-     * @return CommentPage 评论分页信息和列表
+     * @return ApiResponse<CommentPage> 评论分页信息和列表
      */
-    public static CommentPage getComments(String cookie, String oid, int page, int size, int sort, int nohot) {
+    public static ApiResponse<CommentPage> getComments(String cookie, String oid, int page, int size, int sort, int nohot) {
         return BilibiliCommentHandler.getComments(cookie, oid, page, size, sort, nohot);
     }
 
@@ -34,9 +35,9 @@ public class BilibiliCommentApi {
      * @param root 根评论的rpid
      * @param page 页码
      * @param size 每页项数
-     * @return CommentPage 回复分页信息和列表
+     * @return ApiResponse<CommentPage> 回复分页信息和列表
      */
-    public static CommentPage getReplies(String cookie, String oid, String root, int page, int size) {
+    public static ApiResponse<CommentPage> getReplies(String cookie, String oid, String root, int page, int size) {
         return BilibiliCommentHandler.getReplies(cookie, oid, root, page, size);
     }
 
@@ -50,7 +51,7 @@ public class BilibiliCommentApi {
      * @param parent 父评论的rpid（如果是二级或多级回复则传递，否则为null）
      * @return boolean 评论或回复是否发送成功
      */
-    public static boolean sendCommentOrReply(String cookie, String oid, String message, String root, String parent) {
+    public static ApiResponse<Boolean> sendCommentOrReply(String cookie, String oid, String message, String root, String parent) {
         return BilibiliCommentHandler.sendCommentOrReply(cookie, oid, message, root, parent);
     }
 
@@ -62,7 +63,7 @@ public class BilibiliCommentApi {
      * @param rpid 评论的rpid
      * @return boolean 点赞是否成功
      */
-    public static boolean likeComment(String cookie, String oid, String rpid) {
+    public static ApiResponse<Boolean> likeComment(String cookie, String oid, String rpid) {
         return BilibiliCommentHandler.likeComment(cookie, oid, rpid);
     }
 
@@ -74,7 +75,7 @@ public class BilibiliCommentApi {
      * @param rpid 评论的rpid
      * @return boolean 点踩是否成功
      */
-    public static boolean dislikeComment(String cookie, String oid, String rpid) {
+    public static ApiResponse<Boolean> dislikeComment(String cookie, String oid, String rpid) {
         return BilibiliCommentHandler.dislikeComment(cookie, oid, rpid);
     }
 }

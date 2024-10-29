@@ -1,8 +1,9 @@
 package io.github.geniusay.crawler.util.bilibili;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import io.github.geniusay.crawler.po.bilibili.Barrage;
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
+import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -10,13 +11,14 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BilibiliUtils {
+public class BilibiliUtil {
 
     /**
      * 从Cookie中提取csrf（bili_jct）
@@ -34,40 +36,18 @@ public class BilibiliUtils {
         return null;  // 如果没有找到bili_jct，返回null
     }
 
-    /**
-     * 解析发送评论的响应
-     *
-     * @param response JSON响应
-     * @return boolean 是否发送成功
-     */
-    public static boolean parseSendCommentResponse(String response) {
-        JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
-        int code = jsonObject.get("code").getAsInt();
-        return code == 0;  // code为0表示成功
-    }
 
-    /**
-     * 解析评论点赞或点踩的响应
-     *
-     * @param response JSON响应
-     * @return boolean 是否操作成功
-     */
-    public static boolean parseLikeOrDislikeResponse(String response) {
-        JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
-        int code = jsonObject.get("code").getAsInt();
-        return code == 0;  // code为0表示成功
-    }
+    @NotNull
+    public static ApiResponse<Boolean> getBooleanApiResponse(String cookie, FormBody.Builder formBuilder, String sendCommentUrl) {
+        RequestBody formBody = formBuilder.build();
 
-    /**
-     * 解析视频相关的一些操作的响应
-     *
-     * @param response JSON响应
-     * @return boolean 是否操作成功
-     */
-    public static boolean parseVideoResponse(String response) {
-        JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
-        int code = jsonObject.get("code").getAsInt();
-        return code == 0;  // code为0表示成功
+        try {
+            // 发送POST请求
+            ApiResponse<String> response = HttpClientUtil.sendPostRequest(sendCommentUrl, formBody, cookie);
+            return ApiResponse.handleApiResponse(response, Boolean.class, r -> true);
+        } catch (IOException e) {
+            return ApiResponse.errorResponse(e);
+        }
     }
 
     /**

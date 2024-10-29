@@ -2,8 +2,9 @@ package io.github.geniusay.crawler.handler.bilibili;
 
 import io.github.geniusay.crawler.po.bilibili.CommentDetail;
 import io.github.geniusay.crawler.po.bilibili.CommentPage;
+import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import io.github.geniusay.utils.DateUtil;
-import io.github.geniusay.utils.HttpClientUtil;
+import io.github.geniusay.crawler.util.bilibili.HttpClientUtil;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -14,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.geniusay.crawler.util.bilibili.BilibiliUtils.*;
+import static io.github.geniusay.crawler.util.bilibili.BilibiliUtil.*;
 
 /**
  * 描述: B站评论相关爬虫处理器
@@ -42,7 +43,7 @@ public class BilibiliCommentHandler {
      * @param rpid 评论的rpid
      * @return boolean 点赞是否成功
      */
-    public static boolean likeComment(String cookie, String oid, String rpid) {
+    public static ApiResponse<Boolean> likeComment(String cookie, String oid, String rpid) {
         return sendLikeOrDislikeRequest(cookie, oid, rpid, LIKE_COMMENT_URL, 1);
     }
 
@@ -54,7 +55,7 @@ public class BilibiliCommentHandler {
      * @param rpid 评论的rpid
      * @return boolean 点踩是否成功
      */
-    public static boolean dislikeComment(String cookie, String oid, String rpid) {
+    public static ApiResponse<Boolean> dislikeComment(String cookie, String oid, String rpid) {
         return sendLikeOrDislikeRequest(cookie, oid, rpid, DISLIKE_COMMENT_URL, 1);
     }
 
@@ -66,14 +67,13 @@ public class BilibiliCommentHandler {
      * @param rpid 评论的rpid
      * @param url 请求的URL
      * @param action 操作代码（1表示点赞或点踩，0表示取消）
-     * @return boolean 操作是否成功
+     * @return ApiResponse<Boolean> 操作是否成功
      */
-    private static boolean sendLikeOrDislikeRequest(String cookie, String oid, String rpid, String url, int action) {
+    private static ApiResponse<Boolean> sendLikeOrDislikeRequest(String cookie, String oid, String rpid, String url, int action) {
         // 从cookie中提取csrf（bili_jct）
         String csrf = extractCsrfFromCookie(cookie);
         if (csrf == null) {
-            System.out.println("无法从Cookie中提取csrf（bili_jct）。");
-            return false;
+            return ApiResponse.errorResponse("无法从Cookie中提取csrf（bili_jct）。");
         }
 
         // 构建POST请求的表单参数
@@ -87,11 +87,10 @@ public class BilibiliCommentHandler {
 
         try {
             // 发送POST请求
-            String response = HttpClientUtil.sendPostRequest(url, formBody, cookie);
-            return parseLikeOrDislikeResponse(response);
+            ApiResponse<String> response = HttpClientUtil.sendPostRequest(url, formBody, cookie);
+            return ApiResponse.handleApiResponse(response, Boolean.class, r -> true);
         } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+            return ApiResponse.errorResponse(e);
         }
     }
 
@@ -103,14 +102,13 @@ public class BilibiliCommentHandler {
      * @param message 发送的评论内容
      * @param root 根评论的rpid（如果是回复某条评论则传递，否则为null）
      * @param parent 父评论的rpid（如果是二级或多级回复则传递，否则为null）
-     * @return boolean 评论或回复是否发送成功
+     * @return ApiResponse<Boolean> 评论或回复是否发送成功
      */
-    public static boolean sendCommentOrReply(String cookie, String oid, String message, String root, String parent) {
+    public static ApiResponse<Boolean> sendCommentOrReply(String cookie, String oid, String message, String root, String parent) {
         // 从cookie中提取csrf（bili_jct）
         String csrf = extractCsrfFromCookie(cookie);
         if (csrf == null) {
-            System.out.println("无法从Cookie中提取csrf（bili_jct）。");
-            return false;
+            return ApiResponse.errorResponse("无法从Cookie中提取csrf（bili_jct）。");
         }
 
         // 构建POST请求的表单参数
@@ -129,16 +127,7 @@ public class BilibiliCommentHandler {
             formBuilder.add("parent", parent);  // 父评论的rpid
         }
 
-        RequestBody formBody = formBuilder.build();
-
-        try {
-            // 发送POST请求
-            String response = HttpClientUtil.sendPostRequest(SEND_COMMENT_URL, formBody, cookie);
-            return parseSendCommentResponse(response);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return getBooleanApiResponse(cookie, formBuilder, SEND_COMMENT_URL);
     }
 
     /**
@@ -150,17 +139,17 @@ public class BilibiliCommentHandler {
      * @param size 每页项数
      * @param sort 排序方式（0：按时间，1：按点赞数，2：按回复数）
      * @param nohot 是否显示热评（0：显示，1：不显示）
-     * @return CommentPage 评论分页信息和列表
+     * @return ApiResponse<CommentPage> 评论分页信息和列表
      */
-    public static CommentPage getComments(String cookie, String oid, int page, int size, int sort, int nohot) {
+    public static ApiResponse<CommentPage> getComments(String cookie, String oid, int page, int size, int sort, int nohot) {
         String url = COMMENT_URL + "?type=1&oid=" + oid + "&pn=" + page + "&ps=" + size + "&sort=" + sort + "&nohot=" + nohot;
 
         try {
-            String response = HttpClientUtil.sendGetRequest(url, cookie);
-            return parseCommentResponse(response);
+            // 发送GET请求，获取响应
+            ApiResponse<String> response = HttpClientUtil.sendGetRequest(url, cookie);
+            return ApiResponse.handleApiResponse(response, CommentPage.class, BilibiliCommentHandler::parseCommentResponse);
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            return ApiResponse.errorResponse(e);
         }
     }
 
@@ -172,17 +161,17 @@ public class BilibiliCommentHandler {
      * @param root 根评论的rpid
      * @param page 页码
      * @param size 每页项数
-     * @return CommentPage 回复分页信息和列表
+     * @return ApiResponse<CommentPage> 回复分页信息和列表
      */
-    public static CommentPage getReplies(String cookie, String oid, String root, int page, int size) {
+    public static ApiResponse<CommentPage> getReplies(String cookie, String oid, String root, int page, int size) {
         String url = REPLY_URL + "?type=1&oid=" + oid + "&root=" + root + "&pn=" + page + "&ps=" + size;
 
         try {
-            String response = HttpClientUtil.sendGetRequest(url, cookie);
-            return parseCommentResponse(response);
+            // 发送GET请求，获取响应
+            ApiResponse<String> response = HttpClientUtil.sendGetRequest(url, cookie);
+            return ApiResponse.handleApiResponse(response, CommentPage.class, BilibiliCommentHandler::parseCommentResponse);
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            return ApiResponse.errorResponse(e);
         }
     }
 

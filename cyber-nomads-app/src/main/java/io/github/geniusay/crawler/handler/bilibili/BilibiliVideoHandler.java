@@ -1,14 +1,14 @@
 package io.github.geniusay.crawler.handler.bilibili;
 
 import io.github.geniusay.crawler.po.bilibili.VideoDetail;
-import io.github.geniusay.utils.HttpClientUtil;
+import io.github.geniusay.crawler.util.bilibili.ApiResponse;
+import io.github.geniusay.crawler.util.bilibili.HttpClientUtil;
 import okhttp3.FormBody;
-import okhttp3.RequestBody;
 
 import java.io.IOException;
 
-import static io.github.geniusay.crawler.util.bilibili.BilibiliUtils.extractCsrfFromCookie;
-import static io.github.geniusay.crawler.util.bilibili.BilibiliUtils.parseVideoResponse;
+import static io.github.geniusay.crawler.util.bilibili.BilibiliUtil.extractCsrfFromCookie;
+import static io.github.geniusay.crawler.util.bilibili.BilibiliUtil.getBooleanApiResponse;
 
 /**
  * 描述: B站视频相关爬虫处理器
@@ -34,66 +34,47 @@ public class BilibiliVideoHandler {
      * 通过bvid或aid获取视频详细信息
      *
      * @param cookie 用户的Cookie
-     * @param id 视频的bvid或aid
-     * @return VideoDetail 对象
+     * @param id     视频的bvid或aid
+     * @return ApiResponse<VideoDetail> 对象
      */
-    public static VideoDetail getVideoDetailById(String cookie, String id) {
-        String url;
-
-        // 判断id是否以"BV"开头
-        if (id.startsWith("BV")) {
-            url = VIDEO_DETAIL_BY_BVID + id;
-        } else {
-            url = VIDEO_DETAIL_BY_AID + id;
-        }
+    public static ApiResponse<VideoDetail> getVideoDetailById(String cookie, String id) {
+        String url = id.startsWith("BV") ? VIDEO_DETAIL_BY_BVID + id : VIDEO_DETAIL_BY_AID + id;
 
         try {
-            String response = HttpClientUtil.sendGetRequest(url, cookie);
-            return HttpClientUtil.parseJson(response, VideoDetail.class);
+            // 发送GET请求，获取响应
+            ApiResponse<String> response = HttpClientUtil.sendGetRequest(url, cookie);
+            return ApiResponse.convertApiResponse(response, VideoDetail.class);
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            return ApiResponse.errorResponse(e);
         }
     }
 
     /**
      * 点赞或取消点赞视频
      *
-     * @param cookie 用户的Cookie（SESSDATA）
+     * @param cookie 用户的Cookie
      * @param id 视频的bvid或aid
      * @param like 1表示点赞，2表示取消赞
-     * @return boolean 点赞或取消点赞是否成功
+     * @return ApiResponse<Boolean> 点赞或取消点赞是否成功
      */
-    public static boolean likeVideo(String cookie, String id, int like) {
-        // 从cookie中提取csrf（bili_jct）
+    public static ApiResponse<Boolean> likeVideo(String cookie, String id, int like) {
         String csrf = extractCsrfFromCookie(cookie);
         if (csrf == null) {
-            System.out.println("无法从Cookie中提取csrf（bili_jct）。");
-            return false;
+            return ApiResponse.errorResponse("无法从Cookie中提取csrf（bili_jct）。");
         }
 
         // 构建POST请求的表单参数
         FormBody.Builder formBuilder = new FormBody.Builder()
-                .add("like", String.valueOf(like))  // 点赞或取消赞
-                .add("csrf", csrf);  // CSRF Token
+                .add("like", String.valueOf(like))
+                .add("csrf", csrf);
 
-        // 根据id判断是bvid还是aid
         if (id.startsWith("BV")) {
             formBuilder.add("bvid", id);
         } else {
             formBuilder.add("aid", id);
         }
 
-        RequestBody formBody = formBuilder.build();
-
-        try {
-            // 发送POST请求
-            String response = HttpClientUtil.sendPostRequest(LIKE_VIDEO_URL, formBody, cookie);
-            return parseVideoResponse(response);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return getBooleanApiResponse(cookie, formBuilder, LIKE_VIDEO_URL);
     }
 
     /**
@@ -103,14 +84,12 @@ public class BilibiliVideoHandler {
      * @param id 视频的bvid或aid
      * @param multiply 投币数量，最大为2
      * @param selectLike 是否同时点赞，0表示不点赞，1表示同时点赞
-     * @return boolean 投币是否成功
+     * @return ApiResponse<Boolean> 投币是否成功
      */
-    public static boolean coinVideo(String cookie, String id, int multiply, int selectLike) {
-        // 从cookie中提取csrf（bili_jct）
+    public static ApiResponse<Boolean> coinVideo(String cookie, String id, int multiply, int selectLike) {
         String csrf = extractCsrfFromCookie(cookie);
         if (csrf == null) {
-            System.out.println("无法从Cookie中提取csrf（bili_jct）。");
-            return false;
+            return ApiResponse.errorResponse("无法从Cookie中提取csrf（bili_jct）。");
         }
 
         // 构建POST请求的表单参数
@@ -119,23 +98,13 @@ public class BilibiliVideoHandler {
                 .add("select_like", String.valueOf(selectLike))
                 .add("csrf", csrf);
 
-        // 根据id判断是bvid还是aid
         if (id.startsWith("BV")) {
             formBuilder.add("bvid", id);
         } else {
             formBuilder.add("aid", id);
         }
 
-        RequestBody formBody = formBuilder.build();
-
-        try {
-            // 发送POST请求
-            String response = HttpClientUtil.sendPostRequest(COIN_VIDEO_URL, formBody, cookie);
-            return parseVideoResponse(response);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return getBooleanApiResponse(cookie, formBuilder, COIN_VIDEO_URL);
     }
 
     /**
@@ -145,14 +114,12 @@ public class BilibiliVideoHandler {
      * @param rid 视频的aid
      * @param addMediaIds 要加入的收藏夹ID
      * @param delMediaIds 要取消的收藏夹ID（可选）
-     * @return boolean 收藏或取消收藏是否成功
+     * @return ApiResponse<Boolean> 收藏或取消收藏是否成功
      */
-    public static boolean favVideo(String cookie, String rid, String addMediaIds, String delMediaIds) {
-        // 从cookie中提取csrf（bili_jct）
+    public static ApiResponse<Boolean> favVideo(String cookie, String rid, String addMediaIds, String delMediaIds) {
         String csrf = extractCsrfFromCookie(cookie);
         if (csrf == null) {
-            System.out.println("无法从Cookie中提取csrf（bili_jct）。");
-            return false;
+            return ApiResponse.errorResponse("无法从Cookie中提取csrf（bili_jct）。");
         }
 
         // 构建POST请求的表单参数
@@ -161,7 +128,6 @@ public class BilibiliVideoHandler {
                 .add("type", "2")
                 .add("csrf", csrf);
 
-        // 添加或取消收藏夹
         if (addMediaIds != null && !addMediaIds.isEmpty()) {
             formBuilder.add("add_media_ids", addMediaIds);
         }
@@ -169,16 +135,7 @@ public class BilibiliVideoHandler {
             formBuilder.add("del_media_ids", delMediaIds);
         }
 
-        RequestBody formBody = formBuilder.build();
-
-        try {
-            // 发送POST请求
-            String response = HttpClientUtil.sendPostRequest(FAV_VIDEO_URL, formBody, cookie);
-            return parseVideoResponse(response);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return getBooleanApiResponse(cookie, formBuilder, FAV_VIDEO_URL);
     }
 
     /**
@@ -186,36 +143,24 @@ public class BilibiliVideoHandler {
      *
      * @param cookie 用户的Cookie
      * @param id 视频的bvid或aid
-     * @return boolean 一键三连是否成功
+     * @return ApiResponse<Boolean> 一键三连是否成功
      */
-    public static boolean tripleAction(String cookie, String id) {
-        // 从cookie中提取csrf（bili_jct）
+    public static ApiResponse<Boolean> tripleAction(String cookie, String id) {
         String csrf = extractCsrfFromCookie(cookie);
         if (csrf == null) {
-            System.out.println("无法从Cookie中提取csrf（bili_jct）。");
-            return false;
+            return ApiResponse.errorResponse("无法从Cookie中提取csrf（bili_jct）。");
         }
 
         // 构建POST请求的表单参数
         FormBody.Builder formBuilder = new FormBody.Builder()
-                .add("csrf", csrf);  // CSRF Token
+                .add("csrf", csrf);
 
-        // 根据id判断是bvid还是aid
         if (id.startsWith("BV")) {
             formBuilder.add("bvid", id);
         } else {
             formBuilder.add("aid", id);
         }
 
-        RequestBody formBody = formBuilder.build();
-
-        try {
-            // 发送POST请求
-            String response = HttpClientUtil.sendPostRequest(TRIPLE_ACTION_URL, formBody, cookie);
-            return parseVideoResponse(response);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return getBooleanApiResponse(cookie, formBuilder, TRIPLE_ACTION_URL);
     }
 }
