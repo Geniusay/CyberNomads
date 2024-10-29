@@ -1,7 +1,9 @@
 package io.github.geniusay.crawler;
 
+import io.github.geniusay.crawler.api.bilibili.BilibiliBarrageApi;
 import io.github.geniusay.crawler.api.bilibili.BilibiliCommentApi;
 import io.github.geniusay.crawler.api.bilibili.BilibiliVideoApi;
+import io.github.geniusay.crawler.po.bilibili.Barrage;
 import io.github.geniusay.crawler.po.bilibili.CommentDetail;
 import io.github.geniusay.crawler.po.bilibili.CommentPage;
 import io.github.geniusay.crawler.po.bilibili.VideoDetail;
@@ -16,7 +18,7 @@ public class TestAPI {
     @Test
     public void testGetVideoInfo() throws Exception {
         // 通过bvid获取视频详细信息
-        VideoDetail videoDetailByBvid = BilibiliVideoApi.getVideoDetailById(cookie, "BV1TZ421E7Ci");
+        VideoDetail videoDetailByBvid = BilibiliVideoApi.getVideoDetailById(cookie, "BV1AV411Q7dg");
 
         System.out.println(videoDetailByBvid);
 
@@ -140,5 +142,15 @@ public class TestAPI {
     public void favVideo() throws Exception {
         String aid = "1154116168";
         boolean isReplySuccess = BilibiliVideoApi.favVideo(cookie, aid, "1273098564", null);
+    }
+
+    @Test
+    public void getBarrage() throws Exception {
+        String cid = "1413629350";
+        List<Barrage> realTimeBarrageByOid = BilibiliBarrageApi.getRealTimeBarrageByCid(cookie, cid);
+
+        for (Barrage barrage : realTimeBarrageByOid) {
+            System.out.println(barrage);
+        }
     }
 }
