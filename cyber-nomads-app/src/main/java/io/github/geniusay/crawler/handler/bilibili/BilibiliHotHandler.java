@@ -3,7 +3,6 @@ package io.github.geniusay.crawler.handler.bilibili;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import io.github.geniusay.crawler.BCookie;
 import io.github.geniusay.crawler.po.bilibili.*;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import io.github.geniusay.crawler.util.bilibili.HttpClientUtil;
