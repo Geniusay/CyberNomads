@@ -1,5 +1,6 @@
 package io.github.geniusay.pojo.DO;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,6 +11,7 @@ import lombok.Data;
  */
 @Builder
 @Data
+@TableName("register_machine")
 public class RegisterMachineDO {
 
     private Integer id;

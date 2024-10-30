@@ -28,3 +28,8 @@ captcha:
     width: 180
     height: 40
     dot-size: 50
+
+AIGenerate:
+  API_KEY: ${"API_KEY":ENC(li21ByYLAg/rKbFgMaufT+7PbsTYmdJSDusGI2Y7483pQdpXHvBRPgt78dfGQgybBqQKZnR9Mfs=)}
+  STRATEGY: ${"DEFAULT_STRATEGY":qw}
+

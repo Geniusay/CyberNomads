@@ -16,8 +16,8 @@ import javax.annotation.Resource;
 public class RegisterMachineController {
     @Resource
     RegisterMachineService service;
-    @GetMapping("/search/{id}")
-    public Result<?> getRegisterMachine(@PathVariable Integer id){
+    @GetMapping("/search")
+    public Result<?> getRegisterMachine(@RequestParam("id") Integer id){
         return Result.success(service.queryMachineInfo(id));
     }
 

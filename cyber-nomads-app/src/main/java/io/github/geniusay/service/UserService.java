@@ -1,10 +1,14 @@
 package io.github.geniusay.service;
 
+import io.github.geniusay.pojo.DTO.LoadRobotResponseDTO;
 import io.github.geniusay.pojo.DTO.LoginRequestDTO;
 import io.github.geniusay.pojo.VO.LoginVO;
 import io.github.geniusay.pojo.DTO.RegisterRequestDTO;
+import io.github.geniusay.pojo.VO.RobotVO;
 import io.github.geniusay.pojo.VO.UserVO;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,4 +27,12 @@ public interface UserService {
     Map<String,String> generateCaptcha();
 
     void generateEmailCode(String email,String pid,String code);
+
+    LoadRobotResponseDTO loadRobot(MultipartFile file);
+
+    List<RobotVO> queryRobot();
+
+    Boolean removeRoobot(Long id);
+
+    Boolean banRoobot(Long id);
 }

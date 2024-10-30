@@ -5,9 +5,9 @@ import io.github.geniusay.anno.TokenRequire;
 import io.github.geniusay.pojo.DTO.LoginRequestDTO;
 import io.github.geniusay.pojo.DTO.RegisterRequestDTO;
 import io.github.geniusay.service.UserService;
-import io.github.geniusay.utils.UserPointUtil;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -25,9 +25,6 @@ import javax.validation.constraints.NotNull;
 public class UserController {
     @Resource
     private UserService userService;
-
-    @Resource
-    private UserPointUtil userPointUtil;
 
     @PostMapping("/captcha")
     public Result<?> queryCaptcha(){
@@ -68,9 +65,27 @@ public class UserController {
         return Result.success();
     }
 
+    @PostMapping("/robot/upload")
     @TokenRequire
-    @GetMapping("/getPoint")
-    public Result<?> getPoint(){
-        return Result.success(userPointUtil.get());
+    public Result<?> uploadRobot(@RequestParam("file") MultipartFile file){
+        return Result.success(userService.loadRobot(file));
+    }
+
+    @GetMapping("/robot/search")
+    @TokenRequire
+    public Result<?> getUserRobot(){
+        return Result.success(userService.queryRobot());
+    }
+
+    @DeleteMapping("/robot")
+    @TokenRequire
+    public Result<?> removeRobot(@RequestParam("id") Long id){
+        return Result.success(userService.removeRoobot(id));
+    }
+
+    @TokenRequire
+    @PostMapping("/robot/ban")
+    public Result<?> banRobot(@RequestParam("id") Long id){
+        return Result.success(userService.banRoobot(id));
     }
 }

@@ -1,10 +1,12 @@
 package io.github.geniusay;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import org.apache.catalina.User;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -33,8 +35,7 @@ public class LoginController {
     private String webDriver;
     private String browser;
     private static final String URL = "https://www.bilibili.com/";
-    private HashMap<String,String> commonCookies = new HashMap<>();
-    private HashMap<String,HashSet<Cookie>> userCookies = new HashMap<>();
+    private HashMap<String, UserCookie> COOKIES = new HashMap<>();
 
     public LoginController() {
     }
@@ -68,24 +69,22 @@ public class LoginController {
         HashSet<Cookie> set = new HashSet<>();
         confirmLogin.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         confirmLogin.manage().deleteAllCookies();
-        StringBuilder sb = new StringBuilder();
         for (Cookie cookie : cookies) {
             if("".equals(cookie.getName())||cookie.getName()==null
                     ||cookie.getValue()==null|| "".equals(cookie.getValue())
                     ||cookie.getPath()==null||"".equals(cookie.getPath())) {
                 continue;
             }
-
-            sb.append(cookie.getName()).append("=").append(cookie.getValue()).append(";");
-            set.add(cookie);
+            Cookie c = new Cookie(cookie.getName(),cookie.getValue());
+            set.add(c);
             confirmLogin.manage().addCookie(cookie);
         }
         confirmLogin.navigate().refresh();
         Thread.sleep(2000L);
         WebElement avator = confirmLogin.findElement(By.xpath("/html/body/div[2]/div[2]/div[1]/div[1]/ul[2]/li[1]"));
         if(avator!=null){
-            commonCookies.put(username,sb.toString());
-            userCookies.put(username,set);
+            UserCookie build = UserCookie.builder().username(username).password(password).cookie(set).build();
+            COOKIES.put(username,build);
             confirmLogin.quit();
         }else{
             throw new RuntimeException("登陆失败!");
@@ -103,20 +102,10 @@ public class LoginController {
     @FXML
     private void saveCookies(){
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("账号Cookies"))) {
-            StringBuilder sb = new StringBuilder();
-            for (HashMap.Entry<String, HashSet<Cookie>> entry : userCookies.entrySet()) {
-                String key = entry.getKey();
-                HashSet<Cookie> cookies = entry.getValue();
-                sb.append(key).append(":").append(cookies.toString()).append(", ");
-            }
-
-            // 移除最后的逗号和空格
-            if (sb.length() > 0) {
-                sb.setLength(sb.length() - 2);
-            }
-
-            // 写入文件
-            writer.write("{" + sb + "}");
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<UserCookie> cookieList = new ArrayList<>(COOKIES.values());
+            String json = objectMapper.writeValueAsString(cookieList);
+            writer.write(json);
         } catch (IOException e) {
             e.printStackTrace();
         }
