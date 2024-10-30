@@ -5,6 +5,7 @@ import io.github.geniusay.anno.TokenRequire;
 import io.github.geniusay.pojo.DTO.LoginRequestDTO;
 import io.github.geniusay.pojo.DTO.RegisterRequestDTO;
 import io.github.geniusay.service.UserService;
+import io.github.geniusay.utils.UserPointUtil;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +26,9 @@ import javax.validation.constraints.NotNull;
 public class UserController {
     @Resource
     private UserService userService;
+
+    @Resource
+    private UserPointUtil userPointUtil;
 
     @PostMapping("/captcha")
     public Result<?> queryCaptcha(){
@@ -87,5 +91,11 @@ public class UserController {
     @PostMapping("/robot/ban")
     public Result<?> banRobot(@RequestParam("id") Long id){
         return Result.success(userService.banRoobot(id));
+    }
+
+    @TokenRequire
+    @GetMapping("/getPoint")
+    public Result<?> getPoint(){
+        return Result.success(userPointUtil.get());
     }
 }

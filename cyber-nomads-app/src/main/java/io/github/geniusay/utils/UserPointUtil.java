@@ -52,13 +52,17 @@ public class UserPointUtil {
         return false;
     }
 
-    public AtomicInteger getPoint(){
+    private AtomicInteger getPoint(){
         String uid = ThreadUtil.getUid();
         return pointCache.computeIfAbsent(uid, k -> {
             synchronized (lock) {
                 return new AtomicInteger(queryDatabase(k));
             }
         });
+    }
+
+    public Integer get(){
+        return getPoint().get();
     }
 
     private boolean option(Integer point){
