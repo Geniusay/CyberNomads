@@ -15,7 +15,7 @@ public class TestBarrageAPI {
 
     @Test
     public void getBarrage() throws Exception {
-        String cid = "26476087566";
+        String cid = "1428089940";
         String filePath = "C:\\_data\\" + cid + ".txt";
 
         // 获取弹幕列表

@@ -1,22 +1,24 @@
 package io.github.geniusay.task.po;
 
+import io.github.geniusay.task.executor.TaskExecutor;
 import io.github.geniusay.task.enums.Platform;
 import io.github.geniusay.task.enums.TaskStatus;
 import io.github.geniusay.task.enums.TaskType;
+import lombok.Data;
 
 /**
  * 描述: 简单任务类 (不可拆分)
  * @author suifeng
  * 日期: 2024/10/30
  */
-public abstract class SimpleTask extends Task {
+@Data
+public class SimpleTask extends Task {
 
     private TaskType type;          // 任务类型
-
     private Platform platform;      // 任务所属平台
 
-    public SimpleTask(TaskType type, Platform platform, int priority) {
-        super(0, priority);         // 简单任务的级别固定为0
+    public SimpleTask(String founderId, TaskType type, Platform platform, TaskExecutor<?> executor) {
+        super(founderId, 0, executor);         // 简单任务的级别固定为0
         this.type = type;
         this.platform = platform;
     }
