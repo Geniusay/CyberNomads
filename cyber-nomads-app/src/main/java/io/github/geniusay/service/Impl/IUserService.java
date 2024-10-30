@@ -1,24 +1,31 @@
 package io.github.geniusay.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.geniusay.async.AsyncService;
+import io.github.geniusay.mapper.RobotMapper;
 import io.github.geniusay.mapper.UserMapper;
+import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.UserDO;
-import io.github.geniusay.pojo.DTO.LoginRequestDTO;
+import io.github.geniusay.pojo.DTO.*;
+import io.github.geniusay.pojo.Platform;
 import io.github.geniusay.pojo.VO.LoginVO;
-import io.github.geniusay.pojo.DTO.RegisterRequestDTO;
+import io.github.geniusay.pojo.VO.RobotVO;
 import io.github.geniusay.pojo.VO.UserVO;
 import io.github.geniusay.service.UserService;
-import io.github.geniusay.utils.CacheUtil;
-import io.github.geniusay.utils.ImageUtil;
-import io.github.geniusay.utils.RandomUtil;
-import io.github.geniusay.utils.TokenUtil;
+import io.github.geniusay.utils.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Description
@@ -30,6 +37,8 @@ public class IUserService implements UserService {
 
     @Resource
     UserMapper userMapper;
+    @Resource
+    RobotMapper robotMapper;
     @Resource
     ImageUtil imageUtil;
     @Resource
@@ -94,6 +103,56 @@ public class IUserService implements UserService {
         String emailCode = RandomUtil.generateRandomString(6);
         CacheUtil.putEmail(email,emailCode);
         asyncService.sendCodeToEmail(email, emailCode);
+    }
+
+    @Override
+    public LoadRobotResponseDTO loadRobot(MultipartFile file) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<String> success = new ArrayList<>();
+        List<String> fail = new ArrayList<>();
+        try {
+            List<UserCookieDTO> userDataList = objectMapper.readValue(file.getBytes(), new TypeReference<>() {
+            });
+            for (UserCookieDTO userCookieDTO : userDataList) {
+                String cookieString = userCookieDTO.getCookie().stream()
+                        .map(uCookie -> uCookie.getName() + "=" + uCookie.getValue())
+                        .collect(Collectors.joining(";"));
+                RobotDO build = RobotDO.builder()
+                        .username(userCookieDTO.getUsername())
+                        .password(userCookieDTO.getPassword())
+                        .nickname(userCookieDTO.getUsername())
+                        .platform(Platform.BILIBILI.getCode())
+                        .cookie(cookieString)
+                        .ban(false)
+                        .hasDelete(false)
+                        .build();
+                robotMapper.insert(build);
+                userMapper.insertUserRobot(ThreadUtil.getUid(),build.getId());
+                success.add(build.getUsername());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return LoadRobotResponseDTO.builder().successRobot(success).errorRobot(fail).build();
+    }
+
+    @Override
+    public List<RobotVO> queryRobot() {
+        String uid = ThreadUtil.getUid();
+        List<RobotDO> robotDOs = userMapper.queryRobotsByUid(uid);
+        return robotDOs.stream().map(RobotVO::convert).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public Boolean removeRoobot(Long id) {
+        String uid = ThreadUtil.getUid();
+        return userMapper.delRobot(uid,id)==1&&robotMapper.update(null,new UpdateWrapper<RobotDO>().eq("id",id).set("has_delete",true))==1;
+    }
+
+    @Override
+    public Boolean banRoobot(Long id) {
+        return robotMapper.update(null,new UpdateWrapper<RobotDO>().eq("id",id).set("ban",true))==1;
     }
 
 }

@@ -3,11 +3,12 @@ package io.github.geniusay.crawler.util.bilibili;
 import io.github.geniusay.crawler.po.bilibili.Barrage;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
-import org.jetbrains.annotations.NotNull;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import javax.validation.constraints.NotNull;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;

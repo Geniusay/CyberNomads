@@ -7,8 +7,8 @@ import io.github.geniusay.crawler.BCookie;
 import io.github.geniusay.crawler.po.bilibili.*;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import io.github.geniusay.crawler.util.bilibili.HttpClientUtil;
-import org.jetbrains.annotations.NotNull;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
