@@ -7,6 +7,7 @@ import io.github.geniusay.pojo.DTO.RegisterRequestDTO;
 import io.github.geniusay.service.UserService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -62,5 +63,29 @@ public class UserController {
                                       String code){
         userService.generateEmailCode(email,pid,code);
         return Result.success();
+    }
+
+    @PostMapping("/robot/upload")
+    @TokenRequire
+    public Result<?> uploadRobot(@RequestParam("file") MultipartFile file){
+        return Result.success(userService.loadRobot(file));
+    }
+
+    @GetMapping("/robot/search")
+    @TokenRequire
+    public Result<?> getUserRobot(){
+        return Result.success(userService.queryRobot());
+    }
+
+    @DeleteMapping("/robot")
+    @TokenRequire
+    public Result<?> removeRobot(@RequestParam("id") Long id){
+        return Result.success(userService.removeRoobot(id));
+    }
+
+    @TokenRequire
+    @PostMapping("/robot/ban")
+    public Result<?> banRobot(@RequestParam("id") Long id){
+        return Result.success(userService.banRoobot(id));
     }
 }

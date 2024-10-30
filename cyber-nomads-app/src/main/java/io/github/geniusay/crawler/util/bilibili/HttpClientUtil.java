@@ -3,8 +3,8 @@ package io.github.geniusay.crawler.util.bilibili;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import okhttp3.*;
-import org.jetbrains.annotations.NotNull;
 
+import javax.validation.constraints.NotNull;
 import java.io.*;
 
 import static io.github.geniusay.utils.DecompressUtil.decompressDeflateStream;
