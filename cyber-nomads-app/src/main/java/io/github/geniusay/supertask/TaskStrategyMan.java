@@ -27,12 +27,11 @@ public class TaskStrategyMan {
         blueprintMap.forEach(
                 (k,blueprint)->{
                     Platform platform = blueprint.platform();
-                    platformTaskBlueprintList.computeIfAbsent(platform, (map)->{
-                        ArrayList<AbstractTaskBlueprint> list = new ArrayList<>();
-                        platformTaskBlueprintList.put(blueprint.platform(), list);
-                        return list;
-                    }).add(blueprint);
-                    blueprintMap.put(platform.getPlat()+blueprint.taskType(), blueprint);
+                    if (!platformTaskBlueprintList.containsKey(platform)) {
+                        platformTaskBlueprintList.put(blueprint.platform(), new ArrayList<>());
+                    }
+                    platformTaskBlueprintList.get(blueprint.platform()).add(blueprint);
+                    blueprintStrategy.put(platform.getPlat()+blueprint.taskType(), blueprint);
                 }
         );
     }

@@ -1,8 +1,10 @@
 package io.github.geniusay.pojo.DO;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @Description
@@ -12,6 +14,8 @@ import lombok.Data;
 @Data
 @Builder
 @TableName("robot")
+@AllArgsConstructor
+@NoArgsConstructor
 public class RobotDO {
 
     private Long id;

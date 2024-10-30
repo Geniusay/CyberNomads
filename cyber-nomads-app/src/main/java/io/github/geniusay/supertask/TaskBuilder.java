@@ -1,13 +1,17 @@
 package io.github.geniusay.supertask;
 
+import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.Platform;
 import io.github.geniusay.supertask.task.Task;
+import io.github.geniusay.supertask.task.WelsirRobot;
 import io.github.geniusay.supertask.taskblueprint.AbstractTaskBlueprint;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Component
@@ -25,9 +29,18 @@ public class TaskBuilder {
                 .handler(blueprint.supplierExecute())
                 .logHandler(blueprint.supplierLog())
                 .helpParams(blueprint.supplierHelpParams())
+                .welsirRobots(robotToWelsirRobot(taskDO.getRobots()))
                 .build();
 
         BeanUtils.copyProperties(taskDO, task);
         return task;
+    }
+
+    public static List<WelsirRobot> robotToWelsirRobot(List<RobotDO> robotDOS){
+        List<WelsirRobot> welsirRobots = new ArrayList<>();
+        for (RobotDO robotDO : robotDOS) {
+            welsirRobots.add(new WelsirRobot(robotDO));
+        }
+        return welsirRobots;
     }
 }

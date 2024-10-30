@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -29,4 +30,6 @@ public class TaskDO {
     private TaskStatus taskStatus;
 
     private List<RobotDO> robots;
+
+    private Map<String, Object> params;
 }

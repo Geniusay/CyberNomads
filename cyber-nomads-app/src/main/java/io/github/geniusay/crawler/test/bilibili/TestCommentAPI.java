@@ -10,7 +10,7 @@ import java.util.List;
 
 import static io.github.geniusay.crawler.BCookie.cookie;
 
-public class TestCommontAPI {
+public class TestCommentAPI {
 
     @Test
     public void sendComment() throws Exception {

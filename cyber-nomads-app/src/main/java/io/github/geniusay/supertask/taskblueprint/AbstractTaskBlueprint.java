@@ -1,9 +1,7 @@
 package io.github.geniusay.supertask.taskblueprint;
 
 import io.github.geniusay.pojo.Platform;
-import org.springframework.stereotype.Component;
 
-@Component
 public abstract class AbstractTaskBlueprint implements TaskBlueprint{
 
     /**
