@@ -24,3 +24,7 @@ export function sendCodeToEmail(email: string,pid: string,code: string){
     }
   })
 }
+
+export function getUserInfo(){
+  return request.get('/user/getInfo')
+}

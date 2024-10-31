@@ -17,6 +17,10 @@ export const routes = [
     component: () => import("@/views/homepage/HomePageView.vue"),
   },
   {
+    path:"/login",
+    component: ()=>import("@/views/login/LoginView.vue")
+  },
+  {
     path: "/workplace",
     component: () => import("@/views/Main.vue"),
     redirect: "/workplace/dashboard",

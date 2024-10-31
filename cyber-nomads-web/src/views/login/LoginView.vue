@@ -48,5 +48,5 @@ const isLogin = ref(true);
 </template>
 
 <style scoped>
-@import url("@/style/view/login/_login.scss");
+@import url("@/styles/view/login/_login.scss");
 </style>
