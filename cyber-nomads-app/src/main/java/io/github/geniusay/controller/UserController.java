@@ -50,8 +50,8 @@ public class UserController {
     }
 
     @TokenRequire
-    @GetMapping("/search/{uid}")
-    public Result<?> queryUser(@PathVariable String uid){
+    @GetMapping("/search")
+    public Result<?> queryUser(@RequestParam("uid") String uid){
         return Result.success(userService.queryUserById(uid));
     }
 
