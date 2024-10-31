@@ -3,10 +3,7 @@ package io.github.geniusay.controller;
 import io.github.common.web.Result;
 import io.github.geniusay.utils.UserPointUtil;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -19,7 +16,7 @@ public class PointController {
     @Value("${point.reset.key}")
     private String resetKey;
 
-    @PostMapping("/resetUserPoint")
+    @GetMapping("/resetUserPoint")
     public Result<?> resetUserPoint(@RequestParam String uid, @RequestParam String key){
         if(resetKey.equals(key)){
             userPointUtil.resetUserPoint(uid);
