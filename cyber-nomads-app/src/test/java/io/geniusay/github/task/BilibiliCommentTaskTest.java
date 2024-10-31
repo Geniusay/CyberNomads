@@ -6,9 +6,9 @@ import io.github.geniusay.mapper.RobotMapper;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.Platform;
-import io.github.geniusay.supertask.TaskBuilder;
-import io.github.geniusay.supertask.task.Task;
-import io.github.geniusay.supertask.task.WelsirRobot;
+import io.github.geniusay.core.supertask.TaskBuilder;
+import io.github.geniusay.core.supertask.task.Task;
+import io.github.geniusay.core.supertask.task.WelsirRobot;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +19,7 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.geniusay.supertask.config.TaskTypeConstant.VIDEO_COMMENT;
+import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_COMMENT;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CyberNomadsApplication.class)

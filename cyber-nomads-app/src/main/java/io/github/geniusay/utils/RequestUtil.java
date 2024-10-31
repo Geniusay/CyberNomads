@@ -1,7 +1,7 @@
 package io.github.geniusay.utils;
 
-import io.github.geniusay.proxy.ProxyClient;
-import io.github.geniusay.proxy.ProxyManager;
+import io.github.geniusay.core.proxy.ProxyClient;
+import io.github.geniusay.core.proxy.ProxyManager;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
