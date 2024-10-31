@@ -119,7 +119,6 @@ public class IUserService implements UserService {
                         .collect(Collectors.joining(";"));
                 RobotDO build = RobotDO.builder()
                         .username(userCookieDTO.getUsername())
-                        .password(userCookieDTO.getPassword())
                         .nickname(userCookieDTO.getUsername())
                         .platform(Platform.BILIBILI.getCode())
                         .cookie(cookieString)

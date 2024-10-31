@@ -35,7 +35,7 @@ public class LoginController {
     private String webDriver;
     private String browser;
     private static final String URL = "https://www.bilibili.com/";
-    private HashMap<String, UserCookie> COOKIES = new HashMap<>();
+    private HashMap<String, HashSet<Cookie>> COOKIES = new HashMap<>();
 
     public LoginController() {
     }
@@ -83,8 +83,7 @@ public class LoginController {
         Thread.sleep(2000L);
         WebElement avator = confirmLogin.findElement(By.xpath("/html/body/div[2]/div[2]/div[1]/div[1]/ul[2]/li[1]"));
         if(avator!=null){
-            UserCookie build = UserCookie.builder().username(username).password(password).cookie(set).build();
-            COOKIES.put(username,build);
+            COOKIES.put(username,set);
             confirmLogin.quit();
         }else{
             throw new RuntimeException("登陆失败!");
@@ -103,8 +102,8 @@ public class LoginController {
     private void saveCookies(){
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("账号Cookies"))) {
             ObjectMapper objectMapper = new ObjectMapper();
-            List<UserCookie> cookieList = new ArrayList<>(COOKIES.values());
-            String json = objectMapper.writeValueAsString(cookieList);
+            String json = objectMapper.writeValueAsString(COOKIES);
+            System.out.println(json);
             writer.write(json);
         } catch (IOException e) {
             e.printStackTrace();

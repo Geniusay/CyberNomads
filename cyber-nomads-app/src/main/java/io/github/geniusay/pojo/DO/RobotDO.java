@@ -23,7 +23,6 @@ public class RobotDO {
     private String nickname;
     private String username;
     private String cookie;
-    private String password;
     private boolean ban;
     private boolean hasDelete;
 }

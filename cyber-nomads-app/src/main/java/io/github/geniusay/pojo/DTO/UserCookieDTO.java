@@ -21,7 +21,6 @@ import java.util.List;
 public class UserCookieDTO {
 
     private String username;
-    private String password;
     private List<UCookie> cookie;
 
 }
