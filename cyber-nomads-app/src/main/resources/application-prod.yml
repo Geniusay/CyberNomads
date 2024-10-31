@@ -28,11 +28,10 @@ captcha:
     height: 40
     dot-size: 50
 
-point:
-  reset:
-    key: ${RESET_KEY:ENC(OmgmeMPeP3TRvg6n9Mc8LKaFN51DjuT8nVVfc79PQPE==)}
-
 AIGenerate:
   API_KEY: ${"API_KEY":ENC(li21ByYLAg/rKbFgMaufT+7PbsTYmdJSDusGI2Y7483pQdpXHvBRPgt78dfGQgybBqQKZnR9Mfs=)}
   STRATEGY: ${"DEFAULT_STRATEGY":qw}
 
+point:
+  reset:
+    key: ${RESET_KEY:ENC(gTMJIBjg+TP1EZsMJzrjez8Lipi5aJL/dPvfOsR1FR3TcAIuRy6qMA==)}

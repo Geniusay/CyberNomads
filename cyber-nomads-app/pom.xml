@@ -45,6 +45,17 @@
             <artifactId> spring-boot-configuration-processor </artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>3.0.5</version>
+        </dependency>
+
         <!--        mysql-->
         <dependency>
             <groupId>mysql</groupId>
