@@ -12,5 +12,5 @@ import java.util.List;
 public class UpdateRobotsDTO {
     private Long taskId;
     private List<Long> robotIds;
-    private boolean isAdd;
+    private boolean hasAdd;
 }

@@ -2,6 +2,7 @@ package io.github.geniusay.service;
 
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.TaskFunctionDTO;
+import io.github.geniusay.pojo.VO.TaskVO;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public interface ITaskService {
     /**
      * 获取指定用户的所有任务
      */
-    List<TaskDO> getUserTasks(String uid);
+    List<TaskVO> getUserTasks(String uid);
 
     /**
      * 批量添加或删除机器人账号

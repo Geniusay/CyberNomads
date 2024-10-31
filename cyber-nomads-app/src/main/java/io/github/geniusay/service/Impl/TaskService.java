@@ -9,8 +9,10 @@ import io.github.geniusay.core.supertask.config.TaskTypeConstant;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
 import io.github.geniusay.mapper.TaskMapper;
+import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.TaskFunctionDTO;
+import io.github.geniusay.pojo.VO.TaskVO;
 import io.github.geniusay.service.ITaskService;
 import io.github.geniusay.utils.ConvertorUtil;
 import io.github.geniusay.utils.TaskTranslationUtil;
@@ -18,6 +20,7 @@ import io.github.geniusay.utils.ThreadUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -66,6 +69,7 @@ public class TaskService implements ITaskService {
         taskDO.setPlatform(platform);
         taskDO.setTaskType(taskType);
         taskDO.setTaskStatus(TaskStatus.PENDING);
+        taskDO.setRobots(ConvertorUtil.listToString(List.of()));
         taskDO.setParams(ConvertorUtil.mapToJsonString(params));
 
         // 7. 保存任务到数据库
@@ -87,18 +91,45 @@ public class TaskService implements ITaskService {
     }
 
     @Override
-    public List<TaskDO> getUserTasks(String uid) {
+    public List<TaskVO> getUserTasks(String uid) {
+        // 查询任务列表
         QueryWrapper<TaskDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("uid", uid);
-        return taskMapper.selectList(queryWrapper);
+        List<TaskDO> taskDOList = taskMapper.selectList(queryWrapper);
+
+        // 将 TaskDO 转换为 TaskVO，并查询 robots 列表
+        return taskDOList.stream().map(taskDO -> {
+            // 将 params 字段从 JSON 字符串转换为 Map
+            Map<String, Object> params = ConvertorUtil.jsonStringToMap(taskDO.getParams());
+
+            // 将 robots 字段从逗号分隔的字符串转换为 List<Long>
+            List<Long> robotIds = ConvertorUtil.stringToList(taskDO.getRobots());
+
+            // 封装为 TaskVO
+            return new TaskVO(
+                    taskDO.getId(),
+                    taskDO.getUid(),
+                    taskDO.getNickname(),
+                    taskDO.getTaskName(),
+                    taskDO.getPlatform(),
+                    taskDO.getTaskType(),
+                    taskDO.getTaskStatus().name(),
+                    robotIds,
+                    params
+            );
+        }).collect(Collectors.toList());
     }
 
     @Override
     public void updateRobotsInTask(Long taskId, List<Long> robotIds, boolean isAdd) {
         // 获取任务
         TaskDO task = taskMapper.selectById(taskId);
+        List<Long> robots = null;
         if (task != null) {
-            List<Long> robots = task.getRobots();
+            robots = ConvertorUtil.stringToList(task.getRobots());
+            if (robots == null) {
+                robots = new ArrayList<>();
+            }
             if (isAdd) {
                 // 批量添加机器人
                 for (Long robotId : robotIds) {
@@ -110,6 +141,7 @@ public class TaskService implements ITaskService {
                 // 批量删除机器人
                 robots.removeAll(robotIds);
             }
+            task.setRobots(ConvertorUtil.listToString(robots));
             // 更新任务
             taskMapper.updateById(task);
         }

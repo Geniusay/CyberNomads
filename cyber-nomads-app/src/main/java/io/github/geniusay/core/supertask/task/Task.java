@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static io.github.geniusay.core.supertask.config.TaskConstant.ERROR_CODE;
 import static io.github.geniusay.core.supertask.config.TaskConstant.ERROR_MESSAGE;
-import static io.github.geniusay.utils.FormatUtil.getMap;
+import static io.github.geniusay.utils.ConvertorUtil.getMap;
 
 
 @Data

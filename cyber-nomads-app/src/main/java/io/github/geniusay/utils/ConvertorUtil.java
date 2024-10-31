@@ -3,8 +3,11 @@ package io.github.geniusay.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ConvertorUtil {
 
@@ -36,4 +39,21 @@ public class ConvertorUtil {
         return JSONObject.parseObject(jsonString, Map.class);
     }
 
+
+    public static String listToString(List<Long> list) {
+        if (list == null || list.isEmpty()) {
+            return "";
+        }
+        return list.stream().map(String::valueOf).collect(Collectors.joining(","));
+    }
+
+
+    public static List<Long> stringToList(String str) {
+        if (str == null || str.isEmpty()) {
+            return null;
+        }
+        return Arrays.stream(str.split(","))
+                .map(Long::valueOf)
+                .collect(Collectors.toList());
+    }
 }

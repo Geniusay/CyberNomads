@@ -1,6 +1,5 @@
 package io.github.geniusay.pojo.VO;
 
-import io.github.geniusay.pojo.DO.RobotDO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +19,6 @@ public class TaskVO {
     private String platform;
     private String taskType;
     private String taskStatus;
-    private List<RobotDO> robots;
+    private List<Long> robots;
     private Map<String, Object> params;
 }

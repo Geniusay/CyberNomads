@@ -2,6 +2,7 @@ package io.github.geniusay.controller;
 
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.UpdateRobotsDTO;
+import io.github.geniusay.pojo.VO.TaskVO;
 import io.github.geniusay.service.ITaskService;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public class TaskController {
      * 根据用户 uid 获取所有任务
      */
     @GetMapping("/user/{uid}")
-    public List<TaskDO> getUserTasks(@PathVariable String uid) {
+    public List<TaskVO> getUserTasks(@PathVariable String uid) {
         return taskService.getUserTasks(uid);
     }
 
@@ -40,10 +41,9 @@ public class TaskController {
      */
     @PostMapping("/robots/update")
     public String updateRobotsInTask(@RequestBody UpdateRobotsDTO updateRobotsDTO) {
-        taskService.updateRobotsInTask(updateRobotsDTO.getTaskId(), updateRobotsDTO.getRobotIds(), updateRobotsDTO.isAdd());
-        return updateRobotsDTO.isAdd() ? "机器人账号添加成功" : "机器人账号删除成功";
+        taskService.updateRobotsInTask(updateRobotsDTO.getTaskId(), updateRobotsDTO.getRobotIds(), updateRobotsDTO.isHasAdd());
+        return updateRobotsDTO.isHasAdd() ? "机器人账号添加成功" : "机器人账号删除成功";
     }
-
 
     /**
      * 修改任务的 params 参数
