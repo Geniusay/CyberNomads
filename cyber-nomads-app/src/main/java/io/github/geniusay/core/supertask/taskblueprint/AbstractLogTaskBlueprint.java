@@ -5,7 +5,6 @@ import io.github.geniusay.core.supertask.config.TaskConstant;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskExecute;
-import io.github.geniusay.utils.TaskTranslationUtil;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -54,8 +53,7 @@ public abstract class AbstractLogTaskBlueprint extends AbstractTaskBlueprint {
             } catch (Exception e) {
                 // 设置任务状态为 FAILED，并记录错误日志
                 task.updateStatus(FAILED, logProcessor, "[Error] 任务执行失败: " + e.getMessage());
-                task.getDataMap().put(TaskConstant.ERROR_CODE, "500");
-                task.getDataMap().put(TaskConstant.ERROR_MESSAGE, e.getMessage());
+                task.addErrorCode("500", "程序内部错误: " + e.getMessage());
             } finally {
                 // 任务完成后处理日志，拼接并保存到数据库
                 logProcessor.processFinalLog(robot, task);

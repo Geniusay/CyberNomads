@@ -13,8 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static io.github.geniusay.core.supertask.config.TaskConstant.ERROR_CODE;
 import static io.github.geniusay.core.supertask.config.TaskConstant.ERROR_MESSAGE;
-import static io.github.geniusay.utils.FormatUtil.getMap;
-
+import static io.github.geniusay.utils.ConvertorUtil.getMap;
 
 @Data
 @Builder
@@ -35,14 +34,14 @@ public class Task {
 
     private List<RobotDO> robots;
 
-    private ConcurrentHashMap<String, Object> dataMap;
-
-    // 组装字段
-    private List<TaskNeedParams> needParams;
-
     private Map<String, Object> params;
 
+    // 组装字段
     private TaskExecute execute;
+
+    private List<TaskNeedParams> needParams;
+
+    private ConcurrentHashMap<String, Object> dataMap;
 
     public String getDataVal(String key) {
         return dataMap.get(key).toString();
@@ -77,7 +76,7 @@ public class Task {
         dataMap.put(ERROR_MESSAGE, errorMessage);
     }
 
-    public Task(String uid, String nickname, String taskName, String platform, String taskType, TaskStatus taskStatus, List<RobotDO> robots, ConcurrentHashMap<String, Object> dataMap, List<TaskNeedParams> needParams, Map<String, Object> params, TaskExecute execute) {
+    public Task(String uid, String nickname, String taskName, String platform, String taskType, TaskStatus taskStatus, List<RobotDO> robots, Map<String, Object> params, TaskExecute execute, List<TaskNeedParams> needParams, ConcurrentHashMap<String, Object> dataMap) {
         this.uid = uid;
         this.nickname = nickname;
         this.taskName = taskName;
@@ -85,9 +84,9 @@ public class Task {
         this.taskType = taskType;
         this.taskStatus = taskStatus;
         this.robots = robots;
-        this.dataMap = new ConcurrentHashMap<>();
-        this.needParams = needParams;
         this.params = params;
         this.execute = execute;
+        this.needParams = needParams;
+        this.dataMap = new ConcurrentHashMap<>();
     }
 }

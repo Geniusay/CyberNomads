@@ -1,21 +1,21 @@
 package io.github.geniusay.pojo.DO;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import io.github.geniusay.pojo.Platform;
+import com.baomidou.mybatisplus.annotation.*;
 import io.github.geniusay.core.supertask.config.TaskStatus;
-import io.github.geniusay.core.task.enums.TaskType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Map;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("") //TODO
+@Data
+@TableName("task")
 public class TaskDO {
+
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
 
     private String uid;
 
@@ -23,13 +23,13 @@ public class TaskDO {
 
     private String taskName;
 
-    private Platform platform;
+    private String platform;
 
-    private TaskType taskType;
+    private String taskType;
 
     private TaskStatus taskStatus;
 
-    private List<RobotDO> robots;
+    private List<Long> robots;
 
-    private Map<String, Object> params;
+    private String params;
 }

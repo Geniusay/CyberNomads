@@ -1,8 +1,7 @@
 package io.github.geniusay.controller;
 
-import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import io.github.geniusay.pojo.DTO.TaskFunctionDTO;
-import io.github.geniusay.service.Impl.TaskService;
+import io.github.geniusay.service.ITaskService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +16,7 @@ import java.util.Map;
 public class TaskMetadataController {
 
     @Resource
-    private TaskService taskService;
+    private ITaskService taskService;
 
     /**
      * 获取支持的平台列表，返回包含英文和中文的平台列表

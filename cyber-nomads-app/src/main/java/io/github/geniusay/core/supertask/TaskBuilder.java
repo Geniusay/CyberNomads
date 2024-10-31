@@ -23,7 +23,8 @@ public class TaskBuilder {
         Task task = Task.builder()
                 .execute(blueprint.supplierExecute())
                 .needParams(blueprint.supplierNeedParams())
-                .robots(taskDO.getRobots())
+                // TODO 之后要修改成数据库获取
+                .robots(null)
                 .build();
 
         BeanUtils.copyProperties(taskDO, task);

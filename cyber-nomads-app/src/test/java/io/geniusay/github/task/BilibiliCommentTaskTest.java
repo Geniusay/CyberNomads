@@ -45,11 +45,7 @@ public class BilibiliCommentTaskTest {
 
         taskDO.setTaskName("shabi welsir");
 
-        taskDO.setParams(Map.of("oid","113384871690725"));
-
         RobotDO robotDO = robotMapper.selectById("1851531734205771778");
-
-        taskDO.setRobots(List.of(robotDO));
 
         Task task = taskBuilder.buildTask(taskDO, BILIBILI, VIDEO_COMMENT);
 
@@ -58,6 +54,5 @@ public class BilibiliCommentTaskTest {
         RobotWorker robotWorker = robotWorkers.get(0);
 
         robotWorker.task().getExecute().execute(robotWorker);
-
     }
 }
