@@ -105,7 +105,7 @@ public class RequestUtil {
 
     public OkHttpClient getClient(){
         String uid = ThreadUtil.getUid();
-        return proxyCache.computeIfAbsent(uid, k -> proxyCache.get(uid)).getClient();
+        return proxyCache.computeIfAbsent(uid, k -> proxyManager.getClient()).getClient();
     }
 
     private void nextClient(){

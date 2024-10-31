@@ -40,6 +40,10 @@ public class UserPointUtil {
                 .build());
     }
 
+    public void resetUserPoint(String uid){
+        pointCache.put(uid, new AtomicInteger(queryDatabase(uid)));
+    }
+
     private boolean option(PointRecord record){
         if(option(record.getPoint())){
             pointRecordMapper.insert(record);
