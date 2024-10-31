@@ -1,5 +1,29 @@
 <script setup lang="ts">
+import {LoginForm, RegisterForm , defaultValue} from "@/views/login/LoginTypes";
+
+import {
+  sendPicCaptcha,
+  emailLogin,
+  emailRegister,
+  sendCodeToEmail
+} from "@/api/userApi"
+
 const isLogin = ref(true);
+const loginForm = ref<LoginForm>({...defaultValue.defaultLoginForm})
+const register = ref<RegisterForm>({...defaultValue.defaultRegisterForm})
+const login = () => {
+  console.log(loginForm.value)
+}
+
+const isPreVerify = ref(false)
+
+const sendEmailCode = () => {
+  if(isPreVerify.value){
+
+  }else{
+  }
+}
+
 </script>
 
 <template>
@@ -14,14 +38,20 @@ const isLogin = ref(true);
           <div class="main">
             <form action="">
               <p>
-                <input type="email" placeholder="邮箱" />
+                <input v-model="loginForm.email" type="email" placeholder="邮箱" />
               </p>
               <p class="password">
-                <input type="password" placeholder="密码" />
+                <input v-model="loginForm.password" type="password" placeholder="密码" />
                 <i class="ri-eye-off-line"></i>
               </p>
+              <p class="code-container">
+                <input v-model="loginForm.code" placeholder="验证码" class="input-code"/>
+                <v-btn @click="" color="#5865f2" min-height="60" class="send-code">
+                  发送验证码
+                </v-btn>
+              </p>
               <p>
-                <input type="submit" class="submit" value="登录" />
+                <input @click="login()" type="submit" class="submit" value="登录" />
               </p>
             </form>
             <div class="options">
@@ -48,5 +78,5 @@ const isLogin = ref(true);
 </template>
 
 <style scoped>
-@import url("@/style/view/login/_login.scss");
+@import url("@/styles/view/login/_login.scss");
 </style>

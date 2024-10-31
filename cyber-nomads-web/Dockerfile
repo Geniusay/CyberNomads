@@ -14,7 +14,7 @@ FROM nginx:stable-alpine as production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
 # 暴露端口 3000
-EXPOSE 9200
+EXPOSE 80
 
 # 添加默认的 Nginx 配置文件
 COPY nginx.conf /etc/nginx/conf.d/default.conf

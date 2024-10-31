@@ -21,6 +21,8 @@ import static io.github.geniusay.utils.FormatUtil.getMap;
 @NoArgsConstructor
 public class Task {
 
+    private String id;
+
     private String uid;
 
     private String nickname;
@@ -77,7 +79,8 @@ public class Task {
         dataMap.put(ERROR_MESSAGE, errorMessage);
     }
 
-    public Task(String uid, String nickname, String taskName, String platform, String taskType, TaskStatus taskStatus, List<RobotDO> robots, ConcurrentHashMap<String, Object> dataMap, List<TaskNeedParams> needParams, Map<String, Object> params, TaskExecute execute) {
+    public Task(String id, String uid, String nickname, String taskName, String platform, String taskType, TaskStatus taskStatus, List<RobotDO> robots, ConcurrentHashMap<String, Object> dataMap, List<TaskNeedParams> needParams, Map<String, Object> params, TaskExecute execute) {
+        this.id = id;
         this.uid = uid;
         this.nickname = nickname;
         this.taskName = taskName;
