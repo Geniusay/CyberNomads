@@ -13,3 +13,14 @@ export function emailRegister(registerForm){
   return request.post('/user/register',registerForm)
 }
 
+export function sendCodeToEmail(email: string,pid: string,code: string){
+  return request({
+    url: '/user/sendCaptcha',
+    method:"post",
+    params:{
+      email: email,
+      pid: pid,
+      code: code
+    }
+  })
+}

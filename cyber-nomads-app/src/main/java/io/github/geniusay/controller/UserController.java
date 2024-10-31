@@ -55,6 +55,12 @@ public class UserController {
         return Result.success(userService.queryUserById(uid));
     }
 
+    @TokenRequire
+    @GetMapping("/getInfo")
+    public Result<?> getUserInfo(){
+        return userService.getUserInfo();
+    }
+
     @PostMapping("/sendCaptcha")
     public Result<?> preEmail(        @Valid
                                       @NotNull(message = "邮箱不能为空")
