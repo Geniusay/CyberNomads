@@ -1,10 +1,8 @@
 package io.github.geniusay.blueprint;
 
-import io.github.geniusay.core.supertask.task.LogHandler;
-import io.github.geniusay.core.supertask.task.TaskExecute;
-import io.github.geniusay.core.supertask.task.TaskNeedParams;
-import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
-import io.github.geniusay.crawler.api.bilibili.BilibiliCommentApi;
+import io.github.geniusay.core.supertask.task.*;
+import io.github.geniusay.core.supertask.taskblueprint.AbstractLogTaskBlueprint;
+import io.github.geniusay.core.supertask.config.TaskStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,7 +11,7 @@ import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILI
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_COMMENT;
 
 @Component
-public class BilibiliVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
+public class BilibiliVideoCommentTaskBlueprint extends AbstractLogTaskBlueprint {
 
     @Override
     public String platform() {
@@ -26,25 +24,49 @@ public class BilibiliVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
     }
 
     @Override
-    public LogHandler supplierLog() {
-        return (robot)->{
-            String robotName = robot.getNickname();
-            String comment = (String) robot.task().getDataVal(robotName + "result");
-            robot.task().log("{} 给某视频评论了一条 {}", robotName, comment);
-        };
+    protected void executeTask(RobotWorker robot, Task task) throws Exception {
+        String cookie = robot.getCookie();
+        logProcessor.addLogToTask(task, "哥们已经拿到cookie了: " + cookie);
+
+        String oid = task.getParam("oid");
+        logProcessor.addLogToTask(task, "哥们又已经拿到oid了: " + oid);
+
+        String message = "hello welsir nt";
+        logProcessor.addLogToTask(task, "发送了一条消息: " + message);
+
+//        BilibiliCommentApi.sendCommentOrReply(cookie, oid, message, null, null);
+        // 正常的完成结束
+        task.updateStatus(TaskStatus.COMPLETED, logProcessor, "给视频评论成功");
     }
 
-    @Override
-    public TaskExecute supplierExecute() {
-        return (robot)->{
-            String cookie = robot.getCookie();
-            String oid = robot.task().getParam("oid");
-            String message = "hello welsir nt";
-            BilibiliCommentApi.sendCommentOrReply(cookie, oid, message, null, null);
-            robot.task().getDataMap().put(robot.getNickname() + "result",message);
-            return null;
-        };
-    }
+//    @Override
+//    protected void executeTask(RobotWorker robot, Task task) throws Exception {
+//        String cookie = robot.getCookie();
+//        logProcessor.addLogToTask(task, "哥们已经拿到cookie了: " + cookie);
+//
+//        String oid = task.getParam("oid");
+//        logProcessor.addLogToTask(task, "哥们又已经拿到oid了: " + oid);
+//
+//        String message = "hello welsir nt";
+//        logProcessor.addLogToTask(task, "尝试发送一条消息: " + message);
+//
+//        try {
+//            // 模拟调用 Bilibili API 进行评论，但失败
+//            throw new RuntimeException("Bilibili API 调用失败: 无法评论");
+//
+//            // 正常情况下，API 调用成功
+//            // BilibiliCommentApi.sendCommentOrReply(cookie, oid, message, null, null);
+//            // task.updateStatus(TaskStatus.COMPLETED, logProcessor, "给视频评论成功");
+//
+//        } catch (Exception e) {
+//            // 记录错误码和错误信息
+//            task.addErrorCode("BILI_API_ERROR", e.getMessage());
+//            logProcessor.addLogToTask(task, "[Error] 调用 Bilibili API 失败: " + e.getMessage());
+//
+//            // 设置任务状态为 FAILED
+//            task.updateStatus(TaskStatus.FAILED, logProcessor, "[Error] 任务执行失败: " + e.getMessage());
+//        }
+//    }
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {

@@ -13,21 +13,17 @@ import java.util.Objects;
 public class TaskBuilder {
 
     @Resource
-    TaskStrategyManager strategyMan;
-
-    @Resource
-    RobotWorkerFactory robotWorkerFactory;
+    TaskStrategyManager strategyManager;
 
     public Task buildTask(TaskDO taskDO, String platform, String type) {
-        AbstractTaskBlueprint blueprint = strategyMan.getBlueprint(platform, type);
+        AbstractTaskBlueprint blueprint = strategyManager.getBlueprint(platform, type);
         if (Objects.isNull(blueprint)) {
             throw new RuntimeException(String.format("%s is not exist", platform + type));
         }
         Task task = Task.builder()
                 .execute(blueprint.supplierExecute())
-                .logHandler(blueprint.supplierLog())
                 .needParams(blueprint.supplierNeedParams())
-                .robotWorkers(robotWorkerFactory.createRobotWorkers(taskDO.getRobots()))
+                .robots(taskDO.getRobots())
                 .build();
 
         BeanUtils.copyProperties(taskDO, task);

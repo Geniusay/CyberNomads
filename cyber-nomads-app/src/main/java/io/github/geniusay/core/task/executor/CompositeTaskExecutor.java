@@ -1,6 +1,6 @@
 package io.github.geniusay.core.task.executor;
 
-import io.github.geniusay.core.task.enums.TaskStatus;
+import io.github.geniusay.core.supertask.config.TaskStatus;
 import io.github.geniusay.core.task.po.CompositeTask;
 import io.github.geniusay.core.task.po.Task;
 

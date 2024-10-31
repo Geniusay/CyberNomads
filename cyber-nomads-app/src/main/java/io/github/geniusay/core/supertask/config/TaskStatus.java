@@ -1,4 +1,4 @@
-package io.github.geniusay.core.task.enums;
+package io.github.geniusay.core.supertask.config;
 
 /**
  * 描述: 任务状态枚举
@@ -8,8 +8,8 @@ package io.github.geniusay.core.task.enums;
 public enum TaskStatus {
     PENDING,                // 未开始
     IN_PROGRESS,            // 进行中
-    COMPLETED,              // 已完成
     PARTIALLY_COMPLETED,    // 部分完成
     FAILED,                 // 失败
-    PAUSED                  // 暂停
+    PAUSED,                 // 暂停
+    COMPLETED               // 已完成
 }

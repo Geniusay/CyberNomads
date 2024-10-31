@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class RobotWorker {
 
     private Long id;
@@ -26,5 +26,9 @@ public class RobotWorker {
 
     public Task task() {
         return currentTask;
+    }
+
+    public void setTask(Task task) {
+        this.currentTask = task;
     }
 }
