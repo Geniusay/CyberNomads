@@ -1,7 +1,6 @@
 package io.github.geniusay.blueprint;
 
 import io.github.geniusay.core.supertask.task.*;
-import io.github.geniusay.core.supertask.taskblueprint.AbstractLogTaskBlueprint;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
 import org.springframework.stereotype.Component;  // 添加这个注解
 
@@ -11,7 +10,7 @@ import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILI
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_LIKE;
 
 @Component
-public class BilibiliVideoLikeTaskBlueprint extends AbstractLogTaskBlueprint {
+public class BilibiliVideoLikeTaskBlueprint extends AbstractTaskBlueprint {
 
     @Override
     public String platform() {
@@ -24,8 +23,8 @@ public class BilibiliVideoLikeTaskBlueprint extends AbstractLogTaskBlueprint {
     }
 
     @Override
-    protected void executeTask(RobotWorker robot, Task task) throws Exception {
-
+    public TaskExecute supplierExecute() {
+        return null;
     }
 
     @Override
@@ -33,5 +32,10 @@ public class BilibiliVideoLikeTaskBlueprint extends AbstractLogTaskBlueprint {
         return List.of(
                 new TaskNeedParams("test", "String", "测试一下视频点赞", false, "")
         );
+    }
+
+    @Override
+    public LastWordHandler supplierLastWordHandler() {
+        return null;
     }
 }

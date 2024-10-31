@@ -3,13 +3,20 @@ package io.github.geniusay.core.supertask.task;
 import io.github.geniusay.core.supertask.TaskLogProcessor;
 import io.github.geniusay.core.supertask.config.TaskStatus;
 import io.github.geniusay.pojo.DO.RobotDO;
+import io.github.geniusay.pojo.DO.TaskDO;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 
 import static io.github.geniusay.core.supertask.config.TaskConstant.ERROR_CODE;
 import static io.github.geniusay.core.supertask.config.TaskConstant.ERROR_MESSAGE;
@@ -17,7 +24,6 @@ import static io.github.geniusay.utils.FormatUtil.getMap;
 
 
 @Data
-@Builder
 @NoArgsConstructor
 public class Task {
 
@@ -46,6 +52,10 @@ public class Task {
 
     private TaskExecute execute;
 
+    private LastWordHandler lastWord;
+
+    private Logger logger;
+
     public String getDataVal(String key) {
         return dataMap.get(key).toString();
     }
@@ -61,6 +71,10 @@ public class Task {
     public <T> T getDataValOrDefault(String key, Class<T> clazz, T defaultValue) {
         Object value = dataMap.get(key);
         return value != null ? getMap(key, dataMap, clazz) : defaultValue;
+    }
+
+    public void log(String msg,Object...args){
+        this.logger.info(msg,args);
     }
 
     /**
@@ -79,18 +93,63 @@ public class Task {
         dataMap.put(ERROR_MESSAGE, errorMessage);
     }
 
-    public Task(String id, String uid, String nickname, String taskName, String platform, String taskType, TaskStatus taskStatus, List<RobotDO> robots, ConcurrentHashMap<String, Object> dataMap, List<TaskNeedParams> needParams, Map<String, Object> params, TaskExecute execute) {
-        this.id = id;
-        this.uid = uid;
-        this.nickname = nickname;
-        this.taskName = taskName;
-        this.platform = platform;
-        this.taskType = taskType;
-        this.taskStatus = taskStatus;
+    private Task(List<RobotDO> robots, ConcurrentHashMap<String, Object> dataMap, List<TaskNeedParams> needParams, Map<String, Object> params, TaskExecute execute, LastWordHandler lastWord) {
         this.robots = robots;
-        this.dataMap = new ConcurrentHashMap<>();
+        this.dataMap = dataMap;
         this.needParams = needParams;
         this.params = params;
         this.execute = execute;
+        this.lastWord = lastWord;
+    }
+
+    public static Builder builder(){
+        return new Builder();
+    }
+
+    public static class Builder{
+
+        private List<RobotDO> robots = new ArrayList<>();
+
+        private ConcurrentHashMap<String, Object> dataMap = new ConcurrentHashMap<>();
+
+        // 组装字段
+        private List<TaskNeedParams> needParams = new ArrayList<>();
+
+        private Map<String, Object> params = new HashMap<>();
+
+        private TaskExecute execute;
+
+        private LastWordHandler lastWord;
+
+        private TaskDO taskDO;
+
+        public Builder execute(TaskExecute execute){
+            this.execute = execute;
+            return this;
+        }
+
+        public Builder lastWord(LastWordHandler lastWordHandler){
+            this.lastWord = lastWordHandler;
+            return this;
+        }
+
+        public Builder taskDO(TaskDO taskDO){
+            this.taskDO = taskDO;
+            return this;
+        }
+
+        public Builder needParams(List<TaskNeedParams> needParams){
+            this.needParams = needParams;
+            return this;
+        }
+
+        public Task build(){
+            Task task = new Task(this.robots, this.dataMap, this.needParams, this.params, this.execute, this.lastWord);
+            BeanUtils.copyProperties(taskDO, task);
+            task.getRobots().addAll(taskDO.getRobots());
+            task.setLogger(LoggerFactory.getLogger(task.getTaskName()));
+            return task;
+        }
+
     }
 }

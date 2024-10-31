@@ -4,13 +4,11 @@ package io.geniusay.github.task;
 import io.github.geniusay.CyberNomadsApplication;
 import io.github.geniusay.core.supertask.TaskDispatcher;
 import io.github.geniusay.mapper.RobotMapper;
-import io.github.geniusay.mapper.TaskLogMapper;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
-import io.github.geniusay.core.supertask.TaskBuilder;
+import io.github.geniusay.core.supertask.TaskFactory;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.RobotWorker;
-import io.github.geniusay.pojo.DO.TaskLogDO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +28,7 @@ import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_CO
 public class BilibiliCommentTaskTest {
 
     @Resource
-    TaskBuilder taskBuilder;
+    TaskFactory taskFactory;
 
     @Resource
     RobotMapper robotMapper;
@@ -51,7 +49,7 @@ public class BilibiliCommentTaskTest {
 
         taskDO.setRobots(List.of(robotDO));
 
-        Task task = taskBuilder.buildTask(taskDO, BILIBILI, VIDEO_COMMENT);
+        Task task = taskFactory.buildTask(taskDO, BILIBILI, VIDEO_COMMENT);
 
         List<RobotWorker> robotWorkers = taskDispatcher.dispatchToAll(task);
 

@@ -10,7 +10,7 @@ import javax.annotation.Resource;
 import java.util.Objects;
 
 @Component
-public class TaskBuilder {
+public class TaskFactory {
 
     @Resource
     TaskStrategyManager strategyManager;
@@ -20,13 +20,11 @@ public class TaskBuilder {
         if (Objects.isNull(blueprint)) {
             throw new RuntimeException(String.format("%s is not exist", platform + type));
         }
-        Task task = Task.builder()
+        return Task.builder()
                 .execute(blueprint.supplierExecute())
                 .needParams(blueprint.supplierNeedParams())
-                .robots(taskDO.getRobots())
+                .lastWord(blueprint.supplierLastWordHandler())
+                .taskDO(taskDO)
                 .build();
-
-        BeanUtils.copyProperties(taskDO, task);
-        return task;
     }
 }

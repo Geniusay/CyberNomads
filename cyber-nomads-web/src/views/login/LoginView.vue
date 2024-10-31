@@ -9,18 +9,25 @@ import {
 } from "@/api/userApi"
 
 const isLogin = ref(true);
+const isPreVerify = ref(false)
+const sendLoading = ref(false)
+
 const loginForm = ref<LoginForm>({...defaultValue.defaultLoginForm})
 const register = ref<RegisterForm>({...defaultValue.defaultRegisterForm})
 const login = () => {
   console.log(loginForm.value)
 }
 
-const isPreVerify = ref(false)
+const currentForm = () => {
+  return isLogin.value?loginForm:register
+}
 
 const sendEmailCode = () => {
+
   if(isPreVerify.value){
 
   }else{
+
   }
 }
 
@@ -46,8 +53,11 @@ const sendEmailCode = () => {
               </p>
               <p class="code-container">
                 <input v-model="loginForm.code" placeholder="验证码" class="input-code"/>
-                <v-btn @click="" color="#5865f2" min-height="60" class="send-code">
+                <v-btn :loading="sendLoading" @click="sendEmailCode()" color="#5865f2" min-height="60" class="send-code">
                   发送验证码
+                  <template v-slot:loader>
+                    <v-progress-linear indeterminate></v-progress-linear>
+                  </template>
                 </v-btn>
               </p>
               <p>

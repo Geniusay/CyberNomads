@@ -1,19 +1,16 @@
 package io.github.geniusay.blueprint;
 
 import io.github.geniusay.core.supertask.task.*;
-import io.github.geniusay.core.supertask.taskblueprint.AbstractLogTaskBlueprint;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
-import io.github.geniusay.crawler.api.bilibili.BilibiliCommentApi;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.DOUYING;
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_COMMENT;
 
 @Component
-public class DouyingVideoCommentTaskBlueprint extends AbstractLogTaskBlueprint {
+public class DouyingVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
 
     @Override
     public String platform() {
@@ -26,8 +23,8 @@ public class DouyingVideoCommentTaskBlueprint extends AbstractLogTaskBlueprint {
     }
 
     @Override
-    protected void executeTask(RobotWorker robot, Task task) throws Exception {
-
+    public TaskExecute supplierExecute() {
+        return null;
     }
 
     @Override
@@ -37,5 +34,10 @@ public class DouyingVideoCommentTaskBlueprint extends AbstractLogTaskBlueprint {
                 new TaskNeedParams("oid", "String", "评论区id, 也就是视频的aid, 不传则通过BV去获取", false, ""),
                 new TaskNeedParams("workid", "String", "指定您用来来做此任务的账号")
         );
+    }
+
+    @Override
+    public LastWordHandler supplierLastWordHandler() {
+        return null;
     }
 }
