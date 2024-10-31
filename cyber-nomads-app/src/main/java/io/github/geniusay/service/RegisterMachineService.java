@@ -10,5 +10,4 @@ import io.github.geniusay.pojo.DO.RegisterMachineDO;
 public interface RegisterMachineService {
 
     RegisterMachineDO queryMachineInfo(int id);
-
 }

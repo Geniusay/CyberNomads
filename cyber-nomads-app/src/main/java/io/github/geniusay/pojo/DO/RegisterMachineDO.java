@@ -18,5 +18,4 @@ public class RegisterMachineDO {
     private String url;
     private String code;
     private String version;
-
 }
