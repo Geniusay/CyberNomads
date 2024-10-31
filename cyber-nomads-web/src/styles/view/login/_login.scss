@@ -117,6 +117,7 @@ form input {
     border-radius: 10px;
     /*修复input 加入padding之后大小变化的问题*/
     box-sizing: border-box;
+    color: var(--dark-color);
 }
 
 input::placeholder {
@@ -220,4 +221,18 @@ form input.submit:hover {
 
 .options ul li:nth-child(3) a:hover {
     background-color: #107c10;
+}
+
+.code-container {
+    display: flex;
+    align-items: center;
+    gap: 3%; /* 控制输入框和按钮之间的间距 */
+}
+
+.input-code {
+    flex: 0 0 65%; /* 设置输入框占70% */
+}
+
+.send-button {
+    flex: 0 0 20%; /* 设置按钮占20% */
 }

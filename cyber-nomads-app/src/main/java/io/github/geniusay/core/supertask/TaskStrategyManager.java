@@ -13,6 +13,8 @@ public class TaskStrategyManager {
     private final Map<String, List<AbstractTaskBlueprint>> platformBlueprints = new HashMap<>();
     private final Map<String, AbstractTaskBlueprint> blueprintStrategies = new HashMap<>();
 
+    private final Set<String> allTaskTypes = new TreeSet<>();
+
     @Autowired
     public TaskStrategyManager(ApplicationContext context) {
         Map<String, AbstractTaskBlueprint> blueprintMap = context.getBeansOfType(AbstractTaskBlueprint.class);
@@ -22,6 +24,7 @@ public class TaskStrategyManager {
                     .computeIfAbsent(platform, k -> new ArrayList<>())
                     .add(blueprint);
             blueprintStrategies.put(platform + blueprint.taskType(), blueprint);
+            allTaskTypes.add(blueprint.taskType());
         });
     }
 
@@ -50,5 +53,13 @@ public class TaskStrategyManager {
      */
     public AbstractTaskBlueprint getBlueprint(String platform, String type) {
         return blueprintStrategies.get(platform + type);
+    }
+
+    /**
+     * 获取已有的所有任务类型
+     * @return 任务集合
+     */
+    public Set<String> getAllTaskTypes(){
+        return this.allTaskTypes;
     }
 }

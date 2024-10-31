@@ -1,5 +1,6 @@
 package io.github.geniusay.service;
 
+import io.github.common.web.Result;
 import io.github.geniusay.pojo.DTO.LoadRobotResponseDTO;
 import io.github.geniusay.pojo.DTO.LoginRequestDTO;
 import io.github.geniusay.pojo.VO.LoginVO;
@@ -19,6 +20,8 @@ import java.util.Map;
 public interface UserService {
 
     UserVO queryUserById(String uid);
+
+    Result<UserVO> getUserInfo();
 
     LoginVO login(LoginRequestDTO req);
 

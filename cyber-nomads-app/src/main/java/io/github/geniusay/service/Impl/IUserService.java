@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.common.web.Result;
 import io.github.geniusay.core.async.AsyncService;
 import io.github.geniusay.mapper.RobotMapper;
 import io.github.geniusay.mapper.UserMapper;
@@ -49,6 +50,13 @@ public class IUserService implements UserService {
         UserDO dto = userMapper.selectOne(new QueryWrapper<UserDO>().eq("uid",uid));
         Assert.notNull(dto,"用户不存在");
         return UserVO.convert(dto);
+    }
+
+    @Override
+    public Result<UserVO> getUserInfo() {
+        String uid = ThreadUtil.getUid();
+        UserDO dto = userMapper.selectOne(new QueryWrapper<UserDO>().eq("uid",uid));
+        return Result.success(UserVO.convert(dto));
     }
 
     @Override

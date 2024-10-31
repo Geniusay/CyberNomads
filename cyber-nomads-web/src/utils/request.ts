@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useSnackbarStore } from "@/stores/snackbarStore";
+import {validRequestAuth} from "./authUtil"
 
 const request = axios.create({
   baseURL: import.meta.env.VITE_APP_API_BASE_URL,
@@ -8,8 +9,13 @@ const request = axios.create({
 
 request.interceptors.request.use(
   (config) => {
-    //config.headers['Content-Type'] = 'application/json';
-    return config;
+    config = validRequestAuth(config)
+    if(config){
+      return config
+    }else{
+      useSnackbarStore().showErrorMessage("请登录后再操作!!")
+    }
+    return Promise.reject(new Error(config.url + "❌❌not Token"));
   },
   (error) => {
     return Promise.reject(error);
