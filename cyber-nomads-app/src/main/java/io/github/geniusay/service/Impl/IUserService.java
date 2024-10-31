@@ -108,6 +108,9 @@ public class IUserService implements UserService {
         if(!Objects.equals(CacheUtil.getCaptchaAndRemove(pid), code)){
             throw new IllegalArgumentException("验证码错误");
         }
+        if(CacheUtil.isExpired(email)){
+            throw new RuntimeException("验证码冷却中");
+        }
         String emailCode = RandomUtil.generateRandomString(6);
         CacheUtil.putEmail(email,emailCode);
         asyncService.sendCodeToEmail(email, emailCode);

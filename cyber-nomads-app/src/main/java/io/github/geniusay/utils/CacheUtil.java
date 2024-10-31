@@ -1,8 +1,12 @@
 package io.github.geniusay.utils;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.Synchronized;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Description
@@ -11,8 +15,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CacheUtil {
 
-    private static ConcurrentHashMap<String,String> captchaCache = new ConcurrentHashMap<>();
-    private static ConcurrentHashMap<String,String> emailCache = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String,String> captchaCache = new ConcurrentHashMap<>();
+    private static final Cache<String, String> emailCache = Caffeine.newBuilder()
+                                                                .expireAfterWrite(1, TimeUnit.SECONDS)
+                                                                .build();
     public static ConcurrentHashMap<String,String> tokenCache = new ConcurrentHashMap<>();
 
     public static String getCaptcha(String key){
@@ -24,7 +30,7 @@ public class CacheUtil {
     }
 
     public static String getEmail(String key){
-        return emailCache.get(key);
+        return emailCache.getIfPresent(key);
     }
 
     public static void putEmail(String key,String value){
@@ -36,31 +42,30 @@ public class CacheUtil {
     }
 
     public static void removeEmail(String key){
-        emailCache.remove(key);
+        emailCache.invalidate(key);
     }
 
     public static String getCaptchaAndRemove(String key) {
-        if(captchaCache.get(key)!=null){
-            synchronized (captchaCache.get(key)) {
-                String code = captchaCache.get(key);
-                captchaCache.remove(key);
+        String code = captchaCache.get(key);
+        if (code != null) {
+            captchaCache.remove(key, code);
+        }
+        return code;
+    }
+
+    public static String getEmailAndRemove(String key) {
+        if (emailCache.getIfPresent(key) != null) {
+            synchronized (emailCache.getIfPresent(key)) {
+                String code = emailCache.getIfPresent(key);
+                emailCache.invalidate(key);
                 return code;
             }
-        }else{
+        } else {
             return null;
         }
     }
 
-    public static String getEmailAndRemove(String key){
-        if(emailCache.get(key)!=null){
-            synchronized (emailCache.get(key)) {
-                String code = emailCache.get(key);
-                emailCache.remove(key);
-                return code;
-            }
-        }else{
-            return null;
-        }
+    public static boolean isExpired(String key) {
+        return emailCache.getIfPresent(key) != null;
     }
-
 }
