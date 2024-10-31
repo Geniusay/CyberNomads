@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.geniusay.async.AsyncService;
+import io.github.geniusay.core.async.AsyncService;
 import io.github.geniusay.mapper.RobotMapper;
 import io.github.geniusay.mapper.UserMapper;
 import io.github.geniusay.pojo.DO.RobotDO;
@@ -119,7 +119,6 @@ public class IUserService implements UserService {
                         .collect(Collectors.joining(";"));
                 RobotDO build = RobotDO.builder()
                         .username(userCookieDTO.getUsername())
-                        .password(userCookieDTO.getPassword())
                         .nickname(userCookieDTO.getUsername())
                         .platform(Platform.BILIBILI.getCode())
                         .cookie(cookieString)

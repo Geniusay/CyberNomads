@@ -1,7 +1,7 @@
 package io.github.geniusay.controller;
 import io.github.common.web.Result;
 
-import io.github.geniusay.anno.TokenRequire;
+import io.github.geniusay.core.anno.TokenRequire;
 import io.github.geniusay.pojo.DTO.LoginRequestDTO;
 import io.github.geniusay.pojo.DTO.RegisterRequestDTO;
 import io.github.geniusay.service.UserService;

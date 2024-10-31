@@ -1,6 +1,6 @@
 package io.github.geniusay.utils;
 
-import io.github.geniusay.builder.Graphics2DBuilder;
+import io.github.geniusay.core.builder.Graphics2DBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
