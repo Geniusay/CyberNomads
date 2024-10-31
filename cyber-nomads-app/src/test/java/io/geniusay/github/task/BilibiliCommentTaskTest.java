@@ -2,12 +2,15 @@ package io.geniusay.github.task;
 
 
 import io.github.geniusay.CyberNomadsApplication;
+import io.github.geniusay.core.supertask.TaskDispatcher;
 import io.github.geniusay.mapper.RobotMapper;
+import io.github.geniusay.mapper.TaskLogMapper;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.core.supertask.TaskBuilder;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.RobotWorker;
+import io.github.geniusay.pojo.DO.TaskLogDO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,17 +35,29 @@ public class BilibiliCommentTaskTest {
     @Resource
     RobotMapper robotMapper;
 
+    @Resource
+    TaskDispatcher taskDispatcher;
+
+
     @Test
     public void comment(){
         TaskDO taskDO = new TaskDO();
+
         taskDO.setTaskName("shabi welsir");
+
         taskDO.setParams(Map.of("oid","113384871690725"));
+
         RobotDO robotDO = robotMapper.selectById("1851531734205771778");
+
         taskDO.setRobots(List.of(robotDO));
+
         Task task = taskBuilder.buildTask(taskDO, BILIBILI, VIDEO_COMMENT);
-        RobotWorker robotWorker = task.getRobotWorkers().get(0);
-        robotWorker.setCurrentTask(task);
-        robotWorker.task().getHandler().execute(robotWorker);
-        robotWorker.task().getLogHandler().log(robotWorker);
+
+        List<RobotWorker> robotWorkers = taskDispatcher.dispatchToAll(task);
+
+        RobotWorker robotWorker = robotWorkers.get(0);
+
+        robotWorker.task().getExecute().execute(robotWorker);
+
     }
 }

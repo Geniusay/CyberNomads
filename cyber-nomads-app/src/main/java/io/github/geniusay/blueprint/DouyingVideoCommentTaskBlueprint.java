@@ -1,8 +1,7 @@
 package io.github.geniusay.blueprint;
 
-import io.github.geniusay.core.supertask.task.LogHandler;
-import io.github.geniusay.core.supertask.task.TaskExecute;
-import io.github.geniusay.core.supertask.task.TaskNeedParams;
+import io.github.geniusay.core.supertask.task.*;
+import io.github.geniusay.core.supertask.taskblueprint.AbstractLogTaskBlueprint;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
 import io.github.geniusay.crawler.api.bilibili.BilibiliCommentApi;
 import org.springframework.stereotype.Component;
@@ -14,7 +13,7 @@ import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.DOUY
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_COMMENT;
 
 @Component
-public class DouyingVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
+public class DouyingVideoCommentTaskBlueprint extends AbstractLogTaskBlueprint {
 
     @Override
     public String platform() {
@@ -27,16 +26,8 @@ public class DouyingVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
     }
 
     @Override
-    public LogHandler supplierLog() {
-        return (robot)->{
-        };
-    }
+    protected void executeTask(RobotWorker robot, Task task) throws Exception {
 
-    @Override
-    public TaskExecute supplierExecute() {
-        return (robot)->{
-            return null;
-        };
     }
 
     @Override

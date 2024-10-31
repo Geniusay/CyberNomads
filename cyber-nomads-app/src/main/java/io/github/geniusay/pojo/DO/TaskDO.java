@@ -2,7 +2,7 @@ package io.github.geniusay.pojo.DO;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.geniusay.pojo.Platform;
-import io.github.geniusay.core.task.enums.TaskStatus;
+import io.github.geniusay.core.supertask.config.TaskStatus;
 import io.github.geniusay.core.task.enums.TaskType;
 import lombok.AllArgsConstructor;
 import lombok.Data;

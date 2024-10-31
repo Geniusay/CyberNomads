@@ -1,8 +1,7 @@
 package io.github.geniusay.blueprint;
 
-import io.github.geniusay.core.supertask.task.LogHandler;
-import io.github.geniusay.core.supertask.task.TaskExecute;
-import io.github.geniusay.core.supertask.task.TaskNeedParams;
+import io.github.geniusay.core.supertask.task.*;
+import io.github.geniusay.core.supertask.taskblueprint.AbstractLogTaskBlueprint;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,7 @@ import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_CO
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_LIKE;
 
 @Component
-public class BilibiliVideoCoinTaskBlueprint extends AbstractTaskBlueprint {
+public class BilibiliVideoCoinTaskBlueprint extends AbstractLogTaskBlueprint {
 
     @Override
     public String platform() {
@@ -26,18 +25,8 @@ public class BilibiliVideoCoinTaskBlueprint extends AbstractTaskBlueprint {
     }
 
     @Override
-    public LogHandler supplierLog() {
-        return (robot)->{
-            // 这里可以实现日志逻辑
-        };
-    }
+    protected void executeTask(RobotWorker robot, Task task) throws Exception {
 
-    @Override
-    public TaskExecute supplierExecute() {
-        return (robot)->{
-            // 这里可以实现任务执行逻辑
-            return null;
-        };
     }
 
     @Override
