@@ -23,7 +23,7 @@ public class UserDO {
     }
     private Long id;
     private String uid;
-    private String avator;
+    private String avatar;
     private String email;
     private String password;
     private String nickname;

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,6 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class TokenInterceptor implements HandlerInterceptor {
 
+    @Resource
+    private CacheUtil cacheUtil;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if(handler instanceof HandlerMethod){
@@ -26,7 +30,7 @@ public class TokenInterceptor implements HandlerInterceptor {
             if(handlerMethod.hasMethodAnnotation(TokenRequire.class)){
                 String token = request.getHeader("Authorization");
                 String uid = null;
-                if (token!=null&& (uid = CacheUtil.tokenCache.get(token))!=null) {
+                if (token!=null&& (uid = cacheUtil.getUidByToken(token))!=null) {
                     String tokenObject = (String) StpUtil.getLoginIdByToken(token);
                     String[] strs = tokenObject.split("\\|");
                     if(StpUtil.isLogin(tokenObject)&&strs.length==2){

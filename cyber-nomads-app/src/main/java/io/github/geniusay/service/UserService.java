@@ -30,12 +30,4 @@ public interface UserService {
     Map<String,String> generateCaptcha();
 
     void generateEmailCode(String email,String pid,String code);
-
-    LoadRobotResponseDTO loadRobot(MultipartFile file);
-
-    List<RobotVO> queryRobot();
-
-    Boolean removeRoobot(Long id);
-
-    Boolean banRoobot(Long id);
 }

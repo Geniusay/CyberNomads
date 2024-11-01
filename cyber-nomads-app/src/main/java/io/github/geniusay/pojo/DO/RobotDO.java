@@ -25,4 +25,5 @@ public class RobotDO {
     private String cookie;
     private boolean ban;
     private boolean hasDelete;
+    private String uid;
 }

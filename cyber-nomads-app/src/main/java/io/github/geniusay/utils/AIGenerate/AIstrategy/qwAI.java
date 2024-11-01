@@ -63,8 +63,6 @@ public class qwAI implements BaseGenerate {
                 System.out.println("Response: " + response);
             }
 
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

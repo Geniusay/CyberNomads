@@ -2,8 +2,13 @@ package io.github.geniusay.utils;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import io.github.geniusay.constants.RedisConstant;
 import lombok.Synchronized;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
@@ -13,59 +18,64 @@ import java.util.concurrent.TimeUnit;
  * @Author welsir
  * @Date 2024/10/27 22:06
  */
+@Component
 public class CacheUtil {
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
-    private static final ConcurrentHashMap<String,String> captchaCache = new ConcurrentHashMap<>();
-    private static final Cache<String, String> emailCache = Caffeine.newBuilder()
-                                                                .expireAfterWrite(1, TimeUnit.SECONDS)
-                                                                .build();
-    public static ConcurrentHashMap<String,String> tokenCache = new ConcurrentHashMap<>();
-
-    public static String getCaptcha(String key){
-        return captchaCache.get(key);
+    public String getCaptcha(String key){
+        return stringRedisTemplate.opsForValue().get(RedisConstant.PIC_CAPTCHA + key);
     }
 
-    public static void putCaptcha(String key,String value){
-        captchaCache.put(key,value);
+    public void putCaptcha(String key,String value){
+        stringRedisTemplate.opsForValue().set(RedisConstant.PIC_CAPTCHA + key, value, 60, TimeUnit.SECONDS);
     }
 
-    public static String getEmail(String key){
-        return emailCache.getIfPresent(key);
+    public void removeCaptcha(String key){
+        stringRedisTemplate.delete(RedisConstant.PIC_CAPTCHA + key);
     }
 
-    public static void putEmail(String key,String value){
-        emailCache.put(key,value);
-    }
-
-    public static void removeCaptcha(String key){
-        captchaCache.remove(key);
-    }
-
-    public static void removeEmail(String key){
-        emailCache.invalidate(key);
-    }
-
-    public static String getCaptchaAndRemove(String key) {
-        String code = captchaCache.get(key);
+    public String getCaptchaAndRemove(String key) {
+        String code = stringRedisTemplate.opsForValue().get(RedisConstant.PIC_CAPTCHA + key);
         if (code != null) {
-            captchaCache.remove(key, code);
+            stringRedisTemplate.delete(RedisConstant.PIC_CAPTCHA + key);
         }
         return code;
     }
 
-    public static String getEmailAndRemove(String key) {
-        if (emailCache.getIfPresent(key) != null) {
-            synchronized (emailCache.getIfPresent(key)) {
-                String code = emailCache.getIfPresent(key);
-                emailCache.invalidate(key);
-                return code;
-            }
-        } else {
-            return null;
-        }
+    public String getEmail(String key){
+        return stringRedisTemplate.opsForValue().get(RedisConstant.EMAIL_CAPTCHA + key);
     }
 
-    public static boolean isExpired(String key) {
-        return emailCache.getIfPresent(key) != null;
+    public void putEmail(String key,String value){
+        stringRedisTemplate.opsForValue().set(RedisConstant.EMAIL_CAPTCHA + key, value, 60, TimeUnit.SECONDS);
+    }
+
+    public void removeEmail(String key){
+        stringRedisTemplate.delete(RedisConstant.EMAIL_CAPTCHA + key);
+    }
+
+    public String getEmailAndRemove(String key) {
+        String code = stringRedisTemplate.opsForValue().get(RedisConstant.EMAIL_CAPTCHA + key);
+        if (code != null) {
+            stringRedisTemplate.delete(RedisConstant.EMAIL_CAPTCHA + key);
+        }
+        return code;
+    }
+
+    public String getUidByToken(String token){
+        return stringRedisTemplate.opsForValue().get(RedisConstant.TOKEN + token);
+    }
+
+    public void putTokenAndUid(String token,String uid){
+        stringRedisTemplate.opsForValue().set(RedisConstant.TOKEN + token, uid);
+    }
+
+    public void removeTokenAndUid(String key){
+        stringRedisTemplate.delete(RedisConstant.TOKEN + key);
+    }
+
+    public boolean isExpired(String key) {
+        return Boolean.TRUE.equals(stringRedisTemplate.hasKey(RedisConstant.EMAIL_CAPTCHA + key));
     }
 }

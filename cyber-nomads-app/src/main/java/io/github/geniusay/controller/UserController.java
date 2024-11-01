@@ -68,35 +68,9 @@ public class UserController {
         return Result.success();
     }
 
-    @PostMapping("/robot/upload")
-    @TokenRequire
-    public Result<?> uploadRobot(@RequestParam("file") MultipartFile file){
-        return Result.success(userService.loadRobot(file));
-    }
-
-    @GetMapping("/robot/search")
-    @TokenRequire
-    public Result<?> getUserRobot(){
-        return Result.success(userService.queryRobot());
-    }
-
-    @DeleteMapping("/robot")
-    @TokenRequire
-    public Result<?> removeRobot(@RequestParam("id") Long id){
-        return Result.success(userService.removeRoobot(id));
-    }
-
-    @TokenRequire
-    @PostMapping("/robot/ban")
-    public Result<?> banRobot(@RequestParam("id") Long id){
-        return Result.success(userService.banRoobot(id));
-    }
-
     @TokenRequire
     @GetMapping("/getPoint")
     public Result<?> getPoint(){
         return Result.success(userPointUtil.get());
     }
-
-
 }

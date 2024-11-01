@@ -28,7 +28,7 @@ assistant:
 
 captcha:
   mail:
-    code-length: 6
+    code-length: 4
   image-code:
     width: 180
     height: 40

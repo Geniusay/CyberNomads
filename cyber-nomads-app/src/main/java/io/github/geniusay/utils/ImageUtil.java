@@ -21,13 +21,12 @@ public class ImageUtil {
     private int height;
     @Value("${captcha.image-code.dot-size:50}")
     private int dotsSize;
-    @Value("${captcha.mail.code-length:6}")
+    @Value("${captcha.mail.code-length:4}")
     private int codeLength;
     private final Random random = new Random();
 
     public Map<String, String> generateCode() {
         String code = RandomUtil.generateRandomString(codeLength);
-        System.out.println(code);
         return Map.of("base64",CodeToBase64(code), "code",code);
     }
 
