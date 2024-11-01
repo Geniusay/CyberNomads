@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -30,5 +32,9 @@ public class RobotWorker {
 
     public void setTask(Task task) {
         this.currentTask = task;
+    }
+
+    public boolean isWorking(){
+        return !Objects.isNull(currentTask);
     }
 }

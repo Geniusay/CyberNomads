@@ -40,6 +40,7 @@ public class TaskScheduleManager {
     private static Map<Long, Map<String,Task>> wordsRobotsTask;
     private static final ThreadPoolExecutor SCHEDULER = new ThreadPoolExecutor(50,100,0,TimeUnit.SECONDS,new SynchronousQueue<>(), new TaskThreadFactory("robot-schedule",false,Thread.NORM_PRIORITY), new ThreadPoolExecutor.DiscardPolicy());
 
+    //TODO final map
     @PostConstruct
     public void init(){
         List<TaskDO> taskDOS = taskMapper.selectList(new QueryWrapper<TaskDO>().eq("task_status", TaskStatus.PENDING.name()));

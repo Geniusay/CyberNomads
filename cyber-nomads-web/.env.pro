@@ -1,1 +1,1 @@
-VITE_API_BASE_URL=https://api.example.com
+VITE_API_BASE_URL=http://83.229.125.251:9000

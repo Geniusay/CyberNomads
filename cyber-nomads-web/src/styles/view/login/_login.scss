@@ -56,11 +56,11 @@ h1 {
 }
 
 .hero {
-    flex: 1 0 56.6666%;
+    flex: 1 0 49.6666%;
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 50px;
+    gap: 60px;
     padding: 70px 0;
 }
 
@@ -88,12 +88,12 @@ form .password a:hover {
 }
 
 .main {
-    flex: 1 0 43.3333%;
+    flex: 1 0 50.3333%;
     border-radius: 8px;
     box-shadow: 0 8px 16px rgba(224, 221, 221, 0.2);
     /* X, Y, 模糊半径, 颜色 */
     background-color: var(--light-bg-color);
-    padding: 40px;
+    padding: 48px;
 }
 
 .main form {
@@ -230,9 +230,19 @@ form input.submit:hover {
 }
 
 .input-code {
-    flex: 0 0 65%; /* 设置输入框占70% */
+    flex: 0 0 70%; /* 设置输入框占70% */
 }
 
 .send-button {
     flex: 0 0 20%; /* 设置按钮占20% */
+}
+
+.pic-code-input{
+    flex: 0 0 50%
+}
+
+.pic-code{
+    flex: 0 0 40%;
+    width: 180px;
+    height: 60px;
 }

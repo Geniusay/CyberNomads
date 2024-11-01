@@ -1,34 +1,99 @@
 <script setup lang="ts">
-import {LoginForm, RegisterForm , defaultValue} from "@/views/login/LoginTypes";
-
+import {LoginForm, RegisterForm , PicCode, defaultValue} from "@/views/login/LoginTypes";
+import {useSnackbarStore} from "@/stores/snackbarStore";
+import { computed } from 'vue';
 import {
   sendPicCaptcha,
   emailLogin,
-  emailRegister,
   sendCodeToEmail
 } from "@/api/userApi"
 
+import {onMounted} from "vue";
+
+const snackbarStore = useSnackbarStore()
 const isLogin = ref(true);
-const isPreVerify = ref(false)
 const sendLoading = ref(false)
 
 const loginForm = ref<LoginForm>({...defaultValue.defaultLoginForm})
 const register = ref<RegisterForm>({...defaultValue.defaultRegisterForm})
-const login = () => {
-  console.log(loginForm.value)
+const picCode = ref<PicCode>({...defaultValue.defaultPicCode})
+
+onMounted(async ()=>{
+  await generatePicCode()
+})
+
+const validateForm = () => {
+
+
+  if (!currentForm().value.email) {
+    errors.value = '邮箱是必填项';
+  } else if (!/^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/.test(currentForm().value.email)) {
+    errors.value = '请输入有效的邮箱地址';
+  }
+
+  if (!currentForm().value.code) {
+    errors.value = '验证码是必填项';
+  } else if (currentForm().value.code.length < 4) {
+    errors.value = '验证码至少包含4位字符';
+  }
+
+  if(!picCode.value.code){
+    errors.value = "请输入图片验证码";
+  }
+  return errors;
+};
+
+const validate = ():boolean =>{
+  if(errors.value!==""){
+    snackbarStore.showErrorMessage(errors.value)
+    return false
+  }
+  return true
+}
+
+const errors = computed(() => validateForm());
+
+const generatePicCode = async () =>{
+  await sendPicCaptcha().then(res=>{
+    if (res.code==="200") {
+      picCode.value.pid = res.data.pid
+      picCode.value.img = res.data.base64
+    }else{
+      snackbarStore.showErrorMessage("网络异常")
+    }
+  })
 }
 
 const currentForm = () => {
   return isLogin.value?loginForm:register
 }
 
-const sendEmailCode = () => {
-
-  if(isPreVerify.value){
-
-  }else{
-
+const sendEmailCode = async () => {
+  if(validate()){
+    sendLoading.value = true
+    await sendCodeToEmail(currentForm().value.email, picCode.value.pid, picCode.value.code).then(res=>{
+      if (res.code === "200") {
+        snackbarStore.showSuccessMessage("已发送邮箱验证码，请检查邮箱")
+      }else{
+        snackbarStore.showErrorMessage("图片验证码错误!")
+        generatePicCode()
+      }
+    })
+    sendLoading.value = false
   }
+}
+
+const login = async()=>{
+  if (validate()) {
+    await emailLogin(loginForm).then(res=>{
+        if(res.code==="200"){
+          snackbarStore.showSuccessMessage("欢迎回来!")
+        }else{
+          snackbarStore.showErrorMessage("登录失败，请检查邮箱或验证码是否正确!")
+        }
+    })
+  }
+
 }
 
 </script>
@@ -47,9 +112,18 @@ const sendEmailCode = () => {
               <p>
                 <input v-model="loginForm.email" type="email" placeholder="邮箱" />
               </p>
-              <p class="password">
-                <input v-model="loginForm.password" type="password" placeholder="密码" />
-                <i class="ri-eye-off-line"></i>
+              <p class="code-container">
+                <input v-model="picCode.code" placeholder="图片验证码" class="pic-code-input"/>
+                <img @click="generatePicCode()" :src="`data:image/png;base64,${picCode.img}`" alt="Base64 Image" class="pic-code" >
+                <template v-slot:placeholder>
+              <div class="d-flex align-center justify-center fill-height">
+                <v-progress-circular
+                  color="grey-lighten-4"
+                  indeterminate
+                ></v-progress-circular>
+              </div>
+</template> </template>
+                </img>
               </p>
               <p class="code-container">
                 <input v-model="loginForm.code" placeholder="验证码" class="input-code"/>
