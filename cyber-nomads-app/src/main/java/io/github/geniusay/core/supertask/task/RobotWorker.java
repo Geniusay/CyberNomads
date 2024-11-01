@@ -40,6 +40,14 @@ public class RobotWorker {
         return false;
     }
 
+    public synchronized boolean lastWord(){
+        if(currentTask!=null&&!currentTask.getTaskStatus().equals(TaskStatus.PENDING)){
+            task().getLastWord().lastTalk(this);
+            return true;
+        }
+        return false;
+    }
+
     private boolean canExecuteTask(){
         return Stream.of(TaskStatus.RUNNING, TaskStatus.EXCEPTION).anyMatch(e->e.equals(currentTask.getTaskStatus()));
     }

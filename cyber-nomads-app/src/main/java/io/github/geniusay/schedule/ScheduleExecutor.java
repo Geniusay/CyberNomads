@@ -1,75 +1,79 @@
 package io.github.geniusay.schedule;
 
-import org.apache.tomcat.util.threads.TaskThreadFactory;
+import io.github.geniusay.core.supertask.task.RobotWorker;
+import io.github.geniusay.core.supertask.task.Task;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Queue;
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Description
  * @Author welsir
  * @Date 2024/10/31 21:36
  */
-public class ScheduleExecutor extends ThreadPoolExecutor{
-
-    private final static HashMap<String,SerialExecutor> executorInstances = new HashMap<>(64);
-
-    public ScheduleExecutor(int poolSize,String name) {
-        this(poolSize, poolSize, 0, TimeUnit.SECONDS, new SynchronousQueue<>(), new TaskThreadFactory(name,false,Thread.NORM_PRIORITY), new DiscardPolicy());
+@Component
+@Slf4j
+public class ScheduleExecutor implements TaskListener{
+    @Resource
+    private Executor taskExecutor;
+    @Resource
+    private TaskScheduleManager manager;
+    private final BlockingQueue<Long> FREE_WORKER = new LinkedBlockingQueue<>();
+    @PostConstruct
+    public void init(){
+        FREE_WORKER.addAll(manager.getAllRobot().keySet());
+        new Thread(this::mainThread).start();
     }
 
-    public ScheduleExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) {
-        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, handler);
+    public void mainThread(){
+        while (!Thread.currentThread().isInterrupted()){
+            try {
+                Long robotId = FREE_WORKER.take();
+                RobotWorker robotWorker = manager.getAllRobot().get(robotId);
+                Map<Long, Map<String, Task>> worldRobotsTask = manager.getWorldRobotsTask();
+                List<Task> tasks = new ArrayList<>(worldRobotsTask.get(robotId).values());
+                if (!tasks.isEmpty()) {
+                    Task selectedTask = tasks.get(new Random().nextInt(tasks.size()));
+                    robotWorker.setTask(selectedTask);
+                    taskExecutor.execute(() -> {
+                        try {
+                            robotWorker.execute();
+                            robotWorker.lastWord();
+                            FREE_WORKER.add(robotId);
+                            worldRobotsTask.get(robotId).remove(selectedTask.getId());
+                        } catch (Exception e) {
+                            log.error("robot执行异常:{}",e.getMessage());
+                        }
+                    });
+                }
+            } catch (InterruptedException e) {
+                log.error("调度器异常:{}",e.getMessage());
+            }
+        }
     }
 
     @Override
-    public void execute(Runnable command) {
-        if(!(command instanceof RobotTask)){
-            throw new RejectedExecutionException("command must be " + RobotTask.class.getName() + "!");
-        }
-        RobotTask task = (RobotTask)command;
-        //executorInstances.getOrDefault(task.getId(),new SerialExecutor()).execute(task);
+    public void startTask(Task task) {
+
     }
 
-    private void dispatch(Runnable task) {
-        super.execute(task);
+    @Override
+    public void removeTask(Task task) {
+
     }
 
-    private final class SerialExecutor implements Executor,Runnable{
+    @Override
+    public void registerRobot(Long robotId) {
+        FREE_WORKER.add(robotId);
+    }
 
-        private final Queue<Runnable> tasks = new ConcurrentLinkedQueue<>();
-        public final AtomicInteger state = new AtomicInteger(0);
-        @Override
-        public void run() {
-            if(state.compareAndSet(0,1)){
-                try {
-                    Thread t = Thread.currentThread();
-                    for(;;){
-                        final Runnable task = tasks.poll();
-                        if (task == null) {
-                            break;
-                        }
-                        task.run();
-                    }
-                }finally {
-                    state.compareAndSet(1,0);
-                }
-
-                if (state.get() == 0 && tasks.peek() != null) {
-                    dispatch(this);
-                }
-            }
-        }
-
-        @Override
-        public void execute(Runnable command) {
-            tasks.add(command);
-            if(state.compareAndSet(0,1)){
-                dispatch(command);
-            }
-        }
+    @Override
+    public void removeRobot(Long robotId) {
+        FREE_WORKER.remove(robotId);
     }
 
 }
