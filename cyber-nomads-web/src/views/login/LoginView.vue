@@ -1,27 +1,40 @@
 <script setup lang="ts">
+import CircleLoading from "@/components/loading/CircleLoading.vue"
 import {LoginForm, RegisterForm , PicCode, defaultValue} from "@/views/login/LoginTypes";
+import {UserVO} from "@/types/userType";
 import {useSnackbarStore} from "@/stores/snackbarStore";
+import {useUserStore} from "@/stores/userStore";
 import {Validators, validateAndReturn} from "@/utils/validate";
 import {
   sendPicCaptcha,
   emailLogin,
-  sendCodeToEmail
+  sendCodeToEmail, emailRegister
 } from "@/api/userApi"
 
 import {onMounted} from "vue";
 
 const snackbarStore = useSnackbarStore()
+const userStore = useUserStore()
 const isLogin = ref(true);
 const sendLoading = ref(false)
 
 const loginForm = ref<LoginForm>({...defaultValue.defaultLoginForm})
+const registerForm = ref<RegisterForm>({...defaultValue.defaultRegisterForm})
 
 const loginValidators: Validators<LoginForm> = {
-  email: (value) => value && /^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)? null : '请输入正确的邮箱',
-  code: (value) => value.length >= 6 ? null : '请输入正确的邮箱验证码'
+  email: (value) => value && /^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/.test(value) ? null : '请输入正确的邮箱',
+  code: (value) => value.length >= 6 ? null : '请输入正确的邮箱验证码',
+  password: (value) => value ? null : '请输入正确的密码'
 };
 
-const register = ref<RegisterForm>({...defaultValue.defaultRegisterForm})
+const registerValidators: Validators<RegisterForm> = {
+  email: (value) => value && /^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/.test(value) ? null : '请输入正确的邮箱',
+  code: (value) => value.length >= 6 ? null : '请输入正确的邮箱验证码',
+  password: (value) => value ? null : '请输入正确的密码',
+  confirmPassword: (value) => value&&value===registerForm.value.password ? null : '确认密码和原密码不一致'
+};
+
+
 const picCode = ref<PicCode>({...defaultValue.defaultPicCode})
 
 onMounted(async ()=>{
@@ -49,7 +62,7 @@ const generatePicCode = async ()=>{
 }
 
 const currentForm = () => {
-  return isLogin.value?loginForm:register
+  return isLogin.value?loginForm:registerForm
 }
 
 const sendEmailCode = async () => {
@@ -74,6 +87,10 @@ const login = async()=>{
   if (!errorsMsg) {
     await emailLogin(loginForm.value).then(res=>{
         if(res.code==="200"){
+          console.log(res.data)
+          const userData: UserVO = res.data.userVO as UserVO
+          userStore.setUserInfo(userData, res.data.token)
+          console.log(userStore.getUserInfo)
           snackbarStore.showSuccessMessage("欢迎回来!")
         }else{
           snackbarStore.showErrorMessage("登录失败，请检查邮箱或验证码是否正确!")
@@ -82,9 +99,31 @@ const login = async()=>{
   }else{
     snackbarStore.showErrorMessage(errorsMsg)
   }
-
 }
 
+const register = async()=>{
+  const errorsMsg = validateAndReturn(["email","code","password","confirmPassword"], registerForm.value, registerValidators)
+  if (!errorsMsg) {
+    await emailRegister(registerForm.value).then(res=>{
+      if(res.code==="200"){
+        console.log(res.data)
+        const userData: UserVO = res.data.userVO as UserVO
+        userStore.setUserInfo(userData, res.data.token)
+        console.log(userStore.getUserInfo)
+        snackbarStore.showSuccessMessage("欢迎加入Cyber Nomads!")
+      }else{
+        snackbarStore.showErrorMessage("注册失败，请检查邮箱或验证码是否正确!")
+      }
+    })
+  }else{
+    snackbarStore.showErrorMessage(errorsMsg)
+  }
+}
+
+const switchLogin = async () =>{
+  isLogin.value = !isLogin.value
+  await generatePicCode()
+}
 </script>
 
 <template>
@@ -94,9 +133,11 @@ const login = async()=>{
         <div class="login">
           <div class="hero">
             <h1>你好 世界<br />Cyber Nomads</h1>
-            <p>如果你没有账号<br />可以<a href="#">点击这里</a>进行注册.</p>
+            <v-fade-transition leave-absolute>
+              <p>如果你{{isLogin?'没':'已'}}有账号<br />可以<a @click="switchLogin()">点击这里</a>{{isLogin?'进行注册':'进行登录'}}.</p>
+            </v-fade-transition>
           </div>
-          <div class="main">
+          <div v-if="isLogin" class="main">
             <form action="">
               <p>
                 <input v-model="loginForm.email" type="email" placeholder="邮箱" />
@@ -109,12 +150,7 @@ const login = async()=>{
                   :lazy-src="`data:image/png;base64,${preImg}`"
                 >
                   <template v-slot:placeholder>
-                    <div class="d-flex align-center justify-center fill-height">
-                      <v-progress-circular
-                        color="blue-lighten-4"
-                        indeterminate
-                      ></v-progress-circular>
-                    </div>
+                    <CircleLoading/>
                   </template>
                 </v-img>
               </p>
@@ -147,6 +183,43 @@ const login = async()=>{
                 </li>
               </ul>
             </div>
+          </div>
+          <div v-if="!isLogin" class="main">
+            <form action="">
+              <p>
+                <input v-model="registerForm.email" type="email" placeholder="邮箱" />
+              </p>
+              <p>
+                <input v-model="registerForm.password" type="password" placeholder="密码" />
+              </p>
+              <p>
+                <input v-model="registerForm.confirmPassword" type="password" placeholder="确认密码" />
+              </p>
+              <p class="code-container">
+                <input v-model="picCode.code" placeholder="图片验证码" class="pic-code-input"/>
+                <img v-if="!picLoading" @click="generatePicCode()" :src="`data:image/png;base64,${picCode.img}`" alt="Base64 Image" class="pic-code" />
+                <v-img v-else
+                       class="mx-auto"
+                       :lazy-src="`data:image/png;base64,${preImg}`"
+                >
+                  <template v-slot:placeholder>
+                    <CircleLoading/>
+                  </template>
+                </v-img>
+              </p>
+              <p class="code-container">
+                <input v-model="registerForm.code" placeholder="验证码" class="input-code"/>
+                <v-btn :loading="sendLoading" @click="sendEmailCode()" color="#5865f2" min-height="60" class="send-code">
+                  发送验证码
+                  <template v-slot:loader>
+                    <v-progress-linear indeterminate></v-progress-linear>
+                  </template>
+                </v-btn>
+              </p>
+              <p>
+                <input @click="register()" type="submit" class="submit" value="注册" />
+              </p>
+            </form>
           </div>
         </div>
       </div>

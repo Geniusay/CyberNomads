@@ -12,7 +12,8 @@ export interface PicCode{
 export interface RegisterForm{
   email: string;
   code: string;
-  password: string
+  password: string;
+  confirmPassword: string;
 }
 
 const defaultLoginForm: LoginForm = {
@@ -25,6 +26,7 @@ const defaultRegisterForm: RegisterForm = {
   email: "",
   code: "",
   password:"",
+  confirmPassword:"",
 }
 
 const defaultPicCode: PicCode = {

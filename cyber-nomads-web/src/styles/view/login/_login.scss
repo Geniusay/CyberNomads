@@ -148,7 +148,8 @@ form .password a {
 }
 
 form input.submit {
-    font-weight: 700;
+    font-weight: 600;
+    font-size: 16px;
     color: var(--white-color);
     background-color: var(--primary-color);
     box-shadow: var(--primary-color) 0 20px 30px -10px;
