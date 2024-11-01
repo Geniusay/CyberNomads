@@ -50,15 +50,8 @@ public class UserController {
     }
 
     @TokenRequire
-    @GetMapping("/search")
-    public Result<?> queryUser(@RequestParam("uid") String uid){
+    public Result<?> queryUser(@PathVariable String uid){
         return Result.success(userService.queryUserById(uid));
-    }
-
-    @TokenRequire
-    @GetMapping("/getInfo")
-    public Result<?> getUserInfo(){
-        return userService.getUserInfo();
     }
 
     @PostMapping("/sendCaptcha")
@@ -104,4 +97,6 @@ public class UserController {
     public Result<?> getPoint(){
         return Result.success(userPointUtil.get());
     }
+
+
 }

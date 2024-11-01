@@ -36,7 +36,6 @@ public class BilibiliCommentTaskTest {
     @Resource
     TaskDispatcher taskDispatcher;
 
-
     @Test
     public void comment(){
         TaskDO taskDO = new TaskDO();
