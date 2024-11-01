@@ -1,13 +1,8 @@
-package io.github.geniusay.execute;
+package io.github.geniusay.schedule;
 
-import io.github.geniusay.core.supertask.TaskStrategyManager;
 import io.github.geniusay.core.supertask.task.RobotWorker;
-import io.github.geniusay.core.supertask.task.Task;
 import org.apache.tomcat.util.threads.TaskThreadFactory;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
@@ -19,8 +14,8 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
  */
 public class CenterScheduler extends ThreadPoolExecutor {
 
-    private static final AtomicIntegerFieldUpdater<workerExecutor> STATE_UPDATER = AtomicIntegerFieldUpdater.newUpdater(workerExecutor.class, "state");
-    private static HashMap<Long, workerExecutor> worldTaskMap = new HashMap<>();
+    private static final AtomicIntegerFieldUpdater<WorkerExecutor> STATE_UPDATER = AtomicIntegerFieldUpdater.newUpdater(WorkerExecutor.class, "state");
+    private static HashMap<Long, WorkerExecutor> worldTaskMap = new HashMap<>();
     private static volatile Set<Long> freeRobots = new HashSet<>();
     private static volatile Set<Long> workingRobots = new HashSet<>();
 
@@ -38,23 +33,24 @@ public class CenterScheduler extends ThreadPoolExecutor {
             throw new RuntimeException("command must be " + RobotTask.class.getName() + "!");
         }
         RobotTask robotTask = (RobotTask) command;
-        worldTaskMap.getOrDefault(robotTask.getWorker().getId(),new workerExecutor(robotTask.getWorker())).execute(command);
+        worldTaskMap.getOrDefault(robotTask.getWorker().getId(),new WorkerExecutor(robotTask.getWorker())).execute(command);
     }
 
     public static void remove(Long robotId, String taskId){
 
     }
+
     private void dispatch(Runnable task) {
         super.execute(task);
     }
-    private final class workerExecutor implements Executor,Runnable{
 
+    private final class WorkerExecutor implements Executor,Runnable{
         private RobotWorker worker;
         private final Queue<Runnable> tasks;
         public volatile int state;
 
         public volatile boolean ban;
-        public workerExecutor(RobotWorker worker){
+        public WorkerExecutor(RobotWorker worker){
             this.worker = worker;
             this.tasks = new ConcurrentLinkedQueue<>();
         }

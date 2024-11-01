@@ -1,14 +1,11 @@
-package io.github.geniusay.execute;
+package io.github.geniusay.schedule;
 
-import io.github.geniusay.core.supertask.config.TaskTypeConstant;
 import org.apache.tomcat.util.threads.TaskThreadFactory;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Queue;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
 /**
  * @Description

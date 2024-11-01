@@ -1,7 +1,6 @@
-package io.github.geniusay.execute;
+package io.github.geniusay.schedule;
 
 import io.github.geniusay.core.supertask.task.RobotWorker;
-import io.github.geniusay.core.supertask.task.Task;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,13 +12,11 @@ import lombok.Data;
 @Data
 @Builder
 public class RobotTask implements Runnable{
-
-    private String id;
     private RobotWorker worker;
 
     @Override
     public void run() {
-
+        worker.task().getExecute().execute(worker);
     }
 
 }
