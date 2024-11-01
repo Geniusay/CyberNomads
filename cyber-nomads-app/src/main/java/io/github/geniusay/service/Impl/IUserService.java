@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
  * @Author welsir
  * @Date 2024/10/27 21:39
  */
+//TODO 所有Assert全部变成抛出异常
 @Service
 public class IUserService implements UserService {
 
@@ -46,6 +47,7 @@ public class IUserService implements UserService {
     @Resource
     private AsyncService asyncService;
 
+    //TODO UserVO中缺少了nickname，添加一下这个字段
     @Override
     public UserVO queryUserById(String uid) {
         UserDO dto = userMapper.selectOne(new QueryWrapper<UserDO>().eq("uid",uid));
@@ -60,6 +62,7 @@ public class IUserService implements UserService {
         return Result.success(UserVO.convert(dto));
     }
 
+    //TODO CacheUtil 换成 Redis缓存，采用原子性
     @Override
     public LoginVO login(LoginRequestDTO req) {
         String code = req.getCode();
@@ -76,6 +79,7 @@ public class IUserService implements UserService {
         return LoginVO.builder().userVO(UserVO.convert(user)).token(token).build();
     }
 
+    //TODO nickname自动生成，格式可以是 赛博游民+随机数
     @Override
     public LoginVO register(RegisterRequestDTO req) {
         String code = req.getCode();
@@ -96,6 +100,7 @@ public class IUserService implements UserService {
         return LoginVO.builder().userVO(UserVO.convert(user)).token(token).build();
     }
 
+    //TODO 采用Redis缓存
     @Override
     public Map<String, String> generateCaptcha() {
         String pid = UUID.randomUUID().toString();
@@ -104,6 +109,7 @@ public class IUserService implements UserService {
         return Map.of("base64",code.get("base64"),"pid",pid);
     }
 
+    //TODO 采用Redis缓存获取邮箱验证码，冷却时间1分钟
     @Override
     public void generateEmailCode(String email,String pid,String code) {
         if(!StringUtils.equals(CacheUtil.getCaptchaAndRemove(pid), CyberStringUtils.toLower(code))){
@@ -147,6 +153,8 @@ public class IUserService implements UserService {
         return LoadRobotResponseDTO.builder().successRobot(success).errorRobot(fail).build();
     }
 
+
+    //TODO 下面所有的robot接口，包括controller，另起一个RobotController和RobotService
     @Override
     public List<RobotVO> queryRobot() {
         String uid = ThreadUtil.getUid();
