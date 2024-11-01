@@ -17,6 +17,7 @@ import io.github.geniusay.pojo.VO.RobotVO;
 import io.github.geniusay.pojo.VO.UserVO;
 import io.github.geniusay.service.UserService;
 import io.github.geniusay.utils.*;
+import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,7 +64,7 @@ public class IUserService implements UserService {
     public LoginVO login(LoginRequestDTO req) {
         String code = req.getCode();
         String emailCode = CacheUtil.getEmailAndRemove(req.getEmail());
-        if(!Objects.equals(emailCode, code)){
+        if(!StringUtils.equals(CyberStringUtils.toLower(code), emailCode)){
             throw new IllegalArgumentException("验证码错误");
         }
 
@@ -99,20 +100,20 @@ public class IUserService implements UserService {
     public Map<String, String> generateCaptcha() {
         String pid = UUID.randomUUID().toString();
         Map<String, String> code = imageUtil.generateCode();
-        CacheUtil.putCaptcha(pid,code.get("code"));
+        CacheUtil.putCaptcha(pid, CyberStringUtils.toLower(code.get("code")));
         return Map.of("base64",code.get("base64"),"pid",pid);
     }
 
     @Override
     public void generateEmailCode(String email,String pid,String code) {
-        if(!Objects.equals(CacheUtil.getCaptchaAndRemove(pid), code)){
+        if(!StringUtils.equals(CacheUtil.getCaptchaAndRemove(pid), CyberStringUtils.toLower(code))){
             throw new IllegalArgumentException("验证码错误");
         }
         if(CacheUtil.isExpired(email)){
             throw new RuntimeException("验证码冷却中");
         }
         String emailCode = RandomUtil.generateRandomString(6);
-        CacheUtil.putEmail(email,emailCode);
+        CacheUtil.putEmail(email, CyberStringUtils.toLower(emailCode));
         asyncService.sendCodeToEmail(email, emailCode);
     }
 

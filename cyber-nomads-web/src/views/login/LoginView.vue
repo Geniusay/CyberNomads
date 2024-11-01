@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {LoginForm, RegisterForm , PicCode, defaultValue} from "@/views/login/LoginTypes";
 import {useSnackbarStore} from "@/stores/snackbarStore";
-import { computed } from 'vue';
+import {Validators, validateAndReturn} from "@/utils/validate";
 import {
   sendPicCaptcha,
   emailLogin,
@@ -15,6 +15,12 @@ const isLogin = ref(true);
 const sendLoading = ref(false)
 
 const loginForm = ref<LoginForm>({...defaultValue.defaultLoginForm})
+
+const loginValidators: Validators<LoginForm> = {
+  email: (value) => value && /^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)? null : '请输入正确的邮箱',
+  code: (value) => value.length >= 6 ? null : '请输入正确的邮箱验证码'
+};
+
 const register = ref<RegisterForm>({...defaultValue.defaultRegisterForm})
 const picCode = ref<PicCode>({...defaultValue.defaultPicCode})
 
@@ -22,46 +28,24 @@ onMounted(async ()=>{
   await generatePicCode()
 })
 
-const validateForm = () => {
 
-
-  if (!currentForm().value.email) {
-    errors.value = '邮箱是必填项';
-  } else if (!/^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/.test(currentForm().value.email)) {
-    errors.value = '请输入有效的邮箱地址';
-  }
-
-  if (!currentForm().value.code) {
-    errors.value = '验证码是必填项';
-  } else if (currentForm().value.code.length < 4) {
-    errors.value = '验证码至少包含4位字符';
-  }
-
-  if(!picCode.value.code){
-    errors.value = "请输入图片验证码";
-  }
-  return errors;
-};
-
-const validate = ():boolean =>{
-  if(errors.value!==""){
-    snackbarStore.showErrorMessage(errors.value)
-    return false
-  }
-  return true
-}
-
-const errors = computed(() => validateForm());
-
-const generatePicCode = async () =>{
+const preImg = ref("iVBORw0KGgoAAAANSUhEUgAAALQAAAAoCAIAAADYC0ddAAAE2UlEQVR4Xu2VzauVVRTGbaA0SSNoUHJARNCBiBkZQnS9cALp4w8QihxUBH04cBCUkyBvE0GE60AHanJHd3QbZFyLICGyyYXoA0n6BPEjsIGzBuGSHZvNetZae+193/Oe9+W+8EPuWet5nr3O4QHXjT56YGBAZB2OBhpn+91bBM4NZq7uInDeJr0sx9zhTwmcd5ahHO3Ri3L8t7JM4LxH9LIcvWAoRxt8vekogfO+MH7ibAS3Xaa9cqS/UdGPFcphe42VweKXp4kKYxFavjbXSPUVFtxmaaYcG17cSOA8hX03/8XoEr32VoSVAwWNoF2lzTVKv2CRWGTK5fDcjRbRaG+RUr2TUy8sEelEe0WbExf3vk5oYtESeHb7dwRaUOmhmXJkwe/mvBv1hsujKVWWwsphvGKsVl8OjzjLFMqBHw3Yl7RdHo1f1gjGQ8bKUFZYcJsyu/IOgfNRRTm+efQMgXMbdqvz9ApXU5osj+1/nsA5w3grXeFWVLK/NfzJo3bKMbf5JwLnAXar53T8hnWuUoGTvpQDt4aYuYrLoTHRcmgTEUOWrnDr1/iVhoDZ31j/CmEkiB9FjEdFDePD55YJ+qOxchDvvvkHET++dm0PMZJuZddgFG5xoqGFa3OnvUJWJGiqHNlHmQbpbjmOLVwicIsTDTFcHGpkxVkBynB7Z9czhCFIE4yJaNl54WUCt2mCkRNWTZZDQzxFHI6gHGG47cR9RL1IGo6gHjH0/jRDdvvX94lmy/Hb7M9E2GrlSE8SQ1I6Vw7x+gbLgWIRzaXNRZjyxud/EmEVymFHiStxGEjLkQoeOn+SYHYxgTHxcqTXpAeJQ22uhRgwi9+oJYgTAxSn5UCNkZAd2mmxHKlATGD8X47FpYcJXK8e7RpxLg6NuUFqyRo3XPuesBPEiUGUfXzuPQIFqQbTSud2mlPA6EQ54gon9txGfEJELAcmONOYN5Rj918LhKbBwPOzIwLnmt6IEjWGLNLqfyvaPKw0pb0yqHOlpAmlaUxfVA76OIlyMJmtHDVYjqPfXiZwbpzCDnUq8QmNOhcje5uGx6JpxGFcbf5qHyHqRYumzLomWw77eTxRVBorgzpX4KUHZ4jwt32bhtMiysRhul1NOZhYJCobK4eI+KS4dcpwq1HnCsRyeM4TcVpEGU5EC04MlwgzYkj/yvHkng8IlNmuCvA2f5TTIspwIlpwolmypAlpVLfKgRoMaacceFtRmlOPsqxL09suJyxqmuVgAo+GPh765RMCZbarCHYVA/WIU48y2/XDIyMi1WDCamBpEyyHdve2A48TtiYbYlPnQm+0i0ONaiX9O3/9VQKVgTVUjn8X/yHQ6AmxqXMxY+rV5iJR9uPlwwQKUBkyx7lyoMt5khMWOIVyRJzl2Du/QmghItmnRVIXGu2tqCwqhye52pUVBA0LnGY5PIzbKgf+NKUCUYlbTem0iC7UGBbcMkHU9KAcFSGlrlRvWCpkuI18duUu4cxMYRaPKyrfPribwAQxbVLlEB8rpS6k1JXqt761QKAGlVp43P698ziBgkhT5UCBobfLwYxrvRypeJwrB+oNQbYcmCYGIhUW0ZgNmVQ5GuGpOzcJnA+0w1COAZVOl2PNsuPp++C8ZYZydJEOlePq+AiBu4Hus+WL3wmcN8I91LvwJnHcw58AAAAASUVORK5CYII=")
+const picLoading = ref(true)
+const generatePicCode = async ()=>{
+  picLoading.value = true
   await sendPicCaptcha().then(res=>{
     if (res.code==="200") {
       picCode.value.pid = res.data.pid
       picCode.value.img = res.data.base64
+      setTimeout(()=>{
+        picLoading.value = false;
+        preImg.value = picCode.value.img
+      }, 300)
     }else{
       snackbarStore.showErrorMessage("网络异常")
     }
   })
+
 }
 
 const currentForm = () => {
@@ -69,7 +53,7 @@ const currentForm = () => {
 }
 
 const sendEmailCode = async () => {
-  if(validate()){
+  if(picCode.value.code){
     sendLoading.value = true
     await sendCodeToEmail(currentForm().value.email, picCode.value.pid, picCode.value.code).then(res=>{
       if (res.code === "200") {
@@ -80,18 +64,23 @@ const sendEmailCode = async () => {
       }
     })
     sendLoading.value = false
+  }else{
+    snackbarStore.showErrorMessage("图片验证码不能为空")
   }
 }
 
 const login = async()=>{
-  if (validate()) {
-    await emailLogin(loginForm).then(res=>{
+  const errorsMsg = validateAndReturn(["email","code"], loginForm.value, loginValidators)
+  if (!errorsMsg) {
+    await emailLogin(loginForm.value).then(res=>{
         if(res.code==="200"){
           snackbarStore.showSuccessMessage("欢迎回来!")
         }else{
           snackbarStore.showErrorMessage("登录失败，请检查邮箱或验证码是否正确!")
         }
     })
+  }else{
+    snackbarStore.showErrorMessage(errorsMsg)
   }
 
 }
@@ -114,16 +103,20 @@ const login = async()=>{
               </p>
               <p class="code-container">
                 <input v-model="picCode.code" placeholder="图片验证码" class="pic-code-input"/>
-                <img @click="generatePicCode()" :src="`data:image/png;base64,${picCode.img}`" alt="Base64 Image" class="pic-code" >
-                <template v-slot:placeholder>
-              <div class="d-flex align-center justify-center fill-height">
-                <v-progress-circular
-                  color="grey-lighten-4"
-                  indeterminate
-                ></v-progress-circular>
-              </div>
-</template> </template>
-                </img>
+                <img v-if="!picLoading" @click="generatePicCode()" :src="`data:image/png;base64,${picCode.img}`" alt="Base64 Image" class="pic-code" />
+                <v-img v-else
+                  class="mx-auto"
+                  :lazy-src="`data:image/png;base64,${preImg}`"
+                >
+                  <template v-slot:placeholder>
+                    <div class="d-flex align-center justify-center fill-height">
+                      <v-progress-circular
+                        color="blue-lighten-4"
+                        indeterminate
+                      ></v-progress-circular>
+                    </div>
+                  </template>
+                </v-img>
               </p>
               <p class="code-container">
                 <input v-model="loginForm.code" placeholder="验证码" class="input-code"/>

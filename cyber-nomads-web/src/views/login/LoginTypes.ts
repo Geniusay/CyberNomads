@@ -29,7 +29,7 @@ const defaultRegisterForm: RegisterForm = {
 
 const defaultPicCode: PicCode = {
   pid:"",
-  img:""
+  img:"",
 }
 
 export const defaultValue = {

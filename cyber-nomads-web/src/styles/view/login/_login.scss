@@ -244,5 +244,13 @@ form input.submit:hover {
 .pic-code{
     flex: 0 0 40%;
     width: 180px;
-    height: 60px;
+    height: 55px;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(224, 221, 221, 0.2);
+}
+
+.mx-auto{
+    border-radius: 8px;
+    height: 55px;
+    box-shadow: 0 8px 16px rgba(224, 221, 221, 0.2);
 }

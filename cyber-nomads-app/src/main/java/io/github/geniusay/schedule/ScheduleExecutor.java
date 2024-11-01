@@ -30,7 +30,7 @@ public class ScheduleExecutor extends ThreadPoolExecutor{
             throw new RejectedExecutionException("command must be " + RobotTask.class.getName() + "!");
         }
         RobotTask task = (RobotTask)command;
-        executorInstances.getOrDefault(task.getId(),new SerialExecutor()).execute(task);
+        //executorInstances.getOrDefault(task.getId(),new SerialExecutor()).execute(task);
     }
 
     private void dispatch(Runnable task) {
