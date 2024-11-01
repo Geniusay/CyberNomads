@@ -45,14 +45,14 @@ public abstract class AbstractLogTaskBlueprint extends AbstractTaskBlueprint {
                 String errorMessage = task.getDataValOrDefault(TaskConstant.ERROR_MESSAGE, String.class, null);
 
                 if (errorCode != null && errorMessage != null) {
-                    task.updateStatus(PARTIALLY_COMPLETED, logProcessor, "[Warning] 任务状态异常，API 错误: " + errorMessage);
+                   // task.updateStatus(PARTIALLY_COMPLETED, logProcessor, "[Warning] 任务状态异常，API 错误: " + errorMessage);
                 } else {
                     task.updateStatus(COMPLETED, logProcessor, "[Success] 任务执行成功");
                 }
 
             } catch (Exception e) {
                 // 设置任务状态为 FAILED，并记录错误日志
-                task.updateStatus(FAILED, logProcessor, "[Error] 任务执行失败: " + e.getMessage());
+                //task.updateStatus(FAILED, logProcessor, "[Error] 任务执行失败: " + e.getMessage());
                 task.addErrorCode("500", "程序内部错误: " + e.getMessage());
             } finally {
                 // 任务完成后处理日志，拼接并保存到数据库
