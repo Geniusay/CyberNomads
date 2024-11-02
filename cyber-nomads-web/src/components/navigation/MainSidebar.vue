@@ -56,10 +56,10 @@ const scrollToBottom = () => {
           src="@/assets/logo_light.svg"
           alt=""
         /> -->
-        <h1 class="logo-text h-full">
+        <h2 class="logo-text h-full">
           <Icon class="mr-2" width="40" icon="solar:plain-bold-duotone" />
           <span>CyberNomads</span>
-        </h1>
+        </h2>
       </v-card>
     </template>
 
@@ -126,7 +126,7 @@ const scrollToBottom = () => {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
+    font-size: 1.7rem;
     font-weight: 600;
     color: rgba(var(--v-theme-primary));
   }
