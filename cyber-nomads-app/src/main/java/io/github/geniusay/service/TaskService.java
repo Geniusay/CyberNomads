@@ -29,12 +29,22 @@ public interface TaskService {
     List<TaskVO> getUserTasks(String uid);
 
     /**
-     * 批量添加或删除机器人账号
+     * 批量添加或删除机器人账号，并返回更新后的任务详情
      */
-    void updateRobotsInTask(Long taskId, List<Long> robotIds, boolean isAdd);
+    TaskVO updateRobotsInTask(Long taskId, List<Long> robotIds, boolean isAdd);
 
     /**
      * 更新任务的 params 参数，并返回更新后的任务详情
      */
     TaskVO updateTaskParams(Long taskId, Map<String, Object> params);
+
+    /**
+     * 修改任务状态，支持删除和重置操作
+     */
+    void modifyTask(Long taskId, String action);
+
+    /**
+     * 修改任务状态，供内部调度器调用
+     */
+    void changeTaskStatus(Long taskId, String newStatus);
 }

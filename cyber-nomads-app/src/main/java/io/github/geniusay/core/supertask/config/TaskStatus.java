@@ -8,7 +8,7 @@ package io.github.geniusay.core.supertask.config;
 public enum TaskStatus {
     PENDING,                // 未开始
     RUNNING,                // 进行中
-    EXCEPTION,              // 进行中
+    EXCEPTION,              // 异常
     FAILED,                 // 失败
     PAUSED,                 // 暂停
     COMPLETED               // 已完成

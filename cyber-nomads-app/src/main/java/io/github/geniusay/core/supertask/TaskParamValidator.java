@@ -1,5 +1,6 @@
 package io.github.geniusay.core.supertask;
 
+import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
 
 import java.util.List;
@@ -17,12 +18,12 @@ public class TaskParamValidator {
 
             // 检查必填参数是否存在
             if (param.isRequired() && value == null) {
-                throw new IllegalArgumentException("缺少必填参数: " + paramName);
+                throw new ServeException("缺少必填参数: " + paramName);
             }
 
             // 如果参数存在，检查类型是否匹配
             if (value != null && !isTypeMatch(value, param.getType())) {
-                throw new IllegalArgumentException("参数类型不匹配: " + paramName + " 需要类型: " + param.getType());
+                throw new ServeException("参数类型不匹配: " + paramName + " 需要类型: " + param.getType());
             }
         }
     }
