@@ -9,13 +9,12 @@ import java.util.Map;
 public interface TaskService {
 
     /**
-     * 创建任务并保存到数据库
+     * 创建任务并返回任务详情
      */
-    void createTask(String taskName, String platform, String taskType, Map<String, Object> params);
+    TaskVO createTask(String taskName, String platform, String taskType, Map<String, Object> params);
 
     /**
      * 获取支持的平台列表
-     * @return 支持的平台列表
      */
     List<Map<String, String>> getSupportedPlatforms();
 
@@ -35,7 +34,7 @@ public interface TaskService {
     void updateRobotsInTask(Long taskId, List<Long> robotIds, boolean isAdd);
 
     /**
-     * 更新任务的 params 参数
+     * 更新任务的 params 参数，并返回更新后的任务详情
      */
-    void updateTaskParams(Long taskId, Map<String, Object> params);
+    TaskVO updateTaskParams(Long taskId, Map<String, Object> params);
 }

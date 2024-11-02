@@ -66,7 +66,7 @@ public class IUserService implements UserService {
         if(user == null){
             throw new RuntimeException("用户未注册");
         }
-        String token = TokenUtil.getToken(String.valueOf(user.getId()), user.getEmail());
+        String token = TokenUtil.getToken(String.valueOf(user.getId()), user.getEmail(), user.getNickname());
         cacheUtil.putTokenAndUid(token,user.getUid());
         return LoginVO.builder().userVO(UserVO.convert(user)).token(token).build();
     }
@@ -86,7 +86,7 @@ public class IUserService implements UserService {
                 .password(DigestUtils.md5Hex(req.getPassword()))
                 .build();
         userMapper.insert(user);
-        String token = TokenUtil.getToken(user.getUid(), user.getEmail());
+        String token = TokenUtil.getToken(user.getUid(), user.getEmail(), user.getNickname());
         cacheUtil.putTokenAndUid(token,user.getUid());
         return LoginVO.builder().userVO(UserVO.convert(user)).token(token).build();
     }
@@ -95,7 +95,9 @@ public class IUserService implements UserService {
     public Map<String, String> generateCaptcha() {
         String pid = UUID.randomUUID().toString();
         Map<String, String> code = imageUtil.generateCode();
-        cacheUtil.putCaptcha(pid, CyberStringUtils.toLower(code.get("code")));
+        String seeCode = CyberStringUtils.toLower(code.get("code"));
+        System.out.println(seeCode);
+        cacheUtil.putCaptcha(pid, seeCode);
         return Map.of("base64",code.get("base64"),"pid",pid);
     }
 

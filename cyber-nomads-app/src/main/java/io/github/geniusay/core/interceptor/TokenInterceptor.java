@@ -33,9 +33,10 @@ public class TokenInterceptor implements HandlerInterceptor {
                 if (token!=null&& (uid = cacheUtil.getUidByToken(token))!=null) {
                     String tokenObject = (String) StpUtil.getLoginIdByToken(token);
                     String[] strs = tokenObject.split("\\|");
-                    if(StpUtil.isLogin(tokenObject)&&strs.length==2){
+                    if(StpUtil.isLogin(tokenObject)&&strs.length==3){
                         ThreadUtil.set("uid",strs[0]);
                         ThreadUtil.set("email",strs[1]);
+                        ThreadUtil.set("nickname",strs[2]);
                     }
                     return true;
                 } else {

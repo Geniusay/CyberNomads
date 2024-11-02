@@ -3,6 +3,7 @@ package io.github.geniusay.controller;
 import io.github.common.web.Result;
 import io.github.geniusay.pojo.DTO.CreatTaskDTO;
 import io.github.geniusay.pojo.DTO.UpdateRobotsDTO;
+import io.github.geniusay.pojo.VO.TaskVO;
 import io.github.geniusay.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +17,13 @@ public class TaskController {
     @Resource
     private TaskService taskService;
 
+    /**
+     * 创建任务并返回任务详情
+     */
     @PostMapping("/create")
-    public Result<?> createTask(@RequestBody CreatTaskDTO creat) {
-        taskService.createTask(creat.getTaskName(), creat.getPlatform(), creat.getTaskType(), creat.getParams());
-        return Result.success("任务创建成功");
+    public Result<TaskVO> createTask(@RequestBody CreatTaskDTO creat) {
+        TaskVO taskVO = taskService.createTask(creat.getTaskName(), creat.getPlatform(), creat.getTaskType(), creat.getParams());
+        return Result.success(taskVO);
     }
 
     /**
@@ -34,17 +38,17 @@ public class TaskController {
      * 批量添加或删除机器人账号
      */
     @PostMapping("/robots/update")
-    public String updateRobotsInTask(@RequestBody UpdateRobotsDTO updateRobotsDTO) {
+    public Result<?> updateRobotsInTask(@RequestBody UpdateRobotsDTO updateRobotsDTO) {
         taskService.updateRobotsInTask(updateRobotsDTO.getTaskId(), updateRobotsDTO.getRobotIds(), updateRobotsDTO.isHasAdd());
-        return updateRobotsDTO.isHasAdd() ? "机器人账号添加成功" : "机器人账号删除成功";
+        return Result.success("操作成功");
     }
 
     /**
-     * 修改任务的 params 参数
+     * 修改任务的 params 参数，并返回更新后的任务详情
      */
     @PostMapping("/{taskId}/params/update")
-    public String updateTaskParams(@PathVariable Long taskId, @RequestBody Map<String, Object> params) {
-        taskService.updateTaskParams(taskId, params);
-        return "任务参数更新成功";
+    public Result<TaskVO> updateTaskParams(@PathVariable Long taskId, @RequestBody Map<String, Object> params) {
+        TaskVO updatedTask = taskService.updateTaskParams(taskId, params);
+        return Result.success(updatedTask);
     }
 }
