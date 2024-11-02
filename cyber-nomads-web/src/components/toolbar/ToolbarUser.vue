@@ -6,9 +6,11 @@
 <script setup lang="ts">
 import StatusMenu from "./StatusMenu.vue";
 import { useAuthStore } from "@/stores/authStore";
+import { useUserStore } from "@/stores/userStore";
 import { useRouter } from "vue-router";
 const router = useRouter();
 
+const userStore = useUserStore();
 const authStore = useAuthStore();
 const handleLogout = () => {
   authStore.logout();
