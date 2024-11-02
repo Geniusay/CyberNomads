@@ -32,6 +32,7 @@
     "openai": "^4.55.1",
     "pinia": "^2.2.1",
     "pinia-plugin-persist": "^1.0.0",
+    "pinia-plugin-persistedstate": "^4.1.2",
     "plantuml-encoder": "^1.4.0",
     "roboto-fontface": "*",
     "unsplash-js": "^7.0.19",

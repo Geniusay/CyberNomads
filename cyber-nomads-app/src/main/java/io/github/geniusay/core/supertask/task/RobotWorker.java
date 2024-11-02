@@ -1,11 +1,13 @@
 package io.github.geniusay.core.supertask.task;
 
+import io.github.geniusay.core.supertask.config.TaskStatus;
 import io.github.geniusay.pojo.DO.RobotDO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,7 +19,7 @@ public class RobotWorker {
     private String username;
     private String cookie;
 
-    private Task currentTask;
+    private volatile Task currentTask;
 
     public RobotWorker(RobotDO robotDO) {
         this.id = robotDO.getId();
@@ -30,7 +32,27 @@ public class RobotWorker {
         return currentTask;
     }
 
-    public void setTask(Task task) {
+    public synchronized boolean execute(){
+        if (currentTask!=null&&canExecuteTask()) {
+            task().getExecute().execute(this);
+            return true;
+        }
+        return false;
+    }
+
+    public synchronized boolean lastWord(){
+        if(currentTask!=null&&!currentTask.getTaskStatus().equals(TaskStatus.PENDING)){
+            task().getLastWord().lastTalk(this);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean canExecuteTask(){
+        return Stream.of(TaskStatus.RUNNING, TaskStatus.EXCEPTION).anyMatch(e->e.equals(currentTask.getTaskStatus()));
+    }
+
+    public synchronized void setTask(Task task) {
         this.currentTask = task;
     }
 

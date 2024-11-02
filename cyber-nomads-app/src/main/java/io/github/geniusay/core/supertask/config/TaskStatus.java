@@ -7,8 +7,8 @@ package io.github.geniusay.core.supertask.config;
  */
 public enum TaskStatus {
     PENDING,                // 未开始
-    IN_PROGRESS,            // 进行中
-    PARTIALLY_COMPLETED,    // 部分完成
+    RUNNING,            // 进行中
+    EXCEPTION,            // 进行中
     FAILED,                 // 失败
     PAUSED,                 // 暂停
     COMPLETED               // 已完成

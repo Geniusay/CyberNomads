@@ -1,7 +1,7 @@
 import {noTokenUrl} from "./no-auth";
 
 export const validRequestAuth = (config)=>{
-  const token = ''
+  const token = localStorage.getItem("userStore") ? JSON.parse(localStorage.getItem("userStore")!).token : null;
   if(token){
     config.headers['Authorization'] = token
   }

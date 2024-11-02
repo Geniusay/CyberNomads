@@ -35,75 +35,74 @@ public class TaskScheduleManager {
     RobotMapper robotMapper;
     @Resource
     TaskFactory taskFactory;
-    private static Map<Long, Task> wordsTask;
-    private static Map<Long, RobotWorker> wordsRobots;
-    private static Map<Long, Map<String,Task>> wordsRobotsTask;
-    private static final ThreadPoolExecutor SCHEDULER = new ThreadPoolExecutor(50,100,0,TimeUnit.SECONDS,new SynchronousQueue<>(), new TaskThreadFactory("robot-schedule",false,Thread.NORM_PRIORITY), new ThreadPoolExecutor.DiscardPolicy());
+    @Resource
+    TaskEventMan EVENT_PUBLISHER;
+    public static final Map<String, Task> WORLD_TASK = new ConcurrentHashMap<>();
+    public static final Map<Long, RobotWorker> WORLD_ROBOTS = new ConcurrentHashMap<>();
+    public static final Map<Long, Map<String,Task>> WORLD_ROBOTS_TASK = new ConcurrentHashMap<>();
+
 
     //TODO final map
     @PostConstruct
     public void init(){
         List<TaskDO> taskDOS = taskMapper.selectList(new QueryWrapper<TaskDO>().eq("task_status", TaskStatus.PENDING.name()));
-        wordsTask = taskDOS.stream().collect(Collectors.toConcurrentMap(
-                TaskDO::getId,
-                taskDO -> taskFactory.buildTask(taskDO,taskDO.getPlatform(),taskDO.getTaskType())
-        ));
+        for (TaskDO taskDO : taskDOS) {
+            WORLD_TASK.put(String.valueOf(taskDO.getId()),taskFactory.buildTask(taskDO,taskDO.getPlatform(),taskDO.getTaskType()));
+        }
+
         List<RobotDO> robotDOS = robotMapper.selectList(new QueryWrapper<RobotDO>().eq("ban", false).eq("has_delete", false));
-        wordsRobots = robotDOS.stream().map(RobotWorker::new).collect(Collectors.toConcurrentMap(
-                RobotWorker::getId,
-                robotWorker -> robotWorker
-        ));
-        wordsRobotsTask = new ConcurrentHashMap<>(1024);
+        for (RobotDO robotDO : robotDOS) {
+            WORLD_ROBOTS.put(robotDO.getId(),new RobotWorker(robotDO));
+        }
     }
 
     public void registerTask(TaskDO task){
-        wordsTask.put(task.getId(),taskFactory.buildTask(task,task.getPlatform(),task.getTaskType()));
+        WORLD_TASK.put(String.valueOf(task.getId()),taskFactory.buildTask(task,task.getPlatform(),task.getTaskType()));
     }
 
     public Task removeTask(Long taskId){
-        return wordsTask.remove(taskId);
+        return WORLD_TASK.remove(taskId);
     }
 
     public void registerRobot(RobotDO robotDO){
-        wordsRobots.put(robotDO.getId(),new RobotWorker(robotDO));
+        WORLD_ROBOTS.put(robotDO.getId(),new RobotWorker(robotDO));
+        EVENT_PUBLISHER.registerRobot(robotDO.getId());
     }
 
     public RobotWorker removeRobot(Long robotId){
-        return wordsRobots.remove(robotId);
+        EVENT_PUBLISHER.removeRobot(robotId);
+        return WORLD_ROBOTS.remove(robotId);
     }
 
     public Collection<Task> getWorkerAllTask(Long robotId){
-        return wordsRobotsTask.get(robotId).values();
+        return WORLD_ROBOTS_TASK.get(robotId).values();
     }
 
-    private void start0(Task task){
-        List<RobotDO> robots = task.getRobots();
-        for (RobotDO robot : robots) {
-            RobotWorker worker = wordsRobots.get(robot.getId());
-            if(worker==null){
-                throw new RuntimeException("不存在的赛博账号");
-            }
-            Map<String, Task> taskMap = wordsRobotsTask.getOrDefault(robot.getId(), new ConcurrentHashMap<>());
-            synchronized (worker){
-                if (worker.task() != null) {
-                    taskMap.put(task.getId(),task);
-                }else{
-                    worker.setTask(task);
-                }
-            }
-            SCHEDULER.execute(()->{
-                worker.task().getExecute().execute(worker);
-            });
+    private void startTask(String taskId){
+        for (RobotDO robot : WORLD_TASK.get(taskId).getRobots()) {
+            Map<String, Task> taskMap = WORLD_ROBOTS_TASK.getOrDefault(robot.getId(), new ConcurrentHashMap<>());
+            taskMap.put(taskId,WORLD_TASK.get(taskId));
         }
+        EVENT_PUBLISHER.startWork(WORLD_TASK.get(taskId));
     }
 
-    public void removeWorkerTask(Long robotId,String taskId){
-        Map<String,Task> taskMap;
-        if ((taskMap = wordsRobotsTask.get(robotId)) != null) {
-            Object o = taskMap.size() == 1 ? wordsRobotsTask.remove(robotId) : taskMap.remove(taskId);
-        }else{
-            wordsRobotsTask.remove(robotId);
-        }
+    public void removeWorkerTask(String taskId){
+        Task task = WORLD_TASK.remove(taskId);
+        WORLD_ROBOTS_TASK.forEach((k,v)->{
+            v.remove(taskId);
+        });
+        EVENT_PUBLISHER.removeTask(task);
     }
+
+    public Map<Long,RobotWorker> getAllRobot(){
+        return WORLD_ROBOTS;
+    }
+    public Map<Long, Map<String,Task>> getWorldRobotsTask(){
+        return WORLD_ROBOTS_TASK;
+    }
+    public Map<String, Task> getWorldTask(){
+        return WORLD_TASK;
+    }
+
 
 }

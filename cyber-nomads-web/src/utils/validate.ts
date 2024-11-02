@@ -33,5 +33,5 @@ export function validateAndReturn<T>( fieldsToValidate: (keyof T)[], // 要校�
   const firstError = errorEntries.find(([_, error]) => error !== undefined && error !== null);
 
   // 如果找到，则返回格式化的错误信息，否则返回 null
-  return firstError ? `${String(firstError[0])}: ${firstError[1]}` : null;
+  return firstError ? `${firstError[1]}` : null;
 }
