@@ -48,10 +48,8 @@ public class ITaskService implements TaskService {
     @Transactional
     public TaskVO createTask(String taskName, String platform, String taskType, Map<String, Object> params) {
         // 1. 获取用户信息
-//        String uid = ThreadUtil.getUid();
-        String uid = "7d27bd22-b93d-4767-ac4d-14e75581196e";
-        String nickname = "Genius";
-//        String nickname = ThreadUtil.getUsername();
+        String uid = ThreadUtil.getUid();
+        String nickname = ThreadUtil.getNickname();
 
         // 2. 校验 platform 和 taskType
         validatePlatformAndTaskType(platform, taskType);
@@ -87,8 +85,7 @@ public class ITaskService implements TaskService {
     @Override
     @Transactional
     public TaskVO updateTaskParams(Long taskId, Map<String, Object> params) {
-//        String uid = ThreadUtil.getUid();
-        String uid = "7d27bd22-b93d-4767-ac4d-14e75581196e";
+        String uid = ThreadUtil.getUid();
 
         // 1. 获取任务
         TaskDO task = taskMapper.selectById(taskId);
@@ -113,8 +110,7 @@ public class ITaskService implements TaskService {
     @Override
     @Transactional
     public TaskVO updateRobotsInTask(Long taskId, List<Long> robotIds, boolean isAdd) {
-
-        String uid = "7d27bd22-b93d-4767-ac4d-14e75581196e";
+        String uid = ThreadUtil.getUid();
 
         // 1. 获取任务
         TaskDO task = taskMapper.selectById(taskId);
@@ -210,8 +206,7 @@ public class ITaskService implements TaskService {
     @Override
     @Transactional
     public void modifyTask(Long taskId, String action) {
-
-        String uid = "7d27bd22-b93d-4767-ac4d-14e75581196e";
+        String uid = ThreadUtil.getUid();
 
         // 1. 获取任务
         TaskDO task = taskMapper.selectById(taskId);
