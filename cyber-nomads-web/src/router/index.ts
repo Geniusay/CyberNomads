@@ -5,6 +5,7 @@ import LandingRoutes from "./landing.routes";
 import UtilityRoutes from "./utility.routes";
 import AppsRoutes from "./apps.routes";
 import DataRoutes from "./data.routes";
+import {useSnackbarStore} from "@/stores/snackbarStore";
 
 export const routes = [
   {
@@ -70,13 +71,22 @@ const router = createRouter({
 
 // 设置全局前置守卫
 router.beforeEach((to, from, next) => {
-  const userInfo = JSON.parse(localStorage.getItem('userStore') || '{}');
-
-  // 判断是否访问 /login 路由且用户已经登录
-  if (to.path === '/login' && userInfo && Object.keys(userInfo).length) {
-    next('/workplace'); // 跳转到工作界面
-  } else {
-    next(); // 否则正常导航
+  const userInfo = JSON.parse(localStorage.getItem('cyberUser') || '{}');
+  const loggedIn = userInfo && Object.keys(userInfo).length
+  if(!loggedIn){
+    if (to.path.startsWith('/home') || to.path === '/login') {
+      next();
+    } else {
+      useSnackbarStore().showErrorMessage("暂未登录，请先登录!")
+      next('/login');
+    }
+  }else {
+    if (to.path === '/login') {
+      useSnackbarStore().showErrorMessage("已登录，欢迎回来!")
+      next('/workplace'); // 跳转到工作界面
+    } else {
+      next(); // 否则正常导航
+    }
   }
 });
 

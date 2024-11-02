@@ -43,7 +43,7 @@ export const useUserStore = defineStore({
   persist: {
     enabled: true,
     strategies: [{
-      key:"userStore",
+      key:"cyberUser",
       storage: localStorage,
       paths: ["userInfo", "token"]
     }]
