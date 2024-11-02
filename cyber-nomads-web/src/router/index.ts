@@ -68,4 +68,16 @@ const router = createRouter({
   },
 });
 
+// 设置全局前置守卫
+router.beforeEach((to, from, next) => {
+  const userInfo = JSON.parse(localStorage.getItem('userStore') || '{}');
+
+  // 判断是否访问 /login 路由且用户已经登录
+  if (to.path === '/login' && userInfo && Object.keys(userInfo).length) {
+    next('/workplace'); // 跳转到工作界面
+  } else {
+    next(); // 否则正常导航
+  }
+});
+
 export default router;

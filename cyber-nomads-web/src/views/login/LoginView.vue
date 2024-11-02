@@ -10,9 +10,10 @@ import {
   emailLogin,
   sendCodeToEmail, emailRegister
 } from "@/api/userApi"
-
+import { useRouter } from "vue-router";
 import {onMounted} from "vue";
 
+const router = useRouter()
 const snackbarStore = useSnackbarStore()
 const userStore = useUserStore()
 const isLogin = ref(true);
@@ -20,6 +21,7 @@ const sendLoading = ref(false)
 
 const loginForm = ref<LoginForm>({...defaultValue.defaultLoginForm})
 const registerForm = ref<RegisterForm>({...defaultValue.defaultRegisterForm})
+
 
 const loginValidators: Validators<LoginForm> = {
   email: (value) => value && /^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/.test(value) ? null : '请输入正确的邮箱',
@@ -92,6 +94,7 @@ const login = async()=>{
           userStore.setUserInfo(userData, res.data.token)
           console.log(userStore.getUserInfo)
           snackbarStore.showSuccessMessage("欢迎回来!")
+          router.push("/workplace")
         }else{
           snackbarStore.showErrorMessage("登录失败，请检查邮箱或验证码是否正确!")
         }
@@ -111,6 +114,7 @@ const register = async()=>{
         userStore.setUserInfo(userData, res.data.token)
         console.log(userStore.getUserInfo)
         snackbarStore.showSuccessMessage("欢迎加入Cyber Nomads!")
+        router.push("/workplace")
       }else{
         snackbarStore.showErrorMessage("注册失败，请检查邮箱或验证码是否正确!")
       }
