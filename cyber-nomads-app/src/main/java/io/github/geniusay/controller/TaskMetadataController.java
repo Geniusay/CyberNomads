@@ -1,7 +1,6 @@
 package io.github.geniusay.controller;
 
-import io.github.common.web.Result;
-import io.github.geniusay.pojo.DTO.TaskFunctionDTO;
+import io.github.geniusay.core.exception.R;
 import io.github.geniusay.service.TaskService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,8 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
+
 
 @RequestMapping("/task")
 @RestController
@@ -24,8 +22,8 @@ public class TaskMetadataController {
      * @return 平台列表
      */
     @GetMapping("/platforms")
-    public Result<?> listSupportedPlatforms() {
-        return Result.success(taskService.getSupportedPlatforms());
+    public R<?> listSupportedPlatforms() {
+        return R.success(taskService.getSupportedPlatforms());
     }
 
     /**
@@ -34,7 +32,7 @@ public class TaskMetadataController {
      * @return 功能及参数列表
      */
     @GetMapping("/platforms/{platform}/functions-params")
-    public Result<?> listFunctionsAndParamsByPlatform(@PathVariable String platform) {
-        return Result.success(taskService.getFunctionsAndParamsByPlatform(platform));
+    public R<?> listFunctionsAndParamsByPlatform(@PathVariable String platform) {
+        return R.success(taskService.getFunctionsAndParamsByPlatform(platform));
     }
 }

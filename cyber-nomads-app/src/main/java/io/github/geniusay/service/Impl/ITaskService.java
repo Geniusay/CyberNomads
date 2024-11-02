@@ -1,6 +1,7 @@
 package io.github.geniusay.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.core.supertask.TaskParamValidator;
 import io.github.geniusay.core.supertask.TaskStrategyManager;
 import io.github.geniusay.core.supertask.config.TaskPlatformConstant;
@@ -49,7 +50,7 @@ public class ITaskService implements TaskService {
         // 3. 获取任务蓝图
         AbstractTaskBlueprint blueprint = taskStrategyManager.getBlueprint(platform, taskType);
         if (blueprint == null) {
-            throw new IllegalArgumentException("任务类型不支持: " + taskType);
+            throw new ServeException("任务类型不支持: " + taskType);
         }
 
         // 4. 获取任务的必需参数并验证
@@ -81,11 +82,14 @@ public class ITaskService implements TaskService {
 
         // 获取任务
         TaskDO task = taskMapper.selectById(taskId);
-        if (task == null) throw new IllegalArgumentException("任务不存在: " + taskId);
-        if (!uid.equals(task.getUid())) {
-            throw new RuntimeException("");
+        if (task == null) {
+            throw new ServeException("任务不存在: " + taskId);
         }
 
+        // 校验权限，确保当前用户只能更新自己的任务
+        if (!uid.equals(task.getUid())) {
+            throw new ServeException("无权操作该任务");
+        }
 
         // 更新 params 字段
         task.setParams(ConvertorUtil.mapToJsonString(params));
@@ -100,7 +104,7 @@ public class ITaskService implements TaskService {
     public void updateRobotsInTask(Long taskId, List<Long> robotIds, boolean isAdd) {
         TaskDO task = taskMapper.selectById(taskId);
         if (task == null) {
-            throw new IllegalArgumentException("任务不存在: " + taskId);
+            throw new ServeException("任务不存在: " + taskId);
         }
 
         List<Long> robots = ConvertorUtil.stringToList(task.getRobots());
@@ -174,13 +178,16 @@ public class ITaskService implements TaskService {
         );
     }
 
+    /**
+     * 校验平台和任务类型是否合法
+     */
     private void validatePlatformAndTaskType(String platform, String taskType) {
         if (!isValidConstant(TaskPlatformConstant.class, platform)) {
-            throw new IllegalArgumentException("不支持的平台: " + platform);
+            throw new ServeException("不支持的平台: " + platform);
         }
 
         if (!isValidConstant(TaskTypeConstant.class, taskType)) {
-            throw new IllegalArgumentException("不支持的任务类型: " + taskType);
+            throw new ServeException("不支持的任务类型: " + taskType);
         }
     }
 }

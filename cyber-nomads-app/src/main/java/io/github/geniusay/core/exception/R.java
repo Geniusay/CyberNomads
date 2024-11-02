@@ -1,5 +1,6 @@
 package io.github.geniusay.core.exception;
 
+import io.github.geniusay.constants.RCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

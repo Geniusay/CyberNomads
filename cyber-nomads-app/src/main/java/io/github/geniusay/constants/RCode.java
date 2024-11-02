@@ -1,4 +1,4 @@
-package io.github.geniusay.core.exception;
+package io.github.geniusay.constants;
 
 import lombok.Getter;
 

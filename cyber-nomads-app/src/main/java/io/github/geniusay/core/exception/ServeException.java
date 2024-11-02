@@ -1,10 +1,12 @@
 package io.github.geniusay.core.exception;
 
+import io.github.geniusay.constants.RCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
  * 描述: 全局业务异常类
+ *
  * @author suifeng
  * 日期: 2024/7/5
  */
@@ -46,19 +48,24 @@ public class ServeException extends RuntimeException {
         this.message = rCode.getMessage() + addMessage;
     }
 
-    public static ServeException of(int code,String msg) {
-        return new ServeException(code,msg);
+    public static ServeException of(int code, String msg) {
+        return new ServeException(code, msg);
     }
+
+    public static ServeException of(String msg) {
+        return new ServeException(RCode.ERROR.getCode(), msg);
+    }
+
     public static ServeException of(ServeCode serveCode) {
-        return ServeException.of(Integer.parseInt(serveCode.getCode()),serveCode.getMsg());
+        return ServeException.of(Integer.parseInt(serveCode.getCode()), serveCode.getMsg());
     }
 
-    public static ServeException of(ServeCode serveCode,String msg) {
+    public static ServeException of(ServeCode serveCode, String msg) {
         String newMsg = String.format(serveCode.getMsg(), msg);
-        return ServeException.of(Integer.parseInt(serveCode.getCode()),newMsg);
+        return ServeException.of(Integer.parseInt(serveCode.getCode()), newMsg);
     }
 
-    public static ServeException SystemError(String msg){
-        return ServeException.of(RCode.ERROR.getCode(),msg);
+    public static ServeException SystemError(String msg) {
+        return ServeException.of(RCode.ERROR.getCode(), msg);
     }
 }
