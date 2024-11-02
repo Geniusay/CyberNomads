@@ -49,6 +49,12 @@ public class UserController {
         return Result.success(userService.register(req));
     }
 
+    @GetMapping("/getInfo")
+    @TokenRequire
+    public Result<?> getUserInfo(){
+        return userService.getUserInfo();
+    }
+
     @TokenRequire
     public Result<?> queryUser(@PathVariable String uid){
         return Result.success(userService.queryUserById(uid));
