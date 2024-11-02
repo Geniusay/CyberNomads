@@ -10,11 +10,18 @@ spring:
     username: ${EMAIL_USERNAME:ENC(Ndpes2aPfHdQQLG2Ds47yIxEh5/YB2ywTbf7UZ8Re7JgCTjwemDMQw==)}
     password: ${EMAIL_PASSWORD:ENC(IFKjNrj7WUsXTiTldZ8TDgHxBxgkYHXBD5RrrjZ2SlGFXMCaObgqgA==)}
     test-connection: false
+
   redis:
     host: ${REDIS_HOST:ENC(PdqjmmqM9psXlLIs0m89p7RXZ3mVWQPQ1BYdoHlK1mc=)}
     port: ${REDIS_PORT:ENC(rgpyHtYj/fQOniBDQYFY/V5spo5n01Nb)}
     database: 10
     password: ${REDIS_PASSWORD:ENC(MSbObotXBOL1YOke/f5sdmfWVJrVYqB9rtOo5Iu1kh39TM3Y6QdCbA==)}
+    lettuce:
+      pool:
+        max-active: 16
+        max-idle: 8
+        min-idle: 0
+        max-wait: 10000ms
 
   application:
     name: genius-blog-main

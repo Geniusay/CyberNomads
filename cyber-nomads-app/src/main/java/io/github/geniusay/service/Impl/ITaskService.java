@@ -9,11 +9,10 @@ import io.github.geniusay.core.supertask.config.TaskTypeConstant;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
 import io.github.geniusay.mapper.TaskMapper;
-import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.TaskFunctionDTO;
 import io.github.geniusay.pojo.VO.TaskVO;
-import io.github.geniusay.service.ITaskService;
+import io.github.geniusay.service.TaskService;
 import io.github.geniusay.utils.ConvertorUtil;
 import io.github.geniusay.utils.TaskTranslationUtil;
 import io.github.geniusay.utils.ThreadUtil;
@@ -28,7 +27,7 @@ import java.util.stream.Collectors;
 import static io.github.geniusay.utils.AIGenerate.ValidUtil.isValidConstant;
 
 @Service
-public class TaskService implements ITaskService {
+public class ITaskService implements TaskService {
 
     @Resource
     private TaskStrategyManager taskStrategyManager;

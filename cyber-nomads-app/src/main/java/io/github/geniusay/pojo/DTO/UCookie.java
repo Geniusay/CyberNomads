@@ -13,5 +13,4 @@ import lombok.Data;
 public class UCookie {
     private String name;
     private String value;
-
 }

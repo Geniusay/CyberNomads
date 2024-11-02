@@ -14,7 +14,7 @@ public class TestVideoAPI {
     @Test
     public void getVideoInfo() throws Exception {
         // 通过bvid获取视频详细信息
-        ApiResponse<VideoDetail> response = BilibiliVideoApi.getVideoDetailById(cookie, "BV1y41LYzErQ");
+        ApiResponse<VideoDetail> response = BilibiliVideoApi.getVideoDetailById(cookie, "BV1KC41167jv");
 
         if (response.isSuccess()) {
             VideoDetail videoDetailByBvid = response.getData();
@@ -24,22 +24,6 @@ public class TestVideoAPI {
             if (videoDetailByBvid != null) {
                 System.out.println("视频标题: " + videoDetailByBvid.getData().getTitle());
                 System.out.println("播放数: " + videoDetailByBvid.getData().getStat().getView());
-            } else {
-                System.out.println("获取视频信息失败");
-            }
-        }
-
-        // 通过aid获取视频详细信息
-        ApiResponse<VideoDetail> response1 = BilibiliVideoApi.getVideoDetailById(cookie, "85440373");
-
-        if (response1.isSuccess()) {
-            VideoDetail videoDetailByAid = response1.getData();
-            System.out.println(videoDetailByAid);
-
-            // 输出视频标题和播放数
-            if (videoDetailByAid != null) {
-                System.out.println("视频标题: " + videoDetailByAid.getData().getTitle());
-                System.out.println("播放数: " + videoDetailByAid.getData().getStat().getView());
             } else {
                 System.out.println("获取视频信息失败");
             }

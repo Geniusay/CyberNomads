@@ -32,6 +32,12 @@ public class ThreadUtil {
         return username;
     }
 
+    public static String getNickname(){
+        String username = threadLocal.get().get("nickname");
+        if(username == null) throw new RuntimeException("nickname为null");
+        return username;
+    }
+
     public static void remove() {
         threadLocal.remove();
     }

@@ -15,8 +15,8 @@ public class TestBarrageAPI {
 
     @Test
     public void getBarrage() throws Exception {
-        String cid = "1428089940";
-        String filePath = "C:\\_data\\" + cid + ".txt";
+        String cid = "1430818607";
+        String filePath = "D:\\" + cid + ".txt";
 
         // 获取弹幕列表
         ApiResponse<List<Barrage>> response = BilibiliBarrageApi.getRealTimeBarrageByCid(cookie, cid);
@@ -43,8 +43,8 @@ public class TestBarrageAPI {
 
     @Test
     public void barrage() throws Exception {
-        String cid = "1413629350";
-        String filePath = "C:\\_data\\" + cid + ".txt";
+        String cid = "1430818607";
+        String filePath = "D:\\" + cid + ".txt";
         // 逐行读取：从文件中加载弹幕列表
         List<Barrage> loadedBarrageList = loadBarrageList(filePath);
         // 打印读取后的弹幕列表

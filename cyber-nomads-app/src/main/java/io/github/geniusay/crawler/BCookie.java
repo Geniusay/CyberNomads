@@ -1,5 +1,5 @@
 package io.github.geniusay.crawler;
 
 public class BCookie {
-    public static String cookie;
+    public static String cookie = "buvid3=EDF07B37-BA76-F156-C41D-C4633D00A47C37736infoc; b_nut=1724411635; LIVE_BUVID=AUTO2717244116385206; _uuid=CE51D695-43E3-6728-5D8A-D667BA58543736549infoc; CURRENT_FNVAL=4048; rpdid=|(k||R)YkYku0J'u~kR~JllYY; buvid4=CE928327-2FBF-3582-62AB-FA9DA74806C325835-024060406-SGxkQcBG02aNwuhi6jzL0g%3D%3D; buvid_fp_plain=undefined; header_theme_version=CLOSE; enable_web_push=DISABLE; home_feed_column=5; SESSDATA=c0d2247e%2C1741423733%2C8ee2e%2A91CjCjYu0Mp-OvIKgHen6EngImy8uvsMDb9hF5TYznEBKtfmjhy9OYT2CQ4n_dldAjvQcSVkN1Uk5mTlBGZmk0RXRleGtaVEVUcGhGTWpZWXBKVGlLd3FlTmlNclhGd2gzLTJLZWgwV1dtTERjcG5QeHlaMEg3T05VQ2t6QU10VXM4cHM1eUNwSkxBIIEC; bili_jct=b3e372b0598a9345f4d6a90e6e79c5e9; DedeUserID=1911063664; DedeUserID__ckMd5=4fd2247e5d9c81ab; hit-dyn-v2=1; PVID=3; fingerprint=59cebf91e929408a3abd20cd454372bc; buvid_fp=8a90b0a8f38aa5f6825bb9d0199a78e3; browser_resolution=2552-1306; CURRENT_QUALITY=16; bp_t_offset_1911063664=992858523140358144; b_lsid=3EAF105BC_192EAD4876E; bili_ticket=eyJhbGciOiJIUzI1NiIsImtpZCI6InMwMyIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzA3NzU4NjUsImlhdCI6MTczMDUxNjYwNSwicGx0IjotMX0.m4f0NC3oXvnuVCTd66pnO9FCRR-0iQby-6eaAany7i0; bili_ticket_expires=1730775805; sid=pz3c5r8q";
 }

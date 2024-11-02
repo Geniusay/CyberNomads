@@ -1,13 +1,12 @@
 package io.github.geniusay.controller;
 
-import io.github.geniusay.pojo.DO.TaskDO;
+import io.github.common.web.Result;
+import io.github.geniusay.pojo.DTO.CreatTaskDTO;
 import io.github.geniusay.pojo.DTO.UpdateRobotsDTO;
-import io.github.geniusay.pojo.VO.TaskVO;
-import io.github.geniusay.service.ITaskService;
+import io.github.geniusay.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -15,25 +14,20 @@ import java.util.Map;
 public class TaskController {
 
     @Resource
-    private ITaskService taskService;
+    private TaskService taskService;
 
     @PostMapping("/create")
-    public String createTask(
-            @RequestParam String taskName,
-            @RequestParam String platform,
-            @RequestParam String taskType,
-            @RequestBody Map<String, Object> params) {
-        // 创建任务
-        taskService.createTask(taskName, platform, taskType, params);
-        return "任务创建成功";
+    public Result<?> createTask(@RequestBody CreatTaskDTO creat) {
+        taskService.createTask(creat.getTaskName(), creat.getPlatform(), creat.getTaskType(), creat.getParams());
+        return Result.success("任务创建成功");
     }
 
     /**
      * 根据用户 uid 获取所有任务
      */
     @GetMapping("/user/{uid}")
-    public List<TaskVO> getUserTasks(@PathVariable String uid) {
-        return taskService.getUserTasks(uid);
+    public Result<?> getUserTasks(@PathVariable String uid) {
+        return Result.success(taskService.getUserTasks(uid));
     }
 
     /**

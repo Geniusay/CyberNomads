@@ -1,13 +1,12 @@
 package io.github.geniusay.service;
 
-import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.TaskFunctionDTO;
 import io.github.geniusay.pojo.VO.TaskVO;
 
 import java.util.List;
 import java.util.Map;
 
-public interface ITaskService {
+public interface TaskService {
 
     /**
      * 创建任务并保存到数据库

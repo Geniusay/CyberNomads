@@ -51,18 +51,9 @@
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-data-redis</artifactId>
-        <exclusions>
-          <exclusion>
-            <artifactId>spring-data-redis</artifactId>
-            <groupId>org.springframework.data</groupId>
-          </exclusion>
-          <exclusion>
-            <artifactId>lettuce-core</artifactId>
-            <groupId>io.lettuce</groupId>
-          </exclusion>
-        </exclusions>
         <version>${redis.version}</version>
       </dependency>
+
       <!--springBoot-test-->
       <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -93,6 +84,8 @@
         <artifactId>commons-pool2</artifactId>
         <version>${commons-pool2.version}</version>
       </dependency>
+
+
       <!--fastjson-->
       <dependency>
         <groupId>com.alibaba</groupId>
