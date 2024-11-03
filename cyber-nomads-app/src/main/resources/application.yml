@@ -10,3 +10,13 @@ spring:
   datasource:
     hikari:
       max-lifetime: 120000
+
+sa-token:
+  token-name: Authorization
+  timeout: 2592000
+  active-timeout: -1
+  is-concurrent: true
+  is-share: true
+  token-style: uuid
+  is-log: true
+  is-read-cookie: false

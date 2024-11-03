@@ -1,16 +1,10 @@
 package io.github.geniusay.utils;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import io.github.geniusay.constants.RedisConstant;
-import lombok.Synchronized;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -63,19 +57,7 @@ public class CacheUtil {
         return code;
     }
 
-    public String getUidByToken(String token){
-        return stringRedisTemplate.opsForValue().get(RedisConstant.TOKEN + token);
-    }
-
-    public void putTokenAndUid(String token,String uid){
-        stringRedisTemplate.opsForValue().set(RedisConstant.TOKEN + token, uid);
-    }
-
-    public void removeTokenAndUid(String key){
-        stringRedisTemplate.delete(RedisConstant.TOKEN + key);
-    }
-
-    public boolean isExpired(String key) {
+    public boolean emailCodeIsExpired(String key) {
         return Boolean.TRUE.equals(stringRedisTemplate.hasKey(RedisConstant.EMAIL_CAPTCHA + key));
     }
 }

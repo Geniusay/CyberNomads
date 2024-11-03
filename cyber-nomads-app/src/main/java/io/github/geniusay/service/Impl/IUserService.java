@@ -35,8 +35,6 @@ public class IUserService implements UserService {
     @Resource
     private CacheUtil cacheUtil;
 
-    private static final Random RANDOM = new Random();
-
     @Override
     public UserVO queryUserById(String uid) {
         UserDO dto = userMapper.selectOne(new QueryWrapper<UserDO>().eq("uid",uid));
@@ -66,9 +64,13 @@ public class IUserService implements UserService {
         if(user == null){
             throw new RuntimeException("用户未注册");
         }
-        String token = TokenUtil.getToken(String.valueOf(user.getId()), user.getEmail(), user.getNickname());
-        cacheUtil.putTokenAndUid(token,user.getUid());
+        String token = TokenUtil.getToken(String.valueOf(user.getUid()), user.getEmail(), user.getNickname());
         return LoginVO.builder().userVO(UserVO.convert(user)).token(token).build();
+    }
+
+    @Override
+    public void logout() {
+        TokenUtil.logout(ThreadUtil.getUid(), ThreadUtil.getEmail(), ThreadUtil.getNickname());
     }
 
     @Override
@@ -87,7 +89,6 @@ public class IUserService implements UserService {
                 .build();
         userMapper.insert(user);
         String token = TokenUtil.getToken(user.getUid(), user.getEmail(), user.getNickname());
-        cacheUtil.putTokenAndUid(token,user.getUid());
         return LoginVO.builder().userVO(UserVO.convert(user)).token(token).build();
     }
 
@@ -103,7 +104,7 @@ public class IUserService implements UserService {
 
     @Override
     public void generateEmailCode(String email,String pid,String code) {
-        if(cacheUtil.isExpired(email)){
+        if(cacheUtil.emailCodeIsExpired(email)){
             throw new RuntimeException("验证码冷却中");
         }
         if(!StringUtils.equals(cacheUtil.getCaptchaAndRemove(pid), CyberStringUtils.toLower(code))){

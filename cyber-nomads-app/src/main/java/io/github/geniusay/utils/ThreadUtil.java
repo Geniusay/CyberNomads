@@ -26,8 +26,8 @@ public class ThreadUtil {
         return uid;
     }
 
-    public static String getUsername(){
-        String username = threadLocal.get().get("username");
+    public static String getEmail(){
+        String username = threadLocal.get().get("email");
         if(username == null) throw new RuntimeException("username为null");
         return username;
     }

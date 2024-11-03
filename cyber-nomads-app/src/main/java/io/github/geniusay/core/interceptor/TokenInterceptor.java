@@ -20,29 +20,21 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class TokenInterceptor implements HandlerInterceptor {
 
-    @Resource
-    private CacheUtil cacheUtil;
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if(handler instanceof HandlerMethod){
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             if(handlerMethod.hasMethodAnnotation(TokenRequire.class)){
-                String token = request.getHeader("Authorization");
-                String uid = null;
-                if (token!=null&& (uid = cacheUtil.getUidByToken(token))!=null) {
-                    String tokenObject = (String) StpUtil.getLoginIdByToken(token);
-                    String[] strs = tokenObject.split("\\|");
-                    if(StpUtil.isLogin(tokenObject)&&strs.length==3){
-                        ThreadUtil.set("uid",strs[0]);
-                        ThreadUtil.set("email",strs[1]);
-                        ThreadUtil.set("nickname",strs[2]);
-                    }
-                    return true;
-                } else {
+                String tokenObject = (String) StpUtil.getLoginIdByToken(request.getHeader("Authorization"));
+                if(tokenObject == null){
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
                     return false;
                 }
+                String[] strs = tokenObject.split("\\|");
+                ThreadUtil.set("uid",strs[0]);
+                ThreadUtil.set("email",strs[1]);
+                ThreadUtil.set("nickname",strs[2]);
+                return true;
             }
         }
         return true;
