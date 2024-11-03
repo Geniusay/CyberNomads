@@ -1,5 +1,6 @@
 package io.github.geniusay.service;
 
+import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.TaskFunctionDTO;
 import io.github.geniusay.pojo.VO.TaskVO;
 
@@ -47,4 +48,9 @@ public interface TaskService {
      * 修改任务状态，供内部调度器调用
      */
     void changeTaskStatus(Long taskId, String newStatus);
+
+    /**
+     * 批量解析任务中的 robots 字段，并填充 robotList 字段
+     */
+    List<TaskDO> populateRobotListForTasks(List<TaskDO> taskDOList);
 }
