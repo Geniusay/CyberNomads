@@ -30,6 +30,7 @@ request.interceptors.response.use(
     if (response.status != 200) {
       snackbarStore.showSuccessMessage("服务异常!");
     }
+    console.log(response)
     let res = response.data;
     if (res.code === 114514) {
       snackbarStore.showErrorMessage(res.msg);
@@ -43,14 +44,6 @@ request.interceptors.response.use(
       res = res ? JSON.parse(res) : res;
     }
     return res;
-  },
-  (error) => {
-    const snackbarStore = useSnackbarStore();
-    snackbarStore.showErrorMessage("请求异常!");
-    console.log("err" + error); // for debug
-    // localStorage.removeItem('token')
-    //router.replace({path:'/login'})
-    return Promise.reject(error);
   }
 );
 
