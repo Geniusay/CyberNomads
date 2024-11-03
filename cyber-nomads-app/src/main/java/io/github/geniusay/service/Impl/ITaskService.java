@@ -15,6 +15,8 @@ import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.TaskFunctionDTO;
 import io.github.geniusay.pojo.VO.TaskVO;
+import io.github.geniusay.schedule.ScheduleExecutor;
+import io.github.geniusay.schedule.TaskScheduleManager;
 import io.github.geniusay.service.TaskService;
 import io.github.geniusay.service.TaskStateChangeService;
 import io.github.geniusay.utils.ConvertorUtil;
@@ -36,6 +38,8 @@ public class ITaskService implements TaskService {
 
     @Resource
     private TaskStrategyManager taskStrategyManager;
+    @Resource
+    TaskScheduleManager manager;
 
     @Resource
     private TaskMapper taskMapper;
@@ -93,7 +97,7 @@ public class ITaskService implements TaskService {
 
         // 7. 保存任务到数据库
         taskMapper.insert(taskDO);
-
+        manager.registerTask(taskDO);
         // 8. 返回任务详情
         return convertToTaskVO(taskDO);
     }
@@ -154,7 +158,7 @@ public class ITaskService implements TaskService {
         // 5. 将 Set 转换回 List，并更新任务的机器人列表
         task.setRobots(ConvertorUtil.listToString(new ArrayList<>(robotIdSet)));
         taskMapper.updateById(task);
-
+        manager.startTask(String.valueOf(task.getId()));
         // 6. 返回更新后的任务详情
         return convertToTaskVO(task);
     }

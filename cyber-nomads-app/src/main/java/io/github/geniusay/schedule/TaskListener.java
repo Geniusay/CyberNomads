@@ -12,6 +12,7 @@ public interface TaskListener {
     void startTask(Task task);
     void removeTask(Task task);
     void registerRobot(Long robotId);
-
     void removeRobot(Long robotId);
+
+    void initRobot();
 }

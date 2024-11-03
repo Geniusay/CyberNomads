@@ -55,13 +55,13 @@ public class LoginController {
         WebElement login = loginwebDriver.findElement(By.xpath("/html/body/div[2]/div[2]/div[1]/div[1]/ul[2]/li[1]/li/div/div/span"));
         login.click();
         Thread.sleep(1000);
-        WebElement usernameInput = loginwebDriver.findElement(By.xpath("/html/body/div[4]/div/div[4]/div[2]/form/div[1]/input"));
+        WebElement usernameInput = loginwebDriver.findElement(By.xpath("/html/body/div[5]/div/div[4]/div[2]/form/div[1]/input"));
         usernameInput.sendKeys(username);
-        WebElement passwordInput = loginwebDriver.findElement(By.xpath("/html/body/div[4]/div/div[4]/div[2]/form/div[3]/input"));
+        WebElement passwordInput = loginwebDriver.findElement(By.xpath("/html/body/div[5]/div/div[4]/div[2]/form/div[3]/input"));
         passwordInput.sendKeys(password);
-        WebElement loginButton = loginwebDriver.findElement(By.xpath("/html/body/div[4]/div/div[4]/div[2]/div[2]/div[2]"));
+        WebElement loginButton = loginwebDriver.findElement(By.xpath("/html/body/div[5]/div/div[4]/div[2]/div[2]/div[2]"));
         loginButton.click();
-        Thread.sleep(25000L);
+        Thread.sleep(50000L);
         Set<Cookie> cookies = loginwebDriver.manage().getCookies();
         loginwebDriver.quit();
         ChromeDriver confirmLogin = new ChromeDriver(options);

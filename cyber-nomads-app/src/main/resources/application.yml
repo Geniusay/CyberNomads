@@ -6,3 +6,7 @@ spring:
     import: classpath:you-cant-see-that.yml
   profiles:
     active: ${ACTIVE:dev}
+
+  datasource:
+    hikari:
+      max-lifetime: 120000

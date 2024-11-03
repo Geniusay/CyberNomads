@@ -6,11 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.geniusay.mapper.RobotMapper;
-import io.github.geniusay.mapper.UserMapper;
 import io.github.geniusay.pojo.DO.RobotDO;
-import io.github.geniusay.pojo.DTO.ChangeRobotDTO;
-import io.github.geniusay.pojo.DTO.LoadRobotResponseDTO;
-import io.github.geniusay.pojo.DTO.UserCookieDTO;
+import io.github.geniusay.pojo.DTO.*;
 import io.github.geniusay.pojo.Platform;
 import io.github.geniusay.pojo.VO.RobotVO;
 import io.github.geniusay.service.RobotService;
@@ -23,6 +20,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,23 +35,29 @@ public class IRobotService implements RobotService {
         List<String> success = new ArrayList<>();
         List<String> fail = new ArrayList<>();
         try {
-            List<UserCookieDTO> userDataList = objectMapper.readValue(file.getBytes(), new TypeReference<>() {
+            Map<String, List<UCookie>> cookiesMap = objectMapper.readValue(file.getBytes(), new TypeReference<>() {
             });
-            for (UserCookieDTO userCookieDTO : userDataList) {
-                String cookieString = userCookieDTO.getCookie().stream()
+            for (Map.Entry<String, List<UCookie>> entry : cookiesMap.entrySet()) {
+                String username = entry.getKey();
+                List<UCookie> cookies = entry.getValue();
+                String cookieString = cookies.stream()
                         .map(uCookie -> uCookie.getName() + "=" + uCookie.getValue())
                         .collect(Collectors.joining(";"));
                 RobotDO build = RobotDO.builder()
-                        .username(userCookieDTO.getUsername())
-                        .nickname(userCookieDTO.getUsername())
+                        .username(username)
+                        .nickname(username)
                         .platform(Platform.BILIBILI.getCode())
                         .cookie(cookieString)
                         .ban(false)
                         .hasDelete(false)
                         .uid(ThreadUtil.getUid())
                         .build();
-                robotMapper.insert(build);
-                success.add(build.getUsername());
+                try {
+                    robotMapper.insert(build);
+                    success.add(build.getUsername());
+                }catch (Exception e){
+                    fail.add(username);
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

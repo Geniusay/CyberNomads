@@ -3,6 +3,8 @@ package io.github.geniusay.schedule;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -17,39 +19,45 @@ import java.util.concurrent.*;
  */
 @Component
 @Slf4j
+@DependsOn("taskScheduleManager")
 public class ScheduleExecutor implements TaskListener{
     @Resource
     private Executor taskExecutor;
     @Resource
     private TaskScheduleManager manager;
     private final BlockingQueue<Long> FREE_WORKER = new LinkedBlockingQueue<>();
-    @PostConstruct
-    public void init(){
-        FREE_WORKER.addAll(manager.getAllRobot().keySet());
-        new Thread(this::mainThread).start();
-    }
 
     public void mainThread(){
-        while (!Thread.currentThread().isInterrupted()){
+        while (true){
             try {
                 Long robotId = FREE_WORKER.take();
-                RobotWorker robotWorker = manager.getAllRobot().get(robotId);
                 Map<Long, Map<String, Task>> worldRobotsTask = manager.getWorldRobotsTask();
-                List<Task> tasks = new ArrayList<>(worldRobotsTask.get(robotId).values());
-                if (!tasks.isEmpty()) {
-                    Task selectedTask = tasks.get(new Random().nextInt(tasks.size()));
-                    robotWorker.setTask(selectedTask);
-                    taskExecutor.execute(() -> {
-                        try {
-                            robotWorker.execute();
-                            robotWorker.lastWord();
-                            FREE_WORKER.add(robotId);
-                            worldRobotsTask.get(robotId).remove(selectedTask.getId());
-                        } catch (Exception e) {
-                            log.error("robot执行异常:{}",e.getMessage());
-                        }
-                    });
+                log.info("获取到空闲罗伯特ID:{}",robotId);
+                Map<String, Task> taskMap = worldRobotsTask.get(robotId);
+
+                if(Objects.nonNull(taskMap)){
+                    List<Task> tasks = new ArrayList<>(taskMap.values());
+                    log.info("任务集:{}",tasks);
+                    if (!tasks.isEmpty()) {
+                        RobotWorker robotWorker = manager.getAllRobot().get(robotId);
+                        Task selectedTask = tasks.get(new Random().nextInt(tasks.size()));
+                        robotWorker.setTask(selectedTask);
+                        taskExecutor.execute(() -> {
+                            try {
+                                robotWorker.execute();
+                                robotWorker.lastWord();
+//                            worldRobotsTask.get(robotId).remove(selectedTask.getId());
+                                System.out.println("robot任务执行完毕");
+                                taskMap.remove(robotWorker.task().getUid());
+                            } catch (Exception e) {
+                                log.error("robot执行异常:{}", e.getMessage());
+                            }
+                        });
+                    }
+                }else{
+                    Thread.sleep(1000);
                 }
+                FREE_WORKER.add(robotId);
             } catch (InterruptedException e) {
                 log.error("调度器异常:{}",e.getMessage());
             }
@@ -74,6 +82,13 @@ public class ScheduleExecutor implements TaskListener{
     @Override
     public void removeRobot(Long robotId) {
         FREE_WORKER.remove(robotId);
+    }
+
+    @Override
+    public void initRobot() {
+        FREE_WORKER.addAll(manager.getAllRobot().keySet());
+        log.info("当前罗伯特数量:{}",FREE_WORKER.size());
+        new Thread(this::mainThread).start();
     }
 
 }

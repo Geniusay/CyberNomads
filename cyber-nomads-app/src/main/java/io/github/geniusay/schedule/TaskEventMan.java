@@ -52,4 +52,10 @@ public class TaskEventMan {
             listener.removeRobot(robotId);
         }
     }
+
+    public void initRobot(){
+        for (TaskListener listener : listeners) {
+            listener.initRobot();
+        }
+    }
 }

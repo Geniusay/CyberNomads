@@ -9,6 +9,8 @@ import io.github.geniusay.mapper.RobotMapper;
 import io.github.geniusay.mapper.TaskMapper;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
+import io.github.geniusay.service.TaskService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.threads.TaskThreadFactory;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
  * @Date 2024/11/1 20:14
  */
 @Component
+@Slf4j
 public class TaskScheduleManager {
 
     @Resource
@@ -37,27 +40,44 @@ public class TaskScheduleManager {
     TaskFactory taskFactory;
     @Resource
     TaskEventMan EVENT_PUBLISHER;
+    @Resource
+    TaskService taskService;
     public static final Map<String, Task> WORLD_TASK = new ConcurrentHashMap<>();
     public static final Map<Long, RobotWorker> WORLD_ROBOTS = new ConcurrentHashMap<>();
     public static final Map<Long, Map<String,Task>> WORLD_ROBOTS_TASK = new ConcurrentHashMap<>();
 
 
     //TODO final map
-//    @PostConstruct
+    @PostConstruct
     public void init(){
         List<TaskDO> taskDOS = taskMapper.selectList(new QueryWrapper<TaskDO>().eq("task_status", TaskStatus.PENDING.name()));
-        for (TaskDO taskDO : taskDOS) {
-            WORLD_TASK.put(String.valueOf(taskDO.getId()),taskFactory.buildTask(taskDO,taskDO.getPlatform(),taskDO.getTaskType()));
+        if(taskDOS!=null){
+            List<TaskDO> taskDOSFill = taskService.populateRobotListForTasks(taskDOS);
+            for (TaskDO taskDO : taskDOSFill) {
+                WORLD_TASK.put(taskDO.getUid(),taskFactory.buildTask(taskDO,taskDO.getPlatform(),taskDO.getTaskType()));
+            }
         }
-
-        List<RobotDO> robotDOS = robotMapper.selectList(new QueryWrapper<RobotDO>().eq("ban", false).eq("has_delete", false));
+        List<RobotDO> robotDOS = robotMapper.selectList(new QueryWrapper<RobotDO>().eq("ban", 0).eq("has_delete", 0));
         for (RobotDO robotDO : robotDOS) {
             WORLD_ROBOTS.put(robotDO.getId(),new RobotWorker(robotDO));
         }
+        WORLD_TASK.forEach((k,v)->{
+            v.setRobots(new ArrayList<>(robotDOS));
+            List<RobotDO> robots = v.getRobots();
+            if(robots!=null)
+                for (RobotDO robot : robots) {
+                    log.info("添加罗伯特:{},任务:{}",robot.getId(),k);
+                    Map<String, Task> taskMap = WORLD_ROBOTS_TASK.getOrDefault(robot.getId(), new ConcurrentHashMap<>());
+                    taskMap.put(k,v);
+                    WORLD_ROBOTS_TASK.put(robot.getId(),taskMap);
+                }
+        });
+        EVENT_PUBLISHER.initRobot();
     }
 
     public void registerTask(TaskDO task){
         WORLD_TASK.put(String.valueOf(task.getId()),taskFactory.buildTask(task,task.getPlatform(),task.getTaskType()));
+        log.info("任务注册:{}",task.getId());
     }
 
     public Task removeTask(Long taskId){
@@ -78,10 +98,11 @@ public class TaskScheduleManager {
         return WORLD_ROBOTS_TASK.get(robotId).values();
     }
 
-    private void startTask(String taskId){
+    public void startTask(String taskId){
         for (RobotDO robot : WORLD_TASK.get(taskId).getRobots()) {
             Map<String, Task> taskMap = WORLD_ROBOTS_TASK.getOrDefault(robot.getId(), new ConcurrentHashMap<>());
             taskMap.put(taskId,WORLD_TASK.get(taskId));
+            WORLD_ROBOTS_TASK.put(robot.getId(),taskMap);
         }
         EVENT_PUBLISHER.startWork(WORLD_TASK.get(taskId));
     }
@@ -98,6 +119,7 @@ public class TaskScheduleManager {
         return WORLD_ROBOTS;
     }
     public Map<Long, Map<String,Task>> getWorldRobotsTask(){
+        log.info(WORLD_ROBOTS_TASK.toString());
         return WORLD_ROBOTS_TASK;
     }
     public Map<String, Task> getWorldTask(){
