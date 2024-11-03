@@ -2,10 +2,9 @@ package io.github.geniusay.core.supertask.task;
 
 import io.github.geniusay.core.supertask.TaskLogProcessor;
 import io.github.geniusay.core.supertask.config.TaskStatus;
-import io.github.geniusay.core.supertask.terminator.Terminator;
+import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;

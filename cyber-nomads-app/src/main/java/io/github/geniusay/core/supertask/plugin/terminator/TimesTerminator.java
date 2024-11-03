@@ -1,6 +1,7 @@
-package io.github.geniusay.core.supertask.terminator;
+package io.github.geniusay.core.supertask.plugin.terminator;
 
 import io.github.geniusay.core.supertask.task.RobotWorker;
+import io.github.geniusay.core.supertask.task.TaskNeedParams;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 任务计数器终止器
  * ept：一个robot可以做{times}次任务
  */
-public class TimesTerminator implements Terminator{
+public class TimesTerminator implements Terminator {
 
     private final int times;
 
@@ -36,5 +37,10 @@ public class TimesTerminator implements Terminator{
     public boolean taskIsDone() {
 
         return false;
+    }
+
+    @Override
+    public List<TaskNeedParams> supplierNeedParams() {
+        return null;
     }
 }

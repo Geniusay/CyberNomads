@@ -13,13 +13,13 @@ import java.util.List;
 public class TaskNeedParams {
 
     private String name;
-    private String type;
+    private Class<?> type;
     private String desc;
     private boolean required;
     private Object defaultValue;
 
     private List<TaskNeedParams> childParams = new ArrayList<>();
-    public TaskNeedParams(String name, String type, String desc) {
+    public TaskNeedParams(String name, Class<?> type, String desc) {
         this.name = name;
         this.type = type;
         this.desc = desc;
@@ -27,7 +27,7 @@ public class TaskNeedParams {
         this.defaultValue = null;
     }
 
-    public TaskNeedParams(String name, String type, String desc, boolean required, Object defaultValue) {
+    public TaskNeedParams(String name, Class<?> type, String desc, boolean required, Object defaultValue) {
         this.name = name;
         this.type = type;
         this.desc = desc;
@@ -35,7 +35,7 @@ public class TaskNeedParams {
         this.defaultValue = defaultValue;
     }
 
-    public TaskNeedParams(String name, String type, String desc, boolean required, Object defaultValue, List<TaskNeedParams> childParams) {
+    public TaskNeedParams(String name, Class<?> type, String desc, boolean required, Object defaultValue, List<TaskNeedParams> childParams) {
         this.name = name;
         this.type = type;
         this.desc = desc;

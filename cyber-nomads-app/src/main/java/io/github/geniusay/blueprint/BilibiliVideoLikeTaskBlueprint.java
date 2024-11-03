@@ -30,7 +30,7 @@ public class BilibiliVideoLikeTaskBlueprint extends AbstractTaskBlueprint {
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
-                new TaskNeedParams("test", "String", "测试一下视频点赞", false, "")
+                new TaskNeedParams("test", String.class, "测试一下视频点赞", false, "")
         );
     }
 

@@ -21,6 +21,7 @@ export default {
     noaccount: "还没有帐号？",
     create: "在此处创建一个",
     error: "电子邮件/密码组合无效",
+    logout: "登出"
   },
   register: {
     title: "创建帐号",
@@ -128,6 +129,10 @@ export default {
     voicebot: "语音对话助手",
     imagebot: "图像助手",
     chartbot: "图表助手",
+    profileDetails: "个人信息",
+    plansAndBilling: "账户余额",
+    apiDashboard: "API面板",
+    askCommunity: "问题帮助",
   },
   dashboard: {
     activity: "活动",

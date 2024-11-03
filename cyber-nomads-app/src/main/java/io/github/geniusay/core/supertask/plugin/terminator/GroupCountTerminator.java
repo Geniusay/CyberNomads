@@ -1,14 +1,16 @@
-package io.github.geniusay.core.supertask.terminator;
+package io.github.geniusay.core.supertask.plugin.terminator;
 
 import io.github.geniusay.core.supertask.task.RobotWorker;
+import io.github.geniusay.core.supertask.task.TaskNeedParams;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 总计数终结器
  * ept：任务一共要完成多少次{targetCount}
  */
-public class GroupCountTerminator implements Terminator{
+public class GroupCountTerminator implements Terminator {
 
     private final int targetCount;
 
@@ -27,5 +29,10 @@ public class GroupCountTerminator implements Terminator{
     @Override
     public boolean taskIsDone() {
         return targetCount<=nowCount.get();
+    }
+
+    @Override
+    public List<TaskNeedParams> supplierNeedParams() {
+        return null;
     }
 }
