@@ -5,17 +5,17 @@
 -->
 <script setup lang="ts">
 import StatusMenu from "./StatusMenu.vue";
-import { useAuthStore } from "@/stores/authStore";
 import { useUserStore } from "@/stores/userStore";
+import { useSnackbarStore } from "@/stores/snackbarStore";
 import { useRouter } from "vue-router";
 const router = useRouter();
 
+const snackbarStore = useSnackbarStore()
 const userStore = useUserStore();
-const authStore = useAuthStore();
+
 const handleLogout = () => {
-  authStore.logout();
-  console.log("---");
-  console.log(router);
+  snackbarStore.showSuccessMessage("登出成功")
+  userStore.logout()
 };
 
 const navs = [

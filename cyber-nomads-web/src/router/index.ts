@@ -72,8 +72,8 @@ const router = createRouter({
 // 设置全局前置守卫
 router.beforeEach((to, from, next) => {
   const userInfo = JSON.parse(localStorage.getItem('cyberUser') || '{}');
-  const loggedIn = userInfo && Object.keys(userInfo).length
-  if(!loggedIn){
+  const loggedIn = !!(userInfo && Object.keys(userInfo).length)
+  if(loggedIn){
     if (to.path.startsWith('/home') || to.path === '/login') {
       next();
     } else {
@@ -82,7 +82,7 @@ router.beforeEach((to, from, next) => {
     }
   }else {
     if (to.path === '/login') {
-      useSnackbarStore().showErrorMessage("已登录，欢迎回来!")
+      useSnackbarStore().showSuccessMessage("🌈已登录，欢迎回来!")
       next('/workplace'); // 跳转到工作界面
     } else {
       next(); // 否则正常导航

@@ -53,13 +53,13 @@ const generatePicCode = async ()=>{
       picCode.value.pid = res.data.pid
       picCode.value.img = res.data.base64
       setTimeout(()=>{
-        picLoading.value = false;
         preImg.value = picCode.value.img
       }, 300)
     }else{
       snackbarStore.showErrorMessage("网络异常")
     }
   })
+  picLoading.value = false;
 
 }
 
@@ -75,10 +75,10 @@ const sendEmailCode = async () => {
         snackbarStore.showSuccessMessage("已发送邮箱验证码，请检查邮箱")
       }else{
         snackbarStore.showErrorMessage("图片验证码错误!")
-        generatePicCode()
       }
+    }).finally(()=>{
+      sendLoading.value = false
     })
-    sendLoading.value = false
   }else{
     snackbarStore.showErrorMessage("图片验证码不能为空")
   }
@@ -89,12 +89,10 @@ const login = async()=>{
   if (!errorsMsg) {
     await emailLogin(loginForm.value).then(res=>{
         if(res.code==="200"){
-          console.log(res.data)
           const userData: UserVO = res.data.userVO as UserVO
           userStore.setUserInfo(userData, res.data.token)
-          console.log(userStore.getUserInfo)
           snackbarStore.showSuccessMessage("欢迎回来!")
-          router.push("/workplace")
+          router.push({path:'/workplace'})
         }else{
           snackbarStore.showErrorMessage("登录失败，请检查邮箱或验证码是否正确!")
         }
@@ -102,6 +100,7 @@ const login = async()=>{
   }else{
     snackbarStore.showErrorMessage(errorsMsg)
   }
+  await generatePicCode()
 }
 
 const register = async()=>{
@@ -112,9 +111,8 @@ const register = async()=>{
         console.log(res.data)
         const userData: UserVO = res.data.userVO as UserVO
         userStore.setUserInfo(userData, res.data.token)
-        console.log(userStore.getUserInfo)
         snackbarStore.showSuccessMessage("欢迎加入Cyber Nomads!")
-        router.push("/workplace")
+        router.push({path:'/workplace'})
       }else{
         snackbarStore.showErrorMessage("注册失败，请检查邮箱或验证码是否正确!")
       }
