@@ -63,4 +63,4 @@ jobs:
                 docker rmi $(docker images ${{ secrets.DOCKER_REPO }}/cyber-nomads-web -q) || true
                 sleep 3
                 docker pull ${{ secrets.DOCKER_REPO }}/cyber-nomads-web
-                docker run --name cyber-nomads-web -d -p 0.0.0.0:80:80 -p 0.0.0.0:443:443 /opt/docker/nginx/conf.d/nginx.conf:/nginx/config/nginx.conf -v /opt/docker/nginx/conf.d/default.conf:/nginx/config/default.conf -v /opt/docker/nginx/cert:/etc/nginx/ssl/cert -d ${{ secrets.DOCKER_REPO }}/cyber-nomads-web
+                docker run --name cyber-nomads-web -d -p 0.0.0.0:80:80 -p 0.0.0.0:443:443 /opt/docker/nginx/conf.d/nginx.conf:/nginx/config/nginx.conf -v /opt/docker/nginx/conf.d/default.conf:/nginx/config/default.conf -v /opt/docker/nginx/cert:/etc/nginx/ssl/cert ${{ secrets.DOCKER_REPO }}/cyber-nomads-web
