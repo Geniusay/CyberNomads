@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 
 import static io.github.geniusay.core.supertask.config.TaskConstant.ERROR_CODE;
@@ -153,5 +154,9 @@ public class Task {
             task.setLogger(LoggerFactory.getLogger(task.getTaskName()));
             return task;
         }
+    }
+
+    public boolean inStatusList(TaskStatus ...statues){
+        return Stream.of(statues).anyMatch(status-> status.equals(this.taskStatus));
     }
 }
