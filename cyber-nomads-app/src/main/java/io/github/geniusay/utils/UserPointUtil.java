@@ -22,8 +22,6 @@ public class UserPointUtil {
 
     private final ConcurrentHashMap<String, AtomicInteger> pointCache = new ConcurrentHashMap<>();
 
-    private final Object lock = new Object();
-
     public boolean reduce(Integer point, String option){
         return option(PointRecord.builder()
                 .uid(ThreadUtil.getUid())
@@ -58,11 +56,7 @@ public class UserPointUtil {
 
     private AtomicInteger getPoint(){
         String uid = ThreadUtil.getUid();
-        return pointCache.computeIfAbsent(uid, k -> {
-            synchronized (lock) {
-                return new AtomicInteger(queryDatabase(k));
-            }
-        });
+        return pointCache.computeIfAbsent(uid, k -> new AtomicInteger(queryDatabase(k)));
     }
 
     public Integer get(){
