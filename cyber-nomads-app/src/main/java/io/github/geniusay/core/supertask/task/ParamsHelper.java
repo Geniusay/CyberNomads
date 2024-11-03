@@ -1,5 +1,6 @@
 package io.github.geniusay.core.supertask.task;
 
+import com.alibaba.fastjson.JSON;
 import io.github.geniusay.core.exception.ServeException;
 
 import java.util.HashMap;
@@ -20,14 +21,14 @@ public interface ParamsHelper {
 
     /**
      * 从前端返回的params中，取出需要的
-     * @param params
+     * @param paramMap 前端传回来的参数列表
      * @return
      */
-    default Map<String, Object> getParams(Map<String, Object> params){
+    default Map<String, Object> getParams(Map<String, Object> paramMap){
         Map<String, Object> pluginParams = new HashMap<>();
         for (TaskNeedParams needParam : supplierNeedParams()) {
             String name = needParam.getName();
-            Object value = params.getOrDefault(name, needParam.getDefaultValue());
+            Object value = paramMap.getOrDefault(name, needParam.getDefaultValue());
             if (Objects.isNull(value)&&needParam.isRequired()) {
                 throw new ServeException(400, String.format("%s参数错误", name));
             }else{
@@ -35,6 +36,18 @@ public interface ParamsHelper {
             }
         }
         return pluginParams;
+    }
+
+    /**
+     * 从已经从前端参数列表中，提取出来的参数:参数值 map获取对应的值
+     * @param readyMap 已经提取的参数列表
+     * @param name 参数名
+     * @param clazz 转换的类型
+     * @return 返回转化后的值
+     */
+    default <T> T getValue(Map<String,Object> readyMap,String name, Class<T> clazz){
+        String jsonStr = JSON.toJSONString(readyMap.get(name));
+        return JSON.parseObject(jsonStr, clazz);
     }
 
 }
