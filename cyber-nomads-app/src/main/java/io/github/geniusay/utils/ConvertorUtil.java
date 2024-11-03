@@ -2,11 +2,10 @@ package io.github.geniusay.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import io.netty.util.internal.StringUtil;
+import org.apache.commons.codec.binary.StringUtils;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ConvertorUtil {
@@ -49,8 +48,8 @@ public class ConvertorUtil {
 
 
     public static List<Long> stringToList(String str) {
-        if (str == null || str.isEmpty()) {
-            return null;
+        if (StringUtil.isNullOrEmpty(str)) {
+            return new ArrayList<>();
         }
         return Arrays.stream(str.split(","))
                 .map(Long::valueOf)

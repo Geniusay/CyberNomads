@@ -120,6 +120,23 @@ form input {
     color: var(--dark-color);
 }
 
+form .submit {
+    font: inherit;
+    font-size: 14px;
+    width: 100%;
+    height: 60px;
+    border: 0;
+    outline: 0;
+    padding: 0 20px;
+    line-height: 60px;
+    border-radius: 10px;
+    /*修复input 加入padding之后大小变化的问题*/
+    box-sizing: border-box;
+    color: var(--dark-color);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: inherit;
+}
+
 input::placeholder {
     color: var(--dark-color);
     font-family: 'Noto Sans SC', sans-serif;

@@ -39,7 +39,7 @@ export default defineConfig({
     },
     proxy: {
       "/api": {
-        target: "http://83.229.125.251:9000/",
+        target: "http://cybernomads.top:9000/",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, "/"),
       },
