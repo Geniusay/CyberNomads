@@ -30,4 +30,6 @@ public interface TaskStateChangeService {
      * @param newStatus 修改后的状态
      */
     void notifyTaskStarted(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus);
+
+    void notifyTaskRegister(TaskDO taskDO);
 }
