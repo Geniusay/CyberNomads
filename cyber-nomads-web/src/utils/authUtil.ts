@@ -1,7 +1,7 @@
 import {noTokenUrl} from "./no-auth";
 
 export const validRequestAuth = (config)=>{
-  const token = JSON.parse(localStorage.getItem('cyberUser') || '')["token"];
+  const token = JSON.parse(localStorage.getItem('cyberUser') || '{}')["token"];
   if(token){
     config.headers['Authorization'] = token
   }

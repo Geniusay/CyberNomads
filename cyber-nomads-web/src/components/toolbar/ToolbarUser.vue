@@ -95,13 +95,13 @@ const navs = [
           <template v-slot:prepend>
             <v-avatar size="40">
               <v-img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwrAiMevuwrbU9o0Ck2paVf4ufHUDb2dU48MEDrAlrQw&s"
+                :src="user.avatar"
               ></v-img>
             </v-avatar>
           </template>
 
           <v-list-item-title class="font-weight-bold text-primary">
-            YANG J.K.
+            {{ user.name }}
             <StatusMenu />
           </v-list-item-title>
           <v-list-item-subtitle>

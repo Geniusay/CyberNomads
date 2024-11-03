@@ -1,6 +1,6 @@
 export interface UserVO{
   uid: string;
-  avator: string;
+  avatar: string;
   email: string;
   nickname: string;
   point: number;
