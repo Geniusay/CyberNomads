@@ -28,9 +28,6 @@ public class TestController {
     @Resource
     private UserMapper userMapper;
 
-    @Resource
-    private CacheUtil cacheUtil;
-
     @PostMapping("/register")
     public Result<?> registerUser(@RequestBody RegisterRequestDTO req){
         UserDO user = UserDO.builder()
@@ -42,7 +39,6 @@ public class TestController {
                 .build();
         userMapper.insert(user);
         String token = TokenUtil.getToken(user.getUid(), user.getEmail(), user.getNickname());
-        cacheUtil.putTokenAndUid(token,user.getUid());
         return Result.success(LoginVO.builder().userVO(UserVO.convert(user)).token(token).build());
     }
 
@@ -54,7 +50,6 @@ public class TestController {
             throw new RuntimeException("用户未注册");
         }
         String token = TokenUtil.getToken(user.getUid(), user.getEmail(), user.getNickname());
-        cacheUtil.putTokenAndUid(token,user.getUid());
         return Result.success(LoginVO.builder().userVO(UserVO.convert(user)).token(token).build());
     }
 }

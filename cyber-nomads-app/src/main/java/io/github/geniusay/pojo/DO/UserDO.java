@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName("user")
 public class UserDO {
-
     public UserDO(Integer point) {
         this.point = point;
     }
@@ -29,5 +28,4 @@ public class UserDO {
     private String nickname;
     private String phoneNum;
     private Integer point;
-
 }

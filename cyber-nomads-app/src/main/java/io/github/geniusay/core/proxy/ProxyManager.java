@@ -19,8 +19,6 @@ public class ProxyManager {
 
     private final BalanceStrategy balance;
 
-    private final Object lock = new Object();
-
     @Autowired
     public ProxyManager(ProxyMapper proxyMapper) {
         this.proxyPool = new CopyOnWriteArrayList<>();
@@ -106,16 +104,16 @@ public class ProxyManager {
 
     // 轮询
     static class RoundRobinBalance implements BalanceStrategy {
-        private AtomicInteger index = new AtomicInteger(0);
+        private final AtomicInteger index = new AtomicInteger(0);
 
         @Override
         public ProxyClient balance(CopyOnWriteArrayList<ProxyClient> proxyPool) {
-            int size = proxyPool.size(), newIndex = index.getAndIncrement() % size;
+            int size, newIndex;
             ProxyClient proxyClient;
-            while((proxyClient = proxyPool.get(newIndex)) == null || !proxyClient.isValid()){
+            do {
                 size = proxyPool.size();
                 newIndex = index.getAndIncrement() % size;
-            }
+            }while ((proxyClient = proxyPool.get(newIndex)) == null || !proxyClient.isValid());
             return proxyClient;
         }
     }

@@ -25,6 +25,8 @@ public interface UserService {
 
     LoginVO login(LoginRequestDTO req);
 
+    void logout();
+
     LoginVO register(RegisterRequestDTO req);
 
     Map<String,String> generateCaptcha();
