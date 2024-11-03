@@ -2,6 +2,7 @@ package io.github.geniusay.core.supertask.task;
 
 import io.github.geniusay.core.supertask.TaskLogProcessor;
 import io.github.geniusay.core.supertask.config.TaskStatus;
+import io.github.geniusay.core.supertask.terminator.Terminator;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import lombok.Builder;
@@ -55,6 +56,8 @@ public class Task {
     private LastWordHandler lastWord;
 
     private Logger logger;
+
+    private Terminator terminator;
 
     public String getDataVal(String key) {
         return dataMap.get(key).toString();
