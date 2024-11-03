@@ -4,6 +4,15 @@ spring:
     url: ENC(ZJD30apv0TnJnjbVWj/W5iEdsp69bwugrfGWqnEpVXhZ9hhZwSVLDTHt51MBrGT7mIoQxj6+XxWRZNoE+KypedyMY6+FLocV49SPot7BSX9eO24/Li1IOmDy4LHc2g2H5QaK59GOZ+xDNyLT40c5QS7TQCJnjLJkppWDjm48MT0=)
     username: ENC(VhV1Y8nhaVU7DFTVjkZSfQs+XWAi3Op+)
     password: ENC(JdU9LZdyBdiF029widwkA/v0+KZB/9iUWeGALxI9ndENUlzNZMH+BQ==)
+    type: com.zaxxer.hikari.HikariDataSource # 使用 HikariCP 连接池
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      pool-name: DatebookHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
   mail:
     host: ${EMIAL_HOST:ENC(qMKUwBybaAKewuGZCDYjQw6tCfRVAO5aIQUolS8L06U=)}
     port: ${EMAIL_PORT:ENC(7RRjEe4cBjcETAkyZ6TBh5zwIw6KrEaz)}
@@ -15,6 +24,12 @@ spring:
     port: ${REDIS_PORT:ENC(rgpyHtYj/fQOniBDQYFY/V5spo5n01Nb)}
     database: 10
     password: ${REDIS_PASSWORD:ENC(w3YMEo8SvokoWSpmfutV70AO7TBsYuChGTdmc1kzeLiq0+kTllBLdw==)}
+    lettuce:
+      pool:
+        max-active: 8 # 最大连接数
+        max-wait: -1ms # 连接池最大阻塞等待时间（负数表示不限制）
+        max-idle: 8 # 最大空闲连接数
+        min-idle: 0 # 最小空闲连接数
 
   application:
     name: genius-blog-main
