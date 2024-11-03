@@ -46,7 +46,7 @@ request.interceptors.response.use(
   },
   (error) => {
     const snackbarStore = useSnackbarStore();
-    snackbarStore.showErrorMessage("操作异常!");
+    snackbarStore.showErrorMessage("请求异常!");
     console.log("err" + error); // for debug
     // localStorage.removeItem('token')
     //router.replace({path:'/login'})

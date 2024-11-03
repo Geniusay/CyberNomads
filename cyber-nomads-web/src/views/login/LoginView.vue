@@ -68,7 +68,7 @@ const currentForm = () => {
 }
 
 const sendEmailCode = async () => {
-  if(picCode.value.code){
+  if(picCode.value.code&&currentForm().value.email){
     sendLoading.value = true
     await sendCodeToEmail(currentForm().value.email, picCode.value.pid, picCode.value.code).then(res=>{
       if (res.code === "200") {
@@ -80,7 +80,7 @@ const sendEmailCode = async () => {
       sendLoading.value = false
     })
   }else{
-    snackbarStore.showErrorMessage("图片验证码不能为空")
+    snackbarStore.showErrorMessage("图片验证码和邮箱不能为空")
   }
 }
 

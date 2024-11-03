@@ -71,9 +71,9 @@ const router = createRouter({
 
 // 设置全局前置守卫
 router.beforeEach((to, from, next) => {
-  const userInfo = JSON.parse(localStorage.getItem('cyberUser') || '{}');
+  const userInfo = JSON.parse(localStorage.getItem('cyberUser') || '{}')["userInfo"];
   const loggedIn = !!(userInfo && Object.keys(userInfo).length)
-  if(loggedIn){
+  if(!loggedIn){
     if (to.path.startsWith('/home') || to.path === '/login') {
       next();
     } else {
