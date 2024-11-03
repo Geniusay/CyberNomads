@@ -161,7 +161,13 @@ const switchLogin = async () =>{
                 </v-btn>
               </p>
               <p>
-                <input @click="login()" type="submit" class="submit" value="登录" />
+                <v-btn
+                  color="#5865f2"
+                  @click="login()"
+                  class="submit"
+                >
+                  登录
+                </v-btn>
               </p>
             </form>
             <div class="options">
@@ -214,7 +220,15 @@ const switchLogin = async () =>{
                 </v-btn>
               </p>
               <p>
-                <input @click="register()" type="submit" class="submit" value="注册" />
+                <v-btn
+                  color="#5865f2"
+                  size="small"
+                  variant="flat"
+                  @click="register()"
+                  class="submit text-none text-subtitle-1"
+                >
+                  注册
+                </v-btn>
               </p>
             </form>
           </div>
