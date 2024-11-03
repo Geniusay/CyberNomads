@@ -35,9 +35,10 @@ export const useUserStore = defineStore({
       await getUserInfo().then(res=>{
         this.setUserInfo(res.data as UserVO, this.token)
       }).catch(error=>{
-        this.clearUserInfo()
+        //this.clearUserInfo()
+        console.log(error)
         snackbarStore.showErrorMessage("登录过期，请重新登录!")
-        router.push({path:'/login'})
+        //router.push({path:'/login'})
       })
     }
   }

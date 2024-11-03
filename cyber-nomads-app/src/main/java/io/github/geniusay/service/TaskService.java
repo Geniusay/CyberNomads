@@ -46,9 +46,9 @@ public interface TaskService {
     void modifyTask(Long taskId, String action);
 
     /**
-     * 修改任务状态，供内部调度器调用
+     * 修改任务状态，支持删除和重置操作
      */
-    void changeTaskStatus(Long taskId, String newStatus);
+    void modifyTask(TaskDO taskDO, String action);
 
     /**
      * 批量解析任务中的 robots 字段，并填充 robotList 字段

@@ -233,6 +233,21 @@ public class ITaskService implements TaskService {
             case START:
                 startTask(task, task.getTaskStatus());
                 break;
+            case PAUSE:
+                pauseTask(task, task.getTaskStatus());
+                break;
+            default:
+                throw new ServeException("无效的操作类型: " + action);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void modifyTask(TaskDO task, String action) {
+        switch (action.toLowerCase()) {
+            case FINISH:
+                finishTask(task, task.getTaskStatus());
+                break;
             default:
                 throw new ServeException("无效的操作类型: " + action);
         }
@@ -282,25 +297,34 @@ public class ITaskService implements TaskService {
         }
     }
 
-    @Override
-    @Transactional
-    public void changeTaskStatus(Long taskId, String newStatus) {
-        // 1. 获取任务
-        TaskDO task = taskMapper.selectById(taskId);
-        if (task == null) {
-            throw new ServeException("任务不存在: " + taskId);
+    /**
+     * 暂停任务逻辑
+     * 仅允许将状态为 RUNNING 或 EXCEPTION 的任务修改为 PAUSED
+     */
+    private void pauseTask(TaskDO task, TaskStatus taskStatus) {
+        if (taskStatus == TaskStatus.RUNNING || taskStatus == TaskStatus.EXCEPTION) {
+            task.setTaskStatus(TaskStatus.PAUSED);
+            if (taskMapper.updateById(task) > 0) {
+                stateChangeService.notifyTaskPaused(task, taskStatus, TaskStatus.PAUSED);
+            }
+        } else {
+            throw new ServeException("任务状态不允许暂停: " + taskStatus);
         }
+    }
 
-        // 2. 更新任务状态
-        TaskStatus status;
-        try {
-            status = TaskStatus.valueOf(newStatus.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new ServeException("无效的任务状态: " + newStatus);
+    /**
+     * 完成任务逻辑
+     * 仅允许将状态为 RUNNING 或 EXCEPTION 的任务修改为 COMPLETED
+     */
+    private void finishTask(TaskDO task, TaskStatus taskStatus) {
+        if (taskStatus == TaskStatus.RUNNING || taskStatus == TaskStatus.EXCEPTION) {
+            task.setTaskStatus(TaskStatus.COMPLETED);
+            if (taskMapper.updateById(task) > 0) {
+                stateChangeService.notifyTaskFinished(task, taskStatus, TaskStatus.COMPLETED);
+            }
+        } else {
+            throw new ServeException("任务状态不允许完成: " + taskStatus);
         }
-
-        task.setTaskStatus(status);
-        taskMapper.updateById(task);
     }
 
     /**
