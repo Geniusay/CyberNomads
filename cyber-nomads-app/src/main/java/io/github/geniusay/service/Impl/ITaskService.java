@@ -16,6 +16,7 @@ import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.TaskFunctionDTO;
 import io.github.geniusay.pojo.VO.TaskVO;
 import io.github.geniusay.service.TaskService;
+import io.github.geniusay.service.TaskStateChangeService;
 import io.github.geniusay.utils.ConvertorUtil;
 import io.github.geniusay.utils.TaskTranslationUtil;
 import io.github.geniusay.utils.ThreadUtil;
@@ -23,13 +24,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static io.github.geniusay.constants.TaskActionConstant.DELETE;
-import static io.github.geniusay.constants.TaskActionConstant.RESET;
+import static io.github.geniusay.constants.TaskActionConstant.*;
+import static io.github.geniusay.core.supertask.config.TaskStatus.RUNNING;
 import static io.github.geniusay.utils.AIGenerate.ValidUtil.isValidConstant;
 
 @Service
@@ -43,6 +42,9 @@ public class ITaskService implements TaskService {
 
     @Resource
     private RobotMapper robotMapper;
+
+    @Resource
+    private TaskStateChangeService stateChangeService;
 
     @Override
     @Transactional
@@ -87,10 +89,9 @@ public class ITaskService implements TaskService {
     public TaskVO updateTaskParams(Long taskId, Map<String, Object> params) {
         String uid = ThreadUtil.getUid();
 
-        // 1. 获取任务
-        TaskDO task = taskMapper.selectById(taskId);
-        if (task == null) throw new ServeException("任务不存在: " + taskId);
-        if (!uid.equals(task.getUid())) throw new ServeException("无权操作该任务");
+        // 1. 获取任务并校验权限
+        TaskDO task = taskMapper.selectTaskByIdAndUid(taskId, uid);
+        if (task == null) throw new ServeException("任务不存在或无权操作该任务: " + taskId);
 
         // 4. 获取任务的必需参数并验证
         AbstractTaskBlueprint blueprint = taskStrategyManager.getBlueprint(task.getPlatform(), task.getTaskType());
@@ -105,17 +106,14 @@ public class ITaskService implements TaskService {
         return convertToTaskVO(task);
     }
 
-
-
     @Override
     @Transactional
     public TaskVO updateRobotsInTask(Long taskId, List<Long> robotIds, boolean isAdd) {
         String uid = ThreadUtil.getUid();
 
-        // 1. 获取任务
-        TaskDO task = taskMapper.selectById(taskId);
-        if (task == null) throw new ServeException("任务不存在: " + taskId);
-        if (!uid.equals(task.getUid())) throw new ServeException("无权操作该任务");
+        // 1. 获取任务并校验权限
+        TaskDO task = taskMapper.selectTaskByIdAndUid(taskId, uid);
+        if (task == null) throw new ServeException("任务不存在或无权操作该任务: " + taskId);
 
         // 2. 校验机器人账号是否存在
         List<RobotDO> robotsFromDB = robotMapper.selectBatchIds(robotIds);
@@ -128,22 +126,19 @@ public class ITaskService implements TaskService {
         if (currentRobotIds == null) {
             currentRobotIds = new ArrayList<>();
         }
+        Set<Long> robotIdSet = new HashSet<>(currentRobotIds);
 
         // 4. 添加或删除机器人
         if (isAdd) {
-            // 添加机器人，避免重复添加
-            for (Long robotId : robotIds) {
-                if (!currentRobotIds.contains(robotId)) {
-                    currentRobotIds.add(robotId);
-                }
-            }
+            // 添加机器人，Set 自动去重
+            robotIdSet.addAll(robotIds);
         } else {
             // 删除机器人
-            currentRobotIds.removeAll(robotIds);
+            robotIds.forEach(robotIdSet::remove);
         }
 
-        // 5. 更新任务的机器人列表
-        task.setRobots(ConvertorUtil.listToString(currentRobotIds));
+        // 5. 将 Set 转换回 List，并更新任务的机器人列表
+        task.setRobots(ConvertorUtil.listToString(new ArrayList<>(robotIdSet)));
         taskMapper.updateById(task);
 
         // 6. 返回更新后的任务详情
@@ -208,18 +203,20 @@ public class ITaskService implements TaskService {
     public void modifyTask(Long taskId, String action) {
         String uid = ThreadUtil.getUid();
 
-        // 1. 获取任务
-        TaskDO task = taskMapper.selectById(taskId);
-        if (task == null) throw new ServeException("任务不存在: " + taskId);
-        if (!uid.equals(task.getUid())) throw new ServeException("无权操作该任务");
+        // 1. 获取任务并校验权限
+        TaskDO task = taskMapper.selectTaskByIdAndUid(taskId, uid);
+        if (task == null) throw new ServeException("任务不存在或无权操作该任务: " + taskId);
 
         // 2. 根据操作类型执行不同的逻辑
         switch (action.toLowerCase()) {
             case DELETE:
-                deleteTask(task);
+                deleteTask(task, task.getTaskStatus());
                 break;
             case RESET:
-                resetTask(task);
+                resetTask(task, task.getTaskStatus());
+                break;
+            case START:
+                startTask(task, task.getTaskStatus());
                 break;
             default:
                 throw new ServeException("无效的操作类型: " + action);
@@ -230,9 +227,11 @@ public class ITaskService implements TaskService {
      * 删除任务逻辑
      * 仅允许删除状态为 COMPLETED、FAILED 或 PENDING 的任务
      */
-    private void deleteTask(TaskDO task) {
+    private void deleteTask(TaskDO task, TaskStatus taskStatus) {
         if (task.getTaskStatus() == TaskStatus.COMPLETED || task.getTaskStatus() == TaskStatus.FAILED || task.getTaskStatus() == TaskStatus.PENDING) {
-            taskMapper.deleteById(task.getId());
+            if (taskMapper.deleteById(task.getId()) > 0) {
+                stateChangeService.notifyTaskDeleted(task, taskStatus);
+            }
         } else {
             throw new ServeException("任务状态不允许删除: " + task.getTaskStatus());
         }
@@ -242,12 +241,29 @@ public class ITaskService implements TaskService {
      * 重置任务逻辑
      * 仅允许将状态为 PAUSED、FAILED 或 COMPLETED 的任务重置为 PENDING
      */
-    private void resetTask(TaskDO task) {
+    private void resetTask(TaskDO task, TaskStatus taskStatus) {
         if (task.getTaskStatus() == TaskStatus.PAUSED || task.getTaskStatus() == TaskStatus.FAILED || task.getTaskStatus() == TaskStatus.COMPLETED) {
             task.setTaskStatus(TaskStatus.PENDING);
-            taskMapper.updateById(task);
+            if (taskMapper.updateById(task) > 0) {
+                stateChangeService.notifyTaskReset(task, taskStatus, TaskStatus.PENDING);
+            }
         } else {
             throw new ServeException("任务状态不允许重置: " + task.getTaskStatus());
+        }
+    }
+
+    /**
+     * 开始任务逻辑
+     * 仅允许将状态为 PENDING 或者 PAUSED 的任务修改为 RUNNING
+     */
+    private void startTask(TaskDO task, TaskStatus taskStatus) {
+        if (task.getTaskStatus() == TaskStatus.PENDING || task.getTaskStatus() == TaskStatus.PAUSED) {
+            task.setTaskStatus(RUNNING);
+            if (taskMapper.updateById(task) > 0) {
+                stateChangeService.notifyTaskStarted(task, taskStatus, RUNNING);
+            }
+        } else {
+            throw new ServeException("任务状态不允许开始: " + task.getTaskStatus());
         }
     }
 

@@ -5,4 +5,6 @@ public class TaskActionConstant {
     public static final String DELETE = "delete";
 
     public static final String RESET = "reset";
+
+    public static final String START = "start";
 }

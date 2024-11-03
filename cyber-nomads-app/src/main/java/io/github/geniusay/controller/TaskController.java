@@ -60,7 +60,7 @@ public class TaskController {
 
     /**
      * 修改任务状态
-     * 支持删除和重置操作：
+     * 支持开始任务，删除和重置操作：
      */
     @TokenRequire
     @PostMapping("/{taskId}/modify/{action}")
