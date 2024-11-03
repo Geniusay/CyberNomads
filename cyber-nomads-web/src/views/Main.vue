@@ -48,7 +48,6 @@ onMounted(() => {
     </component>
     <CustomizationMenu />
     <BackToTop />
-    <Snackbar />
   </v-app>
 </template>
 

@@ -33,20 +33,12 @@ export const useUserStore = defineStore({
     async fetchUserInfo(){
       const router = useRouter();
       await getUserInfo().then(res=>{
-        this.userInfo = res.data as UserVO
+        this.setUserInfo(res.data as UserVO, this.token)
       }).catch(error=>{
         this.clearUserInfo()
         snackbarStore.showErrorMessage("登录过期，请重新登录!")
         router.push({path:'/login'})
       })
     }
-  },
-  persist: {
-    enabled: true,
-    strategies: [{
-      key:"cyberUser",
-      storage: localStorage,
-      paths: ["userInfo", "token"]
-    }]
   }
 })
