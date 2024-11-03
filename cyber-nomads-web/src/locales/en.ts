@@ -21,6 +21,7 @@ export default {
     noaccount: "Don't have an account?",
     create: "Create one here",
     error: "The email / password combination is invalid",
+    logout: "Logout"
   },
   register: {
     title: "Create Account",
@@ -130,6 +131,10 @@ export default {
     voicebot: "VoiceBot",
     imagebot: "ImageBot",
     chartbot: "ChartBot",
+    profileDetails: "Profile Details",
+    plansAndBilling: "Billing",
+    apiDashboard: "API Dashboard",
+    askCommunity: "Ask for Help",
   },
 
   dashboard: {

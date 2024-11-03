@@ -15,11 +15,11 @@ const router = useRouter();
 const snackbarStore = useSnackbarStore()
 const userStore = useUserStore();
 
-const user = ref<UserVO>({})
+const userInfo = ref<UserVO>({})
 
 onMounted(async ()=>{
   await userStore.fetchUserInfo()
-  user.value = userStore.getUserInfo
+  userInfo.value = userStore.getUserInfo
 })
 
 const handleLogout = () => {
@@ -36,16 +36,10 @@ const navs = [
     icon: "mdi-account-box-outline",
   },
   {
-    title: "Plans and Billing",
+    title: "Billing",
     key: "menu.plansAndBilling",
     link: "/plans-and-billing",
     icon: "mdi-credit-card-outline",
-  },
-  {
-    title: "Team",
-    key: "menu.team",
-    link: "/team",
-    icon: "mdi-account-group-outline",
   },
   {
     title: "API Dashboard",
@@ -54,13 +48,7 @@ const navs = [
     icon: "mdi-monitor-dashboard",
   },
   {
-    title: "Integrations",
-    key: "menu.integrations",
-    link: "/integrations",
-    icon: "mdi-puzzle-outline",
-  },
-  {
-    title: "Ask the Community",
+    title: "Ask for Help",
     key: "menu.askCommunity",
     link: "/ask-the-community",
     icon: "mdi-help-circle-outline",
@@ -81,7 +69,7 @@ const navs = [
       <v-btn class="mx-2" icon v-bind="props">
         <v-badge content="2" color="success" dot bordered>
           <v-avatar size="40">
-            <img src="../../assets/theme-avatar.png"></img>
+            <img :src="userInfo.avatar"></img>
           </v-avatar>
         </v-badge>
       </v-btn>
@@ -95,18 +83,18 @@ const navs = [
           <template v-slot:prepend>
             <v-avatar size="40">
               <v-img
-                :src="user.avatar"
+                :src="userInfo.avatar"
               ></v-img>
             </v-avatar>
           </template>
 
           <v-list-item-title class="font-weight-bold text-primary">
-            {{ user.name }}
+            {{ userInfo.nickname }}
             <StatusMenu />
           </v-list-item-title>
           <v-list-item-subtitle>
             <!-- {{ $store.state.user.email  }} -->
-            yjkbako@gmail.com
+            {{ userInfo.email }}
           </v-list-item-subtitle>
         </v-list-item>
       </v-list>
@@ -132,7 +120,7 @@ const navs = [
 
           <div>
             <v-list-item-subtitle class="text-body-2">{{
-              nav.title
+              $t(nav.key)
             }}</v-list-item-subtitle>
           </div>
         </v-list-item>
@@ -142,19 +130,6 @@ const navs = [
       <!-- Logout Area -->
       <!-- ---------------------------------------------- -->
       <v-list variant="flat" elevation="0" :lines="false" density="compact">
-        <v-list-item color="primary" to="nav.link" link density="compact">
-          <template v-slot:prepend>
-            <v-avatar size="30">
-              <v-icon>mdi-lifebuoy</v-icon>
-            </v-avatar>
-          </template>
-
-          <div>
-            <v-list-item-subtitle class="text-body-2">
-              Help Center
-            </v-list-item-subtitle>
-          </div>
-        </v-list-item>
         <v-list-item
           color="primary"
           link
@@ -169,7 +144,7 @@ const navs = [
 
           <div>
             <v-list-item-subtitle class="text-body-2">
-              Logout
+             {{$t('login.logout')}}
             </v-list-item-subtitle>
           </div>
         </v-list-item>
