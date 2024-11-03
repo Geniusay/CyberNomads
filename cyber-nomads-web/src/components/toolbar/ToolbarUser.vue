@@ -16,9 +16,10 @@ const snackbarStore = useSnackbarStore()
 const userStore = useUserStore();
 
 const user = ref<UserVO>({})
+
 onMounted(async ()=>{
   await userStore.fetchUserInfo()
-
+  user.value = userStore.getUserInfo
 })
 
 const handleLogout = () => {
