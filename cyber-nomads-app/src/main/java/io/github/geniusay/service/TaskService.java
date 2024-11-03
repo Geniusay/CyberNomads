@@ -53,5 +53,5 @@ public interface TaskService {
     /**
      * 批量解析任务中的 robots 字段，并填充 robotList 字段
      */
-    List<TaskDO> populateRobotListForTasks(List<TaskDO> taskDOList, RobotMapper robotMapper);
+    List<TaskDO> populateRobotListForTasks(List<TaskDO> taskDOList);
 }

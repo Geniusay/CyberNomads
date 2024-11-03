@@ -46,17 +46,15 @@ public class ScheduleExecutor implements TaskListener{
                             try {
                                 robotWorker.execute();
                                 robotWorker.lastWord();
-//                            worldRobotsTask.get(robotId).remove(selectedTask.getId());
-                                System.out.println("robot任务执行完毕");
+                                log.info("robot任务执行完毕");
                                 taskMap.remove(robotWorker.task().getUid());
                             } catch (Exception e) {
-                                log.error("robot执行异常:{}", e.getMessage());
+                                log.error("robot执行异常:{},robot信息:{}", e.getMessage(),robotWorker);
                             }
                         });
                     }
-                }else{
-                    Thread.sleep(1000);
                 }
+                Thread.sleep(1000);
                 FREE_WORKER.add(robotId);
             } catch (InterruptedException e) {
                 log.error("调度器异常:{}",e.getMessage());

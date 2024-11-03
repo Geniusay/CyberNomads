@@ -149,7 +149,7 @@ public class Task {
         public Task build(){
             Task task = new Task(this.robots, this.dataMap, this.needParams, this.params, this.execute, this.lastWord);
             BeanUtils.copyProperties(taskDO, task);
-            task.getRobots().addAll(taskDO.getRobotList());
+            task.getRobots().addAll(taskDO.getRobotList()==null?new ArrayList<>():taskDO.getRobotList());
             task.setLogger(LoggerFactory.getLogger(task.getTaskName()));
             return task;
         }
