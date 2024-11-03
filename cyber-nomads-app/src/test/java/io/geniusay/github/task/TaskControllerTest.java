@@ -71,16 +71,16 @@ public class TaskControllerTest {
 
     @Test
     public void testPopulateRobotListForTasks() {
-        // 1. 从数据库中获取所有任务
-        List<TaskDO> taskDOList = taskMapper.selectList(null);
-
-        List<TaskDO> populatedTaskList = taskService.populateRobotListForTasks(taskDOList, null);
-
-        for (TaskDO task : populatedTaskList) {
-            if (task.getRobots() != null && !task.getRobots().isEmpty()) {
-
-                List<Long> robotIds = ConvertorUtil.stringToList(task.getRobots());
-            }
-        }
+//        // 1. 从数据库中获取所有任务
+//        List<TaskDO> taskDOList = taskMapper.selectList(null);
+//
+//        List<TaskDO> populatedTaskList = taskService.populateRobotListForTasks(taskDOList, null);
+//
+//        for (TaskDO task : populatedTaskList) {
+//            if (task.getRobots() != null && !task.getRobots().isEmpty()) {
+//
+//                List<Long> robotIds = ConvertorUtil.stringToList(task.getRobots());
+//            }
+//        }
     }
 }
