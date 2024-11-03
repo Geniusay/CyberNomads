@@ -31,16 +31,7 @@ public class TaskParamValidator {
     /**
      * 检查参数类型是否匹配
      */
-    private static boolean isTypeMatch(Object value, String expectedType) {
-        switch (expectedType.toLowerCase()) {
-            case "string":
-                return value instanceof String;
-            case "integer":
-                return value instanceof Integer;
-            case "boolean":
-                return value instanceof Boolean;
-            default:
-                return false;
-        }
+    private static boolean isTypeMatch(Object value, Class<?> clazz) {
+        return value.getClass().equals(clazz);
     }
 }
