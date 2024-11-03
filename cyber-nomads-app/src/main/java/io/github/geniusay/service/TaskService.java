@@ -11,7 +11,7 @@ public interface TaskService {
     /**
      * 创建任务并返回任务详情
      */
-    TaskVO createTask(String taskName, String platform, String taskType, Map<String, Object> params);
+    TaskVO createTask(String taskName, String platform, String taskType, Map<String, Object> params, List<Long> robotIds);
 
     /**
      * 获取支持的平台列表

@@ -48,7 +48,7 @@ public class ITaskService implements TaskService {
 
     @Override
     @Transactional
-    public TaskVO createTask(String taskName, String platform, String taskType, Map<String, Object> params) {
+    public TaskVO createTask(String taskName, String platform, String taskType, Map<String, Object> params, List<Long> robotIds) {
         // 1. 获取用户信息
         String uid = ThreadUtil.getUid();
         String nickname = ThreadUtil.getNickname();
@@ -74,13 +74,27 @@ public class ITaskService implements TaskService {
         taskDO.setPlatform(platform);
         taskDO.setTaskType(taskType);
         taskDO.setTaskStatus(TaskStatus.PENDING);
-        taskDO.setRobots(ConvertorUtil.listToString(List.of()));
         taskDO.setParams(ConvertorUtil.mapToJsonString(params));
 
-        // 6. 保存任务到数据库
+        // 6. 校验并添加机器人账号
+        if (robotIds != null && !robotIds.isEmpty()) {
+            // 校验机器人账号是否存在
+            List<RobotDO> robotsFromDB = robotMapper.selectBatchIds(robotIds);
+            if (robotsFromDB.size() != robotIds.size()) {
+                throw new ServeException("部分机器人账号不存在");
+            }
+
+            // 将机器人 ID 转换为字符串并保存到任务中
+            taskDO.setRobots(ConvertorUtil.listToString(robotIds));
+        } else {
+            // 如果没有机器人账号，则设置为空
+            taskDO.setRobots(ConvertorUtil.listToString(List.of()));
+        }
+
+        // 7. 保存任务到数据库
         taskMapper.insert(taskDO);
 
-        // 7. 返回任务详情
+        // 8. 返回任务详情
         return convertToTaskVO(taskDO);
     }
 

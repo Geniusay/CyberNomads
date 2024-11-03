@@ -25,7 +25,7 @@ public class TaskController {
     @TokenRequire
     @PostMapping("/create")
     public R<TaskVO> createTask(@RequestBody CreatTaskDTO creat) {
-        TaskVO taskVO = taskService.createTask(creat.getTaskName(), creat.getPlatform(), creat.getTaskType(), creat.getParams());
+        TaskVO taskVO = taskService.createTask(creat.getTaskName(), creat.getPlatform(), creat.getTaskType(), creat.getParams(), creat.getRobotIds());
         return R.success(taskVO);
     }
 

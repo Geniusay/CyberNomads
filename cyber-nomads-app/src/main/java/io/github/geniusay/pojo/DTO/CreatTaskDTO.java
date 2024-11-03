@@ -2,6 +2,7 @@ package io.github.geniusay.pojo.DTO;
 
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -14,4 +15,6 @@ public class CreatTaskDTO {
     private String taskType;
 
     Map<String, Object> params;
+
+    private List<Long> robotIds;
 }
