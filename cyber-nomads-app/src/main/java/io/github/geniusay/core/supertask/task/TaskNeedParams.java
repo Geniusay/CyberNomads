@@ -3,6 +3,9 @@ package io.github.geniusay.core.supertask.task;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 提供给前端要输入的字段
  */
@@ -15,6 +18,7 @@ public class TaskNeedParams {
     private boolean required;
     private Object defaultValue;
 
+    private List<TaskNeedParams> childParams = new ArrayList<>();
     public TaskNeedParams(String name, String type, String desc) {
         this.name = name;
         this.type = type;
@@ -29,5 +33,14 @@ public class TaskNeedParams {
         this.desc = desc;
         this.required = required;
         this.defaultValue = defaultValue;
+    }
+
+    public TaskNeedParams(String name, String type, String desc, boolean required, Object defaultValue, List<TaskNeedParams> childParams) {
+        this.name = name;
+        this.type = type;
+        this.desc = desc;
+        this.required = required;
+        this.defaultValue = defaultValue;
+        this.childParams = childParams;
     }
 }
