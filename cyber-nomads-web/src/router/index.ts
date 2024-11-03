@@ -77,7 +77,7 @@ router.beforeEach((to, from, next) => {
     if (to.path.startsWith('/home') || to.path === '/login') {
       next();
     } else {
-      useSnackbarStore().showErrorMessage("暂未登录，请先登录!")
+      useSnackbarStore().showInfoMessage("暂未登录，请先登录!")
       next('/login');
     }
   }else {

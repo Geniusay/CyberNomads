@@ -23,25 +23,21 @@ export const useUserStore = defineStore({
       localStorage.setItem("cyberUser",JSON.stringify({userInfo: userInfo, token: token}))
     },
     logout(){
-      const router = useRouter();
       this.clearUserInfo()
-      router.push({path:'/login'})
     },
     clearUserInfo(){
       this.userInfo = {}
       this.token = ""
       localStorage.removeItem("cyberUser")
     },
-    fetchUserInfo(){
+    async fetchUserInfo(){
       const router = useRouter();
-      getUserInfo().then(res=>{
-        if(res.code==="200"){
-          this.userInfo = res.data as UserVO
-        }else{
-          this.clearUserInfo()
-          snackbarStore.showErrorMessage("登录过期，请重新登录!")
-          router.push({path:'/login'})
-        }
+      await getUserInfo().then(res=>{
+        this.userInfo = res.data as UserVO
+      }).catch(error=>{
+        this.clearUserInfo()
+        snackbarStore.showErrorMessage("登录过期，请重新登录!")
+        router.push({path:'/login'})
       })
     }
   },

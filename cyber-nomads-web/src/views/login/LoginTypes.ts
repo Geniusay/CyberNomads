@@ -7,6 +7,7 @@ export interface LoginForm{
 export interface PicCode{
   pid:string;
   img:string;
+  code:string;
 }
 
 export interface RegisterForm{
@@ -32,6 +33,7 @@ const defaultRegisterForm: RegisterForm = {
 const defaultPicCode: PicCode = {
   pid:"",
   img:"",
+  code:""
 }
 
 export const defaultValue = {

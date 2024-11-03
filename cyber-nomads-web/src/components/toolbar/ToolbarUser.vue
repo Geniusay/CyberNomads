@@ -16,6 +16,7 @@ const userStore = useUserStore();
 const handleLogout = () => {
   snackbarStore.showSuccessMessage("登出成功")
   userStore.logout()
+  router.push({path:"/login"})
 };
 
 const navs = [

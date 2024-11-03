@@ -30,10 +30,13 @@ request.interceptors.response.use(
     if (response.status != 200) {
       snackbarStore.showSuccessMessage("服务异常!");
     }
-    console.log(response)
     let res = response.data;
-    if (res.code === 114514) {
-      snackbarStore.showErrorMessage(res.msg);
+    if (res.code !== "200") {
+      console.log(res)
+      return Promise.reject({
+        response,
+        message: res.msg || "请求异常",
+      });
     }
     // 如果是返回的文件
     if (response.config.responseType === "blob") {
@@ -44,6 +47,16 @@ request.interceptors.response.use(
       res = res ? JSON.parse(res) : res;
     }
     return res;
+  },
+  (error) => {
+    // 如果 error.response 存在，表示服务端有返回响应
+    if (error.response) {
+      // 返回整个 response 对象以便后续代码捕获和处理
+      return Promise.reject(error.response);
+    } else {
+      // 处理网络错误或请求未到达服务器的情况
+      return Promise.reject(error);
+    }
   }
 );
 

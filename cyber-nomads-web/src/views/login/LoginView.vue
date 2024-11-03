@@ -48,16 +48,18 @@ const preImg = ref("iVBORw0KGgoAAAANSUhEUgAAALQAAAAoCAIAAADYC0ddAAAE2UlEQVR4Xu2V
 const picLoading = ref(true)
 const generatePicCode = async ()=>{
   picLoading.value = true
+  picCode.value.code = ""
   await sendPicCaptcha().then(res=>{
-    if (res.code==="200") {
-      picCode.value.pid = res.data.pid
-      picCode.value.img = res.data.base64
-      setTimeout(()=>{
-        preImg.value = picCode.value.img
-      }, 300)
-    }else{
-      snackbarStore.showErrorMessage("网络异常")
-    }
+    picCode.value.pid = res.data.pid
+    picCode.value.img = res.data.base64
+    setTimeout(()=>{
+      preImg.value = picCode.value.img
+    }, 300)
+  }).catch((error)=>{
+    snackbarStore.showErrorMessage("网络异常")
+    setTimeout(()=>{
+      generatePicCode()
+    }, 500)
   })
   picLoading.value = false;
 
@@ -71,14 +73,12 @@ const sendEmailCode = async () => {
   if(picCode.value.code&&currentForm().value.email){
     sendLoading.value = true
     await sendCodeToEmail(currentForm().value.email, picCode.value.pid, picCode.value.code).then(res=>{
-      if (res.code === "200") {
-        snackbarStore.showSuccessMessage("已发送邮箱验证码，请检查邮箱")
-      }else{
-        snackbarStore.showErrorMessage("图片验证码错误!")
-      }
-    }).finally(()=>{
-      sendLoading.value = false
+      snackbarStore.showSuccessMessage("已发送邮箱验证码，请检查邮箱")
+    }).catch((error)=>{
+      snackbarStore.showErrorMessage("图片验证码错误!")
+      generatePicCode()
     })
+    sendLoading.value = false
   }else{
     snackbarStore.showErrorMessage("图片验证码和邮箱不能为空")
   }
@@ -88,14 +88,13 @@ const login = async()=>{
   const errorsMsg = validateAndReturn(["email","code"], loginForm.value, loginValidators)
   if (!errorsMsg) {
     await emailLogin(loginForm.value).then(res=>{
-        if(res.code==="200"){
-          const userData: UserVO = res.data.userVO as UserVO
-          userStore.setUserInfo(userData, res.data.token)
-          snackbarStore.showSuccessMessage("欢迎回来!")
-          router.push({path:'/workplace'})
-        }else{
-          snackbarStore.showErrorMessage("登录失败，请检查邮箱或验证码是否正确!")
-        }
+      const userData: UserVO = res.data.userVO as UserVO
+      userStore.setUserInfo(userData, res.data.token)
+      snackbarStore.showSuccessMessage("欢迎回来!")
+      router.push({path:'/workplace'})
+    }).catch((error)=>{
+      generatePicCode()
+      snackbarStore.showErrorMessage("登录失败，请检查邮箱或验证码是否正确!")
     })
   }else{
     snackbarStore.showErrorMessage(errorsMsg)
@@ -107,15 +106,14 @@ const register = async()=>{
   const errorsMsg = validateAndReturn(["email","code","password","confirmPassword"], registerForm.value, registerValidators)
   if (!errorsMsg) {
     await emailRegister(registerForm.value).then(res=>{
-      if(res.code==="200"){
-        console.log(res.data)
-        const userData: UserVO = res.data.userVO as UserVO
-        userStore.setUserInfo(userData, res.data.token)
-        snackbarStore.showSuccessMessage("欢迎加入Cyber Nomads!")
-        router.push({path:'/workplace'})
-      }else{
-        snackbarStore.showErrorMessage("注册失败，请检查邮箱或验证码是否正确!")
-      }
+      console.log(res.data)
+      const userData: UserVO = res.data.userVO as UserVO
+      userStore.setUserInfo(userData, res.data.token)
+      snackbarStore.showSuccessMessage("欢迎加入Cyber Nomads!")
+      router.push({path:'/workplace'})
+    }).catch((error)=>{
+      generatePicCode()
+      snackbarStore.showErrorMessage("注册失败，请检查邮箱或验证码是否正确!")
     })
   }else{
     snackbarStore.showErrorMessage(errorsMsg)
