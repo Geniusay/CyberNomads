@@ -15,7 +15,6 @@ import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.TaskFunctionDTO;
 import io.github.geniusay.pojo.VO.TaskVO;
-import io.github.geniusay.schedule.ScheduleExecutor;
 import io.github.geniusay.schedule.TaskScheduleManager;
 import io.github.geniusay.service.TaskService;
 import io.github.geniusay.service.TaskStateChangeService;
@@ -38,6 +37,7 @@ public class ITaskService implements TaskService {
 
     @Resource
     private TaskStrategyManager taskStrategyManager;
+
     @Resource
     TaskScheduleManager manager;
 
@@ -323,7 +323,7 @@ public class ITaskService implements TaskService {
      * 批量解析任务中的 robots 字段，并填充 robotList 字段
      */
     @Override
-    public List<TaskDO> populateRobotListForTasks(List<TaskDO> taskDOList) {
+    public List<TaskDO> populateRobotListForTasks(List<TaskDO> taskDOList, RobotMapper robotMapper) {
         // 1. 创建一个 Set 来收集所有任务中的机器人 ID，避免重复查询
         Set<Long> allRobotIds = new HashSet<>();
 

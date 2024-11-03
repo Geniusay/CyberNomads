@@ -48,11 +48,11 @@ public class TaskScheduleManager {
 
 
     //TODO final map
-    @PostConstruct
+//    @PostConstruct
     public void init(){
         List<TaskDO> taskDOS = taskMapper.selectList(new QueryWrapper<TaskDO>().eq("task_status", TaskStatus.PENDING.name()));
         if(taskDOS!=null){
-            List<TaskDO> taskDOSFill = taskService.populateRobotListForTasks(taskDOS);
+            List<TaskDO> taskDOSFill = taskService.populateRobotListForTasks(taskDOS, robotMapper);
             for (TaskDO taskDO : taskDOSFill) {
                 WORLD_TASK.put(taskDO.getUid(),taskFactory.buildTask(taskDO,taskDO.getPlatform(),taskDO.getTaskType()));
             }

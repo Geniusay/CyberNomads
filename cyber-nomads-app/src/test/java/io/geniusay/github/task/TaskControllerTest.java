@@ -74,7 +74,7 @@ public class TaskControllerTest {
         // 1. 从数据库中获取所有任务
         List<TaskDO> taskDOList = taskMapper.selectList(null);
 
-        List<TaskDO> populatedTaskList = taskService.populateRobotListForTasks(taskDOList);
+        List<TaskDO> populatedTaskList = taskService.populateRobotListForTasks(taskDOList, null);
 
         for (TaskDO task : populatedTaskList) {
             if (task.getRobots() != null && !task.getRobots().isEmpty()) {
