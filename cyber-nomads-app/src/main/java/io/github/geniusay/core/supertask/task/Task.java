@@ -126,6 +126,8 @@ public class Task {
 
         private TaskDO taskDO;
 
+        private Terminator terminator;
+
         public Builder execute(TaskExecute execute){
             this.execute = execute;
             return this;
@@ -140,6 +142,12 @@ public class Task {
             this.taskDO = taskDO;
             return this;
         }
+
+        public Builder terminator(Terminator terminator){
+            this.terminator = terminator;
+            return this;
+        }
+
 
         public Builder needParams(List<TaskNeedParams> needParams){
             this.needParams = needParams;

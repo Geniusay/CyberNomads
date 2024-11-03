@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,4 +36,8 @@ public class TaskDO {
 
     @TableField(exist = false)
     private List<RobotDO> robotList;
+
+    public boolean inStatusList(TaskStatus... statuses) {
+        return Stream.of(statuses).anyMatch(status -> status.equals(this.taskStatus));
+    }
 }

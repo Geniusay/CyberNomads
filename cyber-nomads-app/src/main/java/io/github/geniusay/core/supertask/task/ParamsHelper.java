@@ -49,5 +49,4 @@ public interface ParamsHelper {
         String jsonStr = JSON.toJSONString(readyMap.get(name));
         return JSON.parseObject(jsonStr, clazz);
     }
-
 }

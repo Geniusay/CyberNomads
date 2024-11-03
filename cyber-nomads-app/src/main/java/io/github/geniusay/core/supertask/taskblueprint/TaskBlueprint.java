@@ -8,6 +8,7 @@ import io.github.geniusay.core.supertask.task.ParamsHelper;
 
 
 public interface TaskBlueprint extends ParamsHelper {
+
     TaskExecute supplierExecute();
 
     LastWordHandler supplierLastWordHandler();

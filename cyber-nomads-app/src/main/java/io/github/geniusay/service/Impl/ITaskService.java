@@ -15,8 +15,6 @@ import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.TaskFunctionDTO;
 import io.github.geniusay.pojo.VO.TaskVO;
-import io.github.geniusay.schedule.ScheduleExecutor;
-import io.github.geniusay.schedule.TaskScheduleManager;
 import io.github.geniusay.service.TaskService;
 import io.github.geniusay.service.TaskStateChangeService;
 import io.github.geniusay.utils.ConvertorUtil;
@@ -30,7 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.github.geniusay.constants.TaskActionConstant.*;
-import static io.github.geniusay.core.supertask.config.TaskStatus.RUNNING;
+import static io.github.geniusay.core.supertask.config.TaskStatus.*;
 import static io.github.geniusay.utils.AIGenerate.ValidUtil.isValidConstant;
 
 @Service
@@ -258,7 +256,7 @@ public class ITaskService implements TaskService {
      * 仅允许删除状态为 COMPLETED、FAILED 或 PENDING 的任务
      */
     private void deleteTask(TaskDO task, TaskStatus taskStatus) {
-        if (task.getTaskStatus() == TaskStatus.COMPLETED || task.getTaskStatus() == TaskStatus.FAILED || task.getTaskStatus() == TaskStatus.PENDING) {
+        if (task.inStatusList(COMPLETED, FAILED, PENDING)) {
             if (taskMapper.deleteById(task.getId()) > 0) {
                 stateChangeService.notifyTaskDeleted(task, taskStatus);
             }
@@ -272,10 +270,10 @@ public class ITaskService implements TaskService {
      * 仅允许将状态为 PAUSED、FAILED 或 COMPLETED 的任务重置为 PENDING
      */
     private void resetTask(TaskDO task, TaskStatus taskStatus) {
-        if (task.getTaskStatus() == TaskStatus.PAUSED || task.getTaskStatus() == TaskStatus.FAILED || task.getTaskStatus() == TaskStatus.COMPLETED) {
-            task.setTaskStatus(TaskStatus.PENDING);
+        if (task.inStatusList(PAUSED, FAILED, COMPLETED)) {
+            task.setTaskStatus(PENDING);
             if (taskMapper.updateById(task) > 0) {
-                stateChangeService.notifyTaskReset(task, taskStatus, TaskStatus.PENDING);
+                stateChangeService.notifyTaskReset(task, taskStatus, PENDING);
             }
         } else {
             throw new ServeException("任务状态不允许重置: " + task.getTaskStatus());
@@ -287,7 +285,7 @@ public class ITaskService implements TaskService {
      * 仅允许将状态为 PENDING 或者 PAUSED 的任务修改为 RUNNING
      */
     private void startTask(TaskDO task, TaskStatus taskStatus) {
-        if (task.getTaskStatus() == TaskStatus.PENDING || task.getTaskStatus() == TaskStatus.PAUSED) {
+        if (task.inStatusList(PENDING, PAUSED)) {
             task.setTaskStatus(RUNNING);
             if (taskMapper.updateById(task) > 0) {
                 stateChangeService.notifyTaskStarted(task, taskStatus, RUNNING);
@@ -302,10 +300,10 @@ public class ITaskService implements TaskService {
      * 仅允许将状态为 RUNNING 或 EXCEPTION 的任务修改为 PAUSED
      */
     private void pauseTask(TaskDO task, TaskStatus taskStatus) {
-        if (taskStatus == TaskStatus.RUNNING || taskStatus == TaskStatus.EXCEPTION) {
-            task.setTaskStatus(TaskStatus.PAUSED);
+        if (task.inStatusList(RUNNING, EXCEPTION)) {
+            task.setTaskStatus(PAUSED);
             if (taskMapper.updateById(task) > 0) {
-                stateChangeService.notifyTaskPaused(task, taskStatus, TaskStatus.PAUSED);
+                stateChangeService.notifyTaskPaused(task, taskStatus, PAUSED);
             }
         } else {
             throw new ServeException("任务状态不允许暂停: " + taskStatus);
@@ -317,10 +315,10 @@ public class ITaskService implements TaskService {
      * 仅允许将状态为 RUNNING 或 EXCEPTION 的任务修改为 COMPLETED
      */
     private void finishTask(TaskDO task, TaskStatus taskStatus) {
-        if (taskStatus == TaskStatus.RUNNING || taskStatus == TaskStatus.EXCEPTION) {
-            task.setTaskStatus(TaskStatus.COMPLETED);
+        if (task.inStatusList(RUNNING, EXCEPTION)) {
+            task.setTaskStatus(COMPLETED);
             if (taskMapper.updateById(task) > 0) {
-                stateChangeService.notifyTaskFinished(task, taskStatus, TaskStatus.COMPLETED);
+                stateChangeService.notifyTaskFinished(task, taskStatus, COMPLETED);
             }
         } else {
             throw new ServeException("任务状态不允许完成: " + taskStatus);
