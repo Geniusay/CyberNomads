@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 public class ITaskStateChangeService implements TaskStateChangeService {
 
     @Resource
-    TaskScheduleManager manager;
+    private TaskScheduleManager manager;
 
     @Override
     public void notifyTaskDeleted(TaskDO task, TaskStatus oldStatus) {
@@ -28,6 +28,18 @@ public class ITaskStateChangeService implements TaskStateChangeService {
     public void notifyTaskStarted(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus) {
         manager.startTask(String.valueOf(task.getId()));
         System.out.println("任务已开始: " + task.getTaskName() + "，从 " + oldStatus + " 修改为 " + newStatus);
+    }
+
+    @Override
+    public void notifyTaskPaused(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus) {
+        // 这里可以实现暂停任务的逻辑
+        System.out.println("任务已暂停: " + task.getTaskName() + "，从 " + oldStatus + " 修改为 " + newStatus);
+    }
+
+    @Override
+    public void notifyTaskFinished(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus) {
+        // 这里可以实现完成任务的逻辑
+        System.out.println("任务已完成: " + task.getTaskName() + "，从 " + oldStatus + " 修改为 " + newStatus);
     }
 
     @Override

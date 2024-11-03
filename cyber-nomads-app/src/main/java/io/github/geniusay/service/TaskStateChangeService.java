@@ -31,5 +31,28 @@ public interface TaskStateChangeService {
      */
     void notifyTaskStarted(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus);
 
+    /**
+     * 通知调度器任务已暂停
+     *
+     * @param task      任务对象
+     * @param oldStatus 修改前的状态
+     * @param newStatus 修改后的状态
+     */
+    void notifyTaskPaused(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus);
+
+    /**
+     * 通知调度器任务已完成
+     *
+     * @param task      任务对象
+     * @param oldStatus 修改前的状态
+     * @param newStatus 修改后的状态
+     */
+    void notifyTaskFinished(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus);
+
+    /**
+     * 通知调度器任务已注册
+     *
+     * @param taskDO 任务对象
+     */
     void notifyTaskRegister(TaskDO taskDO);
 }
