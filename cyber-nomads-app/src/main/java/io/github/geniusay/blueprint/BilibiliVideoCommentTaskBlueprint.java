@@ -75,9 +75,9 @@ public class BilibiliVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
-                new TaskNeedParams("bvid", "String", "视频的BV号", false, ""),
-                new TaskNeedParams("oid", "String", "评论区id, 也就是视频的aid, 不传则通过BV去获取", false, ""),
-                new TaskNeedParams("workid", "String", "指定您用来来做此任务的账号")
+                new TaskNeedParams("bvid", String.class, "视频的BV号", false, ""),
+                new TaskNeedParams("oid", String.class, "评论区id, 也就是视频的aid, 不传则通过BV去获取", false, ""),
+                new TaskNeedParams("workid", String.class, "指定您用来来做此任务的账号")
         );
     }
 

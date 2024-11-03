@@ -32,7 +32,7 @@ public class GroupCountTerminator implements Terminator {
     }
 
     @Override
-    public List<TaskNeedParams> pluginParams() {
+    public List<TaskNeedParams> supplierNeedParams() {
         return null;
     }
 }

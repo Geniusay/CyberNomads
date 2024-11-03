@@ -30,7 +30,7 @@ public class BilibiliVideoCoinTaskBlueprint extends AbstractTaskBlueprint {
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
-                new TaskNeedParams("test", "String", "测试一下视频投币", false, "")
+                new TaskNeedParams("test", String.class, "测试一下视频投币", false, "")
         );
     }
 
