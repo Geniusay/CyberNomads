@@ -8,10 +8,18 @@ import StatusMenu from "./StatusMenu.vue";
 import { useUserStore } from "@/stores/userStore";
 import { useSnackbarStore } from "@/stores/snackbarStore";
 import { useRouter } from "vue-router";
+import {onMounted} from "vue";
+import { UserVO } from "@/types/userType"
 const router = useRouter();
 
 const snackbarStore = useSnackbarStore()
 const userStore = useUserStore();
+
+const user = ref<UserVO>({})
+onMounted(async ()=>{
+  await userStore.fetchUserInfo()
+
+})
 
 const handleLogout = () => {
   snackbarStore.showWarningMessage("已退出登录")
