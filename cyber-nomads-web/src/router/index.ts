@@ -6,6 +6,8 @@ import UtilityRoutes from "./utility.routes";
 import AppsRoutes from "./apps.routes";
 import DataRoutes from "./data.routes";
 import {useSnackbarStore} from "@/stores/snackbarStore";
+import WorkplaceRoutes from "@/router/workplace.routes";
+import {validAuth} from "@/utils/authUtil";
 
 export const routes = [
   {
@@ -35,19 +37,20 @@ export const routes = [
         },
         component: () => import("@/views/pages/DashBoard.vue"),
       },
-      {
-        path: "/:pathMatch(.*)*",
-        name: "error",
-        component: () =>
-          import(/* webpackChunkName: "error" */ "@/views/errors/NotFoundPage.vue"),
-      },
       ...UserRoutes,
       ...LandingRoutes,
       ...AuthRoutes,
       ...UtilityRoutes,
       ...AppsRoutes,
       ...DataRoutes,
+      ...WorkplaceRoutes
     ]
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "error",
+    component: () =>
+      import(/* webpackChunkName: "error" */ "@/views/errors/NotFoundPage.vue"),
   },
 ];
 
@@ -71,9 +74,7 @@ const router = createRouter({
 
 // 设置全局前置守卫
 router.beforeEach((to, from, next) => {
-  const userInfo = JSON.parse(localStorage.getItem('cyberUser') || '{}')["userInfo"];
-  const loggedIn = !!(userInfo && Object.keys(userInfo).length)
-  if(!loggedIn){
+  if(!validAuth()){
     if (to.path.startsWith('/home') || to.path === '/login') {
       next();
     } else {
@@ -82,7 +83,7 @@ router.beforeEach((to, from, next) => {
     }
   }else {
     if (to.path === '/login') {
-      useSnackbarStore().showSuccessMessage("🌈已登录，欢迎回来!")
+      useSnackbarStore().showSuccessMessage("🌈 已登录，欢迎回来!")
       next('/workplace'); // 跳转到工作界面
     } else {
       next(); // 否则正常导航

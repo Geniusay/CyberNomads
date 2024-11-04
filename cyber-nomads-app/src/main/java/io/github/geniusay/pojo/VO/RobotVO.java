@@ -15,7 +15,7 @@ import lombok.Data;
 @Builder
 public class RobotVO {
 
-    private Long id;
+    private String id;
     private String plat;
     private boolean ban;
     private String nickname;
@@ -23,7 +23,7 @@ public class RobotVO {
 
     public static RobotVO convert(RobotDO r){
         return RobotVO.builder()
-                .id(r.getId())
+                .id(String.valueOf(r.getId()))
                 .plat(TaskTranslationUtil.translatePlatform(Platform.getPlatformByCode(r.getPlatform())))
                 .username(r.getUsername())
                 .nickname(r.getNickname())

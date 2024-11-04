@@ -88,7 +88,7 @@ const login = async()=>{
       const userData: UserVO = res.data.userVO as UserVO
       userStore.setUserInfo(userData, res.data.token)
       router.push({path:'/workplace'})
-      snackbarStore.showSuccessMessage("🌈欢迎回来!")
+      snackbarStore.showSuccessMessage("🌈 欢迎回来，"+userData.email+"!")
     }).catch((error)=>{
       generatePicCode()
       snackbarStore.showErrorMessage("登录失败，请检查邮箱或验证码是否正确!")
@@ -107,7 +107,7 @@ const register = async()=>{
       const userData: UserVO = res.data.userVO as UserVO
       userStore.setUserInfo(userData, res.data.token)
       router.push({path:'/workplace'})
-      snackbarStore.showSuccessMessage("🌈欢迎加入Cyber Nomads!")
+      snackbarStore.showSuccessMessage("🌈 欢迎加入Cyber Nomads!")
     }).catch((error)=>{
       generatePicCode()
       snackbarStore.showErrorMessage("注册失败，请检查邮箱或验证码是否正确!")
