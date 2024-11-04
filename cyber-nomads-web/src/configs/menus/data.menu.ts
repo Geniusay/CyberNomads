@@ -1,8 +1,8 @@
 export default [
   {
     icon: "mdi-table-edit",
-    text: "Edit Table",
-    link: "/data/edit-table",
-    key: "menu.data.editTable",
+    text: "Cyber Nomads",
+    link: "/data/cyber-nomads",
+    key: "menu.data.cyberNomads",
   },
 ];

@@ -1,4 +1,10 @@
 export default {
+  workplace:{
+    nomads:{
+      addRobot:"添加赛博游民",
+      nickname:"游民昵称",
+    }
+  },
   common: {
     add: "新增",
     cancel: "取消",
@@ -123,6 +129,7 @@ export default {
       customFormGeneration: "自定义表单生成",
       richTextEditor: "富文本编辑器",
       editTable: "可编辑数据表",
+      cyberNomads: "赛博游民管理",
     },
     chatbot_v1: "聊天助手",
     chatbot_v2: "问答助手",
