@@ -4,4 +4,5 @@ export interface RobotVO{
   nickname: string;
   username: string;
   ban: boolean;
+  createTime: string;
 }

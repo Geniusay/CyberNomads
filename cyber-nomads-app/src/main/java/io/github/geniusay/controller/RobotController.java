@@ -15,7 +15,7 @@ public class RobotController {
 
     @Resource
     private RobotService robotService;
-    
+
     @PostMapping("/upload")
     @TokenRequire
     public Result<?> uploadRobot(@RequestParam("file") MultipartFile file){
@@ -44,5 +44,10 @@ public class RobotController {
     @TokenRequire
     public Result<?> changeRobot(@RequestBody ChangeRobotDTO robotDTO){
         return Result.success(robotService.changeRobot(robotDTO));
+    }
+
+    @GetMapping("/robot/platforms")
+    public Result<?> getPlatforms(){
+        return robotService.getPlatforms();
     }
 }

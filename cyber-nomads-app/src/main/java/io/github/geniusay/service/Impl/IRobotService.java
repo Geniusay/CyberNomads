@@ -6,12 +6,15 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.common.web.Result;
 import io.github.geniusay.mapper.RobotMapper;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DTO.*;
 import io.github.geniusay.pojo.Platform;
+import io.github.geniusay.pojo.VO.PlatformVO;
 import io.github.geniusay.pojo.VO.RobotVO;
 import io.github.geniusay.service.RobotService;
+import io.github.geniusay.utils.TaskTranslationUtil;
 import io.github.geniusay.utils.ThreadUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -102,5 +106,10 @@ public class IRobotService implements RobotService {
     @Override
     public List<RobotDO> queryVaildRobot() {
         return robotMapper.selectList(new QueryWrapper<RobotDO>().eq("ban", 0).eq("has_delete", 0));
+    }
+
+    @Override
+    public Result<?> getPlatforms() {
+        return Result.success(Arrays.stream(Platform.values()).map(PlatformVO::platformConvertVO));
     }
 }

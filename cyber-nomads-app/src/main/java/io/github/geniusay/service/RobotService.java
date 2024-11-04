@@ -1,8 +1,10 @@
 package io.github.geniusay.service;
 
+import io.github.common.web.Result;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DTO.ChangeRobotDTO;
 import io.github.geniusay.pojo.DTO.LoadRobotResponseDTO;
+import io.github.geniusay.pojo.VO.PlatformVO;
 import io.github.geniusay.pojo.VO.RobotVO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,4 +22,6 @@ public interface RobotService {
     Boolean changeRobot(ChangeRobotDTO robotDTO);
 
     List<RobotDO> queryVaildRobot();
+
+    Result<?> getPlatforms();
 }

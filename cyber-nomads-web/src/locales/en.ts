@@ -1,7 +1,13 @@
 export default {
   workplace:{
     nomads:{
-      addRobot:"ADD ROBOT"
+      addRobot:"ADD ROBOT",
+      nickname:"Nickname",
+      username:"Account",
+      createDate:"Create Date",
+      platform:"Platform",
+      isBan:"Ban",
+      action:"Actions"
     }
   },
   common: {

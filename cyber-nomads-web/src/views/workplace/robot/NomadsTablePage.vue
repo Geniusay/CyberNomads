@@ -254,43 +254,28 @@ const formTitle = computed(() => {
         <thead>
           <tr>
             <th class="text-subtitle-1 font-weight-semibold">Id</th>
-            <th class="text-subtitle-1 font-weight-semibold">UserInfo</th>
-            <th class="text-subtitle-1 font-weight-semibold">Phone</th>
-            <th class="text-subtitle-1 font-weight-semibold">Joining Date</th>
-            <th class="text-subtitle-1 font-weight-semibold">Role</th>
-            <th class="text-subtitle-1 font-weight-semibold">Actions</th>
+            <th class="text-subtitle-1 font-weight-semibold">{{ $t("workplace.nomads.nickname") }}</th>
+            <th class="text-subtitle-1 font-weight-semibold">{{ $t("workplace.nomads.platform") }}</th>
+            <th class="text-subtitle-1 font-weight-semibold">{{ $t("workplace.nomads.username") }}</th>
+            <th class="text-subtitle-1 font-weight-semibold">{{ $t("workplace.nomads.createDate") }}</th>
+            <th class="text-subtitle-1 font-weight-semibold">{{ $t("workplace.nomads.isBan") }}</th>
+            <th class="text-subtitle-1 font-weight-semibold">{{ $t("workplace.nomads.action") }}</th>
           </tr>
         </thead>
         <tbody class="text-body-1">
-          <tr v-for="item in filteredList" :key="item.id">
-            <td class="font-weight-bold">{{ item.id }}</td>
-            <td>
-              <div class="d-flex align-center py-1">
-                <div>
-                  <v-img
-                    :src="item.avatar"
-                    width="40"
-                    class="rounded-circle img-fluid"
-                  ></v-img>
-                </div>
-
-                <div class="ml-5">
-                  <p class="font-weight-bold">{{ item.username }}</p>
-                  <span class="d-block mt-1 text-caption textSecondary">{{
-                    item.usermail
-                  }}</span>
-                </div>
-              </div>
-            </td>
-            <td>{{ item.phone }}</td>
-            <td>{{ item.jdate }}</td>
+          <tr v-for="item in robotList" :key="item.id">
+            <td class="font-weight-bold">#{{ item.id }}</td>
+            <td class="font-weight-bold">{{ item.username }}</td>
+            <td>{{ item.plat }}</td>
+            <td>{{ item.username }}</td>
+            <td>{{ item.createTime }}</td>
             <td>
               <v-chip
                 class="font-weight-bold"
-                :color="item.rolestatus"
-                size="small"
+                :color="item.ban?'red':'green'"
+                size="large"
                 label
-                >{{ item.role }}</v-chip
+                ><v-icon size="large">{{item.ban?'mdi-robot-off':'mdi-robot-happy'}}</v-icon></v-chip
               >
             </td>
             <td>
