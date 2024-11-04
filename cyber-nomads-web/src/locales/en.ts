@@ -1,4 +1,9 @@
 export default {
+  workplace:{
+    nomads:{
+      addRobot:"ADD ROBOT"
+    }
+  },
   common: {
     add: "Add",
     cancel: "Cancel",

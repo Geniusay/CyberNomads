@@ -1,7 +1,20 @@
 <script setup lang="ts">
 import { faker } from "@faker-js/faker";
+import {RobotVO} from "@/views/workplace/robot/RobotTypes";
+import {onMounted} from "vue";
+import { getRobotList } from "@/api/robotApi";
+import { useSnackbarStore } from "@/stores/snackbarStore";
 import moment from "moment";
 
+var snackbarStore = useSnackbarStore();
+const robotList = ref<RobotVO[]>([])
+onMounted(async ()=>{
+   await getRobotList().then(res=>{
+     robotList.value = res.data as RobotVO[]
+   }).catch(error=>{
+     snackbarStore.showErrorMessage("网络异常")
+   })
+})
 const chooseColor = () => {
   let colors = ["red", "indigo", "blue", "cyan", "teal"];
   let randomColor = colors[Math.floor(Math.random() * colors.length)];
@@ -126,8 +139,8 @@ const formTitle = computed(() => {
             <v-dialog v-model="dialog" max-width="700">
               <template v-slot:activator="{ props }">
                 <v-btn color="primary" v-bind="props" flat class="ml-auto">
-                  <v-icon class="mr-2">mdi-account-multiple-plus</v-icon>Add
-                  Contact
+                  <v-icon class="mr-2">mdi-robot-industrial</v-icon>
+                  {{ $t("workplace.nomads.addRobot") }}
                 </v-btn>
               </template>
               <v-card>

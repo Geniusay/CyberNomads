@@ -1,4 +1,9 @@
 export default {
+  workplace:{
+    nomads:{
+      addRobot:"添加赛博游民"
+    }
+  },
   common: {
     add: "新增",
     cancel: "取消",
