@@ -1,4 +1,9 @@
 export default {
+  workplace:{
+    nomads:{
+      addRobot:"ADD ROBOT"
+    }
+  },
   common: {
     add: "Add",
     cancel: "Cancel",
@@ -125,6 +130,7 @@ export default {
       customFormGeneration: "Custom Form Generation",
       richTextEditor: "Rich Text Editor",
       editTable: "Edit Table",
+      cyberNomads: "Cyber Nomads",
     },
     chatbot_v1: "ChatBot",
     chatbot_v2: "Q&A Bot",

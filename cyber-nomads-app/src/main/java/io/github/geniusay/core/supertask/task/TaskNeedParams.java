@@ -17,8 +17,8 @@ public class TaskNeedParams {
     private String desc;
     private boolean required;
     private Object defaultValue;
-
     private List<TaskNeedParams> childParams = new ArrayList<>();
+
     public TaskNeedParams(String name, Class<?> type, String desc) {
         this.name = name;
         this.type = type;
@@ -41,6 +41,15 @@ public class TaskNeedParams {
         this.desc = desc;
         this.required = required;
         this.defaultValue = defaultValue;
+        this.childParams = childParams;
+    }
+
+    public TaskNeedParams(String name, String desc, boolean required, List<TaskNeedParams> childParams) {
+        this.name = name;
+        this.type = null;
+        this.desc = desc;
+        this.required = required;
+        this.defaultValue = null;
         this.childParams = childParams;
     }
 }

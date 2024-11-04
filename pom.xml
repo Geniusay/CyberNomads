@@ -29,6 +29,7 @@
     <junit.version>4.12</junit.version>
     <assistant.version>1.1.1</assistant.version>
     <sa-token.version>1.35.0.RC</sa-token.version>
+    <commons-lang.version>2.6</commons-lang.version>
   </properties>
 
   <parent>
@@ -40,6 +41,13 @@
 
   <dependencyManagement>
     <dependencies>
+
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>${commons-lang.version}</version>
+      </dependency>
+
       <!--mysql驱动-->
       <dependency>
         <groupId>mysql</groupId>

@@ -52,7 +52,6 @@ captcha:
 AIGenerate:
   API_KEY: ${"API_KEY":ENC(li21ByYLAg/rKbFgMaufT+7PbsTYmdJSDusGI2Y7483pQdpXHvBRPgt78dfGQgybBqQKZnR9Mfs=)}
   STRATEGY: ${"DEFAULT_STRATEGY":qw}
-  SLOGEN: ${SLOGEN:欢迎加入赛博游民大家庭!更多资讯请查看官网:cybernomads.top}
 
 point:
   reset:

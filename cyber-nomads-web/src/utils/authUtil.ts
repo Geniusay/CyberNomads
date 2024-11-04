@@ -15,3 +15,8 @@ export const validRequestAuth = (config)=>{
   }
   return config;
 }
+
+export const validAuth = () =>{
+  const token = JSON.parse(localStorage.getItem('cyberUser') || '{}')["token"];
+  return !!token;
+}

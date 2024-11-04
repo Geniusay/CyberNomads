@@ -48,10 +48,11 @@ public class ScheduleExecutor implements TaskListener{
                         taskExecutor.execute(() -> {
                             try {
                                 robotWorker.execute();
-                                robotWorker.lastWord();
-                                taskMap.remove(robotWorker.task().getUid());
                             } catch (Exception e) {
                                 log.error("robot执行异常:{},robot信息:{}", e.getMessage(),robotWorker);
+                            }finally {
+                                robotWorker.lastWord();
+                                taskMap.remove(robotWorker.task().getUid());
                             }
                         });
                     }
@@ -87,7 +88,6 @@ public class ScheduleExecutor implements TaskListener{
     @Override
     public void initRobot() {
         FREE_WORKER.addAll(manager.getAllRobot().keySet());
-        log.info("当前罗伯特数量:{}",FREE_WORKER.size());
         new Thread(this::mainThread).start();
     }
 
