@@ -2,6 +2,7 @@ package io.github.geniusay.core.supertask.taskblueprint;
 
 import io.github.geniusay.core.supertask.TaskLogProcessor;
 import io.github.geniusay.core.supertask.config.TaskConstant;
+import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskExecute;
@@ -38,7 +39,7 @@ public abstract class AbstractLogTaskBlueprint extends AbstractTaskBlueprint {
                 logProcessor.addLogToTask(task, "[Info] 任务执行昵称: " + robot.getNickname());
 
                 // 执行任务逻辑
-                executeTask(robot, task);
+                executeTask(robot, task, task.getTerminator());
 
                 // 检查是否有 API 错误信息
                 String errorCode = task.getDataValOrDefault(TaskConstant.ERROR_CODE, String.class, null);
@@ -65,5 +66,5 @@ public abstract class AbstractLogTaskBlueprint extends AbstractTaskBlueprint {
     /**
      * 子类实现具体的任务执行逻辑
      */
-    protected abstract void executeTask(RobotWorker robot, Task task) throws Exception;
+    protected abstract void executeTask(RobotWorker robot, Task task, Terminator terminator) throws Exception;
 }

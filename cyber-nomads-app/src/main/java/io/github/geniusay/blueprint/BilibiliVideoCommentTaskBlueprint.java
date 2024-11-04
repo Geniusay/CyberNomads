@@ -1,5 +1,6 @@
 package io.github.geniusay.blueprint;
 
+import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.core.supertask.task.*;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,7 @@ public class BilibiliVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
     }
 
     @Override
-    protected void executeTask(RobotWorker robot, Task task) throws Exception {
+    protected void executeTask(RobotWorker robot, Task task, Terminator terminator) throws Exception {
 
     }
 

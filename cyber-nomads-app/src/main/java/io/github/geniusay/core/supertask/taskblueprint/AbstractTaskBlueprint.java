@@ -1,5 +1,6 @@
 package io.github.geniusay.core.supertask.taskblueprint;
 
+import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.core.supertask.task.LastWordHandler;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
@@ -15,7 +16,7 @@ public abstract class AbstractTaskBlueprint implements TaskBlueprint {
         return (robot) -> {
             Task task = robot.task();
             try {
-                executeTask(robot, task);
+                executeTask(robot, task, task.getTerminator());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -28,7 +29,7 @@ public abstract class AbstractTaskBlueprint implements TaskBlueprint {
         return (robot) -> lastWord(robot, robot.task());
     }
 
-    protected abstract void executeTask(RobotWorker robot, Task task) throws Exception;
+    protected abstract void executeTask(RobotWorker robot, Task task, Terminator terminator) throws Exception;
 
     protected abstract String lastWord(RobotWorker robot, Task task);
 }

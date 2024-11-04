@@ -17,7 +17,9 @@ public interface ParamsHelper {
      * 提供需要的参数列表，
      * @return
      */
-    List<TaskNeedParams> supplierNeedParams();
+    default List<TaskNeedParams> supplierNeedParams() {
+        return List.of();
+    }
 
     /**
      * 从前端返回的params中，取出需要的
