@@ -34,7 +34,7 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
     }
 
     @Override
-    protected void executeTask(RobotWorker robot, Task task, Terminator terminator) throws Exception {
+    protected void executeTask(RobotWorker robot, Task task) throws Exception {
         Map<String, Object> params = task.getParams();
 
         String commentStr = (String) params.get("commentStr");

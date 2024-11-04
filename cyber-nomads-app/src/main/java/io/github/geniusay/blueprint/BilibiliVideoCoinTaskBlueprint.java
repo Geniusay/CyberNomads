@@ -24,7 +24,7 @@ public class BilibiliVideoCoinTaskBlueprint extends AbstractTaskBlueprint {
     }
 
     @Override
-    protected void executeTask(RobotWorker robot, Task task, Terminator terminator) throws Exception {
+    protected void executeTask(RobotWorker robot, Task task) throws Exception {
 
     }
 

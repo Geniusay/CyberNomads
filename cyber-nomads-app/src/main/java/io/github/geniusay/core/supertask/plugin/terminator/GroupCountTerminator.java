@@ -1,9 +1,11 @@
 package io.github.geniusay.core.supertask.plugin.terminator;
 
 import io.github.geniusay.core.supertask.task.RobotWorker;
+import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.constants.TerminatorConstants;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -31,5 +33,10 @@ public class GroupCountTerminator extends AbstractTerminator {
     @Override
     public boolean taskIsDone() {
         return targetCount <= nowCount.get();
+    }
+
+    @Override
+    public List<TaskNeedParams> supplierNeedParams() {
+        return super.supplierNeedParams();
     }
 }
