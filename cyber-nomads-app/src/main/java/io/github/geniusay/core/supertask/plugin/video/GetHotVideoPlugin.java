@@ -1,4 +1,4 @@
-package io.github.geniusay.plugins;
+package io.github.geniusay.core.supertask.plugin.video;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -11,6 +11,7 @@ import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,22 @@ public class GetHotVideoPlugin implements GetHandleVideo<VideoDetail> {
     public void init() {
         hotRankingVideosCache = createCache();
         popularVideosCache = createCache();
+    }
+
+    public List<VideoDetail> getHandleVideoWithLimit(Map<String, Object> params, int limit) {
+        // 获取视频列表
+        List<VideoDetail> videoList = getHandleVideo(params);
+
+        // 如果视频数量少于请求的数量，返回全部视频
+        if (videoList.size() <= limit) {
+            return videoList;
+        }
+
+        // 随机打乱视频列表
+        Collections.shuffle(videoList);
+
+        // 返回指定数量的视频
+        return videoList.subList(0, limit);
     }
 
     /**

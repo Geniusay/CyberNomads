@@ -16,13 +16,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class TimesTerminator extends AbstractTerminator {
 
-    private final int times;
+    private final int singleTimes;
     private final Map<Long, AtomicInteger> robotDoneTimes;
 
     public TimesTerminator(TaskDO taskDO, Map<String, Object> params) {
         super(taskDO, params);
         // 从 params 中提取 times 参数
-        this.times = getParam(TerminatorConstants.PARAM_TIMES, Integer.class);
+        this.singleTimes = getParam(TerminatorConstants.PARAM_TIMES, Integer.class);
         this.robotDoneTimes = new ConcurrentHashMap<>();
         for (RobotDO robotDo : robotList) {
             robotDoneTimes.put(robotDo.getId(), new AtomicInteger(0));
@@ -31,13 +31,13 @@ public class TimesTerminator extends AbstractTerminator {
 
     @Override
     public boolean doTask(RobotWorker worker) {
-        return robotDoneTimes.get(worker.getId()).incrementAndGet() <= times;
+        return robotDoneTimes.get(worker.getId()).incrementAndGet() <= singleTimes;
     }
 
     @Override
     public boolean taskIsDone() {
         for (AtomicInteger count : robotDoneTimes.values()) {
-            if (count.get() < times) {
+            if (count.get() < singleTimes) {
                 return false;
             }
         }

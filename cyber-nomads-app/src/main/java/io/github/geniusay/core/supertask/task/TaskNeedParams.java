@@ -43,4 +43,13 @@ public class TaskNeedParams {
         this.defaultValue = defaultValue;
         this.childParams = childParams;
     }
+
+    public TaskNeedParams(String name, String desc, boolean required, List<TaskNeedParams> childParams) {
+        this.name = name;
+        this.type = null;
+        this.desc = desc;
+        this.required = required;
+        this.defaultValue = null;
+        this.childParams = childParams;
+    }
 }

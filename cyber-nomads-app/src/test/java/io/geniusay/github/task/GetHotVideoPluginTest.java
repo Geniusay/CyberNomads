@@ -1,8 +1,8 @@
 package io.geniusay.github.task;
 
 import io.github.geniusay.CyberNomadsApplication;
-import io.github.geniusay.crawler.po.bilibili.VideoDetail;
 import io.github.geniusay.core.supertask.plugin.video.GetHotVideoPlugin;
+import io.github.geniusay.crawler.po.bilibili.VideoDetail;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

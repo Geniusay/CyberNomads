@@ -8,5 +8,5 @@ public class TerminatorConstants {
 
     // 参数名称
     public static final String PARAM_TARGET_COUNT = "targetCount";
-    public static final String PARAM_TIMES = "times";
+    public static final String PARAM_TIMES = "singleTimes";
 }
