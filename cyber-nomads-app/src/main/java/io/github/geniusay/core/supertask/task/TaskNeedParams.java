@@ -17,8 +17,8 @@ public class TaskNeedParams {
     private String desc;
     private boolean required;
     private Object defaultValue;
-
     private List<TaskNeedParams> childParams = new ArrayList<>();
+
     public TaskNeedParams(String name, Class<?> type, String desc) {
         this.name = name;
         this.type = type;

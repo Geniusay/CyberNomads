@@ -1,8 +1,8 @@
 package io.github.geniusay.core.supertask.plugin.terminator;
 
+import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.core.supertask.task.RobotWorker;
-import io.github.geniusay.utils.ConvertorUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -10,16 +10,17 @@ import java.util.Map;
 public abstract class AbstractTerminator implements Terminator {
 
     protected TaskDO taskDO;
+    protected final Map<String, Object> params;
+    protected List<RobotDO> robotList;
 
-    private Map<String, Object> params;
-
-    public AbstractTerminator(TaskDO taskDO) {
+    public AbstractTerminator(TaskDO taskDO, Map<String, Object> params) {
         this.taskDO = taskDO;
-        this.params = ConvertorUtil.jsonStringToMap(taskDO.getParams());
+        this.params = params;
+        this.robotList = taskDO.getRobotList();
     }
 
     /**
-     * 从 TaskDO 的 params 中获取参数
+     * 从 params 中获取参数
      */
     protected <T> T getParam(String key, Class<T> clazz) {
         return (T) params.get(key);

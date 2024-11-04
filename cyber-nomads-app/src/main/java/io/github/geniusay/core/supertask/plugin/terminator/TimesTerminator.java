@@ -1,31 +1,31 @@
 package io.github.geniusay.core.supertask.plugin.terminator;
 
 import io.github.geniusay.core.supertask.task.RobotWorker;
-import io.github.geniusay.core.supertask.task.TaskNeedParams;
+import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
+import io.github.geniusay.constants.TerminatorConstants;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 /**
  * 任务计数器终止器
  * ept：一个robot可以做{times}次任务
  */
-public abstract class TimesTerminator extends AbstractTerminator {
+public class TimesTerminator extends AbstractTerminator {
 
     private final int times;
     private final Map<Long, AtomicInteger> robotDoneTimes;
 
-    public TimesTerminator(TaskDO taskDO, List<RobotWorker> robotWorkers) {
-        super(taskDO);
-        // 从 taskDO 的 params 中提取 times 参数
-        this.times = getParam("times", Integer.class);
+    public TimesTerminator(TaskDO taskDO, Map<String, Object> params) {
+        super(taskDO, params);
+        // 从 params 中提取 times 参数
+        this.times = getParam(TerminatorConstants.PARAM_TIMES, Integer.class);
         this.robotDoneTimes = new ConcurrentHashMap<>();
-        for (RobotWorker robotWorker : robotWorkers) {
-            robotDoneTimes.put(robotWorker.getId(), new AtomicInteger(0));
+        for (RobotDO robotDo : robotList) {
+            robotDoneTimes.put(robotDo.getId(), new AtomicInteger(0));
         }
     }
 
@@ -36,7 +36,11 @@ public abstract class TimesTerminator extends AbstractTerminator {
 
     @Override
     public boolean taskIsDone() {
-        // 这里可以根据逻辑判断任务是否完成
-        return false;
+        for (AtomicInteger count : robotDoneTimes.values()) {
+            if (count.get() < times) {
+                return false;
+            }
+        }
+        return true;
     }
 }
