@@ -3,6 +3,7 @@ package io.github.geniusay.pojo.VO;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.Platform;
 import io.github.geniusay.utils.TaskTranslationUtil;
+import io.github.geniusay.utils.TimeUtil;
 import lombok.Builder;
 import lombok.Data;
 
@@ -20,6 +21,7 @@ public class RobotVO {
     private boolean ban;
     private String nickname;
     private String username;
+    private String createTime;
 
     public static RobotVO convert(RobotDO r){
         return RobotVO.builder()
@@ -28,6 +30,7 @@ public class RobotVO {
                 .username(r.getUsername())
                 .nickname(r.getNickname())
                 .ban(r.isBan())
+                .createTime(TimeUtil.getFormatTimeStr(r.getCreateTime()))
                 .build();
     }
 }

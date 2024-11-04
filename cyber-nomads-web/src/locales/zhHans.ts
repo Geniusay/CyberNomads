@@ -1,7 +1,8 @@
 export default {
   workplace:{
     nomads:{
-      addRobot:"添加赛博游民"
+      addRobot:"添加赛博游民",
+      nickname:"游民昵称",
     }
   },
   common: {
