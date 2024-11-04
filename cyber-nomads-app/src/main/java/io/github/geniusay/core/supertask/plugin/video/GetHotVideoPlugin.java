@@ -1,4 +1,4 @@
-package io.github.geniusay.plugins;
+package io.github.geniusay.core.supertask.plugin.video;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;

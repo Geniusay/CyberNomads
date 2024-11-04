@@ -32,13 +32,11 @@ public class BilibiliVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
         Map<String, Object> userParams = task.getParams();
         String oid = getValue(userParams,"oid",String.class);
         String text = getValue(userParams,"text",String.class);
-        String bvid = getValue(userParams,"bvid",String.class);
-        if(StringUtils.isBlank(oid)&&StringUtils.isBlank(text)&&StringUtils.isBlank(bvid)){
-            throw new ServeException(500,task.getTaskType()+"参数不能为空");
-        }
+
         if(terminator.doTask(robot)){
             robot.setTask(task);
             BilibiliCommentApi.sendCommentOrReply(robot.getCookie(), oid, text, null, null);
+
         }
     }
 
