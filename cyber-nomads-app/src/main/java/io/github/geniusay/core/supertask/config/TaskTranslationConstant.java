@@ -17,6 +17,7 @@ public class TaskTranslationConstant {
     public static final Map<String, String> TASK_TYPE_TRANSLATION = Map.of(
             VIDEO_COMMENT, "对某个视频评论",
             VIDEO_LIKE, "对某个视频点赞",
-            VIDEO_COIN, "对某个视频投币"
+            VIDEO_COIN, "对某个视频投币",
+            HOT_VIDEO_COMMENT, "在热门视频下面进行评论"
     );
 }

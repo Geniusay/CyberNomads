@@ -23,8 +23,13 @@ public class BilibiliVideoCoinTaskBlueprint extends AbstractTaskBlueprint {
     }
 
     @Override
-    public TaskExecute supplierExecute() {
-        return null;
+    protected void executeTask(RobotWorker robot, Task task) throws Exception {
+
+    }
+
+    @Override
+    protected String lastWord(RobotWorker robot, Task task) {
+        return "";
     }
 
     @Override
@@ -32,10 +37,5 @@ public class BilibiliVideoCoinTaskBlueprint extends AbstractTaskBlueprint {
         return List.of(
                 new TaskNeedParams("test", String.class, "测试一下视频投币", false, "")
         );
-    }
-
-    @Override
-    public LastWordHandler supplierLastWordHandler() {
-        return null;
     }
 }

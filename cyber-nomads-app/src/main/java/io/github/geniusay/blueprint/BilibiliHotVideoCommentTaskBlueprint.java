@@ -6,20 +6,20 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.DOUYING;
-import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_COMMENT;
+import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
+import static io.github.geniusay.core.supertask.config.TaskTypeConstant.HOT_VIDEO_COMMENT;
 
 @Component
-public class DouyingVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
+public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
 
     @Override
     public String platform() {
-        return DOUYING;
+        return BILIBILI;
     }
 
     @Override
     public String taskType() {
-        return VIDEO_COMMENT;
+        return HOT_VIDEO_COMMENT;
     }
 
     @Override
