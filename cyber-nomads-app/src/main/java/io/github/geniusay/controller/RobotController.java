@@ -46,7 +46,7 @@ public class RobotController {
         return Result.success(robotService.changeRobot(robotDTO));
     }
 
-    @GetMapping("/robot/platforms")
+    @GetMapping("/platforms")
     public Result<?> getPlatforms(){
         return robotService.getPlatforms();
     }
