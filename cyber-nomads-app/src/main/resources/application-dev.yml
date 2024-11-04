@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ENC(ZJD30apv0TnJnjbVWj/W5iEdsp69bwugrfGWqnEpVXhZ9hhZwSVLDTHt51MBrGT7mIoQxj6+XxWRZNoE+KypedyMY6+FLocV49SPot7BSX9eO24/Li1IOmDy4LHc2g2H5QaK59GOZ+xDNyLT40c5QS7TQCJnjLJkppWDjm48MT0=)
+    url: ENC(RzHdTgBGgHiAnsOGRILGs4AokqbJ0VzlefvSDLVECRhF+pmbqda3rRRJZJnf8wK+1RjfmVq/ovdKIbirIk/se5JtbCWyDJz49vQax+YJ4cC3/qTFhzc/J0kJzm0gChaFVekXJ1C4rJMYgd8+vqP6ouoJpspgxag6o7uVYKWqkf77hrBP5xCPRQ==)
     username: ENC(VhV1Y8nhaVU7DFTVjkZSfQs+XWAi3Op+)
     password: ENC(JdU9LZdyBdiF029widwkA/v0+KZB/9iUWeGALxI9ndENUlzNZMH+BQ==)
     type: com.zaxxer.hikari.HikariDataSource # 使用 HikariCP 连接池

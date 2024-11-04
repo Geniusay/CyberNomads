@@ -1,8 +1,12 @@
 package io.github.geniusay.pojo.DO;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * @Description
@@ -18,4 +22,9 @@ public class RegisterMachineDO {
     private String url;
     private String code;
     private String version;
+    @TableField(fill = FieldFill.INSERT)
+    private Date createTime;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Date updateTime;
 }
