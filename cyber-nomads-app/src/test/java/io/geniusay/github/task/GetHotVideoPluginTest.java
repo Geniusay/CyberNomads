@@ -2,10 +2,9 @@ package io.geniusay.github.task;
 
 import io.github.geniusay.CyberNomadsApplication;
 import io.github.geniusay.crawler.po.bilibili.VideoDetail;
-import io.github.geniusay.plugins.GetHotVideoPlugin;
+import io.github.geniusay.core.supertask.plugin.video.GetHotVideoPlugin;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -13,8 +12,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CyberNomadsApplication.class)
