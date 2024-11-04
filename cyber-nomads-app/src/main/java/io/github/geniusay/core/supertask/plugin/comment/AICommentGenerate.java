@@ -23,12 +23,10 @@ public class AICommentGenerate implements CommentGenerate{
 
     @Value("${AIGenerate.API_KEY}")
     private String key;
-    @Value("${AIGenerate.SLOGEN}")
-    private String slogen;
 
     @Override
     public String generateComment(Map<String, Object> params) {
-        return autoGenerate.send(getValue(params,PRE_TEXT,String.class), key)+"\n"+slogen;
+        return autoGenerate.send(getValue(params,PRE_TEXT,String.class), key);
     }
 
     @Override

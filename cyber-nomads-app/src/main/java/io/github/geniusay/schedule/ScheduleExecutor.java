@@ -32,7 +32,6 @@ public class ScheduleExecutor implements TaskListener{
     public void mainThread(){
         while (true){
             try {
-
                 Long robotId = FREE_WORKER.take();
                 Map<Long, Map<String, Task>> worldRobotsTask = manager.getWorldRobotsTask();
                 Map<String, Task> taskMap = worldRobotsTask.get(robotId);
