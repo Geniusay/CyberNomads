@@ -1,4 +1,4 @@
-package io.github.geniusay.utils.AIGenerate;
+package io.github.geniusay.utils;
 
 import java.lang.reflect.Field;
 

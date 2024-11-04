@@ -39,6 +39,7 @@ public class ITaskStateChangeService implements TaskStateChangeService {
     @Override
     public void notifyTaskFinished(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus) {
         // 这里可以实现完成任务的逻辑
+
         System.out.println("任务已完成: " + task.getTaskName() + "，从 " + oldStatus + " 修改为 " + newStatus);
     }
 

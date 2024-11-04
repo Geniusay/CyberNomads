@@ -9,6 +9,7 @@ import io.github.geniusay.mapper.RobotMapper;
 import io.github.geniusay.mapper.TaskMapper;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
+import io.github.geniusay.service.RobotService;
 import io.github.geniusay.service.TaskService;
 import io.github.geniusay.utils.ConvertorUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +42,8 @@ public class TaskScheduleManager {
     TaskEventMan EVENT_PUBLISHER;
     @Resource
     TaskService taskService;
+    @Resource
+    RobotService robotService;
     public static final Map<String, Task> WORLD_TASK = new ConcurrentHashMap<>();
     public static final Map<Long, RobotWorker> WORLD_ROBOTS = new ConcurrentHashMap<>();
     public static final Map<Long, Map<String,Task>> WORLD_ROBOTS_TASK = new ConcurrentHashMap<>();
@@ -56,7 +59,7 @@ public class TaskScheduleManager {
                 WORLD_TASK.put(taskDO.getUid(),taskFactory.buildTask(taskDO,taskDO.getPlatform(),taskDO.getTaskType()));
             }
         }
-        List<RobotDO> robotDOS = robotMapper.selectList(new QueryWrapper<RobotDO>().eq("ban", 0).eq("has_delete", 0));
+        List<RobotDO> robotDOS = robotService.queryVaildRobot();
         for (RobotDO robotDO : robotDOS) {
             WORLD_ROBOTS.put(robotDO.getId(),new RobotWorker(robotDO));
         }

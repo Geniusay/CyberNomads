@@ -1,6 +1,7 @@
 package io.github.geniusay.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -96,5 +97,10 @@ public class IRobotService implements RobotService {
                 .set(RobotDO::getPlatform, robotDTO.getPlatform())
                 .set(RobotDO::getCookie, robotDTO.getCookie());
         return robotMapper.update(null, update) == 1;
+    }
+
+    @Override
+    public List<RobotDO> queryVaildRobot() {
+        return robotMapper.selectList(new QueryWrapper<RobotDO>().eq("ban", 0).eq("has_delete", 0));
     }
 }

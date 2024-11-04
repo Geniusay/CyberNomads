@@ -1,6 +1,8 @@
 package io.github.geniusay.pojo.VO;
 
 import io.github.geniusay.pojo.DO.RobotDO;
+import io.github.geniusay.pojo.Platform;
+import io.github.geniusay.utils.TaskTranslationUtil;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,7 +16,7 @@ import lombok.Data;
 public class RobotVO {
 
     private Long id;
-    private Integer plat;
+    private String plat;
     private boolean ban;
     private String nickname;
     private String username;
@@ -22,7 +24,7 @@ public class RobotVO {
     public static RobotVO convert(RobotDO r){
         return RobotVO.builder()
                 .id(r.getId())
-                .plat(r.getPlatform())
+                .plat(TaskTranslationUtil.translatePlatform(Platform.getPlatformByCode(r.getPlatform())))
                 .username(r.getUsername())
                 .nickname(r.getNickname())
                 .ban(r.isBan())

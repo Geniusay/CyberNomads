@@ -1,5 +1,6 @@
 package io.github.geniusay.service;
 
+import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DTO.ChangeRobotDTO;
 import io.github.geniusay.pojo.DTO.LoadRobotResponseDTO;
 import io.github.geniusay.pojo.VO.RobotVO;
@@ -17,4 +18,6 @@ public interface RobotService {
     Boolean banRoobot(Long id);
 
     Boolean changeRobot(ChangeRobotDTO robotDTO);
+
+    List<RobotDO> queryVaildRobot();
 }
