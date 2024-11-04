@@ -25,7 +25,7 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
 
     @Override
     protected void executeTask(RobotWorker robot, Task task, Terminator terminator) throws Exception {
-
+        
     }
 
     @Override
