@@ -30,7 +30,10 @@ const saveButtonDisabled = () =>{
 
 const rules = {
   nickname: [
-    value => !isEdit.value&&value?null:'请输入昵称'
+    value => value?null:'请输入昵称'
+  ],
+  username:[
+    value => value?null:'请输入账号'
   ]
 }
 
@@ -56,25 +59,25 @@ const getRobotListReq = async ()=>{
 }
 
 const addRobotReq = async () => {
-  const errorsMsg = validateAndReturn(["platform","nickname","username"], robotForm.value, robotFormValidator)
-  if (!errorsMsg) {
-    await addRobot(robotForm).then(res=>{
-      getRobotListReq()
-      snackbarStore.showErrorMessage("添加成功")
-    }).catch(error=>{
-      snackbarStore.showErrorMessage("添加失败")
-    })
-  }else{
-    snackbarStore.showErrorMessage(errorsMsg)
-  }
+  await addRobot(robotForm.value).then(res=>{
+    getRobotListReq()
+    snackbarStore.showErrorMessage("添加成功")
+  }).catch(error=>{
+    snackbarStore.showErrorMessage("编辑失败"+error.message)
+  })
 }
 
 const changeRobotReq = async() => {
   if(robotForm.value.id!=-1){
-    await changeRobot(robotForm).then(res=>{
-
+    await changeRobot(robotForm.value).then(res=>{
+      const robot = robotList.value.find(item => item.id === robotForm.value.id);
+      robot.nickname = robotForm.value.nickname
+      robot.cookie = robotForm.value.cookie
+      robot.plat = platformList.value.find(item => item.code === robotForm.value.code).platformCnZh
+      robot.username = robotForm.value.username
+      snackbarStore.showErrorMessage("编辑成功")
     }).catch(error=>{
-      snackbarStore.showErrorMessage("编辑失败")
+      snackbarStore.showErrorMessage("编辑失败"+error.message)
     })
   }else{
     snackbarStore.showErrorMessage("错误的编辑内容")
@@ -100,16 +103,22 @@ function deleteItem(item: any) {
 function close() {
   dialog.value = false;
   isEdit.value = false;
-  Object.assign(robotForm, defaultValue.defaultRobotForm)
+  robotForm.value = Object.assign({}, defaultValue.defaultRobotForm)
 }
 
 async function save() {
-  if(isEdit.value){
-    await changeRobotReq()
+  const errorsMsg = validateAndReturn(["platform","nickname","username"], robotForm.value, robotFormValidator)
+  if (!errorsMsg) {
+    if(isEdit.value){
+      await changeRobotReq()
+    }else{
+      await addRobotReq()
+    }
+    close();
   }else{
-    await addRobotReq()
+    snackbarStore.showErrorMessage(errorsMsg)
   }
-  close();
+
 }
 const formTitle = () => {
   return isEdit.value ? "workplace.nomads.editRobot":"workplace.nomads.addRobot";
@@ -168,7 +177,7 @@ const formTitle = () => {
                           variant="outlined"
                           color="primary"
                           density="compact"
-
+                          :rules="rules['username']"
                           required
                           v-model="robotForm.username"
                           :label="$t('workplace.nomads.username')"
@@ -179,7 +188,7 @@ const formTitle = () => {
                           variant="outlined"
                           color="primary"
                           density="compact"
-
+                          :rules="rules['nickname']"
                           v-model="robotForm.nickname"
                           :label="$t('workplace.nomads.nickname')"
                         ></v-text-field>
