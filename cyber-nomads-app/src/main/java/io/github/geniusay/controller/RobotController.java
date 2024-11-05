@@ -37,7 +37,7 @@ public class RobotController {
 
     @GetMapping("/ban")
     @TokenRequire
-    public Result<?> banRobot(@RequestPart("id") Long id){
+    public Result<?> banRobot(@RequestParam("id") Long id){
         return Result.success(robotService.banRoobot(id));
     }
 
