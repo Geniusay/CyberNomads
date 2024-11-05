@@ -84,6 +84,16 @@ public class ITaskService implements TaskService {
                 throw new ServeException("部分机器人账号不存在");
             }
 
+            // 校验机器人是否被禁用
+            List<String> bannedRobots = robotsFromDB.stream()
+                    .filter(RobotDO::isBan)  // 筛选出被禁用的机器人
+                    .map(RobotDO::getNickname)  // 获取被禁用机器人的昵称
+                    .collect(Collectors.toList());
+
+            if (!bannedRobots.isEmpty()) {
+                throw new ServeException("以下机器人账号已被禁用，无法添加: " + String.join(", ", bannedRobots));
+            }
+
             // 将机器人 ID 转换为字符串并保存到任务中
             taskDO.setRobots(ConvertorUtil.listToString(robotIds));
         } else {
@@ -143,20 +153,30 @@ public class ITaskService implements TaskService {
 
         // 4. 添加或删除机器人
         if (isAdd) {
+            // 如果是添加操作，校验机器人是否被禁用
+            List<String> bannedRobots = robotsFromDB.stream()
+                    .filter(RobotDO::isBan)  // 筛选出被禁用的机器人
+                    .map(RobotDO::getNickname)  // 获取被禁用机器人的昵称
+                    .collect(Collectors.toList());
+
+            if (!bannedRobots.isEmpty()) {
+                throw new ServeException("以下机器人账号已被禁用，无法添加: " + String.join(", ", bannedRobots));
+            }
+
             // 添加机器人，Set 自动去重
             robotIdSet.addAll(robotIds);
         } else {
-            // 删除机器人
+            // 如果是删除操作，直接删除机器人，不做禁用状态的校验
             robotIds.forEach(robotIdSet::remove);
         }
 
         // 5. 将 Set 转换回 List，并更新任务的机器人列表
         task.setRobots(ConvertorUtil.listToString(new ArrayList<>(robotIdSet)));
         taskMapper.updateById(task);
+
         // 6. 返回更新后的任务详情
         return convertToTaskVO(task);
     }
-
 
     @Override
     public List<TaskVO> getUserTasks(String uid) {
