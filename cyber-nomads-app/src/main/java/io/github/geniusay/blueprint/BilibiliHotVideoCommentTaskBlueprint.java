@@ -1,13 +1,15 @@
 package io.github.geniusay.blueprint;
 
+import io.github.geniusay.core.actionflow.actor.BilibiliUserActor;
+import io.github.geniusay.core.actionflow.frame.ActionFlow;
+import io.github.geniusay.core.actionflow.logic.BilibiliCommentActionLogic;
+import io.github.geniusay.core.actionflow.receiver.BilibiliCommentReceiver;
 import io.github.geniusay.core.supertask.TerminatorFactory;
 import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.core.supertask.plugin.video.GetHotVideoPlugin;
 import io.github.geniusay.core.supertask.task.*;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
-import io.github.geniusay.crawler.api.bilibili.BilibiliCommentApi;
 import io.github.geniusay.crawler.po.bilibili.VideoDetail;
-import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -37,10 +39,11 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
 
     @Override
     protected void executeTask(RobotWorker robot, Task task) throws Exception {
+        // 获取终结器
         Terminator terminator = task.getTerminator();
 
+        // 获取任务参数
         Map<String, Object> params = task.getParams();
-
         String commentStr = (String) params.get("commentStr");
         String cookie = robot.getCookie();
         int videoCount = (int) params.get("videoCount");  // 获取用户指定的评论视频数量
@@ -48,20 +51,18 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
         // 获取指定数量的热门视频
         List<VideoDetail> videoList = getHotVideoPlugin.getHandleVideoWithLimit(params, videoCount);
 
-        // 遍历视频列表，逐个发送评论
+        // 从 RobotWorker 创建 BilibiliUserActor
+        BilibiliUserActor actor = new BilibiliUserActor(robot.getId().toString(), robot.getNickname(), cookie);
+
+        // 创建评论行为逻辑
+        BilibiliCommentActionLogic commentAction = new BilibiliCommentActionLogic(commentStr);
+
+        // 遍历视频列表，逐个发送评论（实现一对一映射）
         for (VideoDetail video : videoList) {
-            String oid = String.valueOf(video.getData().getAid());  // 获取视频的评论区ID (aid)
-
-            // 发送评论
-            ApiResponse<Boolean> response = BilibiliCommentApi.sendCommentOrReply(cookie, oid, commentStr, null, null);
-
-            if (!response.isSuccess()) {
-                task.log("评论失败: 视频 %s (oid: %s), 错误信息: %s", video.getData().getBvid(), oid, response.getMsg());
-                throw new RuntimeException("评论失败: " + response.getMsg());
-            }
-
-            // 使用终结器判断任务是否完成，并调用 doTask 方法
+            BilibiliCommentReceiver receiver = new BilibiliCommentReceiver(String.valueOf(video.getData().getAid()));
+            new ActionFlow<>(actor, commentAction, receiver).execute();
             if (terminator.doTask(robot)) {
+                // 如果任务完成，提前退出循环
                 break;
             }
         }

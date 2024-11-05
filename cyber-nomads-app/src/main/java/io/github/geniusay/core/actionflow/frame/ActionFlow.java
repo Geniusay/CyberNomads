@@ -26,14 +26,23 @@ public class ActionFlow<A extends Actor, R extends Receiver> {
         this(actors, actionLogic, List.of(receiver), actionMapping);
     }
 
-    // 执行行为
+    public ActionFlow(A actor, ActionLogic<A, R> actionLogic, R receiver) {
+        this(List.of(actor), actionLogic, List.of(receiver), null);
+    }
+
     public void execute() throws Exception {
-        Map<A, List<R>> mapping = actionMapping.getMapping(actors, receivers);
-        for (Map.Entry<A, List<R>> entry : mapping.entrySet()) {
-            A actor = entry.getKey();
-            List<R> receiversForActor = entry.getValue();
-            for (R receiver : receiversForActor) {
-                actionLogic.performAction(actor, receiver);
+        if (actionMapping == null) {
+            // 一对一的情况，直接执行
+            actionLogic.performAction(actors.get(0), receivers.get(0));
+        } else {
+            // 多对多的情况，使用映射
+            Map<A, List<R>> mapping = actionMapping.getMapping(actors, receivers);
+            for (Map.Entry<A, List<R>> entry : mapping.entrySet()) {
+                A actor = entry.getKey();
+                List<R> receiversForActor = entry.getValue();
+                for (R receiver : receiversForActor) {
+                    actionLogic.performAction(actor, receiver);
+                }
             }
         }
     }
