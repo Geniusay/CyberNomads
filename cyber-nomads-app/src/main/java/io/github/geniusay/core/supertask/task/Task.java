@@ -161,6 +161,7 @@ public class Task {
             task.getRobots().addAll(taskDO.getRobotList()==null?new ArrayList<>():taskDO.getRobotList());
             task.setLogger(LoggerFactory.getLogger(task.getTaskName()));
             task.params = ConvertorUtil.jsonStringToMap(taskDO.getParams());
+            task.setId(String.valueOf(taskDO.getId()));
             return task;
         }
     }

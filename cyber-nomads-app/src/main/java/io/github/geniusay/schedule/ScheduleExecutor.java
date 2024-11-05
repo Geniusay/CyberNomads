@@ -49,7 +49,7 @@ public class ScheduleExecutor implements TaskListener{
                         taskExecutor.execute(() -> {
                             try {
                                 boolean execute = robotWorker.execute();
-                                log.info("任务");
+                                log.info("");
                             } catch (Exception e) {
                                 log.error("robot执行异常:{},robot信息:{}", e.getMessage()+":"+e.getStackTrace()[0],robotWorker);
                             }finally {
