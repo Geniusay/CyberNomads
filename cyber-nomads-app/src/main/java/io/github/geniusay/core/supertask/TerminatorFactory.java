@@ -71,6 +71,7 @@ public class TerminatorFactory {
         // 返回一个大的 TaskNeedParams，包含所有终结器的参数作为 childParams
         return new TaskNeedParams(
                 TerminatorConstants.TERMINATOR,
+                String.class,
                 "终结器参数",
                 true,
                 childParams

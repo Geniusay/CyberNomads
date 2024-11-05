@@ -1,6 +1,7 @@
 package io.github.geniusay.core.actionflow.actor;
 
 import io.github.geniusay.core.actionflow.frame.Actor;
+import io.github.geniusay.core.supertask.task.RobotWorker;
 import lombok.Data;
 
 @Data
@@ -14,6 +15,12 @@ public class BilibiliUserActor implements Actor {
         this.id = id;
         this.nickname = nickname;
         this.cookie = cookie;
+    }
+
+    public BilibiliUserActor(RobotWorker robot) {
+        this.id = robot.getId().toString();
+        this.nickname = robot.getUsername();
+        this.cookie = robot.getCookie();
     }
 
     @Override
