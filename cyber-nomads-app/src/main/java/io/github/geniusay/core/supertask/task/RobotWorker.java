@@ -49,7 +49,7 @@ public class RobotWorker {
     }
 
     private boolean canExecuteTask(){
-        return Stream.of(TaskStatus.RUNNING, TaskStatus.EXCEPTION).anyMatch(e->e.equals(currentTask.getTaskStatus()));
+        return !Stream.of(TaskStatus.RUNNING, TaskStatus.EXCEPTION).anyMatch(e->e.equals(currentTask.getTaskStatus()));
     }
 
     public synchronized void setTask(Task task) {

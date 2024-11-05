@@ -33,6 +33,7 @@ public class ScheduleExecutor implements TaskListener{
         while (true){
             try {
                 Long robotId = FREE_WORKER.take();
+                log.info("空闲罗伯特Id:{}",robotId);
                 Map<Long, Map<String, Task>> worldRobotsTask = manager.getWorldRobotsTask();
                 Map<String, Task> taskMap = worldRobotsTask.get(robotId);
                 if(Objects.nonNull(taskMap)){
@@ -40,16 +41,17 @@ public class ScheduleExecutor implements TaskListener{
                     if (!tasks.isEmpty()) {
                         RobotWorker robotWorker = manager.getAllRobot().get(robotId);
                         Task selectedTask = tasks.get(new Random().nextInt(tasks.size()));
-                        while (!selectedTask.getTerminator().doTask(robotWorker)) {
-                            tasks.remove(selectedTask);
-                            selectedTask = tasks.get(new Random().nextInt(tasks.size()));
-                        }
+//                        while (!selectedTask.getTerminator().doTask(robotWorker)) {
+//                            tasks.remove(selectedTask);
+//                            selectedTask = tasks.get(new Random().nextInt(tasks.size()));
+//                        }
                         robotWorker.setTask(selectedTask);
                         taskExecutor.execute(() -> {
                             try {
-                                robotWorker.execute();
+                                boolean execute = robotWorker.execute();
+                                log.info("任务");
                             } catch (Exception e) {
-                                log.error("robot执行异常:{},robot信息:{}", e.getMessage(),robotWorker);
+                                log.error("robot执行异常:{},robot信息:{}", e.getMessage()+":"+e.getStackTrace()[0],robotWorker);
                             }finally {
                                 robotWorker.lastWord();
                                 taskMap.remove(robotWorker.task().getUid());
@@ -65,6 +67,7 @@ public class ScheduleExecutor implements TaskListener{
 
     @Override
     public void startTask(Task task) {
+        log.info("注册任务到调度器:{}",task);
         for (RobotDO robot : task.getRobots()) {
             FREE_WORKER.add(robot.getId());
         }
