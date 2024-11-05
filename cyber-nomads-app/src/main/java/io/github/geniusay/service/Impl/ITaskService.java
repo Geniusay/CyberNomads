@@ -44,7 +44,7 @@ public class ITaskService implements TaskService {
     private RobotMapper robotMapper;
 
     @Resource
-    private TaskStateChangeService stateChangeService;
+    private TaskStatusManager taskStatusManager;
 
     @Override
     @Transactional
@@ -219,147 +219,8 @@ public class ITaskService implements TaskService {
         TaskDO task = taskMapper.selectTaskByIdAndUid(taskId, uid);
         if (task == null) throw new ServeException("任务不存在或无权操作该任务: " + taskId);
 
-        // 2. 根据操作类型执行不同的逻辑
-        switch (action.toLowerCase()) {
-            case DELETE:
-                deleteTask(task, task.getTaskStatus());
-                break;
-            case RESET:
-                resetTask(task, task.getTaskStatus());
-                break;
-            case START:
-                startTask(task, task.getTaskStatus());
-                break;
-            case PAUSE:
-                pauseTask(task, task.getTaskStatus());
-                break;
-            default:
-                throw new ServeException("无效的操作类型: " + action);
-        }
-    }
-
-    @Override
-    @Transactional
-    public void modifyTask(TaskDO task, String action) {
-        TaskStatus currentStatus = task.getTaskStatus();
-
-        switch (action.toLowerCase()) {
-            case FINISH:
-                finishTask(task, currentStatus);
-                break;
-            case FAILED:
-                failTask(task, currentStatus);
-                break;
-            case EXCEPTION:
-                exceptionTask(task, currentStatus);
-                break;
-            default:
-                throw new ServeException("无效的操作类型: " + action);
-        }
-    }
-
-    /**
-     * 任务错误逻辑
-     * 仅允许将状态为 RUNNING 或 EXCEPTION 的任务修改为 FAILED
-     */
-    private void failTask(TaskDO task, TaskStatus currentStatus) {
-        if (currentStatus == TaskStatus.RUNNING || currentStatus == TaskStatus.EXCEPTION) {
-            task.setTaskStatus(TaskStatus.FAILED);
-            if (taskMapper.updateById(task) > 0) {
-                stateChangeService.notifyTaskFailed(task, currentStatus, TaskStatus.FAILED);
-            }
-        } else {
-            throw new ServeException("任务状态不允许标记为失败: " + currentStatus);
-        }
-    }
-
-    /**
-     * 任务异常逻辑
-     * 仅允许将状态为 RUNNING 的任务修改为 EXCEPTION
-     */
-    private void exceptionTask(TaskDO task, TaskStatus currentStatus) {
-        if (currentStatus == TaskStatus.RUNNING) {
-            task.setTaskStatus(TaskStatus.EXCEPTION);
-            if (taskMapper.updateById(task) > 0) {
-                stateChangeService.notifyTaskException(task, currentStatus, TaskStatus.EXCEPTION);
-            }
-        } else {
-            throw new ServeException("任务状态不允许标记为异常: " + currentStatus);
-        }
-    }
-
-    /**
-     * 删除任务逻辑
-     * 仅允许删除状态为 COMPLETED、FAILED 或 PENDING 的任务
-     */
-    private void deleteTask(TaskDO task, TaskStatus taskStatus) {
-        if (task.getTaskStatus() == TaskStatus.COMPLETED || task.getTaskStatus() == TaskStatus.FAILED || task.getTaskStatus() == TaskStatus.PENDING) {
-            if (taskMapper.deleteById(task.getId()) > 0) {
-                stateChangeService.notifyTaskDeleted(task, taskStatus);
-            }
-        } else {
-            throw new ServeException("任务状态不允许删除: " + task.getTaskStatus());
-        }
-    }
-
-    /**
-     * 重置任务逻辑
-     * 仅允许将状态为 PAUSED、FAILED 或 COMPLETED 的任务重置为 PENDING
-     */
-    private void resetTask(TaskDO task, TaskStatus taskStatus) {
-        if (task.getTaskStatus() == TaskStatus.PAUSED || task.getTaskStatus() == TaskStatus.FAILED || task.getTaskStatus() == TaskStatus.COMPLETED) {
-            task.setTaskStatus(TaskStatus.PENDING);
-            if (taskMapper.updateById(task) > 0) {
-                stateChangeService.notifyTaskReset(task, taskStatus, TaskStatus.PENDING);
-            }
-        } else {
-            throw new ServeException("任务状态不允许重置: " + task.getTaskStatus());
-        }
-    }
-
-    /**
-     * 开始任务逻辑
-     * 仅允许将状态为 PENDING 或者 PAUSED 的任务修改为 RUNNING
-     */
-    private void startTask(TaskDO task, TaskStatus taskStatus) {
-        if (task.getTaskStatus() == TaskStatus.PENDING || task.getTaskStatus() == TaskStatus.PAUSED) {
-            task.setTaskStatus(RUNNING);
-            if (taskMapper.updateById(task) > 0) {
-                stateChangeService.notifyTaskStarted(task, taskStatus, RUNNING);
-            }
-        } else {
-            throw new ServeException("任务状态不允许开始: " + task.getTaskStatus());
-        }
-    }
-
-    /**
-     * 暂停任务逻辑
-     * 仅允许将状态为 RUNNING 或 EXCEPTION 的任务修改为 PAUSED
-     */
-    private void pauseTask(TaskDO task, TaskStatus taskStatus) {
-        if (taskStatus == TaskStatus.RUNNING || taskStatus == TaskStatus.EXCEPTION) {
-            task.setTaskStatus(TaskStatus.PAUSED);
-            if (taskMapper.updateById(task) > 0) {
-                stateChangeService.notifyTaskPaused(task, taskStatus, TaskStatus.PAUSED);
-            }
-        } else {
-            throw new ServeException("任务状态不允许暂停: " + taskStatus);
-        }
-    }
-
-    /**
-     * 完成任务逻辑
-     * 仅允许将状态为 RUNNING 或 EXCEPTION 的任务修改为 COMPLETED
-     */
-    private void finishTask(TaskDO task, TaskStatus taskStatus) {
-        if (taskStatus == TaskStatus.RUNNING || taskStatus == TaskStatus.EXCEPTION) {
-            task.setTaskStatus(TaskStatus.COMPLETED);
-            if (taskMapper.updateById(task) > 0) {
-                stateChangeService.notifyTaskFinished(task, taskStatus, TaskStatus.COMPLETED);
-            }
-        } else {
-            throw new ServeException("任务状态不允许完成: " + taskStatus);
-        }
+        // 2. 调用 TaskStatusManager 执行状态变更
+        taskStatusManager.modifyTask(task, action);
     }
 
     /**
