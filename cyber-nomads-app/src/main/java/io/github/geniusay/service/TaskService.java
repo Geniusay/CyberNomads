@@ -1,6 +1,5 @@
 package io.github.geniusay.service;
 
-import io.github.geniusay.mapper.RobotMapper;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.TaskFunctionDTO;
 import io.github.geniusay.pojo.VO.TaskVO;
@@ -44,11 +43,6 @@ public interface TaskService {
      * 修改任务状态，支持删除和重置操作
      */
     void modifyTask(Long taskId, String action);
-
-    /**
-     * 修改任务状态，支持删除和重置操作
-     */
-    void modifyTask(TaskDO taskDO, String action);
 
     /**
      * 批量解析任务中的 robots 字段，并填充 robotList 字段

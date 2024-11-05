@@ -55,4 +55,8 @@ public interface TaskStateChangeService {
      * @param taskDO 任务对象
      */
     void notifyTaskRegister(TaskDO taskDO);
+
+    void notifyTaskFailed(TaskDO task, TaskStatus currentStatus, TaskStatus taskStatus);
+
+    void notifyTaskException(TaskDO task, TaskStatus currentStatus, TaskStatus taskStatus);
 }
