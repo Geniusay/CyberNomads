@@ -57,7 +57,8 @@ public class TaskScheduleManager {
         if(taskDOS!=null){
             List<TaskDO> readyTasks = taskService.populateRobotListForTasks(taskDOS);
             for (TaskDO taskDO : readyTasks) {
-                WORLD_TASK.put(taskDO.getUid(),taskFactory.buildTask(taskDO,taskDO.getPlatform(),taskDO.getTaskType()));
+                Task task = taskFactory.buildTask(taskDO, taskDO.getPlatform(), taskDO.getTaskType());
+                WORLD_TASK.put(taskDO.getUid(), task);
             }
         }
         List<RobotDO> robotDOS = robotService.queryVaildRobot();
@@ -79,6 +80,7 @@ public class TaskScheduleManager {
 
     public void registerTaskAndStart(TaskDO taskdo){
         TaskDO taskDO = taskService.populateRobotListForTasks(List.of(taskdo)).get(0);
+
         WORLD_TASK.put(String.valueOf(taskdo.getId()),taskFactory.buildTask(taskDO,taskDO.getPlatform(),taskDO.getTaskType()));
 
         Task task = WORLD_TASK.get(String.valueOf(taskDO.getId()));
