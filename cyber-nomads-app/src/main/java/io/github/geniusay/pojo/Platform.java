@@ -16,15 +16,9 @@ public enum Platform {
 
     BILIBILI(TaskPlatformConstant.BILIBILI,1),
     DOUYIN(TaskPlatformConstant.DOUYING,2);
-    private String platform;
-    private Integer code;
 
-    public static String getPlatformByCode(int code){
-        for (Platform platform : Platform.values()) {
-            if (platform.code.equals(code)) {
-                return platform.platform;
-            }
-        }
-        throw new ServeException(500,"不支持的平台类型");
-    }
+    private final String platform;
+    private final Integer code;
+
+    // 方法移动至PlatformUtil
 }

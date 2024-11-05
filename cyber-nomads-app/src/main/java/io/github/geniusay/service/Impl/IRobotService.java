@@ -18,6 +18,7 @@ import io.github.geniusay.pojo.Platform;
 import io.github.geniusay.pojo.VO.PlatformVO;
 import io.github.geniusay.pojo.VO.RobotVO;
 import io.github.geniusay.service.RobotService;
+import io.github.geniusay.utils.PlatformUtil;
 import io.github.geniusay.utils.ThreadUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,8 @@ import java.io.IOException;
 import java.rmi.ServerException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static io.github.geniusay.pojo.Platform.BILIBILI;
 
 @Service
 public class IRobotService implements RobotService {
@@ -55,7 +58,7 @@ public class IRobotService implements RobotService {
                 RobotDO build = RobotDO.builder()
                         .username(username)
                         .nickname(username)
-                        .platform(Platform.BILIBILI.getCode())
+                        .platform(BILIBILI.getCode())
                         .cookie(cookieString)
                         .ban(false)
                         .hasDelete(false)
@@ -108,6 +111,8 @@ public class IRobotService implements RobotService {
 
     @Override
     public Boolean changeRobot(ChangeRobotDTO robotDTO) {
+        PlatformUtil.checkPlatform(robotDTO.getPlatform());
+
         LambdaUpdateWrapper<RobotDO> update = new LambdaUpdateWrapper<>();
         update.eq(RobotDO::getId, robotDTO.getId())
                 .set(RobotDO::getUsername, robotDTO.getUsername())
@@ -129,6 +134,8 @@ public class IRobotService implements RobotService {
 
     @Override
     public Boolean addRobot(AddRobotDTO robotDTO) {
+        PlatformUtil.checkPlatform(robotDTO.getPlatform());
+
         return robotMapper.insert(
                 RobotDO.builder()
                     .username(robotDTO.getUsername())
