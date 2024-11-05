@@ -146,4 +146,17 @@ public class IRobotService implements RobotService {
                     .build()
         ) == 1;
     }
+
+    @Override
+    public Map<String, String> getCookie(GetCookieDTO getCookieDTO) {
+        LambdaQueryWrapper<RobotDO> query = new LambdaQueryWrapper<>();
+        query.eq(RobotDO::getUid, ThreadUtil.getUid())
+                .eq(RobotDO::getId, getCookieDTO.getId())
+                .select(RobotDO::getCookie);
+        try {
+            return Map.of("cookie", robotMapper.selectOne(query).getCookie());
+        } catch (Exception e) {
+            throw new ServeException(409, "robot不存在");
+        }
+    }
 }

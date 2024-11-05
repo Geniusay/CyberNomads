@@ -4,6 +4,7 @@ import io.github.common.web.Result;
 import io.github.geniusay.core.anno.TokenRequire;
 import io.github.geniusay.pojo.DTO.AddRobotDTO;
 import io.github.geniusay.pojo.DTO.ChangeRobotDTO;
+import io.github.geniusay.pojo.DTO.GetCookieDTO;
 import io.github.geniusay.service.RobotService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,5 +57,11 @@ public class RobotController {
     @TokenRequire
     public Result<?> addRobot(@RequestBody AddRobotDTO robotDTO){
         return Result.success(robotService.addRobot(robotDTO));
+    }
+
+    @PostMapping("/getCookie")
+    @TokenRequire
+    public Result<?> getCookie(@RequestBody GetCookieDTO getCookieDTO){
+        return Result.success(robotService.getCookie(getCookieDTO));
     }
 }
