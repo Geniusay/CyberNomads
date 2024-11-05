@@ -115,11 +115,23 @@ public class IRobotService implements RobotService {
 
         LambdaUpdateWrapper<RobotDO> update = new LambdaUpdateWrapper<>();
         update.eq(RobotDO::getId, robotDTO.getId())
+                .eq(RobotDO::getUid, ThreadUtil.getUid())
                 .set(RobotDO::getUsername, robotDTO.getUsername())
                 .set(RobotDO::getNickname, robotDTO.getNickname())
-                .set(RobotDO::getPlatform, robotDTO.getPlatform())
-                .set(RobotDO::getCookie, robotDTO.getCookie());
+                .set(RobotDO::getPlatform, robotDTO.getPlatform());
         return robotMapper.update(null, update) == 1;
+    }
+
+    @Override
+    public Result<?> changeRobotCookie(UpdateCookieDTO updateCookieDTO) {
+        LambdaUpdateWrapper<RobotDO> update = new LambdaUpdateWrapper<>();
+        update.eq(RobotDO::getId, updateCookieDTO.getId())
+                .eq(RobotDO::getUid, ThreadUtil.getUid())
+                .set(RobotDO::getCookie, updateCookieDTO.getCookie());
+        if (robotMapper.update(null, update) != 1) {
+            throw new ServeException(400,"更新cookie失败");
+        }
+        return Result.success();
     }
 
     @Override
@@ -149,10 +161,10 @@ public class IRobotService implements RobotService {
 
     @Override
     public Map<String, String> getCookie(GetCookieDTO getCookieDTO) {
-        LambdaQueryWrapper<RobotDO> query = new LambdaQueryWrapper<>();
-        query.eq(RobotDO::getUid, ThreadUtil.getUid())
-                .eq(RobotDO::getId, getCookieDTO.getId())
-                .select(RobotDO::getCookie);
+        QueryWrapper<RobotDO> query = new QueryWrapper<RobotDO>()
+                .eq("uid", ThreadUtil.getUid())
+                .eq("id", getCookieDTO.getId())
+                .select("cookie");
         try {
             return Map.of("cookie", robotMapper.selectOne(query).getCookie());
         } catch (Exception e) {

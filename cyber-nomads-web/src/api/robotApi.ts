@@ -46,3 +46,14 @@ export function getPlatforms(){
     method:"get",
   })
 }
+
+export function getCookie(id){
+  return request.post('/robot/getCookie',{id:id})
+}
+
+export function changeCookie(id:string, cookie:string){
+  return request.post('/robot/getCookie',{
+    id:id,
+    cookie:cookie
+  })
+}
