@@ -46,7 +46,7 @@ public interface TaskService {
     void modifyTask(Long taskId, String action);
 
     /**
-     * 修改任务状态，支持删除和重置操作
+     * 修改任务状态，支持把任务结束，任务错误，任务异常
      */
     void modifyTask(TaskDO taskDO, String action);
 

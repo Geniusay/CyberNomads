@@ -11,4 +11,8 @@ public class TaskActionConstant {
     public static final String PAUSE = "pause";
 
     public static final String FINISH = "finish";
+
+    public static final String FAILED = "failed";
+
+    public static final String EXCEPTION = "exception";
 }

@@ -241,12 +241,50 @@ public class ITaskService implements TaskService {
     @Override
     @Transactional
     public void modifyTask(TaskDO task, String action) {
+        TaskStatus currentStatus = task.getTaskStatus();
+
         switch (action.toLowerCase()) {
             case FINISH:
-                finishTask(task, task.getTaskStatus());
+                finishTask(task, currentStatus);
+                break;
+            case FAILED:
+                failTask(task, currentStatus);
+                break;
+            case EXCEPTION:
+                exceptionTask(task, currentStatus);
                 break;
             default:
                 throw new ServeException("无效的操作类型: " + action);
+        }
+    }
+
+    /**
+     * 任务错误逻辑
+     * 仅允许将状态为 RUNNING 或 EXCEPTION 的任务修改为 FAILED
+     */
+    private void failTask(TaskDO task, TaskStatus currentStatus) {
+        if (currentStatus == TaskStatus.RUNNING || currentStatus == TaskStatus.EXCEPTION) {
+            task.setTaskStatus(TaskStatus.FAILED);
+            if (taskMapper.updateById(task) > 0) {
+                stateChangeService.notifyTaskFailed(task, currentStatus, TaskStatus.FAILED);
+            }
+        } else {
+            throw new ServeException("任务状态不允许标记为失败: " + currentStatus);
+        }
+    }
+
+    /**
+     * 任务异常逻辑
+     * 仅允许将状态为 RUNNING 的任务修改为 EXCEPTION
+     */
+    private void exceptionTask(TaskDO task, TaskStatus currentStatus) {
+        if (currentStatus == TaskStatus.RUNNING) {
+            task.setTaskStatus(TaskStatus.EXCEPTION);
+            if (taskMapper.updateById(task) > 0) {
+                stateChangeService.notifyTaskException(task, currentStatus, TaskStatus.EXCEPTION);
+            }
+        } else {
+            throw new ServeException("任务状态不允许标记为异常: " + currentStatus);
         }
     }
 

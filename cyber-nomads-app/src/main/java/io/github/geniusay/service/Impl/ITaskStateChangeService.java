@@ -45,4 +45,14 @@ public class ITaskStateChangeService implements TaskStateChangeService {
     @Override
     public void notifyTaskRegister(TaskDO taskDO) {
     }
+
+    @Override
+    public void notifyTaskFailed(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus) {
+        System.out.println("任务已失败: " + task.getTaskName() + "，从 " + oldStatus + " 修改为 " + newStatus);
+    }
+
+    @Override
+    public void notifyTaskException(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus) {
+        System.out.println("任务已异常: " + task.getTaskName() + "，从 " + oldStatus + " 修改为 " + newStatus);
+    }
 }
