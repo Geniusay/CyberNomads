@@ -20,6 +20,20 @@ public class TaskStatusManager {
     private TaskStateChangeService stateChangeService;
 
     /**
+     * 根据 taskId 从数据库中查询任务，并修改任务状态
+     */
+    public void modifyTask(Long taskId, String action) {
+        // 从数据库中查询 TaskDO
+        TaskDO task = taskMapper.selectById(taskId);
+        if (task == null) {
+            throw new ServeException("任务不存在: " + taskId);
+        }
+
+        // 调用现有的 modifyTask(TaskDO task, String action)
+        modifyTask(task, action);
+    }
+
+    /**
      * 修改任务状态，支持删除、重置、开始、暂停、完成、失败、异常等操作
      */
     public void modifyTask(TaskDO task, String action) {
