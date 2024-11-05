@@ -85,4 +85,5 @@ public class UserController {
     public Result<?> getPoint(){
         return Result.success(userPointUtil.get());
     }
+
 }
