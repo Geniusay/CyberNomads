@@ -20,8 +20,10 @@ public class ChangeRobotDTO {
 
     private Integer platform;
 
+    @NotNull
     private String nickname;
 
+    @NotNull
     private String username;
 
     private String cookie;
