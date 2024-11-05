@@ -39,9 +39,9 @@ export default defineConfig({
     },
     proxy: {
       "/api": {
-        target: "http://cybernomads.top:9000/",
+        target: "http://localhost:9000",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, "/"),
+        rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },
   },

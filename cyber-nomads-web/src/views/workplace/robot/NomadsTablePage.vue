@@ -1,16 +1,25 @@
 <script setup lang="ts">
 import { faker } from "@faker-js/faker";
-import { RobotVO, RobotUpdateForm, defaultValue } from "@/views/workplace/robot/RobotTypes";
+import {RobotVO, RobotUpdateForm, defaultValue, RobotForm} from "@/views/workplace/robot/RobotTypes";
 import { PlatformVO } from "@/types/platformType";
 import { onMounted } from "vue";
 import { getRobotList, getPlatforms } from "@/api/robotApi";
 import { useSnackbarStore } from "@/stores/snackbarStore";
 import moment from "moment";
+import {Validators} from "@/utils/validate";
+
 
 var snackbarStore = useSnackbarStore();
 const robotList = ref<RobotVO[]>([])
 const platformList = ref<PlatformVO[]>([])
-const updateForm = ref<RobotUpdateForm>({...defaultValue.defaultUpdateForm})
+const robotForm = ref<RobotForm>({...defaultValue.defaultRobotForm})
+
+const robotFormValidator: Validators<RobotForm> = {
+  platform: (value) => platformList.some(platform=>platform.code === value) ? null : '请选择正确的平台',
+  nickname: (value) => value ? null : '请输入正确的昵称',
+  username: (value) => value ? null : '请输入正确的账号',
+  cookie: (value) => value ? null : '请输入cookie',
+};
 
 onMounted(async ()=>{
    await getRobotList().then(res=>{
@@ -94,7 +103,7 @@ const filteredList = computed(() => {
 
 function editItem(item: any) {
   editedIndex.value = desserts.value.indexOf(item);
-  updateForm.value = Object.assign({}, item);
+  robotForm.value = Object.assign({}, item);
   dialog.value = true;
 }
 function deleteItem(item: any) {
