@@ -53,7 +53,7 @@ public class TaskScheduleManager {
     @PostConstruct
     public void init(){
 
-        List<TaskDO> taskDOS = taskMapper.selectList(new QueryWrapper<TaskDO>().eq("task_status", TaskStatus.PENDING.name()));
+        List<TaskDO> taskDOS = taskMapper.selectList(new QueryWrapper<TaskDO>().eq("task_status", TaskStatus.RUNNING.name()));
         if(taskDOS!=null){
             List<TaskDO> readyTasks = taskService.populateRobotListForTasks(taskDOS);
             for (TaskDO taskDO : readyTasks) {
