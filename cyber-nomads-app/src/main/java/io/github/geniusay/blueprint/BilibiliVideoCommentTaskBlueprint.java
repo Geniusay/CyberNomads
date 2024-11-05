@@ -33,7 +33,7 @@ public class BilibiliVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
         String oid = getValue(userParams,"oid",String.class);
         String text = getValue(userParams,"text",String.class);
 
-        if(terminator.doTask(robot)){
+        if(task.getTerminator().doTask(robot)){
             robot.setTask(task);
             BilibiliCommentApi.sendCommentOrReply(robot.getCookie(), oid, text, null, null);
 

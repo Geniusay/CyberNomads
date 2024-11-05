@@ -4,7 +4,7 @@ import io.github.geniusay.core.supertask.TerminatorFactory;
 import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.core.supertask.plugin.video.GetHotVideoPlugin;
 import io.github.geniusay.core.supertask.task.*;
-        import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
+import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
 import io.github.geniusay.crawler.api.bilibili.BilibiliCommentApi;
 import io.github.geniusay.crawler.po.bilibili.VideoDetail;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
@@ -14,6 +14,8 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
+import static io.github.geniusay.constants.TerminatorConstants.TERMINATOR_TYPE_GROUP_COUNT;
+import static io.github.geniusay.constants.TerminatorConstants.TERMINATOR_TYPE_TIMES;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.HOT_VIDEO_COMMENT;
 
@@ -35,6 +37,8 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
 
     @Override
     protected void executeTask(RobotWorker robot, Task task) throws Exception {
+        Terminator terminator = task.getTerminator();
+
         Map<String, Object> params = task.getParams();
 
         String commentStr = (String) params.get("commentStr");
@@ -79,7 +83,7 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
-                TerminatorFactory.getTerminatorParams(),
+                TerminatorFactory.getTerminatorParams(TERMINATOR_TYPE_GROUP_COUNT, TERMINATOR_TYPE_TIMES),
                 new TaskNeedParams("hotVideoSearch", "热门视频指定参数", true, getHotVideoPlugin.supplierNeedParams()),
                 new TaskNeedParams("commentStr", String.class, "评论的内容", true, "赛博游民"),
                 new TaskNeedParams("videoCount", Integer.class, "需要评论的视频数量", true, 1, null)

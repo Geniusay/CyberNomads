@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static io.github.geniusay.constants.TerminatorConstants.PARAM_TARGET_COUNT;
+import static io.github.geniusay.constants.TerminatorConstants.TERMINATOR_TYPE_GROUP_COUNT;
+
 /**
  * 总计数终结器
  * ept：任务一共要完成多少次{targetCount}
@@ -21,7 +24,7 @@ public class GroupCountTerminator extends AbstractTerminator {
     public GroupCountTerminator(TaskDO taskDO, Map<String, Object> params) {
         super(taskDO, params);
         // 从 params 中提取 targetCount 参数
-        this.targetCount = getParam(TerminatorConstants.PARAM_TARGET_COUNT, Integer.class);
+        this.targetCount = getParam(PARAM_TARGET_COUNT, Integer.class);
         this.nowCount = new AtomicInteger(0);
     }
 
@@ -35,8 +38,23 @@ public class GroupCountTerminator extends AbstractTerminator {
         return targetCount <= nowCount.get();
     }
 
-    @Override
-    public List<TaskNeedParams> supplierNeedParams() {
-        return super.supplierNeedParams();
+    /**
+     * 返回 GroupCountTerminator 所需的参数
+     */
+    public static TaskNeedParams getTerminatorParams() {
+        TaskNeedParams targetCountParam = new TaskNeedParams(
+                PARAM_TARGET_COUNT,
+                Integer.class,
+                "任务一共要完成多少次",
+                true,
+                10
+        );
+
+        return new TaskNeedParams(
+                TERMINATOR_TYPE_GROUP_COUNT,
+                "总计数终结器参数",
+                true,
+                List.of(targetCountParam)
+        );
     }
 }

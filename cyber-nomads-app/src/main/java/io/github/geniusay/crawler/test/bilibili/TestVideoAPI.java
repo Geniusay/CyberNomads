@@ -14,7 +14,7 @@ public class TestVideoAPI {
     @Test
     public void getVideoInfo() throws Exception {
         // 通过bvid获取视频详细信息
-        ApiResponse<VideoDetail> response = BilibiliVideoApi.getVideoDetailById(cookie, "BV1Fc41147bU");
+        ApiResponse<VideoDetail> response = BilibiliVideoApi.getVideoDetailById(cookie, "BV1kj411175n");
 
         if (response.isSuccess()) {
             VideoDetail videoDetailByBvid = response.getData();
