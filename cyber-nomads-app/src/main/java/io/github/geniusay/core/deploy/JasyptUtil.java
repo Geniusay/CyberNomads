@@ -27,13 +27,9 @@ public class JasyptUtil {
      */
     @Test
     public void encrypt(){
-        Scanner scanner = new Scanner(System.in);
-        String temp;
-        System.out.println("输入加密密匙:");
-        while (StringUtils.isBlank(temp=scanner.nextLine())){
-            System.out.println("加密后："+stringEncryptor.encrypt(temp));
-            System.out.println("输入加密密匙：");
-        }
+        System.out.println("加密后："+stringEncryptor.encrypt("jdbc:mysql://119.3.234.15:3306/cyber?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai"));
+        System.out.println("加密后："+stringEncryptor.encrypt("root"));
+        System.out.println("加密后："+stringEncryptor.encrypt("xiaochun66@"));
     }
 
     /**
