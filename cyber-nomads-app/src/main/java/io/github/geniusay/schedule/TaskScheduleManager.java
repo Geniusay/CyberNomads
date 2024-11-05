@@ -50,7 +50,7 @@ public class TaskScheduleManager {
 
 
     //TODO final map
-//    @PostConstruct
+    @PostConstruct
     public void init(){
         List<TaskDO> taskDOS = taskMapper.selectList(new QueryWrapper<TaskDO>().eq("task_status", TaskStatus.PENDING.name()));
         if(taskDOS!=null){

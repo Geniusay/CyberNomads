@@ -7,6 +7,7 @@ import io.github.geniusay.core.supertask.plugin.terminator.TimesTerminator;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.utils.ConvertorUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 import static io.github.geniusay.constants.TerminatorConstants.*;
 
+@Slf4j
 @Component
 public class TerminatorFactory {
 
@@ -25,19 +27,24 @@ public class TerminatorFactory {
      * @return Terminator 实例
      */
     public Terminator createTerminator(TaskDO taskDO) {
-        // 解析任务的 params 字段为 Map
-        Map<String, Object> params = ConvertorUtil.jsonStringToMap(taskDO.getParams());
+        try {
+            // 解析任务的 params 字段为 Map
+            Map<String, Object> params = ConvertorUtil.jsonStringToMap(taskDO.getParams());
 
-        // 获取 terminatorType 参数，决定使用哪种终结器
-        String terminatorType = (String) params.get(TERMINATOR);
+            // 获取 terminatorType 参数，决定使用哪种终结器
+            String terminatorType = (String) params.get(TERMINATOR);
 
-        switch (terminatorType) {
-            case TERMINATOR_TYPE_GROUP_COUNT:
-                return new GroupCountTerminator(taskDO, params);
-            case TERMINATOR_TYPE_TIMES:
-                return new TimesTerminator(taskDO, params);
-            default:
-                throw new RuntimeException("不支持的终结器类型: " + terminatorType);
+            switch (terminatorType) {
+                case TERMINATOR_TYPE_GROUP_COUNT:
+                    return new GroupCountTerminator(taskDO, params);
+                case TERMINATOR_TYPE_TIMES:
+                    return new TimesTerminator(taskDO, params);
+                default:
+                    throw new RuntimeException("不支持的终结器类型: " + terminatorType);
+            }
+        } catch (RuntimeException e) {
+            log.info("此任务未找到终结器参数:{}",taskDO.getId());
+            return null;
         }
     }
 
