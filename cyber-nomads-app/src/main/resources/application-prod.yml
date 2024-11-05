@@ -49,3 +49,6 @@ AIGenerate:
 point:
   reset:
     key: ${RESET_KEY:ENC(gTMJIBjg+TP1EZsMJzrjez8Lipi5aJL/dPvfOsR1FR3TcAIuRy6qMA==)}
+
+Schedule:
+  STRATEGY: ${DEFAULT_STRATEGY:freeRobot}

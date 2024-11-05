@@ -26,7 +26,7 @@ public class ITaskStateChangeService implements TaskStateChangeService {
 
     @Override
     public void notifyTaskStarted(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus) {
-        manager.startTask(String.valueOf(task.getId()));
+        manager.registerTaskAndStart(task);
         System.out.println("任务已开始: " + task.getTaskName() + "，从 " + oldStatus + " 修改为 " + newStatus);
     }
 
@@ -44,6 +44,5 @@ public class ITaskStateChangeService implements TaskStateChangeService {
 
     @Override
     public void notifyTaskRegister(TaskDO taskDO) {
-        manager.registerTask(taskDO);
     }
 }

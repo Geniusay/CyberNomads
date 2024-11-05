@@ -77,10 +77,18 @@ public class TaskScheduleManager {
         EVENT_PUBLISHER.initRobot();
     }
 
-    public void registerTask(TaskDO task){
-        List<TaskDO> taskDOS = taskService.populateRobotListForTasks(List.of(task));
-        WORLD_TASK.put(String.valueOf(task.getId()),taskFactory.buildTask(taskDOS.get(0),taskDOS.get(0).getPlatform(),taskDOS.get(0).getTaskType()));
-        log.info("任务注册到任务中心:{}",WORLD_TASK.get(String.valueOf(task.getId())));
+    public void registerTaskAndStart(TaskDO taskdo){
+        TaskDO taskDO = taskService.populateRobotListForTasks(List.of(taskdo)).get(0);
+        WORLD_TASK.put(String.valueOf(taskdo.getId()),taskFactory.buildTask(taskDO,taskDO.getPlatform(),taskDO.getTaskType()));
+
+        Task task = WORLD_TASK.get(String.valueOf(taskDO.getId()));
+        for (RobotDO robot : task.getRobots()) {
+            Map<String, Task> taskMap = WORLD_ROBOTS_TASK.getOrDefault(robot.getId(), new ConcurrentHashMap<>());
+            taskMap.put(task.getId(),WORLD_TASK.get(task.getId()));
+            WORLD_ROBOTS_TASK.put(robot.getId(),taskMap);
+        }
+        EVENT_PUBLISHER.startWork(WORLD_TASK.get(task.getId()));
+        log.info("任务注册到任务中心并开启任务:{}",WORLD_TASK.get(String.valueOf(task.getId())));
     }
 
     public Task removeTask(Long taskId){
@@ -99,16 +107,6 @@ public class TaskScheduleManager {
 
     public Collection<Task> getWorkerAllTask(Long robotId){
         return WORLD_ROBOTS_TASK.get(robotId).values();
-    }
-
-    public void startTask(String taskId){
-        Task task = WORLD_TASK.get(taskId);
-        for (RobotDO robot : task.getRobots()) {
-            Map<String, Task> taskMap = WORLD_ROBOTS_TASK.getOrDefault(robot.getId(), new ConcurrentHashMap<>());
-            taskMap.put(taskId,WORLD_TASK.get(taskId));
-            WORLD_ROBOTS_TASK.put(robot.getId(),taskMap);
-        }
-        EVENT_PUBLISHER.startWork(WORLD_TASK.get(taskId));
     }
 
     public void removeWorkerTask(String taskId){
