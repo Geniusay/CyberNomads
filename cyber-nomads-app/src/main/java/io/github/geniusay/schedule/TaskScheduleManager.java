@@ -81,7 +81,8 @@ public class TaskScheduleManager {
     public void registerTaskAndStart(TaskDO taskdo){
         TaskDO taskDO = taskService.populateRobotListForTasks(List.of(taskdo)).get(0);
 
-        WORLD_TASK.put(String.valueOf(taskDO.getId()),taskFactory.buildTask(taskDO,taskDO.getPlatform(),taskDO.getTaskType()));
+        Task task = taskFactory.buildTask(taskDO, taskDO.getPlatform(), taskDO.getTaskType());
+        WORLD_TASK.put(String.valueOf(taskDO.getId()), task);
 
         for (RobotDO robot : taskDO.getRobotList()) {
             Map<String, Task> taskMap = WORLD_ROBOTS_TASK.getOrDefault(robot.getId(), new ConcurrentHashMap<>());

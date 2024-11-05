@@ -97,13 +97,14 @@ public class Task {
         dataMap.put(ERROR_MESSAGE, errorMessage);
     }
 
-    private Task(List<RobotDO> robots, ConcurrentHashMap<String, Object> dataMap, List<TaskNeedParams> needParams, Map<String, Object> params, TaskExecute execute, LastWordHandler lastWord) {
+    private Task(List<RobotDO> robots, ConcurrentHashMap<String, Object> dataMap, List<TaskNeedParams> needParams, Map<String, Object> params, TaskExecute execute, LastWordHandler lastWord, Terminator terminator) {
         this.robots = robots;
         this.dataMap = dataMap;
         this.needParams = needParams;
         this.params = params;
         this.execute = execute;
         this.lastWord = lastWord;
+        this.terminator = terminator;
     }
 
     public static Builder builder(){
@@ -156,7 +157,7 @@ public class Task {
         }
 
         public Task build(){
-            Task task = new Task(this.robots, this.dataMap, this.needParams, this.params, this.execute, this.lastWord);
+            Task task = new Task(this.robots, this.dataMap, this.needParams, this.params, this.execute, this.lastWord, this.terminator);
             BeanUtils.copyProperties(taskDO, task);
             task.getRobots().addAll(taskDO.getRobotList()==null?new ArrayList<>():taskDO.getRobotList());
             task.setLogger(LoggerFactory.getLogger(task.getTaskName()));
