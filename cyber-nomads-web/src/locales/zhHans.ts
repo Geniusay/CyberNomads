@@ -2,12 +2,13 @@ export default {
   workplace:{
     nomads:{
       addRobot:"添加赛博游民",
+      editRobot:"编辑赛博游民",
       nickname:"游民昵称",
       username:"游民账号",
       createDate:"创建时间",
       platform:"账号平台",
       isBan:"是否禁用",
-      action:"操作"
+      action:"操作",
     }
   },
   common: {

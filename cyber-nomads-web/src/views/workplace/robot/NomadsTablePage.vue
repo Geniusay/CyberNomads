@@ -1,19 +1,28 @@
 <script setup lang="ts">
 import { faker } from "@faker-js/faker";
-import {RobotVO} from "@/views/workplace/robot/RobotTypes";
-import {onMounted} from "vue";
-import { getRobotList } from "@/api/robotApi";
+import { RobotVO, RobotUpdateForm, defaultValue } from "@/views/workplace/robot/RobotTypes";
+import { PlatformVO } from "@/types/platformType";
+import { onMounted } from "vue";
+import { getRobotList, getPlatforms } from "@/api/robotApi";
 import { useSnackbarStore } from "@/stores/snackbarStore";
 import moment from "moment";
 
 var snackbarStore = useSnackbarStore();
 const robotList = ref<RobotVO[]>([])
+const platformList = ref<PlatformVO[]>([])
+const updateForm = ref<RobotUpdateForm>({...defaultValue.defaultUpdateForm})
+
 onMounted(async ()=>{
    await getRobotList().then(res=>{
      robotList.value = res.data as RobotVO[]
    }).catch(error=>{
-     snackbarStore.showErrorMessage("网络异常")
+     snackbarStore.showErrorMessage("获取赛博游民列表，网络异常")
    })
+  await getPlatforms().then(res=>{
+    platformList.value = res.data as PlatformVO[]
+  }).catch(error=>{
+    snackbarStore.showErrorMessage("获取平台列表，网络异常")
+  })
 })
 const chooseColor = () => {
   let colors = ["red", "indigo", "blue", "cyan", "teal"];
@@ -43,9 +52,6 @@ const list = () => {
   return list;
 };
 
-onMounted(() => {
-  console.log(list());
-});
 
 const dialog = ref(false);
 const search = ref("");
@@ -88,7 +94,7 @@ const filteredList = computed(() => {
 
 function editItem(item: any) {
   editedIndex.value = desserts.value.indexOf(item);
-  editedItem.value = Object.assign({}, item);
+  updateForm.value = Object.assign({}, item);
   dialog.value = true;
 }
 function deleteItem(item: any) {
@@ -117,7 +123,7 @@ function save() {
 
 //Computed Property
 const formTitle = computed(() => {
-  return editedIndex.value === -1 ? "New Contact" : "Edit Contact";
+  return editedIndex.value === -1 ? "workplace.nomads.addRobot" : "workplace.nomads.editRobot";
 });
 </script>
 <template>
@@ -145,7 +151,7 @@ const formTitle = computed(() => {
               </template>
               <v-card>
                 <v-card-title class="pa-4 bg-secondary">
-                  <span class="title text-white">{{ formTitle }}</span>
+                  <span class="title text-white">{{ $t(formTitle) }}</span>
                 </v-card-title>
 
                 <v-card-text>
@@ -161,7 +167,8 @@ const formTitle = computed(() => {
                           variant="outlined"
                           color="primary"
                           density="compact"
-                          v-model="editedItem.id"
+                          disabled
+                          v-model="updateForm.id"
                           label="Id"
                         ></v-text-field>
                       </v-col>
@@ -173,8 +180,8 @@ const formTitle = computed(() => {
                           :rules="nameRules"
                           :counter="10"
                           required
-                          v-model="editedItem.username"
-                          label="User info"
+                          v-model="updateForm.username"
+                          :label="$t('workplace.nomads.username')"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -182,9 +189,8 @@ const formTitle = computed(() => {
                           variant="outlined"
                           color="primary"
                           density="compact"
-                          v-model="editedItem.usermail"
-                          label="User email"
-                          type="email"
+                          v-model="updateForm.nickname"
+                          :label="$t('workplace.nomads.nickname')"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -192,27 +198,8 @@ const formTitle = computed(() => {
                           variant="outlined"
                           color="primary"
                           density="compact"
-                          v-model="editedItem.phone"
-                          label="Phone"
-                          type="phone"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6">
-                        <v-text-field
-                          variant="outlined"
-                          color="primary"
-                          density="compact"
-                          v-model="editedItem.jdate"
-                          label="Joining Date"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6">
-                        <v-text-field
-                          variant="outlined"
-                          color="primary"
-                          density="compact"
-                          v-model="editedItem.role"
-                          label="Role"
+                          v-model="updateForm.cookie"
+                          label="Cookie"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="12">
@@ -220,9 +207,11 @@ const formTitle = computed(() => {
                           variant="outlined"
                           color="primary"
                           density="compact"
-                          :items="rolesbg"
-                          v-model="editedItem.rolestatus"
-                          label="Role Background"
+                          :items="platformList"
+                          v-model="updateForm.code"
+                          :label="$t('workplace.nomads.platform')"
+                          item-title="platformCnZh"
+                          item-value="code"
                         ></v-select>
                       </v-col>
                     </v-row>
