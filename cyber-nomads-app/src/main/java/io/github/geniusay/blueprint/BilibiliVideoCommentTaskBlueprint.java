@@ -32,25 +32,28 @@ public class BilibiliVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
         Map<String, Object> userParams = task.getParams();
         String oid = getValue(userParams,"oid",String.class);
         String text = getValue(userParams,"text",String.class);
-
-        if(task.getTerminator().doTask(robot)){
-            robot.setTask(task);
-            BilibiliCommentApi.sendCommentOrReply(robot.getCookie(), oid, text, null, null);
-
-        }
+        BilibiliCommentApi.sendCommentOrReply(robot.getCookie(), oid, text, null, null);
     }
 
     @Override
     protected String lastWord(RobotWorker robot, Task task) {
-        return "";
+        Terminator terminator = task.getTerminator();
+        String robotName = robot.getNickname();
+        String commentStr = (String) task.getParams().get("text");
+
+        if (terminator.taskIsDone()) {
+            return String.format("[Success] %s robot 已经对所指定视频发表评论，评论内容是: %s", robotName, commentStr);
+        } else {
+            return String.format("[Error] %s robot 执行任务失败，未能对所有视频发表评论", robotName);
+        }
     }
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
-                new TaskNeedParams("bvid", String.class, "视频的BV号", false, ""),
+                new TaskNeedParams("bvid", String.class, "视频的BV号", true, ""),
                 new TaskNeedParams("oid", String.class, "评论区id, 也就是视频的aid, 不传则通过BV去获取", false, ""),
-                new TaskNeedParams("text",String.class,"评论内容")
+                new TaskNeedParams("text",String.class,"评论内容",true,"我是赛博游民")
         );
     }
 }

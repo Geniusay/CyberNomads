@@ -5,6 +5,7 @@ import io.github.geniusay.core.supertask.config.TaskStatus;
 import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
+import io.github.geniusay.utils.ConvertorUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
@@ -159,6 +160,8 @@ public class Task {
             BeanUtils.copyProperties(taskDO, task);
             task.getRobots().addAll(taskDO.getRobotList()==null?new ArrayList<>():taskDO.getRobotList());
             task.setLogger(LoggerFactory.getLogger(task.getTaskName()));
+            task.params = ConvertorUtil.jsonStringToMap(taskDO.getParams());
+            task.setId(String.valueOf(taskDO.getId()));
             return task;
         }
     }

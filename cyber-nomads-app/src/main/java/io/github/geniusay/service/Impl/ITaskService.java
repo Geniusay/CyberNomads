@@ -93,7 +93,6 @@ public class ITaskService implements TaskService {
 
         // 7. 保存任务到数据库
         taskMapper.insert(taskDO);
-        stateChangeService.notifyTaskRegister(taskDO);
         // 8. 返回任务详情
         return convertToTaskVO(taskDO);
     }

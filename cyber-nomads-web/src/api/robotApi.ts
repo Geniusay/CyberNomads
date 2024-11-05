@@ -35,3 +35,10 @@ export function banRobot(id: bigint){
 export function changeRobot(changeRobotForm){
   return request.post('/robot/change',changeRobotForm)
 }
+
+export function getPlatforms(){
+  return request({
+    url: '/robot/platforms',
+    method:"get",
+  })
+}
