@@ -16,7 +16,7 @@ public abstract class AbstractTaskBlueprint implements TaskBlueprint {
         return (robot) -> {
             Task task = robot.task();
             try {
-                executeTask(robot, task, task.getTerminator());
+                executeTask(robot, task);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -29,7 +29,7 @@ public abstract class AbstractTaskBlueprint implements TaskBlueprint {
         return (robot) -> lastWord(robot, robot.task());
     }
 
-    protected abstract void executeTask(RobotWorker robot, Task task, Terminator terminator) throws Exception;
+    protected abstract void executeTask(RobotWorker robot, Task task) throws Exception;
 
     protected abstract String lastWord(RobotWorker robot, Task task);
 }

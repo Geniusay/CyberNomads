@@ -28,12 +28,12 @@ public class BilibiliVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
     }
 
     @Override
-    protected void executeTask(RobotWorker robot, Task task, Terminator terminator) throws Exception {
+    protected void executeTask(RobotWorker robot, Task task) throws Exception {
         Map<String, Object> userParams = task.getParams();
         String oid = getValue(userParams,"oid",String.class);
         String text = getValue(userParams,"text",String.class);
 
-        if(terminator.doTask(robot)){
+        if(task.getTerminator().doTask(robot)){
             robot.setTask(task);
             BilibiliCommentApi.sendCommentOrReply(robot.getCookie(), oid, text, null, null);
 
