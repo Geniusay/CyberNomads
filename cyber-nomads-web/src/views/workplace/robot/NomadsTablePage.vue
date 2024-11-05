@@ -1,139 +1,129 @@
 <script setup lang="ts">
-import { faker } from "@faker-js/faker";
-import {RobotVO, RobotUpdateForm, defaultValue, RobotForm} from "@/views/workplace/robot/RobotTypes";
+import {RobotVO, RobotForm, defaultValue} from "@/views/workplace/robot/RobotTypes";
 import { PlatformVO } from "@/types/platformType";
 import { onMounted } from "vue";
-import { getRobotList, getPlatforms } from "@/api/robotApi";
+import { getRobotList, getPlatforms, addRobot, changeRobot } from "@/api/robotApi";
 import { useSnackbarStore } from "@/stores/snackbarStore";
-import moment from "moment";
-import {Validators} from "@/utils/validate";
+import {validateAndReturn, Validators} from "@/utils/validate";
 
 
 var snackbarStore = useSnackbarStore();
 const robotList = ref<RobotVO[]>([])
 const platformList = ref<PlatformVO[]>([])
 const robotForm = ref<RobotForm>({...defaultValue.defaultRobotForm})
-
+const isEdit = ref(false)
 const robotFormValidator: Validators<RobotForm> = {
-  platform: (value) => platformList.some(platform=>platform.code === value) ? null : '请选择正确的平台',
+  id: (value)=>null,
+  platform: (value) => platformList.value.some(platform=>platform.code === value) ? null : '请选择正确的平台',
   nickname: (value) => value ? null : '请输入正确的昵称',
   username: (value) => value ? null : '请输入正确的账号',
-  cookie: (value) => value ? null : '请输入cookie',
+  cookie: (value) => value ? null : '请输入cookie'
 };
 
+const saveButtonDisabled = () =>{
+  if(!isEdit.value){
+    return !!validateAndReturn(["platform","nickname","username"], robotForm.value, robotFormValidator)
+  }else{
+    return false;
+  }
+}
+
+const rules = {
+  nickname: [
+    value => value?null:'请输入昵称'
+  ],
+  username:[
+    value => value?null:'请输入账号'
+  ]
+}
+
+function findPlatformByCnZh(platformCnZh: string): PlatformVO | undefined {
+  return platformList.value.find(item => item.platformCnZh === platformCnZh);
+}
+
 onMounted(async ()=>{
-   await getRobotList().then(res=>{
-     robotList.value = res.data as RobotVO[]
-   }).catch(error=>{
-     snackbarStore.showErrorMessage("获取赛博游民列表，网络异常")
-   })
+  await getRobotListReq()
   await getPlatforms().then(res=>{
     platformList.value = res.data as PlatformVO[]
   }).catch(error=>{
     snackbarStore.showErrorMessage("获取平台列表，网络异常")
   })
 })
-const chooseColor = () => {
-  let colors = ["red", "indigo", "blue", "cyan", "teal"];
-  let randomColor = colors[Math.floor(Math.random() * colors.length)];
-  return randomColor;
-};
 
-const generateMessage = () => {
-  return {
-    // 生成4位id
-    avatar: faker.internet.avatar(),
-    username: faker.internet.userName(),
-    usermail: faker.internet.email(),
-    phone: faker.phone.number(),
-    jdate: moment(faker.date.past()).format("YYYY/MM/DD"),
-    role: faker.name.jobTitle(),
-    rolestatus: chooseColor(),
-  };
-};
+const getRobotListReq = async ()=>{
+  await getRobotList().then(res=>{
+    robotList.value = res.data as RobotVO[]
+  }).catch(error=>{
+    snackbarStore.showErrorMessage("获取赛博游民列表，网络异常")
+  })
+}
 
-const list = () => {
-  let list = [] as any[];
-  list = Array.from({ length: 20 }, (value, index) => ({
-    id: "#1000" + index + "",
-    ...generateMessage(),
-  }));
-  return list;
-};
+const addRobotReq = async () => {
+  await addRobot(robotForm.value).then(res=>{
+    getRobotListReq()
+    snackbarStore.showErrorMessage("添加成功")
+  }).catch(error=>{
+    snackbarStore.showErrorMessage("编辑失败"+error.message)
+  })
+}
 
+const changeRobotReq = async() => {
+  if(robotForm.value.id!=-1){
+    await changeRobot(robotForm.value).then(res=>{
+      const robot = robotList.value.find(item => item.id === robotForm.value.id);
+      robot.nickname = robotForm.value.nickname
+      robot.cookie = robotForm.value.cookie
+      robot.plat = platformList.value.find(item => item.code === robotForm.value.code).platformCnZh
+      robot.username = robotForm.value.username
+      snackbarStore.showErrorMessage("编辑成功")
+    }).catch(error=>{
+      snackbarStore.showErrorMessage("编辑失败"+error.message)
+    })
+  }else{
+    snackbarStore.showErrorMessage("错误的编辑内容")
+  }
+}
 
 const dialog = ref(false);
 const search = ref("");
-const rolesbg = ref(["primary", "secondary", "error", "success", "warning"]);
-const desserts = ref(list());
-const editedIndex = ref(-1);
 const refForm = ref();
-const editedItem = ref({
-  id: "",
-  avatar: "1.jpg",
-  username: "",
-  usermail: "",
-  phone: "",
-  jdate: "",
-  role: "",
-  rolestatus: "",
-});
-const defaultItem = ref({
-  id: "",
-  avatar: faker.internet.avatar(),
-  username: "",
-  usermail: "",
-  phone: "",
-  jdate: "",
-  role: "",
-  rolestatus: "",
-});
-
-const nameRules = [
-  (v) => !!v || "Name is required",
-  (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
-];
-
-//Methods
-const filteredList = computed(() => {
-  return desserts.value.filter((user: any) => {
-    return user.username.toLowerCase().includes(search.value.toLowerCase());
-  });
-});
 
 function editItem(item: any) {
-  editedIndex.value = desserts.value.indexOf(item);
-  robotForm.value = Object.assign({}, item);
+  isEdit.value = true;
+  robotForm.value = Object.assign({}, item)  as RobotForm;
+  robotForm.value.platform = findPlatformByCnZh(item.plat).code
   dialog.value = true;
 }
+
 function deleteItem(item: any) {
-  const index = desserts.value.indexOf(item);
-  confirm("Are you sure you want to delete this item?") &&
-    desserts.value.splice(index, 1);
-  ``;
+  const index = robotList.value.indexOf(item);
+  robotList.value.splice(index, 1);
 }
 
 function close() {
   dialog.value = false;
-  setTimeout(() => {
-    editedItem.value = Object.assign({}, defaultItem.value);
-    editedIndex.value = -1;
-  }, 300);
+  isEdit.value = false;
+  robotForm.value = Object.assign({}, defaultValue.defaultRobotForm)
 }
 
-function save() {
-  if (editedIndex.value > -1) {
-    Object.assign(desserts.value[editedIndex.value], editedItem.value);
-  } else {
-    desserts.value.push(editedItem.value);
+async function save() {
+  const errorsMsg = validateAndReturn(["platform","nickname","username"], robotForm.value, robotFormValidator)
+  if (!errorsMsg) {
+    if(isEdit.value){
+      await changeRobotReq()
+    }else{
+      await addRobotReq()
+    }
+    close();
+  }else{
+    snackbarStore.showErrorMessage(errorsMsg)
   }
-  close();
+
+}
+const formTitle = () => {
+  return isEdit.value ? "workplace.nomads.editRobot":"workplace.nomads.addRobot";
 }
 
-//Computed Property
-const formTitle = computed(() => {
-  return editedIndex.value === -1 ? "workplace.nomads.addRobot" : "workplace.nomads.editRobot";
-});
 </script>
 <template>
   <v-container>
@@ -160,7 +150,7 @@ const formTitle = computed(() => {
               </template>
               <v-card>
                 <v-card-title class="pa-4 bg-secondary">
-                  <span class="title text-white">{{ $t(formTitle) }}</span>
+                  <span class="title text-white">{{ $t(formTitle()) }}</span>
                 </v-card-title>
 
                 <v-card-text>
@@ -173,23 +163,23 @@ const formTitle = computed(() => {
                     <v-row>
                       <v-col cols="12" sm="6">
                         <v-text-field
+                          v-if="isEdit"
                           variant="outlined"
                           color="primary"
                           density="compact"
                           disabled
-                          v-model="updateForm.id"
+                          v-model="robotForm.id"
                           label="Id"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" :sm="isEdit?6:12">
                         <v-text-field
                           variant="outlined"
                           color="primary"
                           density="compact"
-                          :rules="nameRules"
-                          :counter="10"
+                          :rules="rules['username']"
                           required
-                          v-model="updateForm.username"
+                          v-model="robotForm.username"
                           :label="$t('workplace.nomads.username')"
                         ></v-text-field>
                       </v-col>
@@ -198,7 +188,8 @@ const formTitle = computed(() => {
                           variant="outlined"
                           color="primary"
                           density="compact"
-                          v-model="updateForm.nickname"
+                          :rules="rules['nickname']"
+                          v-model="robotForm.nickname"
                           :label="$t('workplace.nomads.nickname')"
                         ></v-text-field>
                       </v-col>
@@ -207,7 +198,7 @@ const formTitle = computed(() => {
                           variant="outlined"
                           color="primary"
                           density="compact"
-                          v-model="updateForm.cookie"
+                          v-model="robotForm.cookie"
                           label="Cookie"
                         ></v-text-field>
                       </v-col>
@@ -217,7 +208,7 @@ const formTitle = computed(() => {
                           color="primary"
                           density="compact"
                           :items="platformList"
-                          v-model="updateForm.code"
+                          v-model="robotForm.platform"
                           :label="$t('workplace.nomads.platform')"
                           item-title="platformCnZh"
                           item-value="code"
@@ -233,7 +224,7 @@ const formTitle = computed(() => {
                   <v-btn
                     color="secondary"
                     :disabled="
-                      editedItem.username == '' || editedItem.usermail == ''
+                      saveButtonDisabled()
                     "
                     variant="flat"
                     @click="save"

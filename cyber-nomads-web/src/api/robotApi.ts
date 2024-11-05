@@ -36,6 +36,10 @@ export function changeRobot(changeRobotForm){
   return request.post('/robot/change',changeRobotForm)
 }
 
+export function addRobot(addRobotForm){
+  return request.post('/robot/add',addRobotForm)
+}
+
 export function getPlatforms(){
   return request({
     url: '/robot/platforms',

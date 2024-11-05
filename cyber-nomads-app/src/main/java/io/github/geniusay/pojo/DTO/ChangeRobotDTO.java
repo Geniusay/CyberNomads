@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotNull;
@@ -20,8 +19,10 @@ public class ChangeRobotDTO {
 
     private Integer platform;
 
+    @NotNull
     private String nickname;
 
+    @NotNull
     private String username;
 
     private String cookie;

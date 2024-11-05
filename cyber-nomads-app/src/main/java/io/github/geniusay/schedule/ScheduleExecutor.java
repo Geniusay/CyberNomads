@@ -1,9 +1,14 @@
 package io.github.geniusay.schedule;
 
+import io.github.geniusay.constants.TaskActionConstant;
+import io.github.geniusay.core.supertask.config.TaskStatus;
 import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.pojo.DO.RobotDO;
+import io.github.geniusay.service.Impl.TaskStatusManager;
+import io.github.geniusay.service.TaskService;
+import io.github.geniusay.utils.LastWordUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -27,7 +32,10 @@ public class ScheduleExecutor implements TaskListener{
     private Executor taskExecutor;
     @Resource
     private TaskScheduleManager manager;
+    @Resource
+    TaskStatusManager taskStatusManager;
     private final BlockingQueue<Long> FREE_WORKER = new LinkedBlockingQueue<>();
+    private final ConcurrentHashMap<String,String> TASK_STATUS = new ConcurrentHashMap<>();
 
     public void mainThread(){
         while (true){
@@ -41,20 +49,27 @@ public class ScheduleExecutor implements TaskListener{
                     if (!tasks.isEmpty()) {
                         RobotWorker robotWorker = manager.getAllRobot().get(robotId);
                         Task selectedTask = tasks.get(new Random().nextInt(tasks.size()));
-//                        while (!selectedTask.getTerminator().doTask(robotWorker)) {
-//                            tasks.remove(selectedTask);
-//                            selectedTask = tasks.get(new Random().nextInt(tasks.size()));
-//                        }
+                        while (!selectedTask.getTerminator().doTask(robotWorker) && tasks.size()>1) {
+                            tasks.remove(selectedTask);
+                            selectedTask = tasks.get(new Random().nextInt(tasks.size()));
+                        }
                         robotWorker.setTask(selectedTask);
+                        TASK_STATUS.put(selectedTask.getId(),TaskActionConstant.START);
                         taskExecutor.execute(() -> {
                             try {
-                                boolean execute = robotWorker.execute();
-                                log.info("");
+                                robotWorker.execute();
                             } catch (Exception e) {
-                                log.error("robot执行异常:{},robot信息:{}", e.getMessage()+":"+e.getStackTrace()[0],robotWorker);
+                                log.error("robot执行异常:{},robot信息:{}", e.getMessage()+":"+e.getStackTrace()[0],robotWorker.getId());
+                                taskStatusManager.modifyTask(Long.valueOf(robotWorker.task().getId()),TaskActionConstant.EXCEPTION);
+                                TASK_STATUS.put(robotWorker.task().getId(),TaskActionConstant.EXCEPTION);
                             }finally {
-                                robotWorker.lastWord();
+                                boolean success = LastWordUtil.isSuccess(robotWorker.task().getLastWord().lastTalk(robotWorker));
                                 taskMap.remove(robotWorker.task().getUid());
+                                String taskId = robotWorker.task().getId();
+                                if(robotWorker.task().getTerminator().taskIsDone()&&needChangeTaskStatus(taskId)){
+                                    taskStatusManager.modifyTask(Long.valueOf(taskId), TaskActionConstant.FINISH);
+                                    TASK_STATUS.remove(taskId);
+                                }
                             }
                         });
                     }
@@ -92,6 +107,10 @@ public class ScheduleExecutor implements TaskListener{
     public void initRobot() {
         FREE_WORKER.addAll(manager.getAllRobot().keySet());
         new Thread(this::mainThread).start();
+    }
+
+    private boolean needChangeTaskStatus(String taskId){
+        return TASK_STATUS.get(taskId)!=null&& Objects.equals(TASK_STATUS.get(taskId), TaskActionConstant.START);
     }
 
 }

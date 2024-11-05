@@ -21,7 +21,7 @@ public class PlatformUtil {
     }
 
     public static void checkPlatform(int code){
-        if(platformMap.containsKey(code)){
+        if(!platformMap.containsKey(code)){
             throw new ServeException(500,"不支持的平台类型");
         }
     }

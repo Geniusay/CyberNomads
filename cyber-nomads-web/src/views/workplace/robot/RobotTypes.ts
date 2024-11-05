@@ -1,5 +1,3 @@
-import {LoginForm} from "@/views/login/LoginTypes";
-
 export interface RobotVO{
   id: string;
   plat: string;
