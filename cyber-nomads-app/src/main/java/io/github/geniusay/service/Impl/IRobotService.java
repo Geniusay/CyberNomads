@@ -126,4 +126,17 @@ public class IRobotService implements RobotService {
     public Result<?> getPlatforms() {
         return Result.success(Arrays.stream(Platform.values()).map(PlatformVO::platformConvertVO));
     }
+
+    @Override
+    public Boolean addRobot(AddRobotDTO robotDTO) {
+        return robotMapper.insert(
+                RobotDO.builder()
+                    .username(robotDTO.getUsername())
+                    .cookie(robotDTO.getCookie())
+                    .platform(robotDTO.getPlatform())
+                    .nickname(robotDTO.getNickname())
+                    .uid(ThreadUtil.getUid())
+                    .build()
+        ) == 1;
+    }
 }

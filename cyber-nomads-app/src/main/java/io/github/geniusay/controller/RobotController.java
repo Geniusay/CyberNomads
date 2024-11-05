@@ -2,6 +2,7 @@ package io.github.geniusay.controller;
 
 import io.github.common.web.Result;
 import io.github.geniusay.core.anno.TokenRequire;
+import io.github.geniusay.pojo.DTO.AddRobotDTO;
 import io.github.geniusay.pojo.DTO.ChangeRobotDTO;
 import io.github.geniusay.service.RobotService;
 import org.springframework.web.bind.annotation.*;
@@ -49,5 +50,11 @@ public class RobotController {
     @GetMapping("/platforms")
     public Result<?> getPlatforms(){
         return robotService.getPlatforms();
+    }
+
+    @PostMapping("/add")
+    @TokenRequire
+    public Result<?> addRobot(@RequestBody AddRobotDTO robotDTO){
+        return Result.success(robotService.addRobot(robotDTO));
     }
 }

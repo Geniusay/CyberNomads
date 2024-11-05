@@ -27,7 +27,9 @@ public class RobotDO {
     private String nickname;
     private String username;
     private String cookie;
+    @TableField(fill = FieldFill.INSERT)
     private boolean ban;
+    @TableField(fill = FieldFill.INSERT)
     private boolean hasDelete;
     private String uid;
     @TableField(fill = FieldFill.INSERT)

@@ -2,6 +2,7 @@ package io.github.geniusay.service;
 
 import io.github.common.web.Result;
 import io.github.geniusay.pojo.DO.RobotDO;
+import io.github.geniusay.pojo.DTO.AddRobotDTO;
 import io.github.geniusay.pojo.DTO.ChangeRobotDTO;
 import io.github.geniusay.pojo.DTO.LoadRobotResponseDTO;
 import io.github.geniusay.pojo.VO.PlatformVO;
@@ -24,4 +25,6 @@ public interface RobotService {
     List<RobotDO> queryVaildRobot();
 
     Result<?> getPlatforms();
+
+    Boolean addRobot(AddRobotDTO robotDTO);
 }

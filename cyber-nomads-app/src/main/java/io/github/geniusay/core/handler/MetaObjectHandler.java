@@ -10,6 +10,8 @@ public class MetaObjectHandler implements com.baomidou.mybatisplus.core.handlers
 
     @Override
     public void insertFill(MetaObject metaObject) {
+        this.strictInsertFill(metaObject, "ban" , Boolean.class, Boolean.FALSE);
+        this.strictInsertFill(metaObject, "hasDelete" , Boolean.class, Boolean.FALSE);
         this.strictInsertFill(metaObject, "createTime", Date.class, new Date());
         this.strictInsertFill(metaObject, "updateTime", Date.class, new Date());
     }
