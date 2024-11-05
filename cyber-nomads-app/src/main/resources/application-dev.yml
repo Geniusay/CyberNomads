@@ -6,13 +6,14 @@ spring:
     password: ENC(JdU9LZdyBdiF029widwkA/v0+KZB/9iUWeGALxI9ndENUlzNZMH+BQ==)
     type: com.zaxxer.hikari.HikariDataSource # 使用 HikariCP 连接池
     hikari:
-      minimum-idle: 5
-      maximum-pool-size: 20
-      idle-timeout: 30000
+      minimum-idle: 10
+      maximum-pool-size: 100
+      idle-timeout: 600000
       pool-name: DatebookHikariCP
       max-lifetime: 1800000
       connection-timeout: 30000
-      connection-test-query: SELECT 1
+#      connection-test-query: SELECT 1
+
   mail:
     host: ${EMIAL_HOST:ENC(qMKUwBybaAKewuGZCDYjQw6tCfRVAO5aIQUolS8L06U=)}
     port: ${EMAIL_PORT:ENC(7RRjEe4cBjcETAkyZ6TBh5zwIw6KrEaz)}
@@ -30,6 +31,7 @@ spring:
         max-wait: -1ms # 连接池最大阻塞等待时间（负数表示不限制）
         max-idle: 8 # 最大空闲连接数
         min-idle: 0 # 最小空闲连接数
+    connect-timeout: 10000
 
   application:
     name: genius-blog-main

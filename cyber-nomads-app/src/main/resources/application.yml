@@ -7,10 +7,6 @@ spring:
   profiles:
     active: ${ACTIVE:dev}
 
-  datasource:
-    hikari:
-      max-lifetime: 120000
-
 sa-token:
   token-name: Authorization
   timeout: 2592000
