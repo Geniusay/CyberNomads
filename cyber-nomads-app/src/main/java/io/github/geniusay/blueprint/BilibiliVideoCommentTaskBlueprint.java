@@ -1,6 +1,7 @@
 package io.github.geniusay.blueprint;
 
 import io.github.geniusay.core.exception.ServeException;
+import io.github.geniusay.core.supertask.TerminatorFactory;
 import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.core.supertask.task.*;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
+import static io.github.geniusay.constants.TerminatorConstants.TERMINATOR_TYPE_GROUP_COUNT;
+import static io.github.geniusay.constants.TerminatorConstants.TERMINATOR_TYPE_TIMES;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_COMMENT;
 
@@ -51,6 +54,7 @@ public class BilibiliVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
+                TerminatorFactory.getTerminatorParams(TERMINATOR_TYPE_GROUP_COUNT),
                 new TaskNeedParams("bvid", String.class, "视频的BV号", true, ""),
                 new TaskNeedParams("oid", String.class, "评论区id, 也就是视频的aid, 不传则通过BV去获取", false, ""),
                 new TaskNeedParams("text",String.class,"评论内容",true,"我是赛博游民")

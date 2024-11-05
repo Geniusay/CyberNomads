@@ -41,7 +41,6 @@ public class ScheduleExecutor implements TaskListener{
         while (true){
             try {
                 Long robotId = FREE_WORKER.take();
-                log.info("空闲罗伯特Id:{}",robotId);
                 Map<Long, Map<String, Task>> worldRobotsTask = manager.getWorldRobotsTask();
                 Map<String, Task> taskMap = worldRobotsTask.get(robotId);
                 if(Objects.nonNull(taskMap)){
@@ -66,8 +65,9 @@ public class ScheduleExecutor implements TaskListener{
                                 boolean success = LastWordUtil.isSuccess(robotWorker.task().getLastWord().lastTalk(robotWorker));
                                 taskMap.remove(robotWorker.task().getUid());
                                 String taskId = robotWorker.task().getId();
-                                if(robotWorker.task().getTerminator().taskIsDone()&&needChangeTaskStatus(taskId)){
+                                if(robotWorker.task().getTerminator().taskIsDone() && needChangeTaskStatus(taskId)){
                                     taskStatusManager.modifyTask(Long.valueOf(taskId), TaskActionConstant.FINISH);
+                                    manager.getWorldTask().remove(taskId);
                                     TASK_STATUS.remove(taskId);
                                 }
                             }
@@ -82,7 +82,6 @@ public class ScheduleExecutor implements TaskListener{
 
     @Override
     public void startTask(Task task) {
-        log.info("注册任务到调度器:{}",task);
         for (RobotDO robot : task.getRobots()) {
             FREE_WORKER.add(robot.getId());
         }
@@ -110,7 +109,7 @@ public class ScheduleExecutor implements TaskListener{
     }
 
     private boolean needChangeTaskStatus(String taskId){
-        return TASK_STATUS.get(taskId)!=null&& Objects.equals(TASK_STATUS.get(taskId), TaskActionConstant.START);
+        return TASK_STATUS.remove(taskId)!=null;
     }
 
 }

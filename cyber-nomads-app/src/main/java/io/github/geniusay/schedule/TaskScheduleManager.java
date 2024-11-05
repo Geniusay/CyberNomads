@@ -90,7 +90,6 @@ public class TaskScheduleManager {
             WORLD_ROBOTS_TASK.put(robot.getId(),taskMap);
         }
         EVENT_PUBLISHER.startWork(WORLD_TASK.get(String.valueOf(taskDO.getId())));
-        log.info("任务注册到任务中心并开启任务:{}",WORLD_TASK.get(String.valueOf(taskDO.getId())));
     }
 
     public Task removeTask(Long taskId){
