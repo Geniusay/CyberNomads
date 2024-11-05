@@ -10,7 +10,7 @@ export interface RobotVO{
 }
 
 
-export interface RobotUpdateForm{
+export interface RobotForm{
   id: number;
   platform: number;
   nickname: string;
@@ -19,7 +19,7 @@ export interface RobotUpdateForm{
 }
 
 
-const defaultUpdateForm: RobotUpdateForm = {
+const defaultRobotForm: RobotForm = {
   id: -1,
   platform: 1,
   nickname: '',
@@ -28,5 +28,5 @@ const defaultUpdateForm: RobotUpdateForm = {
 }
 
 export const defaultValue = {
-  defaultUpdateForm
+  defaultRobotForm
 }
