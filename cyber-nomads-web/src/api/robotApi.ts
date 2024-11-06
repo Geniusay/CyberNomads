@@ -52,7 +52,7 @@ export function getCookie(id){
 }
 
 export function changeCookie(id:string, cookie:string){
-  return request.post('/robot/getCookie',{
+  return request.post('/robot/changeCookie',{
     id:id,
     cookie:cookie
   })

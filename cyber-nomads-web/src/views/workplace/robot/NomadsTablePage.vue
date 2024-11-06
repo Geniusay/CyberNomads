@@ -2,7 +2,7 @@
 import {RobotVO, RobotForm, defaultValue} from "@/views/workplace/robot/RobotTypes";
 import { PlatformVO } from "@/types/platformType";
 import { onMounted } from "vue";
-import { getRobotList, getPlatforms, addRobot, changeRobot,getCookie,changeCookie } from "@/api/robotApi";
+import {getRobotList, getPlatforms, addRobot, changeRobot, getCookie, changeCookie, deleteRobot} from "@/api/robotApi";
 import { useSnackbarStore } from "@/stores/snackbarStore";
 import {validateAndReturn, Validators} from "@/utils/validate";
 
@@ -103,11 +103,6 @@ async function editItem(item: any) {
   dialog.value = true;
 }
 
-function deleteItem(item: any) {
-  const index = robotList.value.indexOf(item);
-  robotList.value.splice(index, 1);
-}
-
 function close() {
   dialog.value = false;
   isEdit.value = false;
@@ -131,27 +126,75 @@ async function save() {
 const formTitle = () => {
   return isEdit.value ? "workplace.nomads.editRobot":"workplace.nomads.addRobot";
 }
-
-const currentRobotCookie = ref("")
+// cookie模块
+const currentRobotCookie = ref({
+  cookie:"",
+  id:""
+})
 const cookieDialog = ref(false)
 const cookieEyes = ref(true)
+const cookieLoading = ref(false)
+
 const cookieTable = async (item) =>{
   cookieDialog.value = true
   if(!item.cookie){
+    cookieLoading.value = true
     await getCookie(item.id).then(res=>{
       item.cookie = res.data.cookie
     }).catch(error=>{
       snackbarStore.showErrorMessage("获取异常")
     })
+    cookieLoading.value = false
   }
-  currentRobotCookie.value = item.cookie
+  currentRobotCookie.value.cookie = item.cookie
+  currentRobotCookie.value.id = item.id
+}
+
+const changeCookieReq = async()=>{
+  cookieLoading.value = true
+  await changeCookie(currentRobotCookie.value.id, currentRobotCookie.value.cookie).then(
+    res=>{
+      const robot = robotList.value.find(robot=>robot.id===currentRobotCookie.value.id)
+      if(!!robot){
+        robot.cookie = currentRobotCookie.value.cookie
+      }
+      snackbarStore.showSuccessMessage("更新cookie成功")
+    }
+  ).catch(error=>{
+    snackbarStore.showErrorMessage("更新cookie失败:"+error.message)
+  })
+  cookieLoading.value = false
+  cookieDialog.value = false
+  cookieEyes.value = true
+}
+
+// 删除模块
+const deleteDialog = ref(false)
+const deleteItem = ref<RobotVO>()
+
+const deleteTable = (item:any)=>{
+  deleteDialog.value = true;
+  deleteItem.value = item
+}
+
+const deleteRobotReq = async () => {
+  await deleteRobot(deleteItem.value.id).then(res=>{
+    snackbarStore.showSuccessMessage("删除成功")
+    const index = robotList.value.indexOf(deleteItem.value);
+    robotList.value.splice(index, 1);
+  }).catch(error=>{
+    snackbarStore.showErrorMessage("删除失败:"+error.message)
+  })
+  deleteDialog.value =false;
+  deleteItem.value = {}
+
 }
 </script>
 <template>
   <v-container>
     <v-dialog v-model="cookieDialog" max-width="700">
       <v-card>
-        <v-card-title class="pa-4 bg-secondary">
+        <v-card-title class="pa-4 bg-orange">
           <span class="title text-white">
             <v-icon class="mr-2">mdi-cookie-edit-outline</v-icon>
            Cookie Info</span>
@@ -164,16 +207,53 @@ const cookieTable = async (item) =>{
               sm="12"
             >
               <v-text-field
-                v-model="currentRobotCookie"
+                v-model="currentRobotCookie.cookie"
                 :append-icon="cookieEyes ? 'mdi-eye-off' : 'mdi-eye'"
-                :type="cookieEyes ? 'text' : 'password'"
+                prepend-icon="mdi-send"
+                :type="cookieEyes ? 'password' : 'text'"
                 name="input-10-1"
-                counter
                 @click:append="cookieEyes = !cookieEyes"
-              ></v-text-field>
+                @click:prepend="changeCookieReq()"
+                placeholder="请输入Cookie"
+              >
+               <template v-slot:append-inner>
+                <v-fade-transition leave-absolute>
+                  <v-progress-circular
+                    v-if="cookieLoading"
+                    color="info"
+                    size="24"
+                    indeterminate
+                  ></v-progress-circular>
+                </v-fade-transition>
+              </template>
+              </v-text-field>
             </v-col>
           </v-row>
         </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="deleteDialog" max-width="700">
+      <v-card>
+        <v-card-title class="pa-4 bg-red">
+          <span class="title text-white">
+            <v-icon class="mr-2">mdi-robot-dead-outline</v-icon>
+           Delete Robot</span>
+        </v-card-title>
+
+        <v-card-text>
+          确定要删除{{deleteItem.nickname}}吗，这个操作无法撤回!
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions class="pa-4">
+          <v-spacer></v-spacer>
+          <v-btn color="gray" variant="flat" @click="deleteDialog=false">Cancel</v-btn>
+          <v-btn
+            color="red"
+            variant="flat"
+            @click="deleteRobotReq()"
+          >Delete</v-btn
+          >
+        </v-card-actions>
       </v-card>
     </v-dialog>
     <v-card>
@@ -288,7 +368,7 @@ const cookieTable = async (item) =>{
             <th class="text-subtitle-1 font-weight-semibold">{{ $t("workplace.nomads.username") }}</th>
             <th class="text-subtitle-1 font-weight-semibold">{{ $t("workplace.nomads.createDate") }}</th>
             <th class="text-subtitle-1 font-weight-semibold">{{ $t("workplace.nomads.isBan") }}</th>
-            <th class="text-subtitle-1 font-weight-semibold" style="text-align: center">{{ $t("workplace.nomads.action") }}</th>
+            <th class="text-subtitle-1 font-weight-semibold" style="padding-left: 6vh">{{ $t("workplace.nomads.action") }}</th>
           </tr>
         </thead>
         <tbody class="text-body-1">
@@ -308,7 +388,7 @@ const cookieTable = async (item) =>{
               >
             </td>
             <td >
-              <div class="d-flex align-center">
+              <div class="d-flex">
                 <v-tooltip text="Cookie">
                   <template v-slot:activator="{ props }">
                     <v-btn
@@ -348,7 +428,7 @@ const cookieTable = async (item) =>{
                     <v-btn
                       icon
                       variant="text"
-                      @click="deleteItem(item)"
+                      @click="deleteTable(item)"
                       v-bind="props"
                       color="error"
                     >

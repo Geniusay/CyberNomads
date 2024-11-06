@@ -18,6 +18,7 @@ import io.github.geniusay.pojo.Platform;
 import io.github.geniusay.pojo.VO.PlatformVO;
 import io.github.geniusay.pojo.VO.RobotVO;
 import io.github.geniusay.service.RobotService;
+import io.github.geniusay.utils.ConvertorUtil;
 import io.github.geniusay.utils.PlatformUtil;
 import io.github.geniusay.utils.ThreadUtil;
 import org.springframework.stereotype.Service;
@@ -81,7 +82,7 @@ public class IRobotService implements RobotService {
     public List<RobotVO> queryRobot() {
         String uid = ThreadUtil.getUid();
         LambdaQueryWrapper<RobotDO> query = new LambdaQueryWrapper<>();
-        query.eq(RobotDO::getUid, uid);
+        query.eq(RobotDO::getUid, uid).eq(RobotDO::isHasDelete,false);
         List<RobotDO> robotDOs = robotMapper.selectList(query);
         return robotDOs.stream().map(RobotVO::convert).collect(Collectors.toList());
     }
@@ -90,15 +91,13 @@ public class IRobotService implements RobotService {
     @Transactional
     public Boolean removeRoobot(Long id) {
         String uid = ThreadUtil.getUid();
-        String strId = String.valueOf(id);
         List<TaskDO> taskList = taskMapper.selectList(new QueryWrapper<TaskDO>().eq("uid", uid));
-        for (TaskDO taskDO : taskList) {
-            String[] robotIds = taskDO.getRobots().split(",");
-            for (String robotId : robotIds) {
-                if (Objects.equals(robotId, strId)) {
-                    throw new ServeException(407, "robot已分配");
-                }
-            }
+        Set<Long> robotSet = new HashSet<>();
+        taskList.forEach(taskDO -> {
+            robotSet.addAll(ConvertorUtil.stringToList(taskDO.getRobots()));
+        });
+        if (robotSet.contains(id)) {
+            throw new ServeException(407, "robot已分配");
         }
         return robotMapper.update(null,new UpdateWrapper<RobotDO>().eq("id",id).eq("uid", uid).set("has_delete",true))==1;
     }
@@ -166,7 +165,7 @@ public class IRobotService implements RobotService {
                 .eq("id", getCookieDTO.getId())
                 .select("cookie");
         try {
-            return Map.of("cookie", robotMapper.selectOne(query).getCookie());
+            return Map.of("cookie", Optional.ofNullable(robotMapper.selectOne(query)).map(RobotDO::getCookie).orElse(""));
         } catch (Exception e) {
             throw new ServeException(409, "robot不存在");
         }
