@@ -70,7 +70,7 @@ public class ScheduleExecutor implements TaskListener{
                         }finally {
                             boolean success = LastWordUtil.isSuccess(robotWorker.task().getLastWord().lastTalk(robotWorker));
                             String taskId = robotWorker.task().getId();
-                            if(canChangeTaskStatus(taskId)&&robotWorker.task().getTerminator().taskIsDone()){
+                            if(robotWorker.task().getTerminator().taskIsDone() && canChangeTaskStatus(taskId)){
                                 log.info("任务已做完,robotId:{}",robotId);
                                 taskMap.remove(robotWorker.task().getUid());
                                 taskStatusManager.modifyTask(Long.valueOf(taskId), TaskActionConstant.FINISH);
@@ -79,8 +79,7 @@ public class ScheduleExecutor implements TaskListener{
                             }
                         }
                     });
-                }
-                else{
+                } else{
                     manager.getAllRobot().remove(robotId);
                 }
             } catch (InterruptedException e) {
