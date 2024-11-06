@@ -302,4 +302,9 @@ public class ITaskService implements TaskService {
         // 7. 返回填充了 robotList 的任务列表
         return taskDOList;
     }
+
+    @Override
+    public List<TaskDO> getTaskByStatus(List<String> status) {
+        return taskMapper.selectList(new QueryWrapper<TaskDO>().in("task_status", status));
+    }
 }
