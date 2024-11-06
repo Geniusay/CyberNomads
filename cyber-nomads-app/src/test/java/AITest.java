@@ -34,9 +34,8 @@ public class AITest {
     @Test
     public void t(){
 //        generateUtil.textGenerate("你好吗");
-        String s = commentGenerate.generateComment(Map.of(PRE_TEXT, "请你以一个幽默有趣的身份来推销我们的产品名称，叫做cybernomads。他是一个用于全自动回复评论的软件，支持多任务，多账号等一键式自动化功能", COUNT_NUM, 100));
-        System.out.println(AIGenerateUtil.parseContent(s));
-        System.out.println(AIGenerateUtil.parseToken(s));
+        String s = generateUtil.textGenerateAndReturnContent("请你以一个幽默有趣的身份来推销我们的产品名称，叫做cybernomads。他是一个用于全自动回复评论的软件，支持多任务，多账号等一键式自动化功能",300);
+        System.out.println(s);
     }
 
     @Test
@@ -52,6 +51,4 @@ public class AITest {
         // 返回
         ExecutorService executorService = Executors.newCachedThreadPool();
     }
-
-
 }

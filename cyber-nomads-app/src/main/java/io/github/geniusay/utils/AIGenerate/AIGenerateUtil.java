@@ -21,18 +21,18 @@ public class AIGenerateUtil {
     @Value("${AIGenerate.API_KEY}")
     private String apiKey;
 
-    public void textGenerate(String resource,Integer num){
-        AIGenerate.send(resource,apiKey,num);
+    public String textGenerateAndReturnContent(String resource,Integer num){
+        return AIGenerateUtil.parseContent(AIGenerate.send(resource,apiKey,num));
     }
 
-    public static String parseContent(String res){
+    private static String parseContent(String res){
         JSONObject jsonObject = JSONObject.parseObject(res);
         JSONArray choices = jsonObject.getJSONArray("choices");
         JSONObject message = choices.getJSONObject(0).getJSONObject("message");
         return message.getString("content");
     }
 
-    public static Integer parseToken(String res){
+    private static Integer parseToken(String res){
         JSONObject jsonObject = JSONObject.parseObject(res);
         JSONArray choices = jsonObject.getJSONArray("choices");
         JSONObject message = choices.getJSONObject(0).getJSONObject("message");
@@ -40,4 +40,5 @@ public class AIGenerateUtil {
         JSONObject usage = jsonObject.getJSONObject("usage");
         return usage.getIntValue("total_tokens");
     }
+
 }
