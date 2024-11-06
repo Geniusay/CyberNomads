@@ -136,7 +136,7 @@ public class TaskStatusManager {
                 stateChangeService.notifyTaskFinished(task, taskStatus, TaskStatus.COMPLETED);
             }
         } else {
-            throw new ServeException("任务状态不允许完成: " + taskStatus);
+            throw new ServeException("任务状态流转错误: "+task.getTaskStatus()+"->" + taskStatus);
         }
     }
 

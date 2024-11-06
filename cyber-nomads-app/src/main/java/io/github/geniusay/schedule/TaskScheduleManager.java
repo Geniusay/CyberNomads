@@ -52,29 +52,21 @@ public class TaskScheduleManager {
     //TODO final map
     @PostConstruct
     public void init(){
-
-        List<TaskDO> taskDOS = taskMapper.selectList(new QueryWrapper<TaskDO>().eq("task_status", TaskStatus.PENDING.name()));
+        List<TaskDO> taskDOS = taskService.getTaskByStatus(List.of(TaskStatus.RUNNING.name(),TaskStatus.EXCEPTION.name()));
         if(taskDOS!=null){
             List<TaskDO> readyTasks = taskService.populateRobotListForTasks(taskDOS);
             for (TaskDO taskDO : readyTasks) {
                 Task task = taskFactory.buildTask(taskDO, taskDO.getPlatform(), taskDO.getTaskType());
-                WORLD_TASK.put(taskDO.getUid(), task);
+                WORLD_TASK.put(String.valueOf(taskDO.getId()), task);
+                List<RobotDO> robots = task.getRobots();
+                robots.stream().forEach((robotDO)->WORLD_ROBOTS.put(robotDO.getId(),new RobotWorker(robotDO)));
+                robots.stream().forEach(robot -> {
+                            Map<String, Task> taskMap = WORLD_ROBOTS_TASK.getOrDefault(robot.getId(), new ConcurrentHashMap<>());
+                            taskMap.put(String.valueOf(taskDO.getId()), task);
+                            WORLD_ROBOTS_TASK.put(robot.getId(), taskMap);
+                        });
             }
         }
-        List<RobotDO> robotDOS = robotService.queryVaildRobot();
-        for (RobotDO robotDO : robotDOS) {
-            WORLD_ROBOTS.put(robotDO.getId(),new RobotWorker(robotDO));
-        }
-        WORLD_TASK.forEach((k,v)->{
-            v.setRobots(new ArrayList<>(robotDOS));
-            List<RobotDO> robots = v.getRobots();
-            if(robots!=null)
-                for (RobotDO robot : robots) {
-                    Map<String, Task> taskMap = WORLD_ROBOTS_TASK.getOrDefault(robot.getId(), new ConcurrentHashMap<>());
-                    taskMap.put(k,v);
-                    WORLD_ROBOTS_TASK.put(robot.getId(),taskMap);
-                }
-        });
         EVENT_PUBLISHER.initRobot();
     }
 
@@ -90,7 +82,6 @@ public class TaskScheduleManager {
             WORLD_ROBOTS_TASK.put(robot.getId(),taskMap);
         }
         EVENT_PUBLISHER.startWork(WORLD_TASK.get(String.valueOf(taskDO.getId())));
-        log.info("任务注册到任务中心并开启任务:{}",WORLD_TASK.get(String.valueOf(taskDO.getId())));
     }
 
     public Task removeTask(Long taskId){

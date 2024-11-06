@@ -48,4 +48,9 @@ public interface TaskService {
      * 批量解析任务中的 robots 字段，并填充 robotList 字段
      */
     List<TaskDO> populateRobotListForTasks(List<TaskDO> taskDOList);
+
+    /*
+     * 获取指定状态的任务(内部)
+     */
+    List<TaskDO> getTaskByStatus(List<String> status);
 }
