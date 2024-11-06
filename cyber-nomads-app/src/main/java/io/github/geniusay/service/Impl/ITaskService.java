@@ -24,6 +24,8 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static io.github.geniusay.utils.TaskTranslationUtil.translatePlatform;
+import static io.github.geniusay.utils.TaskTranslationUtil.translateTaskType;
 import static io.github.geniusay.utils.ValidUtil.isValidConstant;
 
 @Service
@@ -205,7 +207,7 @@ public class ITaskService implements TaskService {
         return taskStrategyManager.getSupportedPlatforms().stream()
                 .map(platform -> Map.of(
                         "key", platform, // 英文平台名称
-                        "value", TaskTranslationUtil.translatePlatform(platform) // 中文平台名称
+                        "value", translatePlatform(platform) // 中文平台名称
                 ))
                 .collect(Collectors.toList());
     }
@@ -215,7 +217,7 @@ public class ITaskService implements TaskService {
         return taskStrategyManager.getBlueprintsForPlatform(platform).stream()
                 .map(blueprint -> new TaskFunctionDTO(
                         blueprint.taskType(), // 英文任务类型
-                        TaskTranslationUtil.translateTaskType(blueprint.taskType()), // 中文任务类型
+                        translateTaskType(blueprint.taskType()), // 中文任务类型
                         blueprint.supplierNeedParams() // 任务类型的参数列表
                 ))
                 .collect(Collectors.toList());
@@ -237,6 +239,9 @@ public class ITaskService implements TaskService {
                 taskDO.getTaskType(),
                 taskDO.getTaskStatus().name(),
                 robotIds,
+                params,
+                translatePlatform(taskDO.getPlatform()),
+                translateTaskType(taskDO.getTaskType()),
                 params,
                 TimeUtil.getFormatTimeStr(taskDO.getCreateTime())
         );

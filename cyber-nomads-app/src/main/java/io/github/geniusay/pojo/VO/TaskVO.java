@@ -22,4 +22,8 @@ public class TaskVO {
     private List<Long> robots;
     private Map<String, Object> params;
     private String createTime;
+
+    private String platformCnZh;
+    private String taskTypeCnZh;
 }
+

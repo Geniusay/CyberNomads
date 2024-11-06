@@ -1,5 +1,8 @@
 package io.github.geniusay.utils.AIGenerate.AIstrategy;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.utils.AIGenerate.BaseGenerate;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +24,7 @@ public class qwAI implements BaseGenerate {
 
     private static final String API_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions";
 
-    @Override
-    public String send(String text,String API_KEY) {
+    private String send(String text,String API_KEY,Integer num) {
         try {
             URL url = new URL(API_URL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -39,7 +41,7 @@ public class qwAI implements BaseGenerate {
                     + "},"
                     + "{"
                     + "\"role\": \"user\","
-                    + "\"content\": \""+ text +"\""
+                    + "\"content\": \""+ text+"。请控制字数在"+num+"字内，以纯文本的形式回答" + "\""
                     + "}"
                     + "]"
                     + "}";
@@ -52,20 +54,29 @@ public class qwAI implements BaseGenerate {
 
             // 获取响应
             int responseCode = connection.getResponseCode();
-            System.out.println("Response Code: " + responseCode);
-
+            if(responseCode!=200){
+                throw new ServeException(500,"AI接口调用失败");
+            }
+            StringBuilder response = new StringBuilder();
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"))) {
-                StringBuilder response = new StringBuilder();
+
                 String responseLine;
                 while ((responseLine = br.readLine()) != null) {
                     response.append(responseLine.trim());
                 }
-                System.out.println("Response: " + response);
             }
-
+            return response.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return null;
+    }
+
+    @Override
+    public String sendAndReturnString(String text, String key, Integer num) {
+        String res = this.send(text, key, num);
+        JSONObject jsonObject = JSONObject.parseObject(res);
+        JSONArray choices = jsonObject.getJSONArray("choices");
+        JSONObject message = choices.getJSONObject(0).getJSONObject("message");
+        return message.getString("content");
     }
 }

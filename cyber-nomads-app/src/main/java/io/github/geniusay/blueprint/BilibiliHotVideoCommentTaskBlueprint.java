@@ -1,6 +1,11 @@
 package io.github.geniusay.blueprint;
 
+import io.github.geniusay.core.actionflow.actor.BilibiliUserActor;
+import io.github.geniusay.core.actionflow.frame.ActionFlow;
+import io.github.geniusay.core.actionflow.logic.BilibiliCommentActionLogic;
+import io.github.geniusay.core.actionflow.receiver.BilibiliCommentReceiver;
 import io.github.geniusay.core.supertask.TerminatorFactory;
+import io.github.geniusay.core.supertask.plugin.comment.AICommentGenerate;
 import io.github.geniusay.core.supertask.plugin.terminator.CooldownTerminator;
 import io.github.geniusay.core.supertask.plugin.video.GetHotVideoPlugin;
 import io.github.geniusay.core.supertask.task.*;
@@ -24,6 +29,9 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
     @Resource
     GetHotVideoPlugin getHotVideoPlugin;
 
+    @Resource
+    AICommentGenerate aiCommentGenerate;
+
     @Override
     public String platform() {
         return BILIBILI;
@@ -38,35 +46,25 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
     protected void executeTask(RobotWorker robot, Task task) throws Exception {
         // 获取任务参数
         Map<String, Object> params = task.getParams();
-        String commentStr = (String) params.get("commentStr");
 
-        // 获取一个随机视频
+        String comment = aiCommentGenerate.generateComment(params);
         VideoDetail video = getHotVideoPlugin.getHandleVideoWithLimit(params, 1).get(0);
 
-        // 输出视频描述
-        System.out.println(video.getData().getDesc());
-
-        task.log("工作者 {} 对视频 {} 发表评论: {}", robot.getNickname(), video.getData().getAid(), commentStr);
-
-        // BilibiliUserActor actor = new BilibiliUserActor(robot);
-        // BilibiliCommentActionLogic commentAction = new BilibiliCommentActionLogic(commentStr);
-        // BilibiliCommentReceiver receiver = new BilibiliCommentReceiver(String.valueOf(video.getData().getAid()));
-        // new ActionFlow<>(actor, commentAction, receiver).execute();
+        task.log("工作者 {} 对视频 {} 发表评论: {}", robot.getNickname(), video.getData().getBvid(), comment);
+        new ActionFlow<>(new BilibiliUserActor(robot), new BilibiliCommentActionLogic(comment), new BilibiliCommentReceiver(String.valueOf(video.getData().getAid()))).execute();
     }
 
     @Override
     protected String lastWord(RobotWorker robot, Task task) {
         String robotName = robot.getNickname();
-        String commentStr = (String) task.getParams().get("commentStr");
-
-        return String.format("[Info] %s robot 正在不断对随机热门视频发表评论，评论内容是: %s", robotName, commentStr);
+        return String.format("[Info] %s robot 正在不断对随机热门视频发表评论", robotName);
     }
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
                 TerminatorFactory.getTerminatorParams(COOL_DOWN_TYPE_TIMES),
-                new TaskNeedParams("commentStr", String.class, "评论的内容", true, "赛博游民")
+                new TaskNeedParams("AiPrams", "ai相关参数", false, aiCommentGenerate.supplierNeedParams())
         );
     }
 }
