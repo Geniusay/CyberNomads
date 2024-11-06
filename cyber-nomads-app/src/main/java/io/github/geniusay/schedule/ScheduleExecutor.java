@@ -48,7 +48,7 @@ public class ScheduleExecutor implements TaskListener{
                     if (!tasks.isEmpty()) {
                         RobotWorker robotWorker = manager.getAllRobot().get(robotId);
                         Task selectedTask = tasks.get(new Random().nextInt(tasks.size()));
-                        while (!selectedTask.getTerminator().doTask(robotWorker) && tasks.size()>1 && selectedTask.getTaskStatus()==TaskStatus.RUNNING) {
+                        while (!selectedTask.getTerminator().doTask(robotWorker) && tasks.size()>1 && selectedTask.getTaskStatus()!=TaskStatus.RUNNING) {
                             tasks.remove(selectedTask);
                             selectedTask = tasks.get(new Random().nextInt(tasks.size()));
                         }
@@ -57,6 +57,7 @@ public class ScheduleExecutor implements TaskListener{
                         taskExecutor.execute(() -> {
                             try {
                                 robotWorker.execute();
+                                log.info("robot:{}执行完任务",robotId);
                             } catch (Exception e) {
                                 log.error("robot执行异常:{},robot信息:{}", e.getMessage()+":"+e.getStackTrace()[0],robotWorker.getId());
                                 taskStatusManager.modifyTask(Long.valueOf(robotWorker.task().getId()),TaskActionConstant.EXCEPTION);
@@ -66,6 +67,7 @@ public class ScheduleExecutor implements TaskListener{
                                 taskMap.remove(robotWorker.task().getUid());
                                 String taskId = robotWorker.task().getId();
                                 if(robotWorker.task().getTerminator().taskIsDone() && needChangeTaskStatus(taskId)){
+                                    log.info("任务已做完,robotId:{}",robotId);
                                     taskStatusManager.modifyTask(Long.valueOf(taskId), TaskActionConstant.FINISH);
                                     manager.getWorldTask().remove(taskId);
                                     TASK_STATUS.remove(taskId);
@@ -74,6 +76,7 @@ public class ScheduleExecutor implements TaskListener{
                         });
                     }
                 }
+                Thread.sleep(10000L);
             } catch (InterruptedException e) {
                 log.error("调度器异常:{}",e.getMessage());
             }
