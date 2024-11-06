@@ -1,6 +1,7 @@
 package io.github.geniusay.controller;
 
 import io.github.common.web.Result;
+import io.github.geniusay.core.anno.Counters;
 import io.github.geniusay.core.anno.TokenRequire;
 import io.github.geniusay.pojo.DTO.AddRobotDTO;
 import io.github.geniusay.pojo.DTO.ChangeRobotDTO;
@@ -12,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+
+import static io.github.geniusay.constants.CountersConstant.TASK;
 
 @RestController
 @RequestMapping("/robot")
