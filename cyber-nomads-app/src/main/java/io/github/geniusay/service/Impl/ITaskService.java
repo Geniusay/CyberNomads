@@ -101,7 +101,7 @@ public class ITaskService implements TaskService {
         // 7. 保存任务到数据库
         taskMapper.insert(taskDO);
         // 8. 返回任务详情
-        return convertToTaskVO(taskDO);
+        return TaskVO.convertToTaskVO(taskDO);
     }
 
     @Override
@@ -126,7 +126,7 @@ public class ITaskService implements TaskService {
         taskMapper.updateById(task);
 
         // 6. 返回更新后的任务详情
-        return convertToTaskVO(task);
+        return TaskVO.convertToTaskVO(task);
     }
 
     /**
@@ -198,7 +198,7 @@ public class ITaskService implements TaskService {
         List<TaskDO> taskDOList = taskMapper.selectList(queryWrapper);
 
         return taskDOList.stream()
-                .map(this::convertToTaskVO)
+                .map(TaskVO::convertToTaskVO)
                 .collect(Collectors.toList());
     }
 
@@ -223,29 +223,6 @@ public class ITaskService implements TaskService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * 将 TaskDO 转换为 TaskVO
-     */
-    private TaskVO convertToTaskVO(TaskDO taskDO) {
-        Map<String, Object> params = ConvertorUtil.jsonStringToMap(taskDO.getParams());
-        List<Long> robotIds = ConvertorUtil.stringToList(taskDO.getRobots());
-
-        return new TaskVO(
-                taskDO.getId(),
-                taskDO.getUid(),
-                taskDO.getNickname(),
-                taskDO.getTaskName(),
-                taskDO.getPlatform(),
-                taskDO.getTaskType(),
-                taskDO.getTaskStatus().name(),
-                robotIds,
-                params,
-                translatePlatform(taskDO.getPlatform()),
-                translateTaskType(taskDO.getTaskType()),
-                params,
-                TimeUtil.getFormatTimeStr(taskDO.getCreateTime())
-        );
-    }
 
     @Override
     @Transactional
