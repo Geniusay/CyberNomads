@@ -18,6 +18,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Description
@@ -35,48 +36,48 @@ public class ScheduleExecutor implements TaskListener{
     @Resource
     TaskStatusManager taskStatusManager;
     private final BlockingQueue<Long> FREE_WORKER = new LinkedBlockingQueue<>();
-    private final ConcurrentHashMap<String,String> TASK_STATUS = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, String> TASK_STATUS = new ConcurrentHashMap<>();
 
     public void mainThread(){
         while (true){
             try {
                 Long robotId = FREE_WORKER.take();
-                Map<Long, Map<String, Task>> worldRobotsTask = manager.getWorldRobotsTask();
-                Map<String, Task> taskMap = worldRobotsTask.get(robotId);
+                Map<Long, Map<String, Task>> worldRobotsTask = manager.getWorldRobotsTask(); //获取所有任务robot
+                Map<String, Task> taskMap = worldRobotsTask.get(robotId); //获取对应robot的任务列表
                 if(Objects.nonNull(taskMap)){
                     List<Task> tasks = new ArrayList<>(taskMap.values());
-                    if (!tasks.isEmpty()) {
-                        RobotWorker robotWorker = manager.getAllRobot().get(robotId);
-                        Task selectedTask = tasks.get(new Random().nextInt(tasks.size()));
-                        while (!selectedTask.getTerminator().doTask(robotWorker) && tasks.size()>1 && selectedTask.getTaskStatus()!=TaskStatus.RUNNING) {
-                            tasks.remove(selectedTask);
-                            selectedTask = tasks.get(new Random().nextInt(tasks.size()));
-                        }
-                        robotWorker.setTask(selectedTask);
-                        TASK_STATUS.put(selectedTask.getId(),TaskActionConstant.START);
-                        taskExecutor.execute(() -> {
-                            try {
-                                robotWorker.execute();
-                                log.info("robot:{}执行完任务",robotId);
-                            } catch (Exception e) {
-                                log.error("robot执行异常:{},robot信息:{}", e.getMessage()+":"+e.getStackTrace()[0],robotWorker.getId());
-                                taskStatusManager.modifyTask(Long.valueOf(robotWorker.task().getId()),TaskActionConstant.EXCEPTION);
-                                TASK_STATUS.put(robotWorker.task().getId(),TaskActionConstant.EXCEPTION);
-                            }finally {
-                                boolean success = LastWordUtil.isSuccess(robotWorker.task().getLastWord().lastTalk(robotWorker));
-                                taskMap.remove(robotWorker.task().getUid());
-                                String taskId = robotWorker.task().getId();
-                                if(robotWorker.task().getTerminator().taskIsDone() && needChangeTaskStatus(taskId)){
-                                    log.info("任务已做完,robotId:{}",robotId);
-                                    taskStatusManager.modifyTask(Long.valueOf(taskId), TaskActionConstant.FINISH);
-                                    manager.getWorldTask().remove(taskId);
-                                    TASK_STATUS.remove(taskId);
-                                }
-                            }
-                        });
+                    RobotWorker robotWorker = manager.getAllRobot().get(robotId);
+                    Task selectedTask = tasks.get(new Random().nextInt(tasks.size()));
+                    while (!selectedTask.getTerminator().doTask(robotWorker) && tasks.size()>1) {
+                        tasks.remove(selectedTask);
+                        selectedTask = tasks.get(new Random().nextInt(tasks.size()));
                     }
+                    robotWorker.setTask(selectedTask);
+                    TASK_STATUS.putIfAbsent(selectedTask.getId(), TaskStatus.RUNNING.toString());
+                    taskExecutor.execute(() -> {
+                        try {
+                            robotWorker.execute();
+                            log.info("robot:{}执行任务",robotId);
+                        } catch (Exception e) {
+                            log.error("robot执行异常:{},robot信息:{}", e.getMessage()+":"+e.getStackTrace()[0],robotWorker.getId());
+                            taskStatusManager.modifyTask(Long.valueOf(robotWorker.task().getId()),TaskActionConstant.EXCEPTION);
+                            TASK_STATUS.put(robotWorker.task().getId(),TaskStatus.EXCEPTION.toString());
+                        }finally {
+                            boolean success = LastWordUtil.isSuccess(robotWorker.task().getLastWord().lastTalk(robotWorker));
+                            String taskId = robotWorker.task().getId();
+                            if(canChangeTaskStatus(taskId)&&robotWorker.task().getTerminator().taskIsDone()){
+                                log.info("任务已做完,robotId:{}",robotId);
+                                taskMap.remove(robotWorker.task().getUid());
+                                taskStatusManager.modifyTask(Long.valueOf(taskId), TaskActionConstant.FINISH);
+                            }else{
+                                FREE_WORKER.add(robotId);
+                            }
+                        }
+                    });
                 }
-                Thread.sleep(10000L);
+                else{
+                    manager.getAllRobot().remove(robotId);
+                }
             } catch (InterruptedException e) {
                 log.error("调度器异常:{}",e.getMessage());
             }
@@ -111,8 +112,8 @@ public class ScheduleExecutor implements TaskListener{
         new Thread(this::mainThread).start();
     }
 
-    private boolean needChangeTaskStatus(String taskId){
-        return TASK_STATUS.remove(taskId)!=null;
+    private boolean canChangeTaskStatus(String taskId){
+        return TASK_STATUS.remove(taskId)!=null&&manager.getWorldTask().remove(taskId)!=null;
     }
 
 }
