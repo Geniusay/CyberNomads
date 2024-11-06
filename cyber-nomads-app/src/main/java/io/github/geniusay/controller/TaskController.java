@@ -32,7 +32,7 @@ public class TaskController {
      * 根据用户 uid 获取所有任务
      */
     @TokenRequire
-    @GetMapping("/user")
+    @GetMapping("/list")
     public Result<?> getUserTasks(@RequestParam String uid) {
         return Result.success(taskService.getUserTasks(uid));
     }
@@ -61,7 +61,7 @@ public class TaskController {
      */
     @TokenRequire
     @PostMapping("/modify")
-    public Result<?> modifyTask(ModifyTaskDTO modifyTaskDTO) {
+    public Result<?> modifyTask(@RequestBody ModifyTaskDTO modifyTaskDTO) {
         taskService.modifyTask(modifyTaskDTO);
         return Result.success();
     }
