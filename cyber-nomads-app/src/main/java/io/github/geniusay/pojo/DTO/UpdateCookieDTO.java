@@ -11,7 +11,10 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetCookieDTO {
+public class UpdateCookieDTO {
     @NotNull
     private Long id;
+
+    @NotNull
+    private String cookie;
 }

@@ -13,7 +13,6 @@ export interface RobotForm{
   platform: number;
   nickname: string;
   username: string;
-  cookie: string;
 }
 
 
@@ -22,7 +21,6 @@ const defaultRobotForm: RobotForm = {
   platform: 1,
   nickname: '',
   username: '',
-  cookie: ''
 }
 
 export const defaultValue = {

@@ -25,5 +25,4 @@ public class ChangeRobotDTO {
     @NotNull
     private String username;
 
-    private String cookie;
 }

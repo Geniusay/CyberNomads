@@ -1,6 +1,7 @@
 package io.github.geniusay.core.supertask;
 
 import io.github.geniusay.constants.TerminatorConstants;
+import io.github.geniusay.core.supertask.plugin.terminator.CooldownTerminator;
 import io.github.geniusay.core.supertask.plugin.terminator.GroupCountTerminator;
 import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.core.supertask.plugin.terminator.TimesTerminator;
@@ -39,11 +40,13 @@ public class TerminatorFactory {
                     return new GroupCountTerminator(taskDO, params);
                 case TERMINATOR_TYPE_TIMES:
                     return new TimesTerminator(taskDO, params);
+                case COOL_DOWN_TYPE_TIMES:
+                    return new CooldownTerminator(taskDO, params);
                 default:
                     throw new RuntimeException("不支持的终结器类型: " + terminatorType);
             }
         } catch (RuntimeException e) {
-            log.info("此任务未找到终结器参数:{}",taskDO.getId());
+            log.info("此任务未找到终结器参数:{}", taskDO.getId());
             return null;
         }
     }
@@ -57,11 +60,14 @@ public class TerminatorFactory {
         // 遍历传入的终结器类型，获取相应的参数
         for (String terminatorType : terminatorTypes) {
             switch (terminatorType) {
-                case TerminatorConstants.TERMINATOR_TYPE_GROUP_COUNT:
+                case TERMINATOR_TYPE_GROUP_COUNT:
                     childParams.add(GroupCountTerminator.getTerminatorParams());
                     break;
-                case TerminatorConstants.TERMINATOR_TYPE_TIMES:
+                case TERMINATOR_TYPE_TIMES:
                     childParams.add(TimesTerminator.getTerminatorParams());
+                    break;
+                case COOL_DOWN_TYPE_TIMES:
+                    childParams.add(CooldownTerminator.getTerminatorParams());
                     break;
                 default:
                     throw new IllegalArgumentException("不支持的终结器类型: " + terminatorType);
