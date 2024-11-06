@@ -62,7 +62,6 @@ public class ScheduleExecutor implements TaskListener{
                     taskExecutor.execute(() -> {
                         try {
                             robotWorker.execute();
-                            log.info("robot:{}执行任务",robotId);
                         } catch (Exception e) {
                             log.error("robot执行异常:{},robot信息:{}", e.getMessage()+":"+e.getStackTrace()[0],robotWorker.getId());
                             taskStatusManager.modifyTask(Long.valueOf(robotWorker.task().getId()),TaskActionConstant.EXCEPTION);
@@ -71,7 +70,6 @@ public class ScheduleExecutor implements TaskListener{
                             boolean success = LastWordUtil.isSuccess(robotWorker.task().getLastWord().lastTalk(robotWorker));
                             String taskId = robotWorker.task().getId();
                             if(robotWorker.task().getTerminator().taskIsDone() && canChangeTaskStatus(taskId)){
-                                log.info("任务已做完,robotId:{}",robotId);
                                 taskMap.remove(robotWorker.task().getUid());
                                 taskStatusManager.modifyTask(Long.valueOf(taskId), TaskActionConstant.FINISH);
                             }else{

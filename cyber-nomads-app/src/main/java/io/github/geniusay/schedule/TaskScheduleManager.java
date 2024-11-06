@@ -31,11 +31,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @DependsOn("ITaskService")
 public class TaskScheduleManager {
-
-    @Resource
-    TaskMapper taskMapper;
-    @Resource
-    RobotMapper robotMapper;
     @Resource
     TaskFactory taskFactory;
     @Resource
@@ -65,9 +60,6 @@ public class TaskScheduleManager {
                         });
             }
         }
-        log.info(WORLD_TASK.toString());
-        log.info(WORLD_ROBOTS_TASK.toString());
-        log.info(WORLD_ROBOTS.toString());
         EVENT_PUBLISHER.initRobot();
     }
 
