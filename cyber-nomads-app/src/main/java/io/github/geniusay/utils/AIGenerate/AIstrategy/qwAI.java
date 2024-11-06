@@ -1,5 +1,7 @@
 package io.github.geniusay.utils.AIGenerate.AIstrategy;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.utils.AIGenerate.BaseGenerate;
 import org.springframework.stereotype.Component;
@@ -23,7 +25,7 @@ public class qwAI implements BaseGenerate {
     private static final String API_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions";
 
     @Override
-    public String send(String text,String API_KEY) {
+    public String send(String text,String API_KEY,Integer num) {
         try {
             URL url = new URL(API_URL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -40,7 +42,7 @@ public class qwAI implements BaseGenerate {
                     + "},"
                     + "{"
                     + "\"role\": \"user\","
-                    + "\"content\": \""+ text +"\""
+                    + "\"content\": \""+ text+"。请控制字数在"+num+"字内，以纯文本的形式回答" + "\""
                     + "}"
                     + "]"
                     + "}";

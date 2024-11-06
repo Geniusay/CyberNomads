@@ -8,4 +8,5 @@ package io.github.geniusay.constants;
 public class PluginConstant {
 
     public static final String PRE_TEXT = "preText";
+    public static final String COUNT_NUM = "countNum";
 }

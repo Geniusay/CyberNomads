@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
+import static io.github.geniusay.constants.PluginConstant.COUNT_NUM;
 import static io.github.geniusay.constants.PluginConstant.PRE_TEXT;
 
 /**
@@ -26,13 +27,14 @@ public class AICommentGenerate implements CommentGenerate {
 
     @Override
     public String generateComment(Map<String, Object> params) {
-        return autoGenerate.send(getValue(params, PRE_TEXT, String.class), key);
+        return autoGenerate.send(getValue(params, PRE_TEXT, String.class), key,getValue(params,COUNT_NUM,Integer.class));
     }
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
-                new TaskNeedParams(PRE_TEXT, String.class, "文本提示词前缀")
+                new TaskNeedParams(PRE_TEXT, String.class, "文本提示词前缀"),
+                new TaskNeedParams(COUNT_NUM,Integer.class,"字数限制")
         );
     }
 }
