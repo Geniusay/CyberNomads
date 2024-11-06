@@ -1,7 +1,7 @@
 package io.github.geniusay.service;
 
 import io.github.geniusay.pojo.DO.TaskDO;
-import io.github.geniusay.pojo.DTO.TaskFunctionDTO;
+import io.github.geniusay.pojo.DTO.*;
 import io.github.geniusay.pojo.VO.TaskVO;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public interface TaskService {
     /**
      * 创建任务并返回任务详情
      */
-    TaskVO createTask(String taskName, String platform, String taskType, Map<String, Object> params, List<Long> robotIds);
+    TaskVO createTask(CreateTaskDTO create);
 
     /**
      * 获取支持的平台列表
@@ -32,17 +32,17 @@ public interface TaskService {
     /**
      * 批量添加或删除机器人账号，并返回更新后的任务详情
      */
-    TaskVO updateRobotsInTask(Long taskId, List<Long> robotIds, boolean isAdd);
+    TaskVO updateRobotsInTask(UpdateRobotsDTO updateRobotsDTO);
 
     /**
      * 更新任务的 params 参数，并返回更新后的任务详情
      */
-    TaskVO updateTaskParams(Long taskId, Map<String, Object> params);
+    TaskVO updateTaskParams(UpdateTaskDTO update);
 
     /**
      * 修改任务状态，支持删除和重置操作
      */
-    void modifyTask(Long taskId, String action);
+    void modifyTask(ModifyTaskDTO modifyTaskDTO);
 
     /**
      * 批量解析任务中的 robots 字段，并填充 robotList 字段

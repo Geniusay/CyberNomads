@@ -1,8 +1,9 @@
 package io.github.geniusay.controller;
 
+import io.github.common.web.Result;
 import io.github.geniusay.core.anno.TokenRequire;
-import io.github.geniusay.core.exception.R;
-import io.github.geniusay.pojo.DTO.CreatTaskDTO;
+import io.github.geniusay.pojo.DTO.CreateTaskDTO;
+import io.github.geniusay.pojo.DTO.ModifyTaskDTO;
 import io.github.geniusay.pojo.DTO.UpdateRobotsDTO;
 import io.github.geniusay.pojo.DTO.UpdateTaskDTO;
 import io.github.geniusay.pojo.VO.TaskVO;
@@ -10,7 +11,6 @@ import io.github.geniusay.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @RestController
 @RequestMapping("/task")
@@ -24,18 +24,17 @@ public class TaskController {
      */
     @TokenRequire
     @PostMapping("/create")
-    public R<TaskVO> createTask(@RequestBody CreatTaskDTO creat) {
-        TaskVO taskVO = taskService.createTask(creat.getTaskName(), creat.getPlatform(), creat.getTaskType(), creat.getParams(), creat.getRobotIds());
-        return R.success(taskVO);
+    public Result<?> createTask(@RequestBody CreateTaskDTO create) {
+        return Result.success(taskService.createTask(create));
     }
 
     /**
      * 根据用户 uid 获取所有任务
      */
     @TokenRequire
-    @GetMapping("/user/{uid}")
-    public R<List<TaskVO>> getUserTasks(@PathVariable String uid) {
-        return R.success(taskService.getUserTasks(uid));
+    @GetMapping("/user")
+    public Result<?> getUserTasks(@RequestParam String uid) {
+        return Result.success(taskService.getUserTasks(uid));
     }
 
     /**
@@ -43,9 +42,8 @@ public class TaskController {
      */
     @TokenRequire
     @PostMapping("/robots/update")
-    public R<TaskVO> updateRobotsInTask(@RequestBody UpdateRobotsDTO updateRobotsDTO) {
-        TaskVO updatedTask = taskService.updateRobotsInTask(updateRobotsDTO.getTaskId(), updateRobotsDTO.getRobotIds(), updateRobotsDTO.isHasAdd());
-        return R.success(updatedTask);
+    public Result<?> updateRobotsInTask(@RequestBody UpdateRobotsDTO updateRobotsDTO) {
+        return Result.success(taskService.updateRobotsInTask(updateRobotsDTO));
     }
 
     /**
@@ -53,9 +51,8 @@ public class TaskController {
      */
     @TokenRequire
     @PostMapping("/params/update")
-    public R<TaskVO> updateTaskParams(@RequestBody UpdateTaskDTO update) {
-        TaskVO updatedTask = taskService.updateTaskParams(update.getTaskId(), update.getParams());
-        return R.success(updatedTask);
+    public Result<?> updateTaskParams(@RequestBody UpdateTaskDTO update) {
+        return Result.success(taskService.updateTaskParams(update));
     }
 
     /**
@@ -63,9 +60,9 @@ public class TaskController {
      * 支持开始任务，删除和重置操作：
      */
     @TokenRequire
-    @PostMapping("/{taskId}/modify/{action}")
-    public R<String> modifyTask(@PathVariable Long taskId, @PathVariable String action) {
-        taskService.modifyTask(taskId, action);
-        return R.success("操作成功");
+    @PostMapping("/modify")
+    public Result<?> modifyTask(ModifyTaskDTO modifyTaskDTO) {
+        taskService.modifyTask(modifyTaskDTO);
+        return Result.success();
     }
 }

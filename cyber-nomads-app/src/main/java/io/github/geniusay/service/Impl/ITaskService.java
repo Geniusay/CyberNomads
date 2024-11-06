@@ -13,10 +13,9 @@ import io.github.geniusay.mapper.RobotMapper;
 import io.github.geniusay.mapper.TaskMapper;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
-import io.github.geniusay.pojo.DTO.TaskFunctionDTO;
+import io.github.geniusay.pojo.DTO.*;
 import io.github.geniusay.pojo.VO.TaskVO;
 import io.github.geniusay.service.TaskService;
-import io.github.geniusay.service.TaskStateChangeService;
 import io.github.geniusay.utils.ConvertorUtil;
 import io.github.geniusay.utils.TaskTranslationUtil;
 import io.github.geniusay.utils.ThreadUtil;
@@ -27,8 +26,6 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static io.github.geniusay.constants.TaskActionConstant.*;
-import static io.github.geniusay.core.supertask.config.TaskStatus.RUNNING;
 import static io.github.geniusay.utils.ValidUtil.isValidConstant;
 
 @Service
@@ -48,39 +45,39 @@ public class ITaskService implements TaskService {
 
     @Override
     @Transactional
-    public TaskVO createTask(String taskName, String platform, String taskType, Map<String, Object> params, List<Long> robotIds) {
+    public TaskVO createTask(CreateTaskDTO create) {
         // 1. 获取用户信息
         String uid = ThreadUtil.getUid();
         String nickname = ThreadUtil.getNickname();
 
         // 2. 校验 platform 和 taskType
-        validatePlatformAndTaskType(platform, taskType);
+        validatePlatformAndTaskType(create.getPlatform(), create.getTaskType());
 
         // 3. 获取任务蓝图
-        AbstractTaskBlueprint blueprint = taskStrategyManager.getBlueprint(platform, taskType);
+        AbstractTaskBlueprint blueprint = taskStrategyManager.getBlueprint(create.getPlatform(), create.getTaskType());
         if (blueprint == null) {
-            throw new ServeException("任务类型不支持: " + taskType);
+            throw new ServeException("任务类型不支持: " + create.getTaskType());
         }
 
         // 4. 获取任务的必需参数并验证
         List<TaskNeedParams> needParams = blueprint.supplierNeedParams();
-        TaskParamValidator.validateParams(needParams, params);
+        TaskParamValidator.validateParams(needParams, create.getParams());
 
         // 5. 初始化 TaskDO 对象
         TaskDO taskDO = new TaskDO();
         taskDO.setUid(uid);
         taskDO.setNickname(nickname);
-        taskDO.setTaskName(taskName);
-        taskDO.setPlatform(platform);
-        taskDO.setTaskType(taskType);
+        taskDO.setTaskName(create.getTaskName());
+        taskDO.setPlatform(create.getPlatform());
+        taskDO.setTaskType(create.getTaskType());
         taskDO.setTaskStatus(TaskStatus.PENDING);
-        taskDO.setParams(ConvertorUtil.mapToJsonString(params));
+        taskDO.setParams(ConvertorUtil.mapToJsonString(create.getParams()));
 
         // 6. 校验并添加机器人账号
-        if (robotIds != null && !robotIds.isEmpty()) {
+        if (create.getRobotIds() != null && !create.getRobotIds().isEmpty()) {
             // 校验机器人账号是否存在
-            List<RobotDO> robotsFromDB = robotMapper.selectBatchIds(robotIds);
-            if (robotsFromDB.size() != robotIds.size()) {
+            List<RobotDO> robotsFromDB = robotMapper.selectBatchIds(create.getRobotIds());
+            if (robotsFromDB.size() != create.getRobotIds().size()) {
                 throw new ServeException("部分机器人账号不存在");
             }
 
@@ -95,7 +92,7 @@ public class ITaskService implements TaskService {
             }
 
             // 将机器人 ID 转换为字符串并保存到任务中
-            taskDO.setRobots(ConvertorUtil.listToString(robotIds));
+            taskDO.setRobots(ConvertorUtil.listToString(create.getRobotIds()));
         } else {
             // 如果没有机器人账号，则设置为空
             taskDO.setRobots(ConvertorUtil.listToString(List.of()));
@@ -109,20 +106,20 @@ public class ITaskService implements TaskService {
 
     @Override
     @Transactional
-    public TaskVO updateTaskParams(Long taskId, Map<String, Object> params) {
+    public TaskVO updateTaskParams(UpdateTaskDTO update) {
         String uid = ThreadUtil.getUid();
 
         // 1. 获取任务并校验权限
-        TaskDO task = taskMapper.selectTaskByIdAndUid(taskId, uid);
-        if (task == null) throw new ServeException("任务不存在或无权操作该任务: " + taskId);
+        TaskDO task = taskMapper.selectTaskByIdAndUid(update.getTaskId(), uid);
+        if (task == null) throw new ServeException("任务不存在或无权操作该任务: " + update.getTaskId());
 
         // 4. 获取任务的必需参数并验证
         AbstractTaskBlueprint blueprint = taskStrategyManager.getBlueprint(task.getPlatform(), task.getTaskType());
         List<TaskNeedParams> needParams = blueprint.supplierNeedParams();
-        TaskParamValidator.validateParams(needParams, params);
+        TaskParamValidator.validateParams(needParams, update.getParams());
 
         // 更新 params 字段
-        task.setParams(ConvertorUtil.mapToJsonString(params));
+        task.setParams(ConvertorUtil.mapToJsonString(update.getParams()));
         taskMapper.updateById(task);
 
         // 返回更新后的任务详情
@@ -131,16 +128,16 @@ public class ITaskService implements TaskService {
 
     @Override
     @Transactional
-    public TaskVO updateRobotsInTask(Long taskId, List<Long> robotIds, boolean isAdd) {
+    public TaskVO updateRobotsInTask(UpdateRobotsDTO updateRobotsDTO) {
         String uid = ThreadUtil.getUid();
 
         // 1. 获取任务并校验权限
-        TaskDO task = taskMapper.selectTaskByIdAndUid(taskId, uid);
-        if (task == null) throw new ServeException("任务不存在或无权操作该任务: " + taskId);
+        TaskDO task = taskMapper.selectTaskByIdAndUid(updateRobotsDTO.getTaskId(), uid);
+        if (task == null) throw new ServeException("任务不存在或无权操作该任务: " + updateRobotsDTO.getTaskId());
 
         // 2. 校验机器人账号是否存在
-        List<RobotDO> robotsFromDB = robotMapper.selectBatchIds(robotIds);
-        if (robotsFromDB.size() != robotIds.size()) {
+        List<RobotDO> robotsFromDB = robotMapper.selectBatchIds(updateRobotsDTO.getRobotIds());
+        if (robotsFromDB.size() != updateRobotsDTO.getRobotIds().size()) {
             throw new ServeException("部分机器人账号不存在");
         }
 
@@ -152,7 +149,7 @@ public class ITaskService implements TaskService {
         Set<Long> robotIdSet = new HashSet<>(currentRobotIds);
 
         // 4. 添加或删除机器人
-        if (isAdd) {
+        if (updateRobotsDTO.isHasAdd()) {
             // 如果是添加操作，校验机器人是否被禁用
             List<String> bannedRobots = robotsFromDB.stream()
                     .filter(RobotDO::isBan)  // 筛选出被禁用的机器人
@@ -164,10 +161,10 @@ public class ITaskService implements TaskService {
             }
 
             // 添加机器人，Set 自动去重
-            robotIdSet.addAll(robotIds);
+            robotIdSet.addAll(updateRobotsDTO.getRobotIds());
         } else {
             // 如果是删除操作，直接删除机器人，不做禁用状态的校验
-            robotIds.forEach(robotIdSet::remove);
+            updateRobotsDTO.getRobotIds().forEach(robotIdSet::remove);
         }
 
         // 5. 将 Set 转换回 List，并更新任务的机器人列表
@@ -232,15 +229,15 @@ public class ITaskService implements TaskService {
 
     @Override
     @Transactional
-    public void modifyTask(Long taskId, String action) {
+    public void modifyTask(ModifyTaskDTO modifyTaskDTO) {
         String uid = ThreadUtil.getUid();
 
         // 1. 获取任务并校验权限
-        TaskDO task = taskMapper.selectTaskByIdAndUid(taskId, uid);
-        if (task == null) throw new ServeException("任务不存在或无权操作该任务: " + taskId);
+        TaskDO task = taskMapper.selectTaskByIdAndUid(modifyTaskDTO.getTaskId(), uid);
+        if (task == null) throw new ServeException("任务不存在或无权操作该任务: " + modifyTaskDTO.getTaskId());
 
         // 2. 调用 TaskStatusManager 执行状态变更
-        taskStatusManager.modifyTask(task, action);
+        taskStatusManager.modifyTask(task, modifyTaskDTO.getAction());
     }
 
     /**

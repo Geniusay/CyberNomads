@@ -18,6 +18,8 @@ public enum RCode {
      */
     ERROR(400, "服务器繁忙，请稍后重试"),
 
+    NUMBER_OUT(402, "数量上限超出"),
+
     /**
      * 参数异常
      */
@@ -29,13 +31,7 @@ public enum RCode {
     VERIFICATION_FAILURE(30001, "验证失败"),
     FAILED_TO_CREATE_USER(30002, "创建用户失败"),
     MISSING_VERIFICATION_CODE(30003, "缺少验证码"),
-    USER_DOES_NOT_EXIST(30004, "用户不存在"),
-
-    /**
-     * 游客
-     */
-    VISITOR_REDIRECTION(90001, "游客用户请先进行游客注册"),
-    ILLEGAL_FINGERPRINT(90002, "指纹参数不合法，请再试一次");
+    USER_DOES_NOT_EXIST(30004, "用户不存在");
 
     /**
      * 自定义状态码

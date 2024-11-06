@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-public class CreatTaskDTO {
+public class CreateTaskDTO {
 
     private String taskName;
 
