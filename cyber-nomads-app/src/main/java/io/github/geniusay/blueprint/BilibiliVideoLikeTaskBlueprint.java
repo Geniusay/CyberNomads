@@ -54,7 +54,6 @@ public class BilibiliVideoLikeTaskBlueprint extends AbstractTaskBlueprint {
         BilibiliVideoReceiver receiver = new BilibiliVideoReceiver(videoId);
 
         new ActionFlow<>(actor, likeAction, receiver).execute();
-        terminator.doTask(robot);
     }
 
     @Override

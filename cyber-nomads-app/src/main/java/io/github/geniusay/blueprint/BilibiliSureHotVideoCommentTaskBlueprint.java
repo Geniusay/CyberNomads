@@ -61,10 +61,6 @@ public class BilibiliSureHotVideoCommentTaskBlueprint extends AbstractTaskBluepr
         for (VideoDetail video : videoList) {
             BilibiliCommentReceiver receiver = new BilibiliCommentReceiver(String.valueOf(video.getData().getAid()));
             new ActionFlow<>(actor, commentAction, receiver).execute();
-            if (terminator.doTask(robot)) {
-                // 如果任务完成，提前退出循环
-                break;
-            }
         }
     }
 
