@@ -9,6 +9,13 @@ export default {
       platform:"账号平台",
       isBan:"是否禁用",
       action:"操作",
+    },
+    task:{
+      error:"失败",
+      pending:"未开始",
+      running:"运行中",
+      pause:"暂停",
+      finish:"已完成"
     }
   },
   common: {
@@ -135,7 +142,8 @@ export default {
       customFormGeneration: "自定义表单生成",
       richTextEditor: "富文本编辑器",
       editTable: "可编辑数据表",
-      cyberNomads: "赛博游民管理",
+      cyberNomads: "赛博游民",
+      task:"任务列表"
     },
     chatbot_v1: "聊天助手",
     chatbot_v2: "问答助手",

@@ -8,7 +8,14 @@ export default {
       createDate:"Create Date",
       platform:"Platform",
       isBan:"Ban",
-      action:"Actions"
+      action:"Actions",
+    },
+    task:{
+      error:"error",
+      pending:"pending",
+      running:"running",
+      pause:"pause",
+      finish:"finish"
     }
   },
   common: {
@@ -138,6 +145,7 @@ export default {
       richTextEditor: "Rich Text Editor",
       editTable: "Edit Table",
       cyberNomads: "Cyber Nomads",
+      task:"Task List"
     },
     chatbot_v1: "ChatBot",
     chatbot_v2: "Q&A Bot",

@@ -6,8 +6,17 @@ export default [
     meta: {
       requiresAuth: true,
       layout: "ui",
-      category: "Data",
+      category: "Apps",
       title: "NomadsTable",
+    },
+  },
+  {
+    path: "/data/task-list",
+    component: () => import("@/views/workplace/task/TaskListPage.vue"),
+    meta: {
+      requiresAuth: true,
+      layout: "landing",
     },
   }
 ];
+

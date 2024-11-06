@@ -22,10 +22,6 @@ export default {
     // },
     {
       text: "Apps",
-      items: menuApps,
-    },
-    {
-      text: "Data",
       items: menuData,
     },
     {

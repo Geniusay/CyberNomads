@@ -41,8 +41,6 @@ export const routes = [
       ...LandingRoutes,
       ...AuthRoutes,
       ...UtilityRoutes,
-      ...AppsRoutes,
-      ...DataRoutes,
       ...WorkplaceRoutes
     ]
   },

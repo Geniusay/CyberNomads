@@ -16,9 +16,7 @@ import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.*;
 import io.github.geniusay.pojo.VO.TaskVO;
 import io.github.geniusay.service.TaskService;
-import io.github.geniusay.utils.ConvertorUtil;
-import io.github.geniusay.utils.TaskTranslationUtil;
-import io.github.geniusay.utils.ThreadUtil;
+import io.github.geniusay.utils.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -239,7 +237,8 @@ public class ITaskService implements TaskService {
                 taskDO.getTaskType(),
                 taskDO.getTaskStatus().name(),
                 robotIds,
-                params
+                params,
+                TimeUtil.getFormatTimeStr(taskDO.getCreateTime())
         );
     }
 
