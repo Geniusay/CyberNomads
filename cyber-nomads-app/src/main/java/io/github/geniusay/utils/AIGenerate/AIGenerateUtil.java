@@ -22,16 +22,8 @@ public class AIGenerateUtil {
     private String apiKey;
 
     public String textGenerateAndReturnContent(String resource,Integer num){
-        return AIGenerateUtil.parseContent(AIGenerate.send(resource,apiKey,num));
+        return AIGenerate.sendAndReturnString(resource,apiKey,num);
     }
-
-    private static String parseContent(String res){
-        JSONObject jsonObject = JSONObject.parseObject(res);
-        JSONArray choices = jsonObject.getJSONArray("choices");
-        JSONObject message = choices.getJSONObject(0).getJSONObject("message");
-        return message.getString("content");
-    }
-
     private static Integer parseToken(String res){
         JSONObject jsonObject = JSONObject.parseObject(res);
         JSONArray choices = jsonObject.getJSONArray("choices");

@@ -24,8 +24,7 @@ public class qwAI implements BaseGenerate {
 
     private static final String API_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions";
 
-    @Override
-    public String send(String text,String API_KEY,Integer num) {
+    private String send(String text,String API_KEY,Integer num) {
         try {
             URL url = new URL(API_URL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -70,5 +69,14 @@ public class qwAI implements BaseGenerate {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String sendAndReturnString(String text, String key, Integer num) {
+        String res = this.send(text, key, num);
+        JSONObject jsonObject = JSONObject.parseObject(res);
+        JSONArray choices = jsonObject.getJSONArray("choices");
+        JSONObject message = choices.getJSONObject(0).getJSONObject("message");
+        return message.getString("content");
     }
 }

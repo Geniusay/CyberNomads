@@ -6,5 +6,5 @@ package io.github.geniusay.utils.AIGenerate;
  * @Date 2024/10/30 0:44
  */
 public interface BaseGenerate {
-    String send(String text,String key,Integer num);
+    String sendAndReturnString(String text,String key,Integer num);
 }
