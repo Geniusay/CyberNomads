@@ -6,6 +6,7 @@ import io.github.geniusay.mapper.RobotMapper;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.utils.ThreadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ public class RobotCounters extends AbstractCounters {
     private RobotMapper robotMapper;
 
     @Autowired
-    public RobotCounters(RedisTemplate<String, Long> redisTemplate) {
+    public RobotCounters(RedisTemplate redisTemplate) {
         super(redisTemplate);
     }
 

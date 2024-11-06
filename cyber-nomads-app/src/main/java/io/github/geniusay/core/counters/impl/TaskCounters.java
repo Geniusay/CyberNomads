@@ -19,7 +19,7 @@ public class TaskCounters extends AbstractCounters {
     private TaskMapper taskMapper;
 
     @Autowired
-    public TaskCounters(RedisTemplate<String, Long> redisTemplate) {
+    public TaskCounters(RedisTemplate redisTemplate) {
         super(redisTemplate);
     }
 
