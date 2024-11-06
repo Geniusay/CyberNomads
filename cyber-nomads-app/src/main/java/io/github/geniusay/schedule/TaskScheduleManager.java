@@ -42,8 +42,6 @@ public class TaskScheduleManager {
     TaskEventMan EVENT_PUBLISHER;
     @Resource
     TaskService taskService;
-    @Resource
-    RobotService robotService;
     public static final Map<String, Task> WORLD_TASK = new ConcurrentHashMap<>();
     public static final Map<Long, RobotWorker> WORLD_ROBOTS = new ConcurrentHashMap<>();
     public static final Map<Long, Map<String,Task>> WORLD_ROBOTS_TASK = new ConcurrentHashMap<>();
@@ -67,6 +65,9 @@ public class TaskScheduleManager {
                         });
             }
         }
+        log.info(WORLD_TASK.toString());
+        log.info(WORLD_ROBOTS_TASK.toString());
+        log.info(WORLD_ROBOTS.toString());
         EVENT_PUBLISHER.initRobot();
     }
 
@@ -105,8 +106,8 @@ public class TaskScheduleManager {
 
     public void removeWorkerTask(String taskId){
         Task task = WORLD_TASK.remove(taskId);
-        WORLD_ROBOTS_TASK.forEach((k,v)->{
-            v.remove(taskId);
+        task.getRobots().forEach((taskDO)->{
+            WORLD_ROBOTS_TASK.get(taskDO.getId()).remove(taskId);
         });
         EVENT_PUBLISHER.removeTask(task);
     }

@@ -6,7 +6,6 @@ import io.github.geniusay.pojo.DTO.CreateTaskDTO;
 import io.github.geniusay.pojo.DTO.ModifyTaskDTO;
 import io.github.geniusay.pojo.DTO.UpdateRobotsDTO;
 import io.github.geniusay.pojo.DTO.UpdateTaskDTO;
-import io.github.geniusay.pojo.VO.TaskVO;
 import io.github.geniusay.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,21 +37,12 @@ public class TaskController {
     }
 
     /**
-     * 批量添加或删除机器人账号
+     * 更新任务的所有字段（除任务状态外），并返回更新后的任务详情
      */
     @TokenRequire
-    @PostMapping("/robots/update")
-    public Result<?> updateRobotsInTask(@RequestBody UpdateRobotsDTO updateRobotsDTO) {
-        return Result.success(taskService.updateRobotsInTask(updateRobotsDTO));
-    }
-
-    /**
-     * 修改任务的 params 参数，并返回更新后的任务详情
-     */
-    @TokenRequire
-    @PostMapping("/params/update")
-    public Result<?> updateTaskParams(@RequestBody UpdateTaskDTO update) {
-        return Result.success(taskService.updateTaskParams(update));
+    @PostMapping("/update")
+    public Result<?> updateTask(@RequestBody UpdateTaskDTO updateTaskDTO) {
+        return Result.success(taskService.updateTask(updateTaskDTO));
     }
 
     /**
@@ -60,7 +50,7 @@ public class TaskController {
      * 支持开始任务，删除和重置操作：
      */
     @TokenRequire
-    @PostMapping("/modify")
+    @PostMapping("/changeStatus")
     public Result<?> modifyTask(@RequestBody ModifyTaskDTO modifyTaskDTO) {
         taskService.modifyTask(modifyTaskDTO);
         return Result.success();

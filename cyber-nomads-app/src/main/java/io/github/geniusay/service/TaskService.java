@@ -30,14 +30,9 @@ public interface TaskService {
     List<TaskVO> getUserTasks(String uid);
 
     /**
-     * 批量添加或删除机器人账号，并返回更新后的任务详情
+     * 更新任务的所有字段（除任务状态外），并返回更新后的任务详情
      */
-    TaskVO updateRobotsInTask(UpdateRobotsDTO updateRobotsDTO);
-
-    /**
-     * 更新任务的 params 参数，并返回更新后的任务详情
-     */
-    TaskVO updateTaskParams(UpdateTaskDTO update);
+    TaskVO updateTask(UpdateTaskDTO updateTaskDTO);
 
     /**
      * 修改任务状态，支持删除和重置操作

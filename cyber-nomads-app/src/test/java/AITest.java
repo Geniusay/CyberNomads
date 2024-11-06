@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import static io.github.geniusay.constants.PluginConstant.COUNT_NUM;
 import static io.github.geniusay.constants.PluginConstant.PRE_TEXT;
 
 /**
@@ -33,7 +34,9 @@ public class AITest {
     @Test
     public void t(){
 //        generateUtil.textGenerate("你好吗");
-        System.out.println(commentGenerate.generateComment(Map.of(PRE_TEXT, "请你以一个幽默有趣的身份来推销我们的产品名称，叫做cybernomads。他是一个用于全自动回复评论的软件，支持多任务，多账号等一键式自动化功能")));
+        String s = commentGenerate.generateComment(Map.of(PRE_TEXT, "请你以一个幽默有趣的身份来推销我们的产品名称，叫做cybernomads。他是一个用于全自动回复评论的软件，支持多任务，多账号等一键式自动化功能", COUNT_NUM, 100));
+        System.out.println(AIGenerateUtil.parseContent(s));
+        System.out.println(AIGenerateUtil.parseToken(s));
     }
 
     @Test
