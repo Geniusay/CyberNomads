@@ -47,10 +47,15 @@ public class ScheduleExecutor implements TaskListener{
                 if(Objects.nonNull(taskMap)){
                     List<Task> tasks = new ArrayList<>(taskMap.values());
                     RobotWorker robotWorker = manager.getAllRobot().get(robotId);
-                    Task selectedTask = tasks.get(new Random().nextInt(tasks.size()));
-                    while (!selectedTask.getTerminator().doTask(robotWorker) && tasks.size()>1) {
-                        tasks.remove(selectedTask);
-                        selectedTask = tasks.get(new Random().nextInt(tasks.size()));
+                    Task selectedTask = null;
+                    for (Task task : tasks) {
+                        if(!task.getTerminator().doTask(robotWorker)){
+                            selectedTask = task;
+                        }
+                    }
+                    if(selectedTask==null){
+                        FREE_WORKER.add(robotId);
+                        continue;
                     }
                     robotWorker.setTask(selectedTask);
                     TASK_STATUS.putIfAbsent(selectedTask.getId(), TaskStatus.RUNNING.toString());
