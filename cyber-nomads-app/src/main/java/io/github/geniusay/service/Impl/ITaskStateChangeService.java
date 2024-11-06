@@ -16,7 +16,7 @@ public class ITaskStateChangeService implements TaskStateChangeService {
 
     @Override
     public void notifyTaskDeleted(TaskDO task, TaskStatus oldStatus) {
-        manager.removeTask(task.getId());
+        manager.removeWorkerTask(String.valueOf(task.getId()));
     }
 
     @Override
@@ -33,6 +33,7 @@ public class ITaskStateChangeService implements TaskStateChangeService {
     @Override
     public void notifyTaskPaused(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus) {
         // 这里可以实现暂停任务的逻辑
+        manager.removeWorkerTask(String.valueOf(task.getId()));
         System.out.println("任务已暂停: " + task.getTaskName() + "，从 " + oldStatus + " 修改为 " + newStatus);
     }
 

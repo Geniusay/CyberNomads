@@ -48,7 +48,7 @@ public class ScheduleExecutor implements TaskListener{
                     if (!tasks.isEmpty()) {
                         RobotWorker robotWorker = manager.getAllRobot().get(robotId);
                         Task selectedTask = tasks.get(new Random().nextInt(tasks.size()));
-                        while (!selectedTask.getTerminator().doTask(robotWorker) && tasks.size()>1) {
+                        while (!selectedTask.getTerminator().doTask(robotWorker) && tasks.size()>1 && selectedTask.getTaskStatus()==TaskStatus.RUNNING) {
                             tasks.remove(selectedTask);
                             selectedTask = tasks.get(new Random().nextInt(tasks.size()));
                         }
