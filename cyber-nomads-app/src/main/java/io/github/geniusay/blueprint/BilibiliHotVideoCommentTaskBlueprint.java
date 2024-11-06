@@ -49,9 +49,8 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
 
         String comment = aiCommentGenerate.generateComment(params);
         VideoDetail video = getHotVideoPlugin.getHandleVideoWithLimit(params, 1).get(0);
-        System.out.println(video.getData().getDesc());
 
-        task.log("工作者 {} 对视频 {} 发表评论: {}", robot.getNickname(), video.getData().getAid(), comment);
+        task.log("工作者 {} 对视频 {} 发表评论: {}", robot.getNickname(), video.getData().getBvid(), comment);
         new ActionFlow<>(new BilibiliUserActor(robot), new BilibiliCommentActionLogic(comment), new BilibiliCommentReceiver(String.valueOf(video.getData().getAid()))).execute();
     }
 
