@@ -35,25 +35,11 @@ public class BilibiliVideoLikeTaskBlueprint extends AbstractTaskBlueprint {
 
     @Override
     protected void executeTask(RobotWorker robot, Task task) throws Exception {
-        // 获取终结器
-        Terminator terminator = task.getTerminator();
-
         // 获取任务参数
         Map<String, Object> params = task.getParams();
         String videoId = (String) params.get("videoId");  // 单个视频的 bvid 或 aid
-
         log.info("拿到：{}", videoId);
-
-        // 创建 BilibiliUserActor
-        BilibiliUserActor actor = new BilibiliUserActor(robot);
-
-        // 创建点赞行为逻辑
-        BilibiliLikeActionLogic likeAction = new BilibiliLikeActionLogic();
-
-        // 创建视频接收者
-        BilibiliVideoReceiver receiver = new BilibiliVideoReceiver(videoId);
-
-        new ActionFlow<>(actor, likeAction, receiver).execute();
+        new ActionFlow<>(new BilibiliUserActor(robot), new BilibiliLikeActionLogic(), new BilibiliVideoReceiver(videoId)).execute();
     }
 
     @Override
