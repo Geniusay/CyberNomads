@@ -57,22 +57,19 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
 
         task.log("工作者 {} 对视频 {} 发表评论: {}", robot.getNickname(), video.getData().getAid(), comment);
 
-//        new ActionFlow<>(new BilibiliUserActor(robot), new BilibiliCommentActionLogic(comment), new BilibiliCommentReceiver(String.valueOf(video.getData().getAid()))).execute();
+        new ActionFlow<>(new BilibiliUserActor(robot), new BilibiliCommentActionLogic(comment), new BilibiliCommentReceiver(String.valueOf(video.getData().getAid()))).execute();
     }
 
     @Override
     protected String lastWord(RobotWorker robot, Task task) {
         String robotName = robot.getNickname();
-        String commentStr = (String) task.getParams().get("commentStr");
-
-        return String.format("[Info] %s robot 正在不断对随机热门视频发表评论，评论内容是: %s", robotName, commentStr);
+        return String.format("[Info] %s robot 正在不断对随机热门视频发表评论", robotName);
     }
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
                 TerminatorFactory.getTerminatorParams(COOL_DOWN_TYPE_TIMES),
-//                new TaskNeedParams("commentStr", String.class, "评论的内容", true, "赛博游民"),
                 new TaskNeedParams("AiPrams", "ai相关参数", false, aiCommentGenerate.supplierNeedParams())
         );
     }
