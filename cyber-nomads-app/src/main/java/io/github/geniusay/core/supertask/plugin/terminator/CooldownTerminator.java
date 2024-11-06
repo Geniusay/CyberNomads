@@ -35,16 +35,14 @@ public class CooldownTerminator extends AbstractTerminator {
         // 获取该工作者的下次允许执行任务的时间戳
         Long nextAvailableTime = workerCooldownMap.get(workerId);
 
-        // 如果当前时间大于等于下次允许执行任务的时间，则允许执行任务
-        if (nextAvailableTime == null || currentTime >= nextAvailableTime) {
-            // 更新下次允许执行任务的时间戳
-            workerCooldownMap.put(workerId, currentTime + cooldownTime);
+        if (nextAvailableTime != null && currentTime < nextAvailableTime) {
             return true;
         }
 
-        // 冷却时间未到，不允许执行任务
+        workerCooldownMap.put(workerId, currentTime + cooldownTime);
         return false;
     }
+
 
     @Override
     public boolean taskIsDone() {

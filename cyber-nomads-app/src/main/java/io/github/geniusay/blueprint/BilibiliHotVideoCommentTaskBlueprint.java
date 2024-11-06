@@ -40,7 +40,6 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
         Map<String, Object> params = task.getParams();
         String commentStr = (String) params.get("commentStr");
 
-
         // 获取一个随机视频
         VideoDetail video = getHotVideoPlugin.getHandleVideoWithLimit(params, 1).get(0);
 
