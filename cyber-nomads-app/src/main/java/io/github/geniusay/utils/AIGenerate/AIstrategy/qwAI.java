@@ -1,5 +1,6 @@
 package io.github.geniusay.utils.AIGenerate.AIstrategy;
 
+import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.utils.AIGenerate.BaseGenerate;
 import org.springframework.stereotype.Component;
 
@@ -52,20 +53,20 @@ public class qwAI implements BaseGenerate {
 
             // 获取响应
             int responseCode = connection.getResponseCode();
-            System.out.println("Response Code: " + responseCode);
-
+            if(responseCode!=200){
+                throw new ServeException(500,"AI接口调用失败");
+            }
+            StringBuilder response = new StringBuilder();
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"))) {
-                StringBuilder response = new StringBuilder();
+
                 String responseLine;
                 while ((responseLine = br.readLine()) != null) {
                     response.append(responseLine.trim());
                 }
-                System.out.println("Response: " + response);
             }
-
+            return response.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return null;
     }
 }
