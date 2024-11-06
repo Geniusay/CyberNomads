@@ -48,7 +48,6 @@ public class CooldownTerminator extends AbstractTerminator {
 
     @Override
     public boolean taskIsDone() {
-        // 永远返回 false，确保任务不会终结
         return false;
     }
 
