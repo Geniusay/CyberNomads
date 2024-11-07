@@ -6,13 +6,16 @@ import {PlatformVO} from "@/types/platformType";
 
 const snackbarStore = useSnackbarStore();
 export const useCommonStore = defineStore({
-  id: "userStore",
+  id: "commonStore",
   state: ()=>({
     platformList: [],
   }),
   getters:{
     getPlatformList(){
       return this.platformList;
+    },
+    getPlatformCnZh(){
+      return (code)=>this.platformList.find(item => item.code === code).platformCnZh
     }
   },
   actions:{

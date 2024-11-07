@@ -12,3 +12,23 @@ export interface TaskVO {
   taskTypeCnZh: string;
   createTime: string;
 }
+
+export interface TaskForm{
+  taskName: string;
+  platform: string;
+  taskType: string;
+  params: Record<string, any>;
+  robots: number[];
+}
+
+const defaultTaskForm: TaskForm = {
+  taskName: "",
+  platform: "",
+  taskType: "",
+  params: {},
+  robots: []
+}
+
+export const defaultValue = {
+  defaultTaskForm
+}

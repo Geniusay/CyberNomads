@@ -15,7 +15,10 @@ export default {
       pending:"未开始",
       running:"运行中",
       pause:"暂停",
-      finish:"已完成"
+      finish:"已完成",
+      taskName:"任务名称",
+      platform:"赛博世界(平台)",
+      taskType:"任务类型"
     }
   },
   common: {

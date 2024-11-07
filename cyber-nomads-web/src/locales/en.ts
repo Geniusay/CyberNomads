@@ -15,7 +15,10 @@ export default {
       pending:"pending",
       running:"running",
       pause:"pause",
-      finish:"finish"
+      finish:"finish",
+      taskName:"Task Name",
+      platform:"Platform",
+      taskType:"Task Type"
     }
   },
   common: {

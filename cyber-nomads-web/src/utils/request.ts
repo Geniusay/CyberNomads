@@ -28,7 +28,7 @@ request.interceptors.response.use(
       snackbarStore.showSuccessMessage("服务异常!");
     }
     let res = response.data;
-    if (res.code !== "200") {
+    if (res.code !== "200"&&res.code!==200) {
       console.log(res)
       return Promise.reject({
         response,

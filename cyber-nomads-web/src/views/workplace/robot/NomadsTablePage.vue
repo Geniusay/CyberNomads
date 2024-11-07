@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {RobotVO, RobotForm, defaultValue} from "@/views/workplace/robot/RobotTypes";
+import {RobotVO, RobotForm, defaultValue} from "@/views/workplace/robot/robotTypes";
 import { PlatformVO } from "@/types/platformType";
 import { onMounted } from "vue";
 import {getRobotList, addRobot, changeRobot, getCookie, changeCookie, deleteRobot} from "@/api/robotApi";
@@ -78,7 +78,7 @@ const changeRobotReq = async() => {
     await changeRobot(robotForm.value).then(res=>{
       const robot = robotList.value.find(item => item.id === robotForm.value.id);
       robot.nickname = robotForm.value.nickname
-      robot.plat = platformList.value.find(item => item.code === robotForm.value.platform).platformCnZh
+      robot.plat = commonStore.getPlatformCnZh(robotForm.value.platform)
       robot.username = robotForm.value.username
       snackbarStore.showSuccessMessage("编辑成功")
     }).catch(error=>{
