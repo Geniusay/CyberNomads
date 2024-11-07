@@ -139,11 +139,6 @@ public class IRobotService implements RobotService {
     }
 
     @Override
-    public Result<?> getPlatforms() {
-        return Result.success(Arrays.stream(Platform.values()).map(PlatformVO::platformConvertVO));
-    }
-
-    @Override
     public Boolean addRobot(AddRobotDTO robotDTO) {
         PlatformUtil.checkPlatform(robotDTO.getPlatform());
 

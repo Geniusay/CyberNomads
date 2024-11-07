@@ -203,15 +203,6 @@ public class ITaskService implements TaskService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<Map<String, String>> getSupportedPlatforms() {
-        return taskStrategyManager.getSupportedPlatforms().stream()
-                .map(platform -> Map.of(
-                        "key", platform, // 英文平台名称
-                        "value", translatePlatform(platform) // 中文平台名称
-                ))
-                .collect(Collectors.toList());
-    }
 
     @Override
     public List<TaskFunctionDTO> getFunctionsAndParamsByPlatform(String platform) {

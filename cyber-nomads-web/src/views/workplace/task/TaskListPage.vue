@@ -28,7 +28,47 @@
           :key="item.id"
         >
           <v-card max-width="400" class="mx-auto">
-            <v-img cover src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8YXJ0aWNsZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=600&q=60" height="200px"></v-img>
+            <v-img cover src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8YXJ0aWNsZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=600&q=60" height="200px">
+              <v-toolbar color="transparent">
+                <template v-slot:prepend>
+                  <v-btn icon="$menu"></v-btn>
+                </template>
+
+                <v-menu>
+                  <template v-slot:activator="{ props }">
+                    <v-btn icon="mdi-dots-vertical" variant="text" v-bind="props"></v-btn>
+                  </template>
+
+                  <v-list density="compact">
+                    <v-list-item @click="addDialog=true">
+                      <v-list-item-title class="d-inline-flex align-center">
+                        <Icon
+                          icon="flat-color-icons:support"
+                          :rotate="2"
+                          :horizontalFlip="true"
+                          :verticalFlip="true"
+                          class="mr-1"
+                        />
+                        <span> Edit</span>
+                      </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item @click="$emit('delete')">
+                      <v-list-item-title class="d-inline-flex align-center">
+                        <Icon
+                          icon="flat-color-icons:full-trash"
+                          :rotate="2"
+                          :horizontalFlip="true"
+                          :verticalFlip="true"
+                          :inline="true"
+                          class="mr-1"
+                        />
+                        Delete</v-list-item-title
+                      >
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-toolbar>
+            </v-img>
             <v-card-title class="text-h6 font-weight-bold">
               {{ item.taskName }}
               <v-tooltip
@@ -101,7 +141,11 @@
       </v-row>
     </v-container>
   </div>
-
+  <v-dialog
+    v-model="addDialog"
+    max-width="600"
+  >
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
@@ -109,10 +153,16 @@ import { status, buttonStatus, images } from "@/views/workplace/task/TaskListCon
 import { useSnackbarStore } from "@/stores/snackbarStore";
 import { getTaskList } from "@/api/taskApi";
 import { TaskVO } from "@/views/workplace/task/TaskTypes";
+import { PlatformVO } from "@/types/platformType";
 import {onMounted} from "vue";
+import { useCommonStore } from "@/stores/commonStore";
+import { Icon } from "@iconify/vue";
 
+const commonStore = useCommonStore();
 const snackbarStore = useSnackbarStore();
 const taskList = ref<TaskVO[]>([])
+const addDialog = ref(false)
+const platformList = ref<PlatformVO[]>([])
 
 const getTaskListReq = async()=>{
   await getTaskList().then(res=>{
@@ -127,6 +177,8 @@ const getTaskListReq = async()=>{
 
 onMounted(async()=>{
   await getTaskListReq()
+  await commonStore.initPlatformsVO()
+  platformList.value = commonStore.getPlatformList
 })
 
 </script>

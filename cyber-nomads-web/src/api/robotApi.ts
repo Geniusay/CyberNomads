@@ -40,13 +40,6 @@ export function addRobot(addRobotForm){
   return request.post('/robot/add',addRobotForm)
 }
 
-export function getPlatforms(){
-  return request({
-    url: '/robot/platforms',
-    method:"get",
-  })
-}
-
 export function getCookie(id){
   return request.post('/robot/getCookie',{id:id})
 }

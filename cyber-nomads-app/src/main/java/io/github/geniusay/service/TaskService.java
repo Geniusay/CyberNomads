@@ -14,10 +14,6 @@ public interface TaskService {
      */
     TaskVO createTask(CreateTaskDTO create);
 
-    /**
-     * 获取支持的平台列表
-     */
-    List<Map<String, String>> getSupportedPlatforms();
 
     /**
      * 获取指定平台的任务功能及其参数

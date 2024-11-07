@@ -22,3 +22,13 @@ export function getTaskList(){
     method:"get",
   })
 }
+
+export function getPlatformTaskType(platform:string){
+  return request({
+    url: '/task/platforms/functions-params',
+    method:"get",
+    params:{
+      platform: platform
+    }
+  })
+}

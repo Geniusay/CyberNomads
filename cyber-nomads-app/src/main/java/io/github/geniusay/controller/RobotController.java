@@ -53,11 +53,6 @@ public class RobotController {
         return Result.success(robotService.changeRobot(robotDTO));
     }
 
-    @GetMapping("/platforms")
-    public Result<?> getPlatforms(){
-        return robotService.getPlatforms();
-    }
-
     @PostMapping("/add")
     @TokenRequire
     public Result<?> addRobot(@RequestBody AddRobotDTO robotDTO){

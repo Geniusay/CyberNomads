@@ -2,12 +2,14 @@
 import {RobotVO, RobotForm, defaultValue} from "@/views/workplace/robot/RobotTypes";
 import { PlatformVO } from "@/types/platformType";
 import { onMounted } from "vue";
-import {getRobotList, getPlatforms, addRobot, changeRobot, getCookie, changeCookie, deleteRobot} from "@/api/robotApi";
+import {getRobotList, addRobot, changeRobot, getCookie, changeCookie, deleteRobot} from "@/api/robotApi";
 import { useSnackbarStore } from "@/stores/snackbarStore";
 import {validateAndReturn, Validators} from "@/utils/validate";
+import { getPlatforms } from "@/api/commonApi";
+import { useCommonStore } from "@/stores/commonStore";
 
-
-var snackbarStore = useSnackbarStore();
+const commonStore = useCommonStore();
+const snackbarStore = useSnackbarStore();
 const robotList = ref<RobotVO[]>([])
 const platformList = ref<PlatformVO[]>([])
 const robotForm = ref<RobotForm>({...defaultValue.defaultRobotForm})
@@ -36,9 +38,7 @@ const rules = {
   ]
 }
 
-function findPlatformByCnZh(platformCnZh: string): PlatformVO | undefined {
-  return platformList.value.find(item => item.platformCnZh === platformCnZh);
-}
+
 
 async function getRobotCookie(item: any){
   if(!!item&&!!item.cookie){
@@ -52,11 +52,8 @@ async function getRobotCookie(item: any){
 
 onMounted(async ()=>{
   await getRobotListReq()
-  await getPlatforms().then(res=>{
-    platformList.value = res.data as PlatformVO[]
-  }).catch(error=>{
-    snackbarStore.showErrorMessage("获取平台列表，网络异常")
-  })
+  await commonStore.initPlatformsVO()
+  platformList.value = commonStore.getPlatformList as PlatformVO[]
 })
 
 const getRobotListReq = async ()=>{
@@ -99,7 +96,7 @@ const refForm = ref();
 async function editItem(item: any) {
   isEdit.value = true;
   robotForm.value = Object.assign({}, item)  as RobotForm;
-  robotForm.value.platform = findPlatformByCnZh(item.plat).code
+  robotForm.value.platform = commonStore.findPlatformByCnZh(item.plat).code
   dialog.value = true;
 }
 

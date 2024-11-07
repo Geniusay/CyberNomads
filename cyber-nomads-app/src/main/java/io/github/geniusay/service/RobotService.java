@@ -25,8 +25,6 @@ public interface RobotService {
 
     List<RobotDO> queryVaildRobot();
 
-    Result<?> getPlatforms();
-
     Boolean addRobot(AddRobotDTO robotDTO);
 
     Map<String, String> getCookie(GetCookieDTO getCookieDTO);
