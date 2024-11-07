@@ -2,23 +2,19 @@ package io.github.geniusay.schedule;
 
 import io.github.geniusay.constants.TaskActionConstant;
 import io.github.geniusay.core.supertask.config.TaskStatus;
-import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.service.Impl.TaskStatusManager;
-import io.github.geniusay.service.TaskService;
+import io.github.geniusay.service.TaskLogService;
 import io.github.geniusay.utils.LastWordUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Description
@@ -35,6 +31,9 @@ public class ScheduleExecutor implements TaskListener{
     private TaskScheduleManager manager;
     @Resource
     TaskStatusManager taskStatusManager;
+    @Resource
+    private TaskLogService taskLogService;
+
     private final BlockingQueue<Long> FREE_WORKER = new LinkedBlockingQueue<>();
     private final ConcurrentHashMap<String, String> TASK_STATUS = new ConcurrentHashMap<>();
 
@@ -67,7 +66,12 @@ public class ScheduleExecutor implements TaskListener{
                             taskStatusManager.modifyTask(Long.valueOf(robotWorker.task().getId()),TaskActionConstant.EXCEPTION);
                             TASK_STATUS.put(robotWorker.task().getId(),TaskStatus.EXCEPTION.toString());
                         }finally {
-                            boolean success = LastWordUtil.isSuccess(robotWorker.task().getLastWord().lastTalk(robotWorker));
+                            String lastTalk = robotWorker.task().getLastWord().lastTalk(robotWorker);
+                            boolean success = LastWordUtil.isSuccess(lastTalk);
+
+                            // TODO 记录遗言
+                            taskLogService.logTaskResult(robotWorker);
+
                             String taskId = robotWorker.task().getId();
                             if(robotWorker.task().getTerminator().taskIsDone() && canChangeTaskStatus(taskId)){
                                 taskMap.remove(robotWorker.task().getUid());

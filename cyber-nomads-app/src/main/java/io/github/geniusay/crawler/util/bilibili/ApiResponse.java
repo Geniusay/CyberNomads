@@ -14,7 +14,7 @@ import lombok.Data;
 public class ApiResponse<T> {
 
     private int code;              // 状态码
-    private String msg;        // 消息
+    private String msg;            // 消息
     private boolean success;       // 是否成功
     private T data;                // 数据
     private long reqTime; // 请求发送的时间戳

@@ -10,6 +10,9 @@ import io.github.geniusay.core.supertask.plugin.video.GetHotVideoPlugin;
 import io.github.geniusay.core.supertask.task.*;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
 import io.github.geniusay.crawler.po.bilibili.VideoDetail;
+import io.github.geniusay.crawler.util.bilibili.ApiResponse;
+import io.github.geniusay.pojo.DO.LastWord;
+import io.github.geniusay.utils.LastWordUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -49,14 +52,29 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
         String comment = aiCommentGenerate.generateComment(params);
         VideoDetail video = getHotVideoPlugin.getHandleVideoWithLimit(params, 1).get(0);
 
-        task.log("工作者 {} 对视频 {} 发表评论: {}", robot.getNickname(), video.getData().getBvid(), comment);
-        new ActionFlow<>(new BilibiliUserActor(robot), new BilibiliCommentActionLogic(comment), new BilibiliCommentReceiver(String.valueOf(video.getData().getAid()))).execute();
+        ApiResponse<Boolean> response = new ActionFlow<>(new BilibiliUserActor(robot), new BilibiliCommentActionLogic(comment), new BilibiliCommentReceiver(video.getData())).execute();
+
+        Map<String, Object> additionalInfo = Map.of("bvid", video.getData().getBvid(), "comment", comment);
+        LastWord lastWord = new LastWord(response, additionalInfo);
+        task.addLastWord(robot, lastWord);
     }
 
     @Override
     protected String lastWord(RobotWorker robot, Task task) {
-        String robotName = robot.getNickname();
-        return String.format("[Info] %s robot 正在不断对随机热门视频发表评论", robotName);
+        LastWord lastWord = task.getLastWord(robot);
+        if (lastWord == null) {
+            return LastWordUtil.buildLastWord(robot.getNickname() + " robot 没有执行任务", false);
+        }
+
+        ApiResponse<Boolean> response = lastWord.getResponse();
+        String bvid = (String) lastWord.getAdditionalInfo("bvid");
+        String comment = (String) lastWord.getAdditionalInfo("comment");
+
+        if (response.isSuccess()) {
+            return LastWordUtil.buildLastWord(String.format("%s robot 成功对视频 %s 发表评论，评论内容: %s", robot.getNickname(), bvid, comment), true);
+        } else {
+            return LastWordUtil.buildLastWord(String.format("%s robot 发表评论失败，视频: %s，状态码: %d，错误消息: %s", robot.getNickname(), bvid, response.getCode(), response.getMsg()), false);
+        }
     }
 
     @Override

@@ -1,6 +1,5 @@
 package io.github.geniusay.core.supertask.taskblueprint;
 
-import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.core.supertask.task.LastWordHandler;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;

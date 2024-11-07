@@ -1,5 +1,7 @@
 package io.github.geniusay.core.actionflow.frame;
 
+import io.github.geniusay.crawler.util.bilibili.ApiResponse;
+
 import java.util.List;
 
 import java.util.Map;
@@ -30,10 +32,10 @@ public class ActionFlow<A extends Actor, R extends Receiver> {
         this(List.of(actor), actionLogic, List.of(receiver), null);
     }
 
-    public void execute() throws Exception {
+    public ApiResponse<Boolean> execute() throws Exception {
         if (actionMapping == null) {
             // 一对一的情况，直接执行
-            actionLogic.performAction(actors.get(0), receivers.get(0));
+            return actionLogic.performAction(actors.get(0), receivers.get(0));
         } else {
             // 多对多的情况，使用映射
             Map<A, List<R>> mapping = actionMapping.getMapping(actors, receivers);
@@ -45,5 +47,6 @@ public class ActionFlow<A extends Actor, R extends Receiver> {
                 }
             }
         }
+        return null;
     }
 }
