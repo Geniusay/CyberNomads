@@ -8,8 +8,7 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.geniusay.constants.PluginConstant.AI_COUNT_NUM;
-import static io.github.geniusay.constants.PluginConstant.AI_PRE_TEXT;
+import static io.github.geniusay.constants.PluginConstant.*;
 
 
 /**
@@ -24,14 +23,21 @@ public class AICommentGenerate implements CommentGenerate {
 
     @Override
     public String generateComment(Map<String, Object> params) {
-        return generateUtil.textGenerateAndReturnContent(getValue(params, AI_PRE_TEXT, String.class),getValue(params,AI_COUNT_NUM,Integer.class));
+        String aiPreText = getValue(params, AI_PRE_TEXT, String.class);
+        if (getValue(params, AI_START, Boolean.class)) {
+            Integer aiCountNum = getValue(params, AI_COUNT_NUM, Integer.class);
+
+            return generateUtil.textGenerateAndReturnContent(aiPreText, aiCountNum);
+        }
+        return aiPreText;
     }
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
+                new TaskNeedParams(AI_START, Boolean.class, "是否开启AI生成"),
                 new TaskNeedParams(AI_PRE_TEXT, String.class, "文本提示词前缀"),
-                new TaskNeedParams(AI_COUNT_NUM,Integer.class,"字数限制")
+                new TaskNeedParams(AI_COUNT_NUM, Integer.class, "字数限制")
         );
     }
 }

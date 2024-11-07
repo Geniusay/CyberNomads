@@ -6,7 +6,6 @@ import io.github.geniusay.core.actionflow.logic.BilibiliCommentActionLogic;
 import io.github.geniusay.core.actionflow.receiver.BilibiliCommentReceiver;
 import io.github.geniusay.core.supertask.TerminatorFactory;
 import io.github.geniusay.core.supertask.plugin.comment.AICommentGenerate;
-import io.github.geniusay.core.supertask.plugin.terminator.CooldownTerminator;
 import io.github.geniusay.core.supertask.plugin.video.GetHotVideoPlugin;
 import io.github.geniusay.core.supertask.task.*;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
