@@ -14,9 +14,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import static io.github.geniusay.constants.PluginConstant.COUNT_NUM;
-import static io.github.geniusay.constants.PluginConstant.PRE_TEXT;
-
 /**
  * @Description
  * @Author welsir
@@ -34,7 +31,7 @@ public class AITest {
     @Test
     public void t(){
 //        generateUtil.textGenerate("你好吗");
-        String s = generateUtil.textGenerateAndReturnContent("请你以一个幽默有趣的身份来推销我们的产品名称，叫做cybernomads。他是一个用于全自动回复评论的软件，支持多任务，多账号等一键式自动化功能",300);
+        String s = generateUtil.textGenerateAndReturnContent("请你以一个幽默有趣的身份来推销我们的产品名称，叫做cybernomads。他是一个用于全自动回复评论的软件，支持多任务，多账号等一键式自动化功能",300,"QQ号：xxx");
         System.out.println(s);
     }
 

@@ -26,8 +26,7 @@ public class AICommentGenerate implements CommentGenerate {
         String aiPreText = getValue(params, AI_PRE_TEXT, String.class);
         if (getValue(params, AI_START, Boolean.class)) {
             Integer aiCountNum = getValue(params, AI_COUNT_NUM, Integer.class);
-
-            return generateUtil.textGenerateAndReturnContent(aiPreText, aiCountNum);
+            return generateUtil.textGenerateAndReturnContent(aiPreText, aiCountNum,SLOGAN);
         }
         return aiPreText;
     }
@@ -37,7 +36,8 @@ public class AICommentGenerate implements CommentGenerate {
         return List.of(
                 new TaskNeedParams(AI_START, Boolean.class, "是否开启AI生成"),
                 new TaskNeedParams(AI_PRE_TEXT, String.class, "文本提示词前缀"),
-                new TaskNeedParams(AI_COUNT_NUM, Integer.class, "字数限制")
+                new TaskNeedParams(AI_COUNT_NUM, Integer.class, "字数限制"),
+                new TaskNeedParams(SLOGAN,String.class,"slogan标语，结尾处另起一行追加")
         );
     }
 }

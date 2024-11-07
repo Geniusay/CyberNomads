@@ -21,8 +21,10 @@ public class AIGenerateUtil {
     @Value("${AIGenerate.API_KEY}")
     private String apiKey;
 
-    public String textGenerateAndReturnContent(String resource,Integer num){
-        return AIGenerate.sendAndReturnString(resource,apiKey,num);
+    public String textGenerateAndReturnContent(String resource,Integer num,String slogan){
+        String content = AIGenerate.sendAndReturnString(resource, apiKey, num);
+        content+="\n"+slogan;
+        return content;
     }
     private static Integer parseToken(String res){
         JSONObject jsonObject = JSONObject.parseObject(res);
