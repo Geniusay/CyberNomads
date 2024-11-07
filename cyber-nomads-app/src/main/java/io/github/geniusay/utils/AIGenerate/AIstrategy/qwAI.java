@@ -79,4 +79,7 @@ public class qwAI implements BaseGenerate {
         JSONObject message = choices.getJSONObject(0).getJSONObject("message");
         return message.getString("content");
     }
+
+    // 请为我们的项目“Cybernomads（赛博游民）”生成幽默风趣的推广语。赛博游民是一款全自动回复评论的软件，支持多任务、多账号及一键式自动化功能。广告语需融入中国的网络热梗，保持足够的抽象和隐晦，让人看不出是广告或AI生成的内容。将各账号设定为异世界的公民，每个公民因不同任务拥有独特职业，在各个异世界（平台）执行各自职责。确保广告语新颖有趣，易于传播，引发共鸣，思维要足够发散，联想到世间的万物。。不要拘泥于传统，我们要足够抽象，比网上的普通用户更加抽象
+
 }
