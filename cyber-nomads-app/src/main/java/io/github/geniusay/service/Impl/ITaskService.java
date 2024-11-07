@@ -75,32 +75,11 @@ public class ITaskService implements TaskService {
         taskDO.setParams(ConvertorUtil.mapToJsonString(create.getParams()));
 
         // 6. 校验并添加机器人账号
-        if (create.getRobotIds() != null && !create.getRobotIds().isEmpty()) {
-            // 校验机器人账号是否存在
-            List<RobotDO> robotsFromDB = robotMapper.selectBatchIds(create.getRobotIds());
-            if (robotsFromDB.size() != create.getRobotIds().size()) {
-                throw new ServeException("部分机器人账号不存在");
-            }
-
-            // 校验机器人是否被禁用
-            List<String> bannedRobots = robotsFromDB.stream()
-                    .filter(RobotDO::isBan)  // 筛选出被禁用的机器人
-                    .map(RobotDO::getNickname)  // 获取被禁用机器人的昵称
-                    .collect(Collectors.toList());
-
-            if (!bannedRobots.isEmpty()) {
-                throw new ServeException("以下机器人账号已被禁用，无法添加: " + String.join(", ", bannedRobots));
-            }
-
-            // 将机器人 ID 转换为字符串并保存到任务中
-            taskDO.setRobots(ConvertorUtil.listToString(create.getRobotIds()));
-        } else {
-            // 如果没有机器人账号，则设置为空
-            taskDO.setRobots(ConvertorUtil.listToString(List.of()));
-        }
+        validateAndAddRobots(taskDO, create.getRobotIds());
 
         // 7. 保存任务到数据库
         taskMapper.insert(taskDO);
+
         // 8. 返回任务详情
         return TaskVO.convertToTaskVO(taskDO);
     }
@@ -117,8 +96,8 @@ public class ITaskService implements TaskService {
         // 2. 更新任务的基础字段
         updateTaskFields(task, updateTaskDTO);
 
-        // 3. 更新机器人列表
-        updateRobotsInTask(task, updateTaskDTO.getRobotIds());
+        // 3. 校验并更新机器人列表
+        validateAndAddRobots(task, updateTaskDTO.getRobotIds());
 
         // 4. 更新任务参数
         updateTaskParams(task, updateTaskDTO.getParams());
@@ -137,22 +116,22 @@ public class ITaskService implements TaskService {
         if (updateTaskDTO.getTaskName() != null) {
             task.setTaskName(updateTaskDTO.getTaskName());
         }
-
         if (updateTaskDTO.getPlatform() != null) {
             task.setPlatform(updateTaskDTO.getPlatform());
         }
-
         if (updateTaskDTO.getTaskType() != null) {
             task.setTaskType(updateTaskDTO.getTaskType());
         }
     }
 
     /**
-     * 更新机器人列表
+     * 校验并添加机器人账号到任务中
      */
-    private void updateRobotsInTask(TaskDO task, List<Long> robotIds) {
+    private void validateAndAddRobots(TaskDO taskDO, List<Long> robotIds) {
         if (robotIds == null || robotIds.isEmpty()) {
-            return; // 如果没有传递机器人列表，直接返回
+            // 如果没有传递机器人 ID，则设置为空列表
+            taskDO.setRobots(ConvertorUtil.listToString(List.of()));
+            return;
         }
 
         // 1. 校验机器人账号是否存在
@@ -161,18 +140,31 @@ public class ITaskService implements TaskService {
             throw new ServeException("部分机器人账号不存在");
         }
 
-        // 2. 校验机器人是否被禁用
-        List<String> bannedRobots = robotsFromDB.stream()
-                .filter(RobotDO::isBan)  // 筛选出被禁用的机器人
-                .map(RobotDO::getNickname)  // 获取被禁用机器人的昵称
-                .collect(Collectors.toList());
+        // 2. 校验机器人是否属于当前用户
+        String currentUserId = ThreadUtil.getUid();
+        List<String> unauthorizedRobots = robotsFromDB.stream().filter(robot -> !robot.getUid().equals(currentUserId)).map(RobotDO::getNickname).collect(Collectors.toList());
 
+        if (!unauthorizedRobots.isEmpty()) {
+            throw new ServeException("以下机器人账号不属于当前用户，无法添加: " + String.join(", ", unauthorizedRobots));
+        }
+
+        // 3. 校验机器人是否被禁用
+        List<String> bannedRobots = robotsFromDB.stream().filter(RobotDO::isBan).map(RobotDO::getNickname).collect(Collectors.toList());
         if (!bannedRobots.isEmpty()) {
             throw new ServeException("以下机器人账号已被禁用，无法添加: " + String.join(", ", bannedRobots));
         }
 
-        // 3. 更新任务的机器人列表
-        task.setRobots(ConvertorUtil.listToString(robotIds));
+        // 4. 校验机器人是否属于当前任务的平台
+        String taskPlatform = taskDO.getPlatform();
+        List<String> invalidPlatformRobots = robotsFromDB.stream().filter(robot -> !PlatformUtil.getPlatformByCode(robot.getPlatform()).equals(taskPlatform))
+                .map(RobotDO::getNickname).collect(Collectors.toList());
+
+        if (!invalidPlatformRobots.isEmpty()) {
+            throw new ServeException("以下机器人账号与任务平台不匹配，无法添加: " + String.join(", ", invalidPlatformRobots));
+        }
+
+        // 5. 将机器人 ID 转换为字符串并保存到任务中
+        taskDO.setRobots(ConvertorUtil.listToString(robotIds));
     }
 
     /**

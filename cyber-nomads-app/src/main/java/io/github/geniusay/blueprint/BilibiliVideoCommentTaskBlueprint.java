@@ -1,20 +1,15 @@
 package io.github.geniusay.blueprint;
 
-import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.core.supertask.TerminatorFactory;
 import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.core.supertask.task.*;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
 import io.github.geniusay.crawler.api.bilibili.BilibiliCommentApi;
-import io.github.geniusay.crawler.util.bilibili.ApiResponse;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Map;
 
 import static io.github.geniusay.constants.TerminatorConstants.TERMINATOR_TYPE_GROUP_COUNT;
-import static io.github.geniusay.constants.TerminatorConstants.TERMINATOR_TYPE_TIMES;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_COMMENT;
 
