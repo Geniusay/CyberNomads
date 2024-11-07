@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddRobotDTO {
+
     private Integer platform;
 
     private String nickname;

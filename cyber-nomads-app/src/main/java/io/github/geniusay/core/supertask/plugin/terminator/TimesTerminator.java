@@ -52,6 +52,7 @@ public class TimesTerminator extends AbstractTerminator {
      * 返回 TimesTerminator 所需的参数
      */
     public static TaskNeedParams getTerminatorParams() {
+        // 定义 times 参数
         TaskNeedParams singleTimesParam = new TaskNeedParams(
                 PARAM_TIMES,
                 Integer.class,
@@ -60,11 +61,13 @@ public class TimesTerminator extends AbstractTerminator {
                 5
         );
 
+        // 返回 TimesTerminator 的参数结构
         return new TaskNeedParams(
                 TERMINATOR_TYPE_TIMES,
                 "计数终结器参数",
                 true,
-                List.of(singleTimesParam)
+                null,  // 没有 selection
+                List.of(singleTimesParam)  // params 表示具体的参数
         );
     }
 }

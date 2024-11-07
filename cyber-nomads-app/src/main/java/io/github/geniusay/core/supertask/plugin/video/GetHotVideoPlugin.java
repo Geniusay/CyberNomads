@@ -83,6 +83,9 @@ public class GetHotVideoPlugin implements GetHandleVideo<VideoDetail> {
         // 判断获取哪种视频列表，默认是热门视频列表
         String videoType = getValue(validatedParams, "videoType", String.class);
 
+        // TODO 暂时先换成排行榜前100
+        videoType = "ranking";
+
         if ("ranking".equalsIgnoreCase(videoType)) {
             return hotRankingVideosCache.get(VideoCacheConstants.HOT_RANKING_VIDEOS_CACHE_KEY, key -> fetchHotRankingVideos(validatedParams));
         } else {

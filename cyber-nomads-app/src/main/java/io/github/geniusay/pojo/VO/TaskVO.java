@@ -18,7 +18,7 @@ import static io.github.geniusay.utils.TaskTranslationUtil.translateTaskType;
 @AllArgsConstructor
 public class TaskVO {
 
-    private Long id;
+    private String id;
     private String uid;
     private String nickname;
     private String taskName;
@@ -36,7 +36,7 @@ public class TaskVO {
         List<Long> robotIds = ConvertorUtil.stringToList(taskDO.getRobots());
 
         return new TaskVO(
-                taskDO.getId(),
+                taskDO.getId().toString(),
                 taskDO.getUid(),
                 taskDO.getNickname(),
                 taskDO.getTaskName(),
