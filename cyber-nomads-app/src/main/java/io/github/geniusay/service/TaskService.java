@@ -27,7 +27,7 @@ public interface TaskService {
     /**
      * 获取指定用户的所有任务
      */
-    List<TaskVO> getUserTasks(String uid);
+    List<TaskVO> getUserTasks();
 
     /**
      * 更新任务的所有字段（除任务状态外），并返回更新后的任务详情

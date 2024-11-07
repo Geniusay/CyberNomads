@@ -32,8 +32,8 @@ public class TaskController {
      */
     @TokenRequire
     @GetMapping("/list")
-    public Result<?> getUserTasks(@RequestParam String uid) {
-        return Result.success(taskService.getUserTasks(uid));
+    public Result<?> getUserTasks() {
+        return Result.success(taskService.getUserTasks());
     }
 
     /**

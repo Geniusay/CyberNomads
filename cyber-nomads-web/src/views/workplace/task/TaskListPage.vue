@@ -28,32 +28,33 @@
           :key="item.id"
         >
           <v-card max-width="400" class="mx-auto">
-            <v-img cover :src="item.image" height="200px"></v-img>
+            <v-img cover src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8YXJ0aWNsZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=600&q=60" height="200px"></v-img>
             <v-card-title class="text-h6 font-weight-bold">
-              {{ item.title }}
+              {{ item.taskName }}
               <v-tooltip
                 location="right"
               >
                 <template v-slot:activator="{ props }">
                   <v-icon
-                    :color="status[item.status].color"
-                    :icon="status[item.status].icon"
+                    :color="status[item.taskStatus].color"
+                    :icon="status[item.taskStatus].icon"
                     size="default"
                     style="float: right"
                     v-bind="props"
                   >
                   </v-icon>
                 </template>
-                <span>{{$t(status[item.status].content)}}</span>
+                <span>{{$t(status[item.taskStatus].content)}}</span>
               </v-tooltip>
 
             </v-card-title>
-            <v-card-text style="margin-top: 10px;display: inline-block">
+            <v-card-text style="width:70%; overflow: hidden; margin-top: 10px;display: inline-block">
               <v-row
                 align="center"
                 justify="start"
               >
                 <v-col
+
                   class="py-3 pe-0"
                   cols="auto"
                 >
@@ -71,8 +72,8 @@
                 align="center"
                 justify="start"
               >
-                <v-col class="py-1 pe-0" cols="auto">
-                  <v-chip color="rgb(38, 198, 218)">
+                <v-col class="py-1 pe-0" cols="auto" >
+                  <v-chip color="rgb(38, 198, 218)" >
                     <v-icon
                       icon="mdi-file-tree"
                       start
@@ -87,12 +88,12 @@
             <v-card-actions>
               <v-btn color="primary">
                 <v-icon class="mr-1">mdi-robot</v-icon>
-                {{ item.author }}
+                {{ item.robots.length }}
               </v-btn>
               <v-spacer></v-spacer>
               <v-btn color="primary">
                 <v-icon class="mr-2">mdi-calendar</v-icon>
-                {{ item.createAt }}
+                {{ item.createTime }}
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -104,70 +105,30 @@
 </template>
 
 <script setup lang="ts">
+import { status, buttonStatus, images } from "@/views/workplace/task/TaskListConfig"
+import { useSnackbarStore } from "@/stores/snackbarStore";
+import { getTaskList } from "@/api/taskApi";
+import { TaskVO } from "@/views/workplace/task/TaskTypes";
+import {onMounted} from "vue";
 
-const status = {
-  error:{
-    icon: "mdi-alert-circle",
-    color:"orange",
-    content:"workplace.task.error"
-  },
-  pending:{
-    icon: "mdi-alert-circle",
-    color:"grey",
-    content:"workplace.task.pending"
-  },
-  running:{
-    icon:"mdi-arrow-right-drop-circle",
-    color:"green",
-    content:"workplace.task.running"
-  },
-  pause:{
-    icon:"mdi-pause-circle",
-    color:"yellow",
-    content:"workplace.task.pause"
-  },
-  finish:{
-    icon:"mdi-check-circle",
-    color:"green",
-    content:"workplace.task.finish"
-  }
+const snackbarStore = useSnackbarStore();
+const taskList = ref<TaskVO[]>([])
+
+const getTaskListReq = async()=>{
+  await getTaskList().then(res=>{
+    taskList.value = (res.data as TaskVO[]).map(task => ({
+      ...task,
+      taskStatus: task.taskStatus.toLowerCase()
+    }));
+  }).catch(error=>{
+    snackbarStore.showErrorMessage(error)
+  })
 }
 
-const buttonStatus = {
-  ready:{
-    icon: "mdi-play",
-    color: "green",
-  },
-  running:{
-    icon: "mdi-pause",
-    color: "red",
-  },
-  pause:{
-    icon: "mdi-reload",
-    color: "grey",
-  },
-  stop:{
-    icon: "mdi-reload",
-    color: "grey",
-  },
-}
+onMounted(async()=>{
+  await getTaskListReq()
+})
 
-const taskList = [
-  {
-    id: 1,
-    title: "任务测试",
-    status: "pending",
-    taskTypeCnZh:"定时任务",
-    platformCnZh:"哔哩哔哩",
-    image:
-      "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8YXJ0aWNsZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=600&q=60",
-    createAt: "4/22/2022",
-    lastReadAt: "1/13/2023",
-    author: "5",
-    content:
-      "",
-  },
-];
 </script>
 
 <style scoped>

@@ -7,6 +7,7 @@ import io.github.geniusay.core.supertask.TaskStrategyManager;
 import io.github.geniusay.core.supertask.config.TaskPlatformConstant;
 import io.github.geniusay.core.supertask.config.TaskStatus;
 import io.github.geniusay.core.supertask.config.TaskTypeConstant;
+import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
 import io.github.geniusay.mapper.RobotMapper;
@@ -192,9 +193,9 @@ public class ITaskService implements TaskService {
     }
 
     @Override
-    public List<TaskVO> getUserTasks(String uid) {
+    public List<TaskVO> getUserTasks() {
         QueryWrapper<TaskDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("uid", uid);
+        queryWrapper.eq("uid", ThreadUtil.getUid());
         List<TaskDO> taskDOList = taskMapper.selectList(queryWrapper);
 
         return taskDOList.stream()

@@ -15,3 +15,10 @@ export function updateRobots(updateRobotsForm){
 export function updateParams(updateParamsForm){
   return request.post('/task/params/update',updateParamsForm)
 }
+
+export function getTaskList(){
+  return request({
+    url: '/task/list',
+    method:"get",
+  })
+}
