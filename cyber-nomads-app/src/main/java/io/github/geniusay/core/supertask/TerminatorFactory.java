@@ -54,33 +54,38 @@ public class TerminatorFactory {
     /**
      * 根据传入的终结器类型，返回对应的终结器参数
      */
+    /**
+     * 根据传入的终结器类型，返回对应的终结器参数
+     */
     public static TaskNeedParams getTerminatorParams(String... terminatorTypes) {
-        List<TaskNeedParams> childParams = new ArrayList<>();
+        List<TaskNeedParams> selection = new ArrayList<>();
 
         // 遍历传入的终结器类型，获取相应的参数
         for (String terminatorType : terminatorTypes) {
             switch (terminatorType) {
                 case TERMINATOR_TYPE_GROUP_COUNT:
-                    childParams.add(GroupCountTerminator.getTerminatorParams());
+                    selection.add(GroupCountTerminator.getTerminatorParams());
                     break;
                 case TERMINATOR_TYPE_TIMES:
-                    childParams.add(TimesTerminator.getTerminatorParams());
+                    selection.add(TimesTerminator.getTerminatorParams());
                     break;
                 case COOL_DOWN_TYPE_TIMES:
-                    childParams.add(CooldownTerminator.getTerminatorParams());
+                    selection.add(CooldownTerminator.getTerminatorParams());
                     break;
                 default:
-                    throw new IllegalArgumentException("不支持的终结器类型: " + terminatorType);
+                    throw new IllegalArgumentException("不支持的终结器类型:  " + terminatorType);
             }
         }
 
-        // 返回一个大的 TaskNeedParams，包含所有终结器的参数作为 childParams
+        // 返回一个大的 TaskNeedParams，包含所有终结器的参数作为 selection
         return new TaskNeedParams(
                 TerminatorConstants.TERMINATOR,
                 String.class,
                 "终结器参数",
                 true,
-                childParams
+                null,
+                selection,
+                null
         );
     }
 }

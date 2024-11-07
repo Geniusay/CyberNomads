@@ -53,7 +53,8 @@ public class CooldownTerminator extends AbstractTerminator {
      * 返回 CooldownTerminator 所需的参数
      */
     public static TaskNeedParams getTerminatorParams() {
-        TaskNeedParams singleTimesParam = new TaskNeedParams(
+        // 定义 cooldownTime 参数
+        TaskNeedParams cooldownTimeParam = new TaskNeedParams(
                 PARAM_COOLDOWN_TIME,
                 Long.class,
                 "工作者冷却时间（秒）",
@@ -61,11 +62,13 @@ public class CooldownTerminator extends AbstractTerminator {
                 10L
         );
 
+        // 返回 CooldownTerminator 的参数结构
         return new TaskNeedParams(
                 COOL_DOWN_TYPE_TIMES,
                 "无限火力终结器",
                 true,
-                List.of(singleTimesParam)
+                null,
+                List.of(cooldownTimeParam)  
         );
     }
 }

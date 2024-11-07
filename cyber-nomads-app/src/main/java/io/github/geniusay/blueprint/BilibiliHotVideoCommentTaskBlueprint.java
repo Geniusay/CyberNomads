@@ -81,7 +81,7 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
                 TerminatorFactory.getTerminatorParams(COOL_DOWN_TYPE_TIMES),
-                new TaskNeedParams("AiPrams", "ai相关参数", false, aiCommentGenerate.supplierNeedParams())
+                new TaskNeedParams("AiPrams", "ai相关参数", false, null,aiCommentGenerate.supplierNeedParams())
         );
     }
 }

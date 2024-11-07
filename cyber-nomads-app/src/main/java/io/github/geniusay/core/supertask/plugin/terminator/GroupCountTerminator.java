@@ -54,6 +54,7 @@ public class GroupCountTerminator extends AbstractTerminator {
                 TERMINATOR_TYPE_GROUP_COUNT,
                 "总计数终结器参数",
                 true,
+                null,
                 List.of(targetCountParam)
         );
     }

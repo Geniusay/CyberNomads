@@ -17,8 +17,11 @@ public class TaskNeedParams {
     private String desc;
     private boolean required;
     private Object defaultValue;
-    private List<TaskNeedParams> childParams = new ArrayList<>();
+    private List<TaskNeedParams> params = new ArrayList<>();
+    private List<TaskNeedParams> selection = new ArrayList<>();
 
+
+    // 构造方法（不带默认值、可选项、子参数）
     public TaskNeedParams(String name, Class<?> type, String desc) {
         this.name = name;
         this.type = type;
@@ -27,6 +30,7 @@ public class TaskNeedParams {
         this.defaultValue = null;
     }
 
+    // 构造方法（带默认值，不带可选项、子参数）
     public TaskNeedParams(String name, Class<?> type, String desc, boolean required, Object defaultValue) {
         this.name = name;
         this.type = type;
@@ -35,30 +39,24 @@ public class TaskNeedParams {
         this.defaultValue = defaultValue;
     }
 
-    public TaskNeedParams(String name, Class<?> type, String desc, boolean required, Object defaultValue, List<TaskNeedParams> childParams) {
+    // 构造方法（带可选项和子参数）
+    public TaskNeedParams(String name, Class<?> type, String desc, boolean required, Object defaultValue, List<TaskNeedParams> selection, List<TaskNeedParams> params) {
         this.name = name;
         this.type = type;
         this.desc = desc;
         this.required = required;
         this.defaultValue = defaultValue;
-        this.childParams = childParams;
+        this.selection = selection == null ? new ArrayList<>() : selection;
+        this.params = params == null ? new ArrayList<>() : params;
     }
 
-    public TaskNeedParams(String name, String desc, boolean required, List<TaskNeedParams> childParams) {
+    // 构造方法（不带类型，用于表示复杂参数结构）
+    public TaskNeedParams(String name, String desc, boolean required, List<TaskNeedParams> selection, List<TaskNeedParams> params) {
         this.name = name;
         this.type = null;
         this.desc = desc;
         this.required = required;
-        this.defaultValue = null;
-        this.childParams = childParams;
-    }
-
-    public TaskNeedParams(String name, Class<?> type, String desc, boolean required, List<TaskNeedParams> childParams) {
-        this.name = name;
-        this.type = type;
-        this.desc = desc;
-        this.required = required;
-        this.defaultValue = null;
-        this.childParams = childParams;
+        this.selection = selection == null ? new ArrayList<>() : selection;
+        this.params = params == null ? new ArrayList<>() : params;
     }
 }
