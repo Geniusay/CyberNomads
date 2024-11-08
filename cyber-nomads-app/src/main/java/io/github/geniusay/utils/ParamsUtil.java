@@ -18,19 +18,30 @@ public class ParamsUtil {
         return params;
     }
 
-    public static void validateAndInitParams(Map<String, Object> paramMap, List<TaskNeedParams> params){
+    /**
+     * 校验并提取参数列表
+     * @param resMap 准备返回的参数列表
+     * @param paramMap 原视参数列表
+     * @param params 所需参数（蓝图提供）
+     */
+    public static void validateAndGetParams(Map<String, Object> resMap, Map<String, Object> paramMap, List<TaskNeedParams> params){
         for (TaskNeedParams needParam : params) {
             String name = needParam.getName();
             Object value = paramMap.getOrDefault(name, needParam.getDefaultValue());
-            if(!needParam.getParams().isEmpty()){
-                validateAndInitParams(paramMap, params);
-            }else{
+
+            if(!TaskNeedParams.class.equals(needParam.getType())&&(needParam.isRequired()||value!=null)){
                 validateParam(name, value, needParam);
                 try {
-                    paramMap.put(name, Optional.ofNullable(value).map((var->getValue(paramMap, name, needParam.getType()))).orElse(null));
+                    resMap.put(name, Optional.ofNullable(value).map((var->getValue(paramMap, name, needParam.getType()))).orElse(null));
                 }catch (Exception e){
                     throw new ServeException(400, String.format("%s参数类型错误", name));
                 }
+            }
+
+            if(!needParam.getParams().isEmpty()){
+                validateAndGetParams(resMap, paramMap, needParam.getParams());
+            }else{
+                validateAndGetParams(resMap, paramMap, needParam.getSelection());
             }
         }
     }

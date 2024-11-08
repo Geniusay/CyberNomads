@@ -23,12 +23,12 @@ public interface ParamsHelper {
     /**
      * 从前端返回的params中，取出需要的
      * @param paramMap 前端传回来的参数列表
-     * @return
+     * @return resMap 返回过滤后端参数
      */
     default Map<String, Object> getParams(Map<String, Object> paramMap){
-        Map<String, Object> pluginParams = new HashMap<>();
-        ParamsUtil.validateAndInitParams(pluginParams, supplierNeedParams());
-        return pluginParams;
+        Map<String, Object> resMap = new HashMap<>();
+        ParamsUtil.validateAndGetParams(resMap, paramMap, supplierNeedParams());
+        return resMap;
     }
 
     /**
