@@ -29,17 +29,19 @@ public interface ParamsHelper {
         for (TaskNeedParams needParam : supplierNeedParams()) {
             String name = needParam.getName();
             Object value = paramMap.getOrDefault(name, needParam.getDefaultValue());
+            if (Objects.isNull(value)&&needParam.isRequired()) {
+                throw new ServeException(400, String.format("%s参数错误", name));
+            }
+            if(!Objects.isNull(value)&&!needParam.getType().equals(value.getClass())){
+                throw new ServeException(400, String.format("%s参数类型错误", name));
+            }
             if (!needParam.getSelection().isEmpty()) {
                 Set<String> set = needParam.getSelection().stream().map(TaskNeedParams::getName).collect(Collectors.toSet());
                 if (set.contains((String)value)) {
-                    throw new ServeException(400, String.format("%s参数[%s]b不匹配", name, value));
+                    throw new ServeException(400, String.format("%s参数[%s]不匹配", name, value));
                 }
             }
-            if (Objects.isNull(value)&&needParam.isRequired()) {
-                throw new ServeException(400, String.format("%s参数错误", name));
-            }else{
-                pluginParams.put(name, value);
-            }
+            pluginParams.put(name, value);
         }
         return pluginParams;
     }

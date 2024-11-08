@@ -29,7 +29,7 @@ public class AICommentGenerate extends AbstractCommentGenerate implements Commen
 
     private Integer textCount;
 
-    private String slogan;
+    private String slogan = "";
 
     @Override
     public void init(Task task) {

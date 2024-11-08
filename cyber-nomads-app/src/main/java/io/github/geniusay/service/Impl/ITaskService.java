@@ -52,7 +52,7 @@ public class ITaskService implements TaskService {
         String nickname = ThreadUtil.getNickname();
 
         // 2. 校验 platform 和 taskType
-        validatePlatformAndTaskType(create.getPlatform(), create.getTaskType());
+        validatePlatformAndTaskType(create);
 
         // 3. 获取任务蓝图
         AbstractTaskBlueprint blueprint = taskStrategyManager.getBlueprint(create.getPlatform(), create.getTaskType());
@@ -60,9 +60,8 @@ public class ITaskService implements TaskService {
             throw new ServeException("任务类型不支持: " + create.getTaskType());
         }
 
-        // 4. 获取任务的必需参数并验证
-        List<TaskNeedParams> needParams = blueprint.supplierNeedParams();
-        TaskParamValidator.validateParams(needParams, create.getParams());
+        // 4，提纯params，同时获取任务的必需参数并验证
+        create.setParams(blueprint.getParams(create.getParams()));
 
         // 5. 初始化 TaskDO 对象
         TaskDO taskDO = new TaskDO();
@@ -180,11 +179,9 @@ public class ITaskService implements TaskService {
             return; // 如果没有传递参数，直接返回
         }
 
-        // 获取任务的必需参数并验证
+        // 提纯params，并且获取任务的必需参数并验证
         AbstractTaskBlueprint blueprint = taskStrategyManager.getBlueprint(task.getPlatform(), task.getTaskType());
-        List<TaskNeedParams> needParams = blueprint.supplierNeedParams();
-        TaskParamValidator.validateParams(needParams, params);
-
+        params = blueprint.getParams(params);
         // 更新 params 字段
         task.setParams(ConvertorUtil.mapToJsonString(params));
     }
@@ -227,15 +224,22 @@ public class ITaskService implements TaskService {
     }
 
     /**
+     * TODO[FIX]:判断常量采用的是反射，固定常量可以为缓存在本地
      * 校验平台和任务类型是否合法
      */
-    private void validatePlatformAndTaskType(String platform, String taskType) {
+    private void validatePlatformAndTaskType(CreateTaskDTO createTaskDTO) {
+        String platform = createTaskDTO.getPlatform();
+        String taskType = createTaskDTO.getTaskType();
         if (!isValidConstant(TaskPlatformConstant.class, platform)) {
             throw new ServeException("不支持的平台: " + platform);
         }
 
         if (!isValidConstant(TaskTypeConstant.class, taskType)) {
             throw new ServeException("不支持的任务类型: " + taskType);
+        }
+
+        if(createTaskDTO.getParams().size()>=30){
+            throw new ServeException("过大的任务参数");
         }
     }
 
