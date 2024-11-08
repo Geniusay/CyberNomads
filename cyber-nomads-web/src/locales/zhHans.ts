@@ -18,7 +18,8 @@ export default {
       finish:"已完成",
       taskName:"任务名称",
       platform:"赛博世界(平台)",
-      taskType:"任务类型"
+      taskType:"任务类型",
+      chooseCyberNomads:"选择CyberNomads账号"
     }
   },
   common: {

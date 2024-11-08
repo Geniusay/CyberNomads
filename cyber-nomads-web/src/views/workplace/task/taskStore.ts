@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { useSnackbarStore } from "@/stores/snackbarStore";
 import { getTaskList,getPlatformTaskType } from "@/api/taskApi";
-import {defaultValue, TaskForm, TaskVO} from "@/views/workplace/task/taskTypes";
+import {defaultValue, TaskForm, TaskType, TaskVO} from "@/views/workplace/task/taskTypes";
 
 
 export const snackbarStore = useSnackbarStore();
@@ -12,7 +12,7 @@ export const useTaskStore = defineStore({
     taskList: ref<TaskVO[]>([]),
     taskDialog: ref(false),
     isEdit: ref(false),
-    platformTaskTypeMap:ref({}),
+    platformTaskTypeMap:ref<Record<string, TaskType[]>>({}),
     taskForm: ref<TaskForm>({...defaultValue.defaultTaskForm})
   }),
   getters:{
@@ -56,7 +56,7 @@ export const useTaskStore = defineStore({
     async initPlatformTaskTypes(platform:string){
       if(!(platform in this.platformTaskTypeMap)){
         await getPlatformTaskType(platform).then(res=>{
-          this.platformTaskTypeMap[platform] = res.data
+          this.platformTaskTypeMap[platform] = res.data as TaskType[]
         }).catch(error=>{
           snackbarStore.showErrorMessage(error.message)
         })

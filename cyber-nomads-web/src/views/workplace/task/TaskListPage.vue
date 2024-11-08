@@ -49,16 +49,19 @@ import { PlatformVO } from "@/types/platformType";
 import { onMounted } from "vue";
 import { useCommonStore } from "@/stores/commonStore";
 import { useTaskStore,snackbarStore } from "@/views/workplace/task/taskStore"
+import {useRobotStore} from "@/views/workplace/robot/robotStore";
 
 
 const taskStore = useTaskStore()
 const commonStore = useCommonStore();
 const taskList = ref<TaskVO[]>([])
 const platformList = ref<PlatformVO[]>([])
+const robotStore = useRobotStore();
 
 onMounted(async()=>{
   await taskStore.initTaskList()
   await commonStore.initPlatformsVO()
+  await robotStore.initRobotList()
   platformList.value = commonStore.getPlatformList as PlatformVO[]
   taskList.value = taskStore.getTaskList.value as TaskVO[]
 })
@@ -68,7 +71,17 @@ const openAddDialog = ()=>{
   taskStore.changeDialogMode(false)
   taskStore.openDialog()
 }
+
+watch(
+  taskStore.taskList,
+  (newList, oldList)=>{
+    console.log(newList)
+    taskList.value = newList as TaskVO[]
+    console.log(taskList.value)
+  }
+)
 </script>
+
 
 <style scoped>
 

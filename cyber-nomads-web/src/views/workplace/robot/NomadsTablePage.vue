@@ -7,7 +7,9 @@ import { useSnackbarStore } from "@/stores/snackbarStore";
 import {validateAndReturn, Validators} from "@/utils/validate";
 import { getPlatforms } from "@/api/commonApi";
 import { useCommonStore } from "@/stores/commonStore";
+import { useRobotStore } from  "@/views/workplace/robot/robotStore"
 
+const robotStore = useRobotStore();
 const commonStore = useCommonStore();
 const snackbarStore = useSnackbarStore();
 const robotList = ref<RobotVO[]>([])
@@ -39,34 +41,16 @@ const rules = {
 }
 
 
-
-async function getRobotCookie(item: any){
-  if(!!item&&!!item.cookie){
-    await getCookie(item.id).then(res=>{
-      item.cookie = res.data.cookie
-    }).catch(error=>{
-      snackbarStore.showErrorMessage("获取账号cookie异常:"+error.message)
-    })
-  }
-}
-
 onMounted(async ()=>{
-  await getRobotListReq()
   await commonStore.initPlatformsVO()
+  await robotStore.initRobotList()
+  robotList.value = robotStore.getRobotList as RobotVO[]
   platformList.value = commonStore.getPlatformList as PlatformVO[]
 })
 
-const getRobotListReq = async ()=>{
-  await getRobotList().then(res=>{
-    robotList.value = res.data as RobotVO[]
-  }).catch(error=>{
-    snackbarStore.showErrorMessage("获取赛博游民列表，网络异常")
-  })
-}
-
 const addRobotReq = async () => {
   await addRobot(robotForm.value).then(res=>{
-    getRobotListReq()
+    robotStore.initRobotList()
     snackbarStore.showSuccessMessage("添加成功")
   }).catch(error=>{
     snackbarStore.showErrorMessage("添加失败")

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TaskVO } from "@/views/workplace/task/taskTypes";
+import {mapTaskVOToTaskForm, TaskVO} from "@/views/workplace/task/taskTypes";
 import { status, buttonStatus, images } from "@/views/workplace/task/taskListConfig"
 import { Icon } from "@iconify/vue";
 import { useTaskStore,snackbarStore } from "@/views/workplace/task/taskStore"
@@ -14,7 +14,10 @@ const task = ref<TaskVO>({} as TaskVO)
 task.value = {...props.item}
 
 const openEditDialog = () =>{
-  taskStore.taskForm.platform = task.value.platform
+  console.log(task.value)
+  taskStore.taskForm = mapTaskVOToTaskForm(task.value)
+  console.log(taskStore.taskForm)
+
   taskStore.changeDialogMode(true)
   taskStore.openDialog()
 }

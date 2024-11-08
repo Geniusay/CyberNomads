@@ -14,7 +14,7 @@ export const status = {
     color:"green",
     content:"workplace.task.running"
   },
-  pause:{
+  paused:{
     icon:"mdi-pause-circle",
     color:"yellow",
     content:"workplace.task.pause"

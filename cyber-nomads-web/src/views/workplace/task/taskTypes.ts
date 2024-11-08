@@ -14,19 +14,48 @@ export interface TaskVO {
 }
 
 export interface TaskForm{
+  id: string | null;
   taskName: string;
   platform: string;
   taskType: string;
   params: Record<string, any>;
-  robots: number[];
+  robotIds: number[];
+}
+
+export interface Parameter{
+  name: string;
+  type: string;
+  desc: string;
+  required: boolean;
+  defaultValue: string;
+  params: Parameter[];
+  selection: Parameter[];
+}
+
+export interface TaskType{
+  taskTypeKey: string;
+  taskTypeValue: string;
+  params: Parameter[];
 }
 
 const defaultTaskForm: TaskForm = {
+  id:"",
   taskName: "",
   platform: "",
   taskType: "",
   params: {},
-  robots: []
+  robotIds: []
+}
+
+export function mapTaskVOToTaskForm(taskVO: TaskVO): TaskForm {
+  return {
+    id: taskVO.id,
+    taskName: taskVO.taskName,
+    platform: taskVO.platform,
+    taskType: taskVO.taskType,
+    params: taskVO.params,
+    robotIds: taskVO.robots, // 假设 `robots` 是 `robotIds` 对应的属性
+  };
 }
 
 export const defaultValue = {

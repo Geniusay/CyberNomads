@@ -7,10 +7,12 @@
       <v-row dense>
         <v-col
           cols="12"
-          md="12"
+          sm="12"
         >
           <v-text-field
             :label="$t('workplace.task.taskName')"
+            v-model="taskStore.getTaskForm.taskName"
+            variant="outlined"
             required
           ></v-text-field>
         </v-col>
@@ -20,7 +22,6 @@
           sm="12"
         >
           <v-select
-            variant="outlined"
             color="primary"
             density="compact"
             :items="platformList"
@@ -28,6 +29,7 @@
             :label="$t('workplace.task.platform')"
             item-title="platformCnZh"
             item-value="platform"
+            variant="outlined"
           ></v-select>
         </v-col>
 
@@ -36,21 +38,39 @@
           sm="12"
         >
           <v-select
+            v-model="taskStore.getTaskForm.robotIds"
+            :items="robotList"
+            label="Robot"
+            item-title="nickname"
+            item-value="id"
+            chips
+            multiple
             variant="outlined"
-            color="primary"
-            density="compact"
-            :items="taskTypes"
-            v-model="taskStore.getTaskForm.taskType"
-            :label="$t('workplace.task.taskType')"
-            item-title="taskTypeValue"
-            item-value="taskTypeKey"
           ></v-select>
         </v-col>
 
-        <small class="text-caption text-medium-emphasis">任务参数</small>
+
+        <v-col
+          cols="12"
+          sm="12"
+        >
+          <v-select
+            color="primary"
+            density="compact"
+            :items="taskTypes"
+            v-model="taskStore.taskForm.taskType"
+            :label="$t('workplace.task.taskType')"
+            item-title="taskTypeValue"
+            item-value="taskTypeKey"
+            variant="outlined"
+          ></v-select>
+        </v-col>
+
+<!--        <small class="text-caption text-medium-emphasis">任务参数</small>-->
         <ParamsInput
-          v-if="!!taskStore.getTaskForm.taskType"
-          :params="childParams(taskStore.getTaskForm.taskType)"
+          v-if="!!taskStore.taskForm.taskType"
+          :params="childParams(taskStore.taskForm.taskType)?.params ?? []"
+          :key="taskStore.taskForm.taskType"
         />
       </v-row>
 
@@ -64,14 +84,14 @@
       <v-btn
         text="Close"
         variant="plain"
-        @click="submit()"
+        @click="close()"
       ></v-btn>
 
       <v-btn
-        color="primary"
+        color="success"
         text="Save"
         variant="tonal"
-        @click="close()"
+        @click="submit()"
       ></v-btn>
     </v-card-actions>
   </v-card>
@@ -82,12 +102,20 @@ import ParamsInput from "@/views/workplace/task/components/ParamsInput.vue"
 import { useTaskStore,snackbarStore } from "@/views/workplace/task/taskStore"
 import { useCommonStore } from "@/stores/commonStore";
 import { PlatformVO } from "@/types/platformType";
-import {onMounted} from "vue";
+import { onMounted } from "vue";
+import { createTask } from "@/api/taskApi"
+import { defaultValue } from "@/views/workplace/task/taskTypes"
+import { TaskVO } from "@/views/workplace/task/taskTypes"
+import {RobotVO} from "@/views/workplace/robot/robotTypes";
+
+import {useRobotStore} from "@/views/workplace/robot/robotStore";
 
 const commonStore = useCommonStore();
 const taskStore = useTaskStore()
 const platformList = commonStore.getPlatformList as PlatformVO[]
 const taskTypes = ref([])
+const robotList = ref<RobotVO[]>([])
+const robotStore = useRobotStore();
 
 onMounted(async ()=>{
   const platform = taskStore.taskForm.platform
@@ -95,26 +123,35 @@ onMounted(async ()=>{
     await taskStore.initPlatformTaskTypes(platform)
     taskTypes.value = taskStore.getPlatformTaskTypes(platform)
   }
+  robotList.value = robotStore.getRobotList
 })
 
-const submit =() =>{
+const submit = async () =>{
+  const taskForm = {...taskStore.taskForm}
+  await createTask(taskForm).then(res=>{
+    taskStore.taskList.value.push({ ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() });
+    snackbarStore.showSuccessMessage("添加成功")
+  }).catch(error=>{
+    snackbarStore.showErrorMessage("添加失败："+error.message)
+  })
+  taskStore.taskForm = {...defaultValue.defaultTaskForm}
   taskStore.closeDialog()
 }
 
 const close = () =>{
+  taskStore.taskForm = {...defaultValue.defaultTaskForm}
   taskStore.closeDialog()
 }
 
 const childParams = (taskType) =>{
-  const childParam = taskTypes.value.find(param=>param.taskTypeKey===taskType)
-  console.log(childParam.params)
-  return childParam.params
+  return taskTypes.value.find(param=>param.taskTypeKey===taskType)
 }
 
 watch(
   () => taskStore.taskForm.platform,  // 监听 platform 的值
   async (newValue, oldValue) => {
     await taskStore.initPlatformTaskTypes(newValue)
+    taskStore.taskForm.taskType = ""
     taskTypes.value = taskStore.getPlatformTaskTypes(newValue)
   }
 );
