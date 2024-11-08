@@ -1,5 +1,6 @@
 package io.github.geniusay.core.supertask.plugin;
 
+import io.github.geniusay.core.supertask.config.TaskTranslationConstant;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class TaskPluginFactory {
      * 根据插件名称，自动为你提供selection的插件参数提供
      * 例如：AiPlugin(AI)，Ai2Plugin(AI)，CommentPlugin(Comment)，Comment2Plugin(Comment)
      * 会将当前分为AI selection参数和comment selection参数.
-     * res：即 [{name:AI,childParams:[AiPlugin.params, Ai2Plugin.params] ,{name:Comment,childParams:[Comment2Plugin.params, CommentPlugin.params]}
+     * res：即 [{name:AI,selection:[AiPlugin.params, Ai2Plugin.params] ,{name:Comment,selection:[Comment2Plugin.params, CommentPlugin.params]}
      * @param pluginNames
      * @return
      */
@@ -38,9 +39,19 @@ public class TaskPluginFactory {
                 BaseTaskPlugin baseTaskPlugin = metaPluginInfo.get(pluginName);
                 String pluginGroup = baseTaskPlugin.getPluginGroup();
                 if (!groupParamsMap.containsKey(pluginGroup)) {
-                    groupParamsMap.put(pluginGroup, TaskNeedParams.ofK(pluginGroup, String.class, pluginGroup));
+                    groupParamsMap.put(pluginGroup, TaskNeedParams.ofSelection(
+                            pluginGroup, pluginName,
+                            TaskTranslationConstant.getTranslation(TaskTranslationConstant.PLUGIN_TRANSLATION , pluginGroup)
+                            , new ArrayList<>()));
                 }
-                groupParamsMap.get(pluginGroup).getSelection().addAll(baseTaskPlugin.supplierNeedParams());
+
+                groupParamsMap.get(pluginGroup).getSelection().add(
+                        // plugin的参数得向上包装一层，他的supplier参数应该为 params，而自身包装作为 pluginGroup的selection
+                        TaskNeedParams.ofParams(pluginName,
+                                TaskTranslationConstant.getTranslation(TaskTranslationConstant.PLUGIN_TRANSLATION ,pluginName),
+                                baseTaskPlugin.supplierNeedParams()
+                        )
+                );
             }
         }
         return new ArrayList<>(groupParamsMap.values());

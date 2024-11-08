@@ -2,6 +2,8 @@ package io.github.geniusay.core.supertask.config;
 
 import java.util.Map;
 
+import static io.github.geniusay.constants.TerminatorConstants.*;
+import static io.github.geniusay.core.supertask.config.PluginConstant.*;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.*;
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.*;
 
@@ -20,4 +22,19 @@ public class TaskTranslationConstant {
             VIDEO_COIN, "对某个视频投币",
             INFINITY_HOT_VIDEO_COMMENT, "永无止境的在热门视频下面进行评论"
     );
+
+    // 插件中文名
+    public static final Map<String, String> PLUGIN_TRANSLATION = Map.of(
+            TERMINATOR_GROUP_NAME,"终止器(任务执行次数规则)",
+            COMMENT_GROUP_NAME,"评论内容生成器",
+            GET_VIDEO_GROUP_NAME,"视频选择器",
+            AI_COMMENT_GENERATE_PLUGIN, "AI生成插件",
+            TERMINATOR_TYPE_GROUP_COUNT, "总计数器",
+            TERMINATOR_TYPE_TIMES, "计数器(每个赛博人单独计数)",
+            COOL_DOWN_TYPE_TIMES, "定时器"
+    );
+
+    public static String getTranslation(Map<String, String> translationMap, String name){
+        return translationMap.getOrDefault(name, name);
+    }
 }

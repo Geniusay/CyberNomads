@@ -70,13 +70,7 @@ public class TaskNeedParams {
      * @return
      */
     public static TaskNeedParams ofKV(String name, Object defaultValue, String desc){
-        return TaskNeedParams.builder()
-                .name(name)
-                .defaultValue(defaultValue)
-                .required(true)
-                .desc(desc)
-                .type(defaultValue.getClass())
-                .build();
+        return new TaskNeedParams(name, defaultValue.getClass(), desc, true, defaultValue, null, null);
     }
 
     /**
@@ -87,34 +81,14 @@ public class TaskNeedParams {
      * @return
      */
     public static TaskNeedParams ofK(String name, Class<?> type, String desc){
-        return TaskNeedParams.builder()
-                .name(name)
-                .defaultValue(null)
-                .required(false)
-                .desc(desc)
-                .type(type)
-                .build();
+        return new TaskNeedParams(name, type, desc, false, null, null, null);
     }
 
     public static TaskNeedParams ofSelection(String name, String defaultValue, String desc, List<TaskNeedParams> selections){
-        return TaskNeedParams.builder()
-                .name(name)
-                .defaultValue(defaultValue)
-                .required(true)
-                .desc(desc)
-                .type(String.class)
-                .selection(selections)
-                .build();
+        return new TaskNeedParams(name, String.class, desc, true, defaultValue, selections, null);
     }
 
     public static TaskNeedParams ofParams(String name, String desc, List<TaskNeedParams> params){
-        return TaskNeedParams.builder()
-                .name(name)
-                .defaultValue(null)
-                .required(false)
-                .desc(desc)
-                .type(String.class)
-                .params(params)
-                .build();
+        return new TaskNeedParams(name, TaskNeedParams.class, desc, false, null, null, params);
     }
 }
