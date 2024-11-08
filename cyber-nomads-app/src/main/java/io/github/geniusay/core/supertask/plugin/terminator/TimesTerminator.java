@@ -35,13 +35,18 @@ public class TimesTerminator extends AbstractTerminator {
         this.singleTimes = getParam(PARAM_TIMES, Integer.class);
         this.robotDoneTimes = new ConcurrentHashMap<>();
         for (RobotDO robotDo : task.getRobots()) {
-            robotDoneTimes.put(robotDo.getId(), new AtomicInteger(0));
+            robotDoneTimes.put(robotDo.getId(), new AtomicInteger(singleTimes));
         }
     }
 
     @Override
-    public boolean doTask(RobotWorker worker) {
-        return robotDoneTimes.get(worker.getId()).incrementAndGet() <= singleTimes;
+    public boolean robotCanDo(RobotWorker worker) {
+        return robotDoneTimes.get(worker.getId()).get() > 0;
+    }
+
+    @Override
+    public void doTask(RobotWorker worker) {
+        robotDoneTimes.get(worker.getId()).decrementAndGet();
     }
 
     @Override

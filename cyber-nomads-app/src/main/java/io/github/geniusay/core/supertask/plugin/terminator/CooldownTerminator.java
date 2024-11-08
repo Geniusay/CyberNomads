@@ -34,19 +34,22 @@ public class CooldownTerminator extends AbstractTerminator {
     }
 
     @Override
-    public boolean doTask(RobotWorker worker) {
+    public boolean robotCanDo(RobotWorker worker) {
         long currentTime = System.currentTimeMillis();
-        long workerId = worker.getId();
-
         // 获取该工作者的下次允许执行任务的时间戳
-        Long nextAvailableTime = workerCooldownMap.get(workerId);
+        Long nextAvailableTime = workerCooldownMap.get(worker.getId());
 
         if (nextAvailableTime != null && currentTime < nextAvailableTime) {
-            return true;
+            return false;
         }
+        return true;
+    }
 
+    @Override
+    public void doTask(RobotWorker worker) {
+        long currentTime = System.currentTimeMillis();
+        long workerId = worker.getId();
         workerCooldownMap.put(workerId, currentTime + cooldownTime);
-        return false;
     }
 
 

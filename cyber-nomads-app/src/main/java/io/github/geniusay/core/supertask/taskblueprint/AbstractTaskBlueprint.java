@@ -25,7 +25,10 @@ public abstract class AbstractTaskBlueprint implements TaskBlueprint {
 
     @Override
     public LastWordHandler supplierLastWordHandler() {
-        return (robot) -> lastWord(robot, robot.task());
+        return (robot) -> {
+           robot.task().getTerminator().doTask(robot);
+           return lastWord(robot, robot.task());
+        };
     }
 
     protected abstract void executeTask(RobotWorker robot, Task task) throws Exception;

@@ -30,12 +30,17 @@ public class GroupCountTerminator extends AbstractTerminator {
     public void init(Task task) {
         super.init(task);
         this.targetCount = getParam(PARAM_TARGET_COUNT, Integer.class);
-        this.nowCount = new AtomicInteger(0);
+        this.nowCount = new AtomicInteger(targetCount);
     }
 
     @Override
-    public boolean doTask(RobotWorker worker) {
-        return nowCount.incrementAndGet() <= targetCount;
+    public boolean robotCanDo(RobotWorker worker) {
+        return  nowCount.get() > 0;
+    }
+
+    @Override
+    public void doTask(RobotWorker worker) {
+        nowCount.decrementAndGet();
     }
 
     @Override

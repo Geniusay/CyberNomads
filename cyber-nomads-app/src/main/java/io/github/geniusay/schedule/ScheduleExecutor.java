@@ -48,7 +48,7 @@ public class ScheduleExecutor implements TaskListener{
                     RobotWorker robotWorker = manager.getAllRobot().get(robotId);
                     Task selectedTask = null;
                     for (Task task : tasks) {
-                        if(!task.getTerminator().doTask(robotWorker)){
+                        if(!task.getTerminator().robotCanDo(robotWorker)){
                             selectedTask = task;
                         }
                     }

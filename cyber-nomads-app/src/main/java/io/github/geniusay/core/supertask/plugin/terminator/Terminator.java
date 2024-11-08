@@ -7,7 +7,9 @@ import static io.github.geniusay.core.supertask.config.PluginConstant.TERMINATOR
 
 public interface Terminator extends TaskPlugin {
 
-    boolean doTask(RobotWorker worker);
+    boolean robotCanDo(RobotWorker worker);
+
+    void doTask(RobotWorker worker);
 
     boolean taskIsDone();
 
