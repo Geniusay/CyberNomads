@@ -9,7 +9,7 @@ import java.util.List;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_COIN;
 
-@Component
+
 public class BilibiliVideoCoinTaskBlueprint extends AbstractTaskBlueprint {
 
     @Override

@@ -9,7 +9,7 @@ import java.util.List;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.DOUYING;
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_COMMENT;
 
-@Component
+
 public class DouyingVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
 
     @Override

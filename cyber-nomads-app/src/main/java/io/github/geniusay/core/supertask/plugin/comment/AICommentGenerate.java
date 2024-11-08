@@ -25,7 +25,8 @@ public class AICommentGenerate extends AbstractCommentGenerate implements Commen
 
 
     @Override
-    public String generateComment(Map<String, Object> params) {
+    public String generateComment() {
+        Map<String, Object> params = this.pluginParams;
         String aiPreText = getValue(params, AI_PRE_TEXT, String.class);
         if (getValue(params, AI_START, Boolean.class)) {
             Integer aiCountNum = getValue(params, AI_COUNT_NUM, Integer.class);

@@ -1,6 +1,7 @@
 package io.github.geniusay.core.supertask.plugin.terminator;
 
 import io.github.geniusay.core.supertask.plugin.BaseTaskPlugin;
+import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.core.supertask.task.RobotWorker;
@@ -8,15 +9,15 @@ import io.github.geniusay.core.supertask.task.RobotWorker;
 import java.util.List;
 import java.util.Map;
 
+import static io.github.geniusay.core.supertask.config.PluginConstant.TERMINATOR_GROUP_NAME;
+
 
 public abstract class AbstractTerminator extends BaseTaskPlugin implements Terminator {
 
-    protected List<RobotDO> robotList;
-
     @Override
-    public void init(TaskDO taskDO, Map<String, Object> params) {
-        super.init(taskDO, params);
-        this.robotList = taskDO.getRobotList();
+    public void init(Task task) {
+        super.init(task);
+
     }
 
 
@@ -25,4 +26,9 @@ public abstract class AbstractTerminator extends BaseTaskPlugin implements Termi
 
     @Override
     public abstract boolean taskIsDone();
+
+    @Override
+    public String getPluginGroup() {
+        return TERMINATOR_GROUP_NAME;
+    }
 }

@@ -62,6 +62,13 @@ public class TaskNeedParams {
         this.params = params == null ? new ArrayList<>() : params;
     }
 
+    /**
+     * 必填项
+     * @param name
+     * @param defaultValue
+     * @param desc
+     * @return
+     */
     public static TaskNeedParams ofKV(String name, Object defaultValue, String desc){
         return TaskNeedParams.builder()
                 .name(name)
@@ -72,6 +79,13 @@ public class TaskNeedParams {
                 .build();
     }
 
+    /**
+     * 非必填项
+     * @param name
+     * @param type
+     * @param desc
+     * @return
+     */
     public static TaskNeedParams ofK(String name, Class<?> type, String desc){
         return TaskNeedParams.builder()
                 .name(name)

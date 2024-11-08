@@ -1,5 +1,6 @@
 package io.github.geniusay.core.supertask.plugin;
 
+import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.netty.util.internal.StringUtil;
@@ -13,14 +14,14 @@ import java.util.Optional;
 public class BaseTaskPlugin implements TaskPlugin{
 
 
-    protected TaskDO taskDO;
+    protected Task task;
 
     protected Map<String, Object> pluginParams;
 
 
-    public void init(TaskDO taskDO, Map<String, Object> params){
-        this.taskDO = taskDO;
-        this.pluginParams = getParams(params);
+    public void init(Task task){
+        this.task = task;
+        this.pluginParams = getParams(task.getParams());
     }
 
     /**

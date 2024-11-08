@@ -1,6 +1,7 @@
 package io.github.geniusay.core.supertask.plugin.terminator;
 
 import io.github.geniusay.core.supertask.task.RobotWorker;
+import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.constants.TerminatorConstants;
@@ -26,8 +27,8 @@ public class GroupCountTerminator extends AbstractTerminator {
 
 
     @Override
-    public void init(TaskDO taskDO, Map<String, Object> params) {
-        super.init(taskDO, params);
+    public void init(Task task) {
+        super.init(task);
         this.targetCount = getParam(PARAM_TARGET_COUNT, Integer.class);
         this.nowCount = new AtomicInteger(0);
     }
@@ -46,27 +47,6 @@ public class GroupCountTerminator extends AbstractTerminator {
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
                 TaskNeedParams.ofKV(PARAM_TARGET_COUNT,10,"总计执行次数")
-        );
-    }
-
-    /**
-     * 返回 GroupCountTerminator 所需的参数
-     */
-    public static TaskNeedParams getTerminatorParams() {
-        TaskNeedParams targetCountParam = new TaskNeedParams(
-                PARAM_TARGET_COUNT,
-                Integer.class,
-                "任务一共要完成多少次",
-                true,
-                10
-        );
-
-        return new TaskNeedParams(
-                TERMINATOR_TYPE_GROUP_COUNT,
-                "总计数终结器参数",
-                true,
-                null,
-                List.of(targetCountParam)
         );
     }
 }

@@ -1,6 +1,7 @@
 package io.github.geniusay.core.supertask.plugin.terminator;
 
 import io.github.geniusay.core.supertask.task.RobotWorker;
+import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import io.github.geniusay.pojo.DO.TaskDO;
 import org.springframework.context.annotation.Scope;
@@ -27,8 +28,8 @@ public class CooldownTerminator extends AbstractTerminator {
     private long cooldownTime;
 
     @Override
-    public void init(TaskDO taskDO, Map<String, Object> params) {
-        super.init(taskDO, params);
+    public void init(Task task) {
+        super.init(task);
         int cooldownInSeconds = getParam(PARAM_COOLDOWN_TIME, Integer.class);
         this.cooldownTime = Math.max(cooldownInSeconds, 10L) * 1000L;
     }
@@ -59,29 +60,6 @@ public class CooldownTerminator extends AbstractTerminator {
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
                 TaskNeedParams.ofKV(PARAM_COOLDOWN_TIME,10L,"工作者冷却时间（秒）")
-        );
-    }
-
-    /**
-     * 返回 CooldownTerminator 所需的参数
-     */
-    public static TaskNeedParams getTerminatorParams() {
-        // 定义 cooldownTime 参数
-        TaskNeedParams cooldownTimeParam = new TaskNeedParams(
-                PARAM_COOLDOWN_TIME,
-                Long.class,
-                "工作者冷却时间（秒）",
-                true,
-                10L
-        );
-
-        // 返回 CooldownTerminator 的参数结构
-        return new TaskNeedParams(
-                COOL_DOWN_TYPE_TIMES,
-                "无限火力终结器",
-                true,
-                null,
-                List.of(cooldownTimeParam)
         );
     }
 }

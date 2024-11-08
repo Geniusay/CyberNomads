@@ -1,6 +1,7 @@
 package io.github.geniusay.core.supertask.plugin.terminator;
 
 import io.github.geniusay.core.supertask.task.RobotWorker;
+import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
@@ -14,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.github.geniusay.constants.TerminatorConstants.*;
+import static io.github.geniusay.core.supertask.config.PluginConstant.TERMINATOR_GROUP_NAME;
 
 /**
  * 任务计数器终止器
@@ -28,11 +30,11 @@ public class TimesTerminator extends AbstractTerminator {
 
 
     @Override
-    public void init(TaskDO taskDO, Map<String, Object> params) {
-        super.init(taskDO, params);
+    public void init(Task task) {
+        super.init(task);
         this.singleTimes = getParam(PARAM_TIMES, Integer.class);
         this.robotDoneTimes = new ConcurrentHashMap<>();
-        for (RobotDO robotDo : robotList) {
+        for (RobotDO robotDo : task.getRobots()) {
             robotDoneTimes.put(robotDo.getId(), new AtomicInteger(0));
         }
     }
@@ -59,26 +61,5 @@ public class TimesTerminator extends AbstractTerminator {
         );
     }
 
-    /**
-     * 返回 TimesTerminator 所需的参数
-     */
-    public static TaskNeedParams getTerminatorParams() {
-        // 定义 times 参数
-        TaskNeedParams singleTimesParam = new TaskNeedParams(
-                PARAM_TIMES,
-                Integer.class,
-                "每个机器人可以执行的任务次数",
-                true,
-                5
-        );
 
-        // 返回 TimesTerminator 的参数结构
-        return new TaskNeedParams(
-                TERMINATOR_TYPE_TIMES,
-                "计数终结器参数",
-                true,
-                null,  // 没有 selection
-                List.of(singleTimesParam)  // params 表示具体的参数
-        );
-    }
 }

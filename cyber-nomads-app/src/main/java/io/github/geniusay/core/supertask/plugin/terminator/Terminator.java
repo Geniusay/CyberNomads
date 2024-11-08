@@ -11,8 +11,4 @@ public interface Terminator extends TaskPlugin {
 
     boolean taskIsDone();
 
-    @Override
-    default String getPluginGroup() {
-        return TERMINATOR_GROUP_NAME;
-    }
 }

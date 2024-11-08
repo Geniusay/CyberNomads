@@ -1,7 +1,10 @@
 package io.github.geniusay.core.supertask.plugin;
 
+import io.github.geniusay.core.supertask.plugin.comment.AICommentGenerate;
+import io.github.geniusay.core.supertask.plugin.terminator.CooldownTerminator;
+import io.github.geniusay.core.supertask.plugin.terminator.GroupCountTerminator;
+import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
-import io.github.geniusay.pojo.DO.TaskDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -13,11 +16,10 @@ import java.util.stream.Collectors;
 @Component
 public class TaskPluginFactory {
 
-
     private ApplicationContext applicationContext;
 
     // plugin元数据，无实际初始化
-    private Map<String,BaseTaskPlugin> metaPluginInfo;
+    private final Map<String,BaseTaskPlugin> metaPluginInfo;
 
     @Autowired
     public TaskPluginFactory(ApplicationContext applicationContext){
@@ -57,24 +59,49 @@ public class TaskPluginFactory {
     /**
      * 根据插件类构建插件
      * @param plugin 插件类
-     * @param taskDO 任务
-     * @param paramsMap 参数
+     * @param task
      * @return 构建plugin
      * @param <T>
      */
-    public <T extends BaseTaskPlugin> T buildPlugin(Class<T> plugin, TaskDO taskDO, Map<String, Object> paramsMap){
+    public <T extends BaseTaskPlugin> T buildPlugin(Class<T> plugin, Task task){
         T bean = applicationContext.getBean(BaseTaskPlugin.getPluginName(plugin), plugin);
-        pluginInit(bean, taskDO, paramsMap);
+        pluginInit(bean, task);
+        return bean;
+    }
+
+    /**
+     * 根据插件类构建插件
+     * @param pluginName 插件类
+     * @param task 任务
+     * @return 构建plugin
+     * @param <T>
+     */
+    public <T extends BaseTaskPlugin> T buildPlugin(String pluginName, Task task){
+        T bean = (T) applicationContext.getBean(pluginName);
+        pluginInit(bean, task);
+        return bean;
+    }
+
+    /**
+     * 根据插件组，通过参数策略选择插件
+     * @param groupName 插件类
+     * @param task 任务
+     * @return 构建plugin
+     * @param <T>
+     */
+    public <T extends BaseTaskPlugin> T buildPluginWithGroup(String groupName, Task task){
+        String paramValue = (String)task.getParams().get(groupName);
+        T bean = (T) applicationContext.getBean(paramValue);
+        pluginInit(bean, task);
         return bean;
     }
 
     /**
      * 强制调用初始化参数
      * @param baseTaskPlugin
-     * @param taskDO
-     * @param paramsMap
+     * @param task
      */
-    private void pluginInit(BaseTaskPlugin baseTaskPlugin, TaskDO taskDO, Map<String, Object> paramsMap){
-       baseTaskPlugin.init(taskDO, paramsMap);
+    private void pluginInit(BaseTaskPlugin baseTaskPlugin, Task task){
+       baseTaskPlugin.init(task);
     }
 }

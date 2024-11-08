@@ -1,6 +1,7 @@
 package io.github.geniusay.core.supertask.task;
 
 import io.github.geniusay.core.supertask.config.TaskStatus;
+import io.github.geniusay.core.supertask.plugin.terminator.AbstractTerminator;
 import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.pojo.DO.LastWord;
 import io.github.geniusay.pojo.DO.RobotDO;
@@ -58,7 +59,7 @@ public class Task {
 
     private Logger logger;
 
-    private Terminator terminator;
+    private AbstractTerminator terminator;
 
     private List<TaskLogDO> loglist;
 
@@ -99,14 +100,13 @@ public class Task {
         return (LastWord) dataMap.get(key);
     }
 
-    private Task(List<RobotDO> robots, ConcurrentHashMap<String, Object> dataMap, List<TaskNeedParams> needParams, Map<String, Object> params, TaskExecute execute, LastWordHandler lastWord, Terminator terminator, List<TaskLogDO> loglist) {
+    private Task(List<RobotDO> robots, ConcurrentHashMap<String, Object> dataMap, List<TaskNeedParams> needParams, Map<String, Object> params, TaskExecute execute, LastWordHandler lastWord, List<TaskLogDO> loglist) {
         this.robots = robots;
         this.dataMap = dataMap;
         this.needParams = needParams;
         this.params = params;
         this.execute = execute;
         this.lastWord = lastWord;
-        this.terminator = terminator;
         this.loglist = loglist;
     }
 
@@ -131,7 +131,6 @@ public class Task {
 
         private TaskDO taskDO;
 
-        private Terminator terminator;
 
         private List<TaskLogDO> loglist = new ArrayList<>();
 
@@ -150,19 +149,13 @@ public class Task {
             return this;
         }
 
-        public Builder terminator(Terminator terminator){
-            this.terminator = terminator;
-            return this;
-        }
-
-
         public Builder needParams(List<TaskNeedParams> needParams){
             this.needParams = needParams;
             return this;
         }
 
         public Task build(){
-            Task task = new Task(this.robots, this.dataMap, this.needParams, this.params, this.execute, this.lastWord, this.terminator, this.loglist);
+            Task task = new Task(this.robots, this.dataMap, this.needParams, this.params, this.execute, this.lastWord, this.loglist);
             BeanUtils.copyProperties(taskDO, task);
             task.getRobots().addAll(taskDO.getRobotList()==null?new ArrayList<>():taskDO.getRobotList());
             task.setLogger(LoggerFactory.getLogger(task.getTaskName()));

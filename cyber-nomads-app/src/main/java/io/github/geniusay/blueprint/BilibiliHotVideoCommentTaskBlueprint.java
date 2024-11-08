@@ -4,9 +4,9 @@ import io.github.geniusay.core.actionflow.actor.BilibiliUserActor;
 import io.github.geniusay.core.actionflow.frame.ActionFlow;
 import io.github.geniusay.core.actionflow.logic.BilibiliCommentActionLogic;
 import io.github.geniusay.core.actionflow.receiver.BilibiliCommentReceiver;
-import io.github.geniusay.core.supertask.TerminatorFactory;
 import io.github.geniusay.core.supertask.plugin.TaskPluginFactory;
 import io.github.geniusay.core.supertask.plugin.comment.AICommentGenerate;
+import io.github.geniusay.core.supertask.plugin.comment.AbstractCommentGenerate;
 import io.github.geniusay.core.supertask.plugin.terminator.CooldownTerminator;
 import io.github.geniusay.core.supertask.plugin.video.GetHotVideoPlugin;
 import io.github.geniusay.core.supertask.task.*;
@@ -15,6 +15,7 @@ import io.github.geniusay.crawler.po.bilibili.VideoDetail;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import io.github.geniusay.pojo.DO.LastWord;
 import io.github.geniusay.utils.LastWordUtil;
+import io.github.geniusay.utils.ParamsUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.geniusay.constants.TerminatorConstants.*;
+import static io.github.geniusay.core.supertask.config.PluginConstant.COMMENT_GROUP_NAME;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.INFINITY_HOT_VIDEO_COMMENT;
 
@@ -54,7 +55,7 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
         // 获取任务参数
         Map<String, Object> params = task.getParams();
 
-        String comment = aiCommentGenerate.generateComment(params);
+        String comment = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task).generateComment();
         VideoDetail video = getHotVideoPlugin.getHandleVideoWithLimit(params, 1).get(0);
 
         ApiResponse<Boolean> response = new ActionFlow<>(new BilibiliUserActor(robot), new BilibiliCommentActionLogic(comment), new BilibiliCommentReceiver(video.getData())).execute();
@@ -84,6 +85,6 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
-        return new ArrayList<>(taskPluginFactory.pluginGroupParams(CooldownTerminator.class, AICommentGenerate.class));
+        return ParamsUtil.packageListParams(taskPluginFactory.pluginGroupParams(CooldownTerminator.class, AICommentGenerate.class));
     }
 }

@@ -10,10 +10,6 @@ import static io.github.geniusay.core.supertask.config.PluginConstant.COMMENT_GR
  * 评论内容生成插件接口
  */
 public interface CommentGenerate extends TaskPlugin {
-    String generateComment(Map<String, Object> params);
+    String generateComment();
 
-    @Override
-    default String getPluginGroup(){
-        return COMMENT_GROUP_NAME;
-    }
 }

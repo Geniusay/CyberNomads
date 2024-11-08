@@ -3,10 +3,7 @@ package io.github.geniusay.core.supertask.task;
 import com.alibaba.fastjson.JSON;
 import io.github.geniusay.core.exception.ServeException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 任务参数帮助列表
@@ -51,4 +48,6 @@ public interface ParamsHelper {
         String jsonStr = JSON.toJSONString(readyMap.get(name));
         return JSON.parseObject(jsonStr, clazz);
     }
+
+
 }

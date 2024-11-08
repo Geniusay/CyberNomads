@@ -10,8 +10,5 @@ import static io.github.geniusay.core.supertask.config.PluginConstant.GET_VIDEO_
 public interface GetHandleVideoPlugin<T> extends TaskPlugin {
     List<T> getHandleVideo(Map<String, Object> params);
 
-    @Override
-    default String getPluginGroup(){
-        return GET_VIDEO_GROUP_NAME;
-    }
+
 }

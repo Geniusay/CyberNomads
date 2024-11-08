@@ -4,13 +4,16 @@ import io.github.geniusay.core.actionflow.actor.BilibiliUserActor;
 import io.github.geniusay.core.actionflow.frame.ActionFlow;
 import io.github.geniusay.core.actionflow.logic.BilibiliLikeActionLogic;
 import io.github.geniusay.core.actionflow.receiver.BilibiliVideoReceiver;
-import io.github.geniusay.core.supertask.TerminatorFactory;
+import io.github.geniusay.core.supertask.plugin.TaskPluginFactory;
+import io.github.geniusay.core.supertask.plugin.terminator.GroupCountTerminator;
 import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.core.supertask.task.*;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
+import io.github.geniusay.utils.ParamsUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +24,11 @@ import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_LI
 @Slf4j
 @Component
 public class BilibiliVideoLikeTaskBlueprint extends AbstractTaskBlueprint {
+
+    @Resource
+    TaskPluginFactory taskPluginFactory;
+
+    private static final String VIDEO_ID = "videoId";
 
     @Override
     public String platform() {
@@ -55,10 +63,11 @@ public class BilibiliVideoLikeTaskBlueprint extends AbstractTaskBlueprint {
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
-        return List.of(
-                TerminatorFactory.getTerminatorParams(TERMINATOR_TYPE_GROUP_COUNT),
-                new TaskNeedParams("videoId", String.class, "需要点赞的单个视频ID (bvid 或 aid)", true, ""),
-                new TaskNeedParams("likeCount", Integer.class, "需要点赞的次数, 这个可以不用填，在终结器参数里指定: groupCount", false, 1)
-        );
+
+        List<TaskNeedParams> pluginParams = taskPluginFactory.pluginGroupParams(GroupCountTerminator.class);
+
+        List<TaskNeedParams> blueprintParams = List.of(TaskNeedParams.ofKV(VIDEO_ID, "", "需要点赞的单个视频ID (bvid 或 aid)"));
+
+        return ParamsUtil.packageListParams(pluginParams, blueprintParams);
     }
 }
