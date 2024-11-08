@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import io.github.geniusay.core.exception.ServeException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 任务参数帮助列表
@@ -28,6 +29,12 @@ public interface ParamsHelper {
         for (TaskNeedParams needParam : supplierNeedParams()) {
             String name = needParam.getName();
             Object value = paramMap.getOrDefault(name, needParam.getDefaultValue());
+            if (!needParam.getSelection().isEmpty()) {
+                Set<String> set = needParam.getSelection().stream().map(TaskNeedParams::getName).collect(Collectors.toSet());
+                if (set.contains((String)value)) {
+                    throw new ServeException(400, String.format("%s参数[%s]b不匹配", name, value));
+                }
+            }
             if (Objects.isNull(value)&&needParam.isRequired()) {
                 throw new ServeException(400, String.format("%s参数错误", name));
             }else{

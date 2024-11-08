@@ -1,15 +1,11 @@
 package io.github.geniusay.core.supertask.plugin;
 
-import io.github.geniusay.core.supertask.plugin.comment.AICommentGenerate;
-import io.github.geniusay.core.supertask.plugin.terminator.CooldownTerminator;
-import io.github.geniusay.core.supertask.plugin.terminator.GroupCountTerminator;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 

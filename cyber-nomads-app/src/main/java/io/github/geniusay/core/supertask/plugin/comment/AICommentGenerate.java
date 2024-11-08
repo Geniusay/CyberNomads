@@ -1,5 +1,6 @@
 package io.github.geniusay.core.supertask.plugin.comment;
 
+import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import io.github.geniusay.utils.AIGenerate.AIGenerateUtil;
 import org.springframework.context.annotation.Scope;
@@ -18,30 +19,37 @@ import static io.github.geniusay.core.supertask.config.PluginConstant.AI_COMMENT
  * @Author welsir
  * @Date 2024/11/4 1:18
  */
+@Scope("prototype")
 @Component(AI_COMMENT_GENERATE_PLUGIN)
 public class AICommentGenerate extends AbstractCommentGenerate implements CommentGenerate {
     @Resource
     AIGenerateUtil generateUtil;
 
+    private String preText;
+
+    private Integer textCount;
+
+    private String slogan;
+
+    @Override
+    public void init(Task task) {
+        super.init(task);
+        preText = getValue(this.pluginParams, AI_PRE_TEXT, String.class);
+        textCount = getValue(this.pluginParams, AI_COUNT_NUM, Integer.class);
+        slogan = getValue(this.pluginParams, SLOGAN, String.class);
+    }
 
     @Override
     public String generateComment() {
-        Map<String, Object> params = this.pluginParams;
-        String aiPreText = getValue(params, AI_PRE_TEXT, String.class);
-        if (getValue(params, AI_START, Boolean.class)) {
-            Integer aiCountNum = getValue(params, AI_COUNT_NUM, Integer.class);
-            return generateUtil.textGenerateAndReturnContent(aiPreText, aiCountNum, getValue(params, SLOGAN, String.class));
-        }
-        return aiPreText;
+        return generateUtil.textGenerateAndReturnContent(preText, textCount, slogan);
     }
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
-                new TaskNeedParams(AI_START, Boolean.class, "是否开启AI生成"),
-                new TaskNeedParams(AI_PRE_TEXT, String.class, "文本提示词前缀"),
-                new TaskNeedParams(AI_COUNT_NUM, Integer.class, "字数限制"),
-                new TaskNeedParams(SLOGAN, String.class, "slogan标语，结尾处另起一行追加", false, "")
+            TaskNeedParams.ofK(AI_PRE_TEXT, String.class, "文本提示词前缀"),
+            TaskNeedParams.ofKV(AI_COUNT_NUM, 50, "生成字数上限"),
+            TaskNeedParams.ofK(SLOGAN, String.class, "Slogan标语在结尾处追加")
         );
     }
 

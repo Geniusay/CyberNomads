@@ -36,9 +36,6 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
     GetHotVideoPlugin getHotVideoPlugin;
 
     @Resource
-    AICommentGenerate aiCommentGenerate;
-
-    @Resource
     TaskPluginFactory taskPluginFactory;
     @Override
     public String platform() {
