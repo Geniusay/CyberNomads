@@ -1,6 +1,7 @@
 package io.github.geniusay.core.supertask.task;
 
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
  * 提供给前端要输入的字段
  */
 @Data
+@Builder
 public class TaskNeedParams {
 
     private String name;
@@ -58,5 +60,47 @@ public class TaskNeedParams {
         this.required = required;
         this.selection = selection == null ? new ArrayList<>() : selection;
         this.params = params == null ? new ArrayList<>() : params;
+    }
+
+    public static TaskNeedParams ofKV(String name, Object defaultValue, String desc){
+        return TaskNeedParams.builder()
+                .name(name)
+                .defaultValue(defaultValue)
+                .required(true)
+                .desc(desc)
+                .type(defaultValue.getClass())
+                .build();
+    }
+
+    public static TaskNeedParams ofK(String name, Class<?> type, String desc){
+        return TaskNeedParams.builder()
+                .name(name)
+                .defaultValue(null)
+                .required(false)
+                .desc(desc)
+                .type(type)
+                .build();
+    }
+
+    public static TaskNeedParams ofSelection(String name, String defaultValue, String desc, List<TaskNeedParams> selections){
+        return TaskNeedParams.builder()
+                .name(name)
+                .defaultValue(defaultValue)
+                .required(true)
+                .desc(desc)
+                .type(String.class)
+                .selection(selections)
+                .build();
+    }
+
+    public static TaskNeedParams ofParams(String name, String desc, List<TaskNeedParams> params){
+        return TaskNeedParams.builder()
+                .name(name)
+                .defaultValue(null)
+                .required(false)
+                .desc(desc)
+                .type(String.class)
+                .params(params)
+                .build();
     }
 }

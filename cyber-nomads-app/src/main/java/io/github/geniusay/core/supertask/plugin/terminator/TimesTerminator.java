@@ -5,27 +5,31 @@ import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.constants.TerminatorConstants;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static io.github.geniusay.constants.TerminatorConstants.PARAM_TIMES;
-import static io.github.geniusay.constants.TerminatorConstants.TERMINATOR_TYPE_TIMES;
+import static io.github.geniusay.constants.TerminatorConstants.*;
 
 /**
  * 任务计数器终止器
  * ept：一个robot可以做{times}次任务
  */
+@Scope("prototype")
+@Component(TERMINATOR_TYPE_TIMES)
 public class TimesTerminator extends AbstractTerminator {
 
-    private final int singleTimes;
-    private final Map<Long, AtomicInteger> robotDoneTimes;
+    private int singleTimes;
+    private Map<Long, AtomicInteger> robotDoneTimes;
 
-    public TimesTerminator(TaskDO taskDO, Map<String, Object> params) {
-        super(taskDO, params);
-        // 从 params 中提取 times 参数
+
+    @Override
+    public void init(TaskDO taskDO, Map<String, Object> params) {
+        super.init(taskDO, params);
         this.singleTimes = getParam(PARAM_TIMES, Integer.class);
         this.robotDoneTimes = new ConcurrentHashMap<>();
         for (RobotDO robotDo : robotList) {
@@ -46,6 +50,13 @@ public class TimesTerminator extends AbstractTerminator {
             }
         }
         return true;
+    }
+
+    @Override
+    public List<TaskNeedParams> supplierNeedParams() {
+        return List.of(
+                TaskNeedParams.ofKV(PARAM_TIMES, 5, "游民执行次数")
+        );
     }
 
     /**

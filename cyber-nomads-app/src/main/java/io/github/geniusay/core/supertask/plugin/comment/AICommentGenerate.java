@@ -2,6 +2,7 @@ package io.github.geniusay.core.supertask.plugin.comment;
 
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import io.github.geniusay.utils.AIGenerate.AIGenerateUtil;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.github.geniusay.constants.PluginConstant.*;
+import static io.github.geniusay.core.supertask.config.PluginConstant.AI_COMMENT_GENERATE_PLUGIN;
 
 
 /**
@@ -16,10 +18,11 @@ import static io.github.geniusay.constants.PluginConstant.*;
  * @Author welsir
  * @Date 2024/11/4 1:18
  */
-@Component
-public class AICommentGenerate implements CommentGenerate {
+@Component(AI_COMMENT_GENERATE_PLUGIN)
+public class AICommentGenerate extends AbstractCommentGenerate implements CommentGenerate {
     @Resource
     AIGenerateUtil generateUtil;
+
 
     @Override
     public String generateComment(Map<String, Object> params) {
@@ -40,4 +43,5 @@ public class AICommentGenerate implements CommentGenerate {
                 new TaskNeedParams(SLOGAN, String.class, "slogan标语，结尾处另起一行追加", false, "")
         );
     }
+
 }

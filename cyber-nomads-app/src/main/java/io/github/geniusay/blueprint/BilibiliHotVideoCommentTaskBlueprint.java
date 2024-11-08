@@ -5,7 +5,9 @@ import io.github.geniusay.core.actionflow.frame.ActionFlow;
 import io.github.geniusay.core.actionflow.logic.BilibiliCommentActionLogic;
 import io.github.geniusay.core.actionflow.receiver.BilibiliCommentReceiver;
 import io.github.geniusay.core.supertask.TerminatorFactory;
+import io.github.geniusay.core.supertask.plugin.TaskPluginFactory;
 import io.github.geniusay.core.supertask.plugin.comment.AICommentGenerate;
+import io.github.geniusay.core.supertask.plugin.terminator.CooldownTerminator;
 import io.github.geniusay.core.supertask.plugin.video.GetHotVideoPlugin;
 import io.github.geniusay.core.supertask.task.*;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
@@ -17,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +37,8 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
     @Resource
     AICommentGenerate aiCommentGenerate;
 
+    @Resource
+    TaskPluginFactory taskPluginFactory;
     @Override
     public String platform() {
         return BILIBILI;
@@ -79,9 +84,6 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
-        return List.of(
-                TerminatorFactory.getTerminatorParams(COOL_DOWN_TYPE_TIMES),
-                new TaskNeedParams("AiPrams", "ai相关参数", false, null,aiCommentGenerate.supplierNeedParams())
-        );
+        return new ArrayList<>(taskPluginFactory.pluginGroupParams(CooldownTerminator.class, AICommentGenerate.class));
     }
 }

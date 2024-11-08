@@ -37,11 +37,11 @@ public class TerminatorFactory {
 
             switch (terminatorType) {
                 case TERMINATOR_TYPE_GROUP_COUNT:
-                    return new GroupCountTerminator(taskDO, params);
+                    return new GroupCountTerminator();
                 case TERMINATOR_TYPE_TIMES:
-                    return new TimesTerminator(taskDO, params);
+                    return new TimesTerminator();
                 case COOL_DOWN_TYPE_TIMES:
-                    return new CooldownTerminator(taskDO, params);
+                    return new CooldownTerminator();
                 default:
                     throw new RuntimeException("不支持的终结器类型: " + terminatorType);
             }

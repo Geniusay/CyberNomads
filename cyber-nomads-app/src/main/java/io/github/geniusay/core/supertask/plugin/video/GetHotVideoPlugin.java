@@ -3,7 +3,6 @@ package io.github.geniusay.core.supertask.plugin.video;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.github.geniusay.constants.VideoCacheConstants;
-import io.github.geniusay.core.supertask.plugin.comment.GetHandleVideo;
 import io.github.geniusay.crawler.api.bilibili.BilibiliHotApi;
 import io.github.geniusay.crawler.po.bilibili.VideoDetail;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
@@ -16,10 +15,11 @@ import java.util.List;
 import java.util.Map;
 
 import static io.github.geniusay.constants.VideoCacheConstants.DEFAULT_CACHE_DURATION_MINUTES;
+import static io.github.geniusay.core.supertask.config.PluginConstant.HOT_VIDEO_PLUGIN;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
 @Component
-public class GetHotVideoPlugin implements GetHandleVideo<VideoDetail> {
+public class GetHotVideoPlugin extends AbstractGetVideoPlugin<VideoDetail> {
 
     // Caffeine缓存实例
     private Cache<String, List<VideoDetail>> hotRankingVideosCache;
@@ -34,6 +34,7 @@ public class GetHotVideoPlugin implements GetHandleVideo<VideoDetail> {
         hotRankingVideosCache = createCache();
         popularVideosCache = createCache();
     }
+
 
     public List<VideoDetail> getHandleVideoWithLimit(Map<String, Object> params, int limit) {
         // 获取视频列表
@@ -129,4 +130,5 @@ public class GetHotVideoPlugin implements GetHandleVideo<VideoDetail> {
                 new TaskNeedParams("ps", Integer.class, "每页项数", false, VideoCacheConstants.DEFAULT_PAGE_SIZE)
         );
     }
+
 }
