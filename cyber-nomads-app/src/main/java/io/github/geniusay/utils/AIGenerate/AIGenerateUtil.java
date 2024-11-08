@@ -2,6 +2,7 @@ package io.github.geniusay.utils.AIGenerate;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +24,7 @@ public class AIGenerateUtil {
 
     public String textGenerateAndReturnContent(String resource,Integer num,String slogan){
         String content = AIGenerate.sendAndReturnString(resource, apiKey, num);
-        content+="\n"+slogan;
+        content+="\n"+ (StringUtil.isNullOrEmpty(slogan)?"":slogan);
         return content;
     }
     private static Integer parseToken(String res){

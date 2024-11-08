@@ -32,16 +32,17 @@ public interface ParamsHelper {
             if (Objects.isNull(value)&&needParam.isRequired()) {
                 throw new ServeException(400, String.format("%s参数错误", name));
             }
-            if(!Objects.isNull(value)&&!needParam.getType().equals(value.getClass())){
-                throw new ServeException(400, String.format("%s参数类型错误", name));
-            }
             if (!needParam.getSelection().isEmpty()) {
                 Set<String> set = needParam.getSelection().stream().map(TaskNeedParams::getName).collect(Collectors.toSet());
                 if (set.contains((String)value)) {
                     throw new ServeException(400, String.format("%s参数[%s]不匹配", name, value));
                 }
             }
-            pluginParams.put(name, value);
+            try {
+                pluginParams.put(name, Optional.ofNullable(value).map((var->getValue(paramMap, name, needParam.getType()))).orElse(null));
+            }catch (Exception e){
+                throw new ServeException(400, String.format("%s参数类型错误", name));
+            }
         }
         return pluginParams;
     }

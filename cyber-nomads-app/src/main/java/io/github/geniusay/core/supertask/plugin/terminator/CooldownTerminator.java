@@ -30,8 +30,7 @@ public class CooldownTerminator extends AbstractTerminator {
     @Override
     public void init(Task task) {
         super.init(task);
-        int cooldownInSeconds = getParam(PARAM_COOLDOWN_TIME, Integer.class);
-        this.cooldownTime = Math.max(cooldownInSeconds, 10L) * 1000L;
+        this.cooldownTime = Math.max(getParam(PARAM_COOLDOWN_TIME, Long.class), 10L) * 1000L;
     }
 
     @Override
