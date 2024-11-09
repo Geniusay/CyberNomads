@@ -304,7 +304,7 @@ public class ITaskService implements TaskService {
             throw new ServeException("任务不存在或无权删除此任务: " + taskId);
         }
 
-        if (task.getTaskStatus() == TaskStatus.RUNNING || task.getTaskStatus() == TaskStatus.EXCEPTION) {
+        if (task.inStatusList(TaskStatus.RUNNING, TaskStatus.EXCEPTION)) {
             throw new ServeException("任务当前状态不允许删除（进行中或异常状态下的任务不能删除）");
         }
 
