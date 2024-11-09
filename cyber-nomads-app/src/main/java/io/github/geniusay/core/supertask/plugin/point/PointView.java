@@ -7,8 +7,9 @@ import io.github.geniusay.core.supertask.plugin.TaskPlugin;
  * @Author welsir
  * @Date 2024/11/4 21:18
  */
-public interface PointInterface extends TaskPlugin {
 
+public interface PointView extends TaskPlugin {
 
+    Integer showPoint();
 
 }
