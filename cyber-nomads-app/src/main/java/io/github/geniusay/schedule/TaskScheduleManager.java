@@ -52,8 +52,8 @@ public class TaskScheduleManager {
                 Task task = taskFactory.buildTask(taskDO, taskDO.getPlatform(), taskDO.getTaskType());
                 WORLD_TASK.put(String.valueOf(taskDO.getId()), task);
                 List<RobotDO> robots = task.getRobots();
-                robots.stream().forEach((robotDO)->WORLD_ROBOTS.put(robotDO.getId(),new RobotWorker(robotDO)));
-                robots.stream().forEach(robot -> {
+                robots.forEach((robotDO)->WORLD_ROBOTS.put(robotDO.getId(),new RobotWorker(robotDO)));
+                robots.forEach(robot -> {
                             Map<String, Task> taskMap = WORLD_ROBOTS_TASK.getOrDefault(robot.getId(), new ConcurrentHashMap<>());
                             taskMap.put(String.valueOf(taskDO.getId()), task);
                             WORLD_ROBOTS_TASK.put(robot.getId(), taskMap);
@@ -98,10 +98,12 @@ public class TaskScheduleManager {
 
     public void removeWorkerTask(String taskId){
         Task task = WORLD_TASK.remove(taskId);
-        task.getRobots().forEach((taskDO)->{
-            WORLD_ROBOTS_TASK.get(taskDO.getId()).remove(taskId);
-        });
-        EVENT_PUBLISHER.removeTask(task);
+        if(!Objects.isNull(task)){
+            task.getRobots().forEach((taskDO)->{
+                WORLD_ROBOTS_TASK.get(taskDO.getId()).remove(taskId);
+            });
+            EVENT_PUBLISHER.removeTask(task);
+        }
     }
 
     public Map<Long,RobotWorker> getAllRobot(){
