@@ -21,7 +21,6 @@ public class UpdateTaskDTO {
     @Length(max = 20, message = "平台名称不能超过20个字符")
     private String platform;
 
-    @Length(max = 20, message = "任务类型不能超过20个字符")
     private String taskType;
 
     private Map<String, Object> params;

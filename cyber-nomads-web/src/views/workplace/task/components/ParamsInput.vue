@@ -65,8 +65,6 @@ onMounted(()=>{
     return (b.selection.length == 0 ? 1 : 0) - (a.selection.length == 0 ? 1 : 0);
   })
 
-  console.log(props.params)
-
   props.params.forEach((param)=>{
     if(param.required&&!taskStore.taskForm.params[param.name]){
       taskStore.taskForm.params[param.name] = param.defaultValue
@@ -80,7 +78,7 @@ const childParams = (paramName, childParamsList) =>{
 
 const computeInputWidth = (param, index) =>{
   if(param.inputType===InputType.input){
-    return index == getInputParamsNums()-1?12:6;
+    return (getInputParamsNums()%2==0)||(index < props.params.length-1)?6:12;
   }else{
     return 12
   }

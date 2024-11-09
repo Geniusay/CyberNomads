@@ -19,7 +19,6 @@ public class CreateTaskDTO {
     private String platform;
 
     @NotBlank(message = "任务类型不能为空")
-    @Length(max = 20, message = "任务类型不能超过20个字符")
     private String taskType;
 
     private Map<String, Object> params;

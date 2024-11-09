@@ -131,6 +131,7 @@ onMounted(async ()=>{
 
 const submit = async () =>{
   const taskForm = {...taskStore.taskForm}
+  console.log(taskForm)
   if(!taskStore.isEdit){
     await taskStore.createTask(taskForm)
   }else{
