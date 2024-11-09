@@ -1,3 +1,5 @@
+import {Parameter} from "@/views/workplace/task/taskTypes";
+
 export const status = {
   pending:{
     icon: "mdi-alert-circle",
@@ -61,7 +63,7 @@ export const isStatusIn = (itemStatus: string, statuses: string[]): boolean => {
 
 export const buttonStatus = {
   ready:{
-    icon: "mdi-play",
+    icon: "mdi-clipboard-text-play",
     color: "green",
     next: "start",
     nextMsg:"启动任务"
@@ -81,7 +83,7 @@ export const buttonStatus = {
   reset:{
     icon: "mdi-reload",
     color: "grey",
-    next: "reset",
+    next: "start",
     nextMsg:"重置任务"
   },
 }
@@ -101,6 +103,49 @@ export const getButtonStatus =(itemStatus: string)=> {
   }
 }
 
+
 export const images = [
-  "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8YXJ0aWNsZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=600&q=60"
+  "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task1.png",
+  "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task2.png",
+  "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task3.png",
+  "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task4.png",
+  "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task5.png",
+  "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task6.png",
+  "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task7.png",
 ]
+
+function validateParam(name: string, value: any, param: Parameter): string | null {
+  // 检查参数类型是否正确
+  if (param.required && !value) {
+    return `${name}参数是必需的`;
+  }
+
+  return null;
+}
+
+export function validateAndGetParams(
+  paramMap: Record<string, any>,
+  params: Parameter[]
+): string | null {
+  for (const needParam of params) {
+    const name = needParam.name;
+    const value = paramMap[name] !== undefined ? paramMap[name] : needParam.defaultValue;
+
+    // 若为必填或存在值，则校验
+    if (needParam.required || value !== null) {
+      const errorMsg = validateParam(needParam.desc, value, needParam);
+      if (errorMsg) return errorMsg;
+    }
+
+    // 递归处理嵌套的参数
+    if (needParam.params.length > 0) {
+      const nestedErrorMsg = validateAndGetParams(paramMap, needParam.params);
+      if (nestedErrorMsg) return nestedErrorMsg;
+    } else if (needParam.selection.length > 0) {
+      const selectionErrorMsg = validateAndGetParams(paramMap, needParam.selection);
+      if (selectionErrorMsg) return selectionErrorMsg;
+    }
+  }
+
+  return null;
+}

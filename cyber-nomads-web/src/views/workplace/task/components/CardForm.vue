@@ -1,8 +1,11 @@
 <template>
-  <v-card
-    prepend-icon="mdi-account"
-    :title="taskStore.getIsEdit?'Edit Task':'Add Task'"
-  >
+  <v-card>
+    <v-card-title :class="'pa-4 bg-'+cardHeadConfig.color">
+          <span class="title text-white">
+            <v-icon class="mr-2">mdi-script-text</v-icon>
+           {{cardHeadConfig.title}}</span>
+    </v-card-title>
+
     <v-card-text>
       <v-row dense>
         <v-col
@@ -14,6 +17,7 @@
             v-model="taskStore.getTaskForm.taskName"
             variant="outlined"
             :rules="[required(taskStore.getTaskForm.taskName, true)]"
+            :disabled="taskStore.viewMode"
             required
           ></v-text-field>
         </v-col>
@@ -32,25 +36,43 @@
             item-title="platformCnZh"
             item-value="platform"
             variant="outlined"
-          ></v-select>
+            :disabled="taskStore.viewMode"
+          >
+          </v-select>
         </v-col>
 
         <v-col
           cols="12"
           sm="12"
         >
-          <v-select
+          <v-autocomplete
             v-model="taskStore.getTaskForm.robotIds"
+            :disabled="taskStore.viewMode"
             :items="robotList"
             label="Robot"
             item-title="nickname"
             item-value="id"
-            chips
-            multiple
             variant="outlined"
-          ></v-select>
-        </v-col>
+            chips
+            closable-chips
+            multiple
+          >
+            <template v-slot:chip="{ props, item }">
+              <v-chip
+                v-bind="props"
+                :text="item.raw.nickname"
+              ></v-chip>
+            </template>
 
+            <template v-slot:item="{ props, item }">
+              <v-list-item
+                v-bind="props"
+                :subtitle="'平台：'+item.raw.plat"
+                :title="item.raw.nickname"
+              ></v-list-item>
+            </template>
+          </v-autocomplete>
+        </v-col>
 
         <v-col
           cols="12"
@@ -66,6 +88,7 @@
             item-title="taskTypeValue"
             item-value="taskTypeKey"
             variant="outlined"
+            :disabled="taskStore.viewMode"
           ></v-select>
         </v-col>
 
@@ -91,9 +114,12 @@
       ></v-btn>
 
       <v-btn
+        v-if="!taskStore.viewMode"
         color="success"
         text="Save"
         variant="tonal"
+        :disabled="loading"
+        :loading="loading"
         @click="submit()"
       ></v-btn>
     </v-card-actions>
@@ -106,12 +132,11 @@ import { useTaskStore,snackbarStore } from "@/views/workplace/task/taskStore"
 import { useCommonStore } from "@/stores/commonStore";
 import { PlatformVO } from "@/types/platformType";
 import { onMounted } from "vue";
-import {createTask, updateTask} from "@/api/taskApi"
-import { defaultValue } from "@/views/workplace/task/taskTypes"
-import { TaskVO } from "@/views/workplace/task/taskTypes"
-import {RobotVO} from "@/views/workplace/robot/robotTypes";
-
+import {defaultValue, TaskForm} from "@/views/workplace/task/taskTypes"
+import { RobotVO } from "@/views/workplace/robot/robotTypes";
 import {useRobotStore} from "@/views/workplace/robot/robotStore";
+import {validateAndReturn, Validators} from "@/utils/validate";
+import {validateAndGetParams} from "@/views/workplace/task/taskListConfig";
 
 const commonStore = useCommonStore();
 const taskStore = useTaskStore()
@@ -119,6 +144,23 @@ const platformList = commonStore.getPlatformList as PlatformVO[]
 const taskTypes = ref([])
 const robotList = ref<RobotVO[]>([])
 const robotStore = useRobotStore();
+const loading = ref(false)
+const cardHeadConfig = ref({
+  title:"",
+  color:"green"
+})
+
+const taskFormValidator: Validators<TaskForm> = {
+  taskId: (value)=>value?null:"不正确的任务ID",
+  platform: (value) => platformList.some(platform=>platform.platform === value) ? null : '请选择正确的平台',
+  taskName: (value) => value ? null : '请输入正确的任务名',
+  taskType: (value) => value ? null : '请选择正确的任务类型',
+  params:(value) => {
+    const msg = validateAndGetParams(value, childParams(taskStore.taskForm.taskType)?.params)
+    return !msg?null:msg
+  },
+  robotIds:(value) => null,
+};
 
 onMounted(async ()=>{
   const platform = taskStore.taskForm.platform
@@ -127,19 +169,35 @@ onMounted(async ()=>{
     taskTypes.value = taskStore.getPlatformTaskTypes(platform)
   }
   robotList.value = robotStore.getRobotList
+  initHeadConfig()
 })
+
+const initHeadConfig = () =>{
+  if(taskStore.viewMode){
+    cardHeadConfig.value = {title:"Task Detail", color:"grey"}
+  }else{
+    cardHeadConfig.value = taskStore.getIsEdit?{title:'Edit Task', color:"orange"} :{title:'Add Task', color:"green"}
+  }
+
+}
 
 const submit = async () =>{
   const taskForm = {...taskStore.taskForm}
-  console.log(taskForm)
+  const error = validateAndReturn(taskStore.isEdit?["taskName","platform","taskType","taskId","params"]:["taskName","platform","taskType","params"], taskForm, taskFormValidator)
+  if(!!error){
+    snackbarStore.showErrorMessage(error)
+    return
+  }
+  loading.value = true
   if(!taskStore.isEdit){
     await taskStore.createTask(taskForm)
   }else{
     await taskStore.updateTask(taskForm)
   }
-
+  loading.value = false
   taskStore.taskForm = {...defaultValue.defaultTaskForm}
   taskStore.closeDialog()
+
 }
 
 const close = () =>{

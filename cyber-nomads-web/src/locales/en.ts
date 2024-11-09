@@ -19,7 +19,8 @@ export default {
       exception:"exception",
       taskName:"Task Name",
       platform:"Platform",
-      taskType:"Task Type"
+      taskType:"Task Type",
+      log:"Robot Log"
     }
   },
   common: {

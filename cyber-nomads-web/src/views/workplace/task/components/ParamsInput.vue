@@ -11,6 +11,7 @@
         v-model="taskStore.taskForm.params[param.name]"
         :rules="[required(taskStore.taskForm.params[param.name], param.required)]"
         variant="outlined"
+        :disabled="taskStore.viewMode"
       ></v-text-field>
 
       <v-textarea
@@ -18,7 +19,9 @@
         :label="param.desc"
         v-model="taskStore.taskForm.params[param.name]"
         :rules="[required(taskStore.taskForm.params[param.name], param.required)]"
-        variant="outlined">
+        variant="outlined"
+        :disabled="taskStore.viewMode"
+      >
       </v-textarea>
 
       <v-select
@@ -31,6 +34,7 @@
         item-title="desc"
         item-value="name"
         variant="outlined"
+        :disabled="taskStore.viewMode"
       ></v-select>
 
       <!-- 如果 childParams 不为空，递归调用 ParamInput 组件 -->

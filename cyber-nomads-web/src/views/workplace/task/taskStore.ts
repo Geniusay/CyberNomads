@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { useSnackbarStore } from "@/stores/snackbarStore";
 import {getTaskList, getPlatformTaskType, createTask, updateTask, deleteTask, changeTaskStatus} from "@/api/taskApi";
 import {defaultValue, TaskForm, TaskType, TaskVO} from "@/views/workplace/task/taskTypes";
-
+import {status} from "@/views/workplace/task/taskListConfig"
 
 export const snackbarStore = useSnackbarStore();
 export const useTaskStore = defineStore({
@@ -12,6 +12,7 @@ export const useTaskStore = defineStore({
     taskList: ref<TaskVO[]>([]),
     taskDialog: ref(false),
     isEdit: ref(false),
+    viewMode: ref(false),
     platformTaskTypeMap:ref<Record<string, TaskType[]>>({}),
     taskForm: ref<TaskForm>({...defaultValue.defaultTaskForm})
   }),
@@ -45,9 +46,15 @@ export const useTaskStore = defineStore({
       })
     },
     openDialog(){
+      this.viewMode = false;
+      this.taskDialog = true
+    },
+    openViewDialog(){
+      this.viewMode = true;
       this.taskDialog = true
     },
     closeDialog(){
+      this.viewMode = false;
       this.taskDialog = false
     },
     changeDialogMode(isEdit: boolean){
@@ -98,6 +105,6 @@ export const useTaskStore = defineStore({
       }).catch(error=>{
         snackbarStore.showErrorMessage("任务状态改变失败:"+error.message)
       })
-    }
+    },
   }
 })

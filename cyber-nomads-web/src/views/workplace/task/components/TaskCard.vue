@@ -4,11 +4,13 @@ import {status, buttonStatus, images, isStatusIn, getButtonStatus} from "@/views
 import { Icon } from "@iconify/vue";
 import { useTaskStore,snackbarStore } from "@/views/workplace/task/taskStore"
 
+const loading = ref(false)
 const taskStore = useTaskStore()
+
 interface Props {
   item: TaskVO;
+  index: number
 }
-
 
 const props = defineProps<Props>();
 const button = ref(getButtonStatus(props.item.taskStatus))
@@ -16,7 +18,17 @@ const button = ref(getButtonStatus(props.item.taskStatus))
 const task = ref<TaskVO>({} as TaskVO)
 task.value = {...props.item}
 
+const openViewDialog = () =>{
+  taskStore.taskForm = mapTaskVOToTaskForm(task.value)
+  taskStore.openViewDialog()
+}
+
+const getImg = () =>{
+  return images[props.index%(images.length-1)]
+}
+
 const openEditDialog = () =>{
+
   if(isStatusIn(task.value.taskStatus,[status.exception.value, status.running.value])){
     snackbarStore.showWarningMessage("任务正在运行中，请暂停后编辑")
     return
@@ -27,11 +39,13 @@ const openEditDialog = () =>{
 }
 
 const deleteTaskReq = async () =>{
+  loading.value = true
   if(isStatusIn(task.value.taskStatus,[status.exception.value, status.running.value])){
     snackbarStore.showErrorMessage("任务正在运行中，无法删除")
     deleteDialog.value = false;
     return
   }
+  loading.value = false
   await taskStore.deleteTask(props.item)
   deleteDialog.value = false;
 }
@@ -41,23 +55,47 @@ const deleteDialog = ref(false)
 const openDeleteDialog =()=>{
   deleteDialog.value = true;
 }
+
 const changeTaskDialog = ref(false)
 
 const openChangeTaskStatusDialog = async()=>{
   changeTaskDialog.value = true;
 }
 
-const changeTaskStatus = async() =>{
+const changeTaskStatusByButton = async() =>{
   const currentStatus = status[task.value.taskStatus]
-  await taskStore.changeStatus(task.value, currentStatus.next, button.value.next, button.value.nextMsg)
-  button.value = getButtonStatus(task.value.taskStatus)
+  await changeTaskStatus(task.value, currentStatus.next, button.value.next, button.value.nextMsg)
+}
+
+const changeTaskStatus = async(task, next, action, msg)=>{
+  loading.value = true
+  await taskStore.changeStatus(task, next, action, msg)
+  loading.value = false
+  button.value = getButtonStatus(task.taskStatus)
   changeTaskDialog.value = false;
 }
+
+const options = [
+  {
+    icon:"flat-color-icons:settings",
+    name:"Setting",
+    handler:openViewDialog
+  },
+  {
+    icon:"flat-color-icons:support",
+    name:"Edit",
+    handler:openEditDialog
+  },
+  {
+    icon:"flat-color-icons:full-trash",
+    name:"Delete",
+    handler:openDeleteDialog
+  }
+]
 
 </script>
 
 <template>
-
   <v-dialog v-model="deleteDialog" max-width="700">
     <v-card>
       <v-card-title class="pa-4 bg-red">
@@ -76,6 +114,8 @@ const changeTaskStatus = async() =>{
         <v-btn
           color="red"
           variant="flat"
+          :disabled="loading"
+          :loading="loading"
           @click="deleteTaskReq()"
         >Delete</v-btn
         >
@@ -88,7 +128,8 @@ const changeTaskStatus = async() =>{
       <v-card-title class="pa-4 bg-pink">
           <span class="title text-white">
             <v-icon class="mr-2">mdi-cog</v-icon>
-           {{button.nextMsg}}</span>
+           {{button.nextMsg}}
+          </span>
       </v-card-title>
 
       <v-card-text>
@@ -101,17 +142,40 @@ const changeTaskStatus = async() =>{
         <v-btn
           color="green"
           variant="flat"
-          @click="changeTaskStatus()"
+          :disabled="loading"
+          :loading="loading"
+          @click="changeTaskStatusByButton()"
         >Confirm</v-btn
         >
       </v-card-actions>
     </v-card>
   </v-dialog>
+
   <v-card max-width="480" class="mx-auto">
-    <v-img cover src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8YXJ0aWNsZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=600&q=60" height="200px">
+    <v-img cover :src="getImg()" height="200px">
       <v-toolbar color="transparent">
         <template v-slot:prepend>
-          <v-btn icon="$menu"></v-btn>
+          <v-menu>
+            <template v-slot:activator="{ props }">
+              <v-btn icon="$menu" v-bind="props"></v-btn>
+            </template>
+
+            <v-list density="compact">
+              <v-list-item @click="openDeleteDialog()">
+                <v-list-item-title class="d-inline-flex align-center">
+                  <Icon
+                    icon="flat-color-icons:sms"
+                    :rotate="2"
+                    :horizontalFlip="true"
+                    :verticalFlip="true"
+                    :inline="true"
+                    class="mr-1"
+                  />
+                  {{$t(`workplace.task.log`)}}</v-list-item-title
+                >
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </template>
 
         <v-menu>
@@ -120,30 +184,17 @@ const changeTaskStatus = async() =>{
           </template>
 
           <v-list density="compact">
-            <v-list-item @click="openEditDialog()">
+            <v-list-item v-for="option in options" @click="option.handler()">
               <v-list-item-title class="d-inline-flex align-center">
                 <Icon
-                  icon="flat-color-icons:support"
+                  :icon="option.icon"
                   :rotate="2"
                   :horizontalFlip="true"
                   :verticalFlip="true"
                   class="mr-1"
                 />
-                <span> Edit</span>
+                <span> {{ option.name }}</span>
               </v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="openDeleteDialog()">
-              <v-list-item-title class="d-inline-flex align-center">
-                <Icon
-                  icon="flat-color-icons:full-trash"
-                  :rotate="2"
-                  :horizontalFlip="true"
-                  :verticalFlip="true"
-                  :inline="true"
-                  class="mr-1"
-                />
-                Delete</v-list-item-title
-              >
             </v-list-item>
           </v-list>
         </v-menu>
