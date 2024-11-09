@@ -13,6 +13,8 @@
         variant="outlined"
       ></v-text-field>
 
+      <v-textarea label="Label" variant="outlined"></v-textarea>
+
       <v-select
         v-if="param.selection.length !== 0"
         color="primary"

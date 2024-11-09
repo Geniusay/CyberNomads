@@ -15,6 +15,9 @@ import java.util.List;
 public class TaskNeedParams {
 
     private String name;
+
+    // 前端输入框类型
+    private String inputType;
     private Class<?> type;
     private String desc;
     private boolean required;
@@ -29,6 +32,7 @@ public class TaskNeedParams {
         this.type = type;
         this.desc = desc;
         this.required = true;
+        this.inputType = InputTypeEnum.SELECT.getValue();
         this.defaultValue = null;
     }
 
@@ -38,6 +42,7 @@ public class TaskNeedParams {
         this.type = type;
         this.desc = desc;
         this.required = required;
+        this.inputType = InputTypeEnum.SELECT.getValue();
         this.defaultValue = defaultValue;
     }
 
@@ -48,6 +53,7 @@ public class TaskNeedParams {
         this.desc = desc;
         this.required = required;
         this.defaultValue = defaultValue;
+        this.inputType = InputTypeEnum.SELECT.getValue();
         this.selection = selection == null ? new ArrayList<>() : selection;
         this.params = params == null ? new ArrayList<>() : params;
     }
@@ -58,6 +64,19 @@ public class TaskNeedParams {
         this.type = null;
         this.desc = desc;
         this.required = required;
+        this.inputType = InputTypeEnum.SELECT.getValue();
+        this.selection = selection == null ? new ArrayList<>() : selection;
+        this.params = params == null ? new ArrayList<>() : params;
+    }
+
+    // 构造方法（带可选项和子参数）
+    public TaskNeedParams(String name, Class<?> type, String desc, boolean required, Object defaultValue, List<TaskNeedParams> selection, List<TaskNeedParams> params, InputTypeEnum inputType) {
+        this.name = name;
+        this.type = type;
+        this.desc = desc;
+        this.required = required;
+        this.inputType = inputType.getValue();
+        this.defaultValue = defaultValue;
         this.selection = selection == null ? new ArrayList<>() : selection;
         this.params = params == null ? new ArrayList<>() : params;
     }
@@ -85,10 +104,30 @@ public class TaskNeedParams {
     }
 
     public static TaskNeedParams ofSelection(String name, String defaultValue, String desc, List<TaskNeedParams> selections){
-        return new TaskNeedParams(name, String.class, desc, true, defaultValue, selections, null);
+        return new TaskNeedParams(name, String.class, desc, true, defaultValue, selections, null, InputTypeEnum.SELECT);
     }
 
     public static TaskNeedParams ofParams(String name, String desc, List<TaskNeedParams> params){
         return new TaskNeedParams(name, TaskNeedParams.class, desc, false, null, null, params);
+    }
+
+    public TaskNeedParams setInputType(InputTypeEnum inputType){
+        this.inputType = inputType.getValue();
+        return this;
+    }
+
+    public enum InputTypeEnum{
+        SELECT("selection"),
+        INPUT("input"),
+        TEXTAREA("textarea");
+
+        private String value;
+        InputTypeEnum(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
     }
 }

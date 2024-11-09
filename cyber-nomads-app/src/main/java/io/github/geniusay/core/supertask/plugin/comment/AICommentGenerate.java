@@ -47,7 +47,7 @@ public class AICommentGenerate extends AbstractCommentGenerate implements Commen
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
-            TaskNeedParams.ofK(AI_PRE_TEXT, String.class, "文本提示词前缀"),
+            TaskNeedParams.ofK(AI_PRE_TEXT, String.class, "文本提示词前缀").setInputType(TaskNeedParams.InputTypeEnum.TEXTAREA),
             TaskNeedParams.ofKV(AI_COUNT_NUM, 50, "生成字数上限"),
             TaskNeedParams.ofK(SLOGAN, String.class, "Slogan标语在结尾处追加")
         );
