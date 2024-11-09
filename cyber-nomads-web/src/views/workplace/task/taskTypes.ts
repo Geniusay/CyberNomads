@@ -39,9 +39,9 @@ export interface TaskType{
 }
 
 const defaultTaskForm: TaskForm = {
-  id:"",
+  taskId:"",
   taskName: "",
-  platform: "",
+  platform: "bilibili",
   taskType: "",
   params: {},
   robotIds: []

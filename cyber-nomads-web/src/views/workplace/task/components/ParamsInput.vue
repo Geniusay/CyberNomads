@@ -53,8 +53,10 @@ const props = defineProps<Props>();
 onMounted(()=>{
   props.params = props.params.sort((a, b) => {
     // 将 selection.length > 0 的项排在前面
-    return (a.selection.length > 0 ? 1 : 0) - (b.selection.length > 0 ? 1 : 0);
+    return (b.selection.length == 0 ? 1 : 0) - (a.selection.length == 0 ? 1 : 0);
   })
+
+  console.log(props.params)
 
   props.params.forEach((param)=>{
     if(param.required){

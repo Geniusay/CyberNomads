@@ -32,7 +32,10 @@ public class ParamsUtil {
             if(!TaskNeedParams.class.equals(needParam.getType())&&(needParam.isRequired()||value!=null)){
                 validateParam(name, value, needParam);
                 try {
-                    resMap.put(name, Optional.ofNullable(value).map((var->getValue(paramMap, name, needParam.getType()))).orElse(null));
+                    resMap.put(name, Optional.ofNullable(value).map((var->{
+                        String jsonStr = JSON.toJSONString(value);
+                        return JSON.parseObject(jsonStr, needParam.getType());
+                    })).orElse(null));
                 }catch (Exception e){
                     throw new ServeException(400, String.format("%s参数类型错误", name));
                 }
