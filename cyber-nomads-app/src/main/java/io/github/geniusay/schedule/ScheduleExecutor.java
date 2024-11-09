@@ -43,12 +43,12 @@ public class ScheduleExecutor implements TaskListener{
                 Long robotId = FREE_WORKER.take();
                 Map<Long, Map<String, Task>> worldRobotsTask = manager.getWorldRobotsTask(); //获取所有任务robot
                 Map<String, Task> taskMap = worldRobotsTask.get(robotId); //获取对应robot的任务列表
-                if(Objects.nonNull(taskMap)){
+                if(Objects.isNull(taskMap)){
                     List<Task> tasks = new ArrayList<>(taskMap.values());
                     RobotWorker robotWorker = manager.getAllRobot().get(robotId);
                     Task selectedTask = null;
                     for (Task task : tasks) {
-                        if(!task.getTerminator().robotCanDo(robotWorker)){
+                        if(task.getTerminator().robotCanDo(robotWorker)){
                             selectedTask = task;
                         }
                     }
@@ -84,7 +84,7 @@ public class ScheduleExecutor implements TaskListener{
                 } else{
                     manager.getAllRobot().remove(robotId);
                 }
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 log.error("调度器异常:{}",e.getMessage());
             }
         }

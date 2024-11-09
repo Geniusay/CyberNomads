@@ -117,6 +117,10 @@ const taskTypes = ref([])
 const robotList = ref<RobotVO[]>([])
 const robotStore = useRobotStore();
 
+const rules = {
+
+}
+
 onMounted(async ()=>{
   const platform = taskStore.taskForm.platform
   if(!!platform){

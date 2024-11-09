@@ -19,8 +19,8 @@
       <v-row align="center">
         <v-col
           cols="12"
-          xs="6"
-          md="6"
+          xs="12"
+          md="12"
           lg="3"
           xl="3
         "

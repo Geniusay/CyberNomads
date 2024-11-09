@@ -24,7 +24,7 @@ const openEditDialog = () =>{
 </script>
 
 <template>
-  <v-card max-width="400" class="mx-auto">
+  <v-card max-width="480" class="mx-auto">
     <v-img cover src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8YXJ0aWNsZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=600&q=60" height="200px">
       <v-toolbar color="transparent">
         <template v-slot:prepend>

@@ -9,6 +9,7 @@
         v-if="param.selection.length === 0"
         :label="param.desc"
         v-model="taskStore.taskForm.params[param.name]"
+
         :required="param.required"
         variant="outlined"
       ></v-text-field>
@@ -77,6 +78,10 @@ const computeInputWidth = (param, index) =>{
 
 const getSelectionParamsNums = () =>{
   return props.params.filter(params => params.selection.length != 0).length;
+}
+
+const required = (v) =>{
+  return !!v || 'This field is required'
 }
 
 watch(

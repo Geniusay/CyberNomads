@@ -82,12 +82,12 @@ const scrollToBottom = () => {
             <v-btn class="mr-2" size="40" color="white" icon>
               <Icon width="30" icon="line-md:github-loop" />
             </v-btn>
-            Yang J.K.
+            CyberNomads
           </v-card-title>
           <v-card-subtitle> </v-card-subtitle>
           <v-card-text>
-            <div><b>Github:</b></div>
-            <div>github.com/yangjiakai</div>
+            <div><b>QQ Group: 534807469</b></div>
+            <div></div>
           </v-card-text>
           <v-card-actions>
             <v-btn
@@ -97,7 +97,7 @@ const scrollToBottom = () => {
               @click="openGithubSite"
               color="white"
             >
-              Star-Me
+              Join-Us
             </v-btn>
           </v-card-actions>
         </v-card>
