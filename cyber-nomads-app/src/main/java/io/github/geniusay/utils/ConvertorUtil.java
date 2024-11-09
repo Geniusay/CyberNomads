@@ -55,4 +55,13 @@ public class ConvertorUtil {
                 .map(Long::valueOf)
                 .collect(Collectors.toList());
     }
+
+    public static List<String> stringToListString(String str) {
+        if (StringUtil.isNullOrEmpty(str)) {
+            return new ArrayList<>();
+        }
+        return Arrays.stream(str.split(","))
+                .map(String::valueOf)
+                .collect(Collectors.toList());
+    }
 }

@@ -296,7 +296,7 @@ public class ITaskService implements TaskService {
     @Override
     @Transactional
     public void deleteTask(Long taskId) {
-        String uid = ThreadUtil.getUid();  // 获取当前用户ID
+        String uid = ThreadUtil.getUid();
 
         TaskDO task = taskMapper.selectById(taskId);
         if (task == null) {

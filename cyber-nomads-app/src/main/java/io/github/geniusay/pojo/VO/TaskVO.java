@@ -25,7 +25,7 @@ public class TaskVO {
     private String platform;
     private String taskType;
     private String taskStatus;
-    private List<Long> robots;
+    private List<String> robots;
     private Map<String, Object> params;
     private String platformCnZh;
     private String taskTypeCnZh;
@@ -33,7 +33,7 @@ public class TaskVO {
 
     public static TaskVO convertToTaskVO(TaskDO taskDO) {
         Map<String, Object> params = ConvertorUtil.jsonStringToMap(taskDO.getParams());
-        List<Long> robotIds = ConvertorUtil.stringToList(taskDO.getRobots());
+        List<String> robotIds = ConvertorUtil.stringToListString(taskDO.getRobots());
 
         return new TaskVO(
                 taskDO.getId().toString(),
