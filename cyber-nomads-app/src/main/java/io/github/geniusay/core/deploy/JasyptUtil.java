@@ -38,9 +38,6 @@ public class JasyptUtil {
 
     @Test
     public void encrypt(){
-        System.out.println("加密后："+stringEncryptor.encrypt("jdbc:mysql://119.3.234.15:3306/cyber?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai"));
-        System.out.println("加密后："+stringEncryptor.encrypt("root"));
-        System.out.println("加密后："+stringEncryptor.encrypt("xiaochun66@"));
     }
 
     /**
@@ -55,6 +52,5 @@ public class JasyptUtil {
 //            System.out.println("解密后："+stringEncryptor.decrypt(temp));
 //            System.out.println("输入解密密匙：");
 //        }
-            System.out.println("解密后："+stringEncryptor.decrypt("ZJD30apv0TnJnjbVWj/W5iEdsp69bwugrfGWqnEpVXhZ9hhZwSVLDTHt51MBrGT7mIoQxj6+XxWRZNoE+KypedyMY6+FLocV49SPot7BSX9eO24/Li1IOmDy4LHc2g2H5QaK59GOZ+xDNyLT40c5QS7TQCJnjLJkppWDjm48MT0="));
     }
 }
