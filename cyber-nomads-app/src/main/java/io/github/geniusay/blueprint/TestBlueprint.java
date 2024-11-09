@@ -17,6 +17,7 @@ import io.github.geniusay.pojo.DO.LastWord;
 import io.github.geniusay.utils.LastWordUtil;
 import io.github.geniusay.utils.ParamsUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -25,17 +26,20 @@ import java.util.Map;
 
 import static io.github.geniusay.core.supertask.config.PluginConstant.COMMENT_GROUP_NAME;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
-import static io.github.geniusay.core.supertask.config.TaskTypeConstant.INFINITY_HOT_VIDEO_COMMENT;
+import static io.github.geniusay.core.supertask.config.TaskTypeConstant.TEST_VIDEO_COMMENT;
 
 @Slf4j
 @Component
-public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
+@Profile("dev")
+public class TestBlueprint extends AbstractTaskBlueprint {
 
     @Resource
     GetHotVideoPlugin getHotVideoPlugin;
 
     @Resource
     TaskPluginFactory taskPluginFactory;
+
+    private final boolean isTestMode = true;  // 设置测试模式
 
     @Override
     public String platform() {
@@ -44,19 +48,19 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
 
     @Override
     public String taskType() {
-        return INFINITY_HOT_VIDEO_COMMENT;
+        return TEST_VIDEO_COMMENT;
     }
 
     @Override
     protected void executeTask(RobotWorker robot, Task task) throws Exception {
-        // 获取任务参数
         Map<String, Object> params = task.getParams();
-
         String comment = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task).generateComment();
         VideoDetail video = getHotVideoPlugin.getHandleVideoWithLimit(params, 1).get(0);
-
-        ApiResponse<Boolean> response = new ActionFlow<>(new BilibiliUserActor(robot), new BilibiliCommentActionLogic(comment, false), new BilibiliCommentReceiver(video.getData())).execute();
-
+        ApiResponse<Boolean> response = new ActionFlow<>(
+                new BilibiliUserActor(robot),
+                new BilibiliCommentActionLogic(comment, isTestMode),
+                new BilibiliCommentReceiver(video.getData())
+        ).execute();
         Map<String, Object> additionalInfo = Map.of("bvid", video.getData().getBvid(), "comment", comment);
         LastWord lastWord = new LastWord(response, additionalInfo);
         task.addLastWord(robot, lastWord);
@@ -68,15 +72,13 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
         if (lastWord == null) {
             return LastWordUtil.buildLastWord(robot.getNickname() + " robot 没有执行任务", false);
         }
-
         ApiResponse<Boolean> response = lastWord.getResponse();
         String bvid = (String) lastWord.getAdditionalInfo("bvid");
         String comment = (String) lastWord.getAdditionalInfo("comment");
-
         if (response.isSuccess()) {
-            return LastWordUtil.buildLastWord(String.format("%s robot 成功对视频 %s 发表评论，评论内容: %s", robot.getNickname(), bvid, comment), true);
+            return LastWordUtil.buildLastWord(String.format("%s robot 成功对视频 %s 发表评论（测试模式），评论内容: %s", robot.getNickname(), bvid, comment), true);
         } else {
-            return LastWordUtil.buildLastWord(String.format("%s robot 发表评论失败，视频: %s，状态码: %d，错误消息: %s", robot.getNickname(), bvid, response.getCode(), response.getMsg()), false);
+            return LastWordUtil.buildLastWord(String.format("%s robot 发表评论失败（测试模式），视频: %s，状态码: %d，错误消息: %s", robot.getNickname(), bvid, response.getCode(), response.getMsg()), false);
         }
     }
 
