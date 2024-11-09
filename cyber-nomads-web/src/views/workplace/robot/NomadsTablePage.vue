@@ -2,10 +2,9 @@
 import {RobotVO, RobotForm, defaultValue} from "@/views/workplace/robot/robotTypes";
 import { PlatformVO } from "@/types/platformType";
 import { onMounted } from "vue";
-import {getRobotList, addRobot, changeRobot, getCookie, changeCookie, deleteRobot} from "@/api/robotApi";
+import { addRobot, changeRobot, getCookie, changeCookie, deleteRobot} from "@/api/robotApi";
 import { useSnackbarStore } from "@/stores/snackbarStore";
 import {validateAndReturn, Validators} from "@/utils/validate";
-import { getPlatforms } from "@/api/commonApi";
 import { useCommonStore } from "@/stores/commonStore";
 import { useRobotStore } from  "@/views/workplace/robot/robotStore"
 
@@ -62,7 +61,7 @@ const changeRobotReq = async() => {
     await changeRobot(robotForm.value).then(res=>{
       const robot = robotList.value.find(item => item.id === robotForm.value.id);
       robot.nickname = robotForm.value.nickname
-      robot.plat = commonStore.getPlatformCnZh(robotForm.value.platform)
+      robot.platformCnZh = commonStore.getPlatformCnZh(robotForm.value.platform)
       robot.username = robotForm.value.username
       snackbarStore.showSuccessMessage("编辑成功")
     }).catch(error=>{
@@ -80,7 +79,7 @@ const refForm = ref();
 async function editItem(item: any) {
   isEdit.value = true;
   robotForm.value = Object.assign({}, item)  as RobotForm;
-  robotForm.value.platform = commonStore.findPlatformByCnZh(item.plat).code
+  robotForm.value.platform = item.platformCode
   dialog.value = true;
 }
 
@@ -313,7 +312,32 @@ const deleteRobotReq = async () => {
                           :label="$t('workplace.nomads.platform')"
                           item-title="platformCnZh"
                           item-value="code"
-                        ></v-select>
+                        >
+                          <template v-slot:chip="{ props, item }">
+                            <v-chip
+                              style="font-size: 1.1em"
+                              v-bind="props"
+                            >
+                              <v-icon>
+                                <img :src="commonStore.getPlatformImgUrl(item.raw.platform)" alt="My Icon" />
+                              </v-icon>
+                              {{item.raw.platformCnZh}}
+                            </v-chip>
+                          </template>
+
+                          <template v-slot:item="{ props, item }">
+                            <v-list-item
+                              v-bind="props"
+                            >
+                              <v-chip  style="font-size: 1.1em">
+                                <v-icon>
+                                  <img :src="commonStore.getPlatformImgUrl(item.raw.platform)" alt="My Icon" />
+                                </v-icon>
+                                {{item.raw.platformCnZh}}
+                              </v-chip>
+                            </v-list-item>
+                          </template>
+                        </v-select>
                       </v-col>
                     </v-row>
                   </v-form>
@@ -356,7 +380,11 @@ const deleteRobotReq = async () => {
           <tr v-for="item in robotList" :key="item.id">
             <td class="font-weight-bold">#{{ item.id }}</td>
             <td class="font-weight-bold">{{ item.nickname }}</td>
-            <td>{{ item.plat }}</td>
+            <td>
+              <v-icon >
+              <img :src="commonStore.getPlatformImgUrl(item.platform)" alt="My Icon" start />
+              </v-icon>
+              {{ item.platformCnZh }}</td>
             <td>{{ item.username }}</td>
             <td>{{ item.createTime }}</td>
             <td>

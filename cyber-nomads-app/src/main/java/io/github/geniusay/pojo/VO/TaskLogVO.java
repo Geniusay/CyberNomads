@@ -1,6 +1,7 @@
 package io.github.geniusay.pojo.VO;
 
 import io.github.geniusay.pojo.DO.TaskLogDO;
+import io.github.geniusay.utils.TimeUtil;
 import lombok.Data;
 
 import java.util.Date;
@@ -12,7 +13,7 @@ public class TaskLogVO {
     private boolean success;
     private String content;
     private String robotName;
-    private Date createTime;
+    private String createTime;
 
     public static TaskLogVO convertToTaskLogVO(TaskLogDO taskLogDO) {
         TaskLogVO taskLogVO = new TaskLogVO();
@@ -20,7 +21,7 @@ public class TaskLogVO {
         taskLogVO.setSuccess(taskLogDO.isSuccess());
         taskLogVO.setContent(taskLogDO.getContent());
         taskLogVO.setRobotName(taskLogDO.getRobotName());
-        taskLogVO.setCreateTime(taskLogDO.getCreateTime());
+        taskLogVO.setCreateTime(TimeUtil.getFormatTimeStr(taskLogDO.getCreateTime()));
         return taskLogVO;
     }
 }

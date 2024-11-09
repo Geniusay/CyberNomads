@@ -1,7 +1,15 @@
 import { defineStore } from "pinia";
 import { useSnackbarStore } from "@/stores/snackbarStore";
-import {getTaskList, getPlatformTaskType, createTask, updateTask, deleteTask, changeTaskStatus} from "@/api/taskApi";
-import {defaultValue, TaskForm, TaskType, TaskVO} from "@/views/workplace/task/taskTypes";
+import {
+  getTaskList,
+  getPlatformTaskType,
+  createTask,
+  updateTask,
+  deleteTask,
+  changeTaskStatus,
+  getRecentLogs
+} from "@/api/taskApi";
+import {defaultValue, TaskForm, TaskLog, TaskType, TaskVO} from "@/views/workplace/task/taskTypes";
 import {status} from "@/views/workplace/task/taskListConfig"
 
 export const snackbarStore = useSnackbarStore();
@@ -106,5 +114,23 @@ export const useTaskStore = defineStore({
         snackbarStore.showErrorMessage("任务状态改变失败:"+error.message)
       })
     },
+    async queryTaskLog(task: TaskVO, autoRefresh: boolean) {
+      if (!Array.isArray(task.taskLogs) || task.taskLogs.length == 0) {
+        await getRecentLogs(task.id, 20).then(res => {
+          task.taskLogs = res.data as TaskLog[]
+        }).catch(error => {
+          snackbarStore.showErrorMessage("获取任务日志失败:" + error.message)
+        })
+        return;
+      }
+      if (autoRefresh) {
+        await getRecentLogs(task.id, 20).then(res => {
+          task.taskLogs = res.data as TaskLog[]
+        }).catch(error => {
+          snackbarStore.showErrorMessage("获取任务日志失败:" + error.message)
+        })
+        return;
+      }
+    }
   }
 })

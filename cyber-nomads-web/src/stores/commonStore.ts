@@ -16,6 +16,9 @@ export const useCommonStore = defineStore({
     },
     getPlatformCnZh(){
       return (code)=>this.platformList.find(item => item.code === code).platformCnZh
+    },
+    getPlatformImgUrl(){
+      return (platform:string)=>'/assets/svg/'+platform+'.svg';
     }
   },
   actions:{

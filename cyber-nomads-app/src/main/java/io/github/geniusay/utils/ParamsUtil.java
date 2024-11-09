@@ -53,7 +53,7 @@ public class ParamsUtil {
         if (Objects.isNull(value)&&param.isRequired()) {
             throw new ServeException(400, String.format("%s参数错误", name));
         }
-        if (!param.getSelection().isEmpty()) {
+        if (param.getInputType().equals(TaskNeedParams.InputTypeEnum.SELECT.getValue())) {
             Set<String> set = param.getSelection().stream().map(TaskNeedParams::getName).collect(Collectors.toSet());
             if (!set.contains((String)value)) {
                 throw new ServeException(400, String.format("%s参数[%s]不匹配", name, value));

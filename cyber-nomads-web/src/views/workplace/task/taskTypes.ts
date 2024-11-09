@@ -11,6 +11,7 @@ export interface TaskVO {
   platformCnZh: string;
   taskTypeCnZh: string;
   createTime: string;
+  taskLogs: TaskLog[];
 }
 
 export interface TaskForm{
@@ -37,6 +38,13 @@ export interface TaskType{
   taskTypeKey: string;
   taskTypeValue: string;
   params: Parameter[];
+}
+
+export interface TaskLog{
+  success: boolean;
+  content: string;
+  robotName: string;
+  createTime: string;
 }
 
 const defaultTaskForm: TaskForm = {

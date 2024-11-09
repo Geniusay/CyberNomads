@@ -38,6 +38,28 @@
             variant="outlined"
             :disabled="taskStore.viewMode"
           >
+            <template v-slot:chip="{ props, item }">
+              <v-chip
+                style="font-size: 1.1em"
+                v-bind="props"
+              >
+                <v-icon>
+                  <img :src="commonStore.getPlatformImgUrl(item.raw.platform)" alt="My Icon" />
+                </v-icon>
+                {{item.raw.platformCnZh}}
+              </v-chip>
+            </template>
+
+            <template v-slot:item="{ props, item }">
+              <v-list-item v-bind="props">
+                <v-chip>
+                  <v-icon>
+                    <img :src="commonStore.getPlatformImgUrl(item.raw.platform)" alt="My Icon" />
+                  </v-icon>
+                  {{' '+item.raw.platformCnZh}}
+                </v-chip>
+              </v-list-item>
+            </template>
           </v-select>
         </v-col>
 
@@ -59,7 +81,9 @@
           >
             <template v-slot:chip="{ props, item }">
               <v-chip
+                style="font-size: 1.1em"
                 v-bind="props"
+                color="#d70e76"
                 :text="item.raw.nickname"
               ></v-chip>
             </template>
@@ -67,9 +91,14 @@
             <template v-slot:item="{ props, item }">
               <v-list-item
                 v-bind="props"
-                :subtitle="'平台：'+item.raw.plat"
-                :title="item.raw.nickname"
-              ></v-list-item>
+              >
+                <v-chip  style="font-size: 1.1em">
+                  <v-icon>
+                    <img :src="commonStore.getPlatformImgUrl(item.raw.platform)" alt="My Icon" />
+                  </v-icon>
+                  {{item.raw.nickname}}
+                </v-chip>
+              </v-list-item>
             </template>
           </v-autocomplete>
         </v-col>

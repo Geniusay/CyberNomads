@@ -112,6 +112,7 @@ export const images = [
   "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task5.png",
   "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task6.png",
   "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task7.png",
+  "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task8.png",
 ]
 
 function validateParam(name: string, value: any, param: Parameter): string | null {

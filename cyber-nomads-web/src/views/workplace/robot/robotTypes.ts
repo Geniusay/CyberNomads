@@ -1,6 +1,8 @@
 export interface RobotVO{
   id: string;
-  plat: string;
+  platform: string;
+  platformCode: number;
+  platformCnZh: string;
   nickname: string;
   username: string;
   ban: boolean;

@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import {mapTaskVOToTaskForm, TaskVO} from "@/views/workplace/task/taskTypes";
-import {status, buttonStatus, images, isStatusIn, getButtonStatus} from "@/views/workplace/task/taskListConfig"
+import { mapTaskVOToTaskForm, TaskVO } from "@/views/workplace/task/taskTypes";
+import {status, images, isStatusIn, getButtonStatus} from "@/views/workplace/task/taskListConfig"
+import { useCommonStore } from "@/stores/commonStore";
 import { Icon } from "@iconify/vue";
 import { useTaskStore,snackbarStore } from "@/views/workplace/task/taskStore"
+import { getRandomColor } from "@/utils/toolUtils";
+import LogList  from "@/views/workplace/task/components/LogList.vue"
 
 const loading = ref(false)
 const taskStore = useTaskStore()
+const commonStore = useCommonStore()
 
 interface Props {
   item: TaskVO;
@@ -15,6 +19,7 @@ interface Props {
 const props = defineProps<Props>();
 const button = ref(getButtonStatus(props.item.taskStatus))
 
+const textColor = getRandomColor()
 const task = ref<TaskVO>({} as TaskVO)
 task.value = {...props.item}
 
@@ -24,7 +29,7 @@ const openViewDialog = () =>{
 }
 
 const getImg = () =>{
-  return images[props.index%(images.length-1)]
+  return images[(props.index)%(images.length-1)]
 }
 
 const openEditDialog = () =>{
@@ -93,6 +98,12 @@ const options = [
   }
 ]
 
+const logDialog = ref(false)
+
+const openLogDialog = async()=>{
+  logDialog.value = true
+}
+
 </script>
 
 <template>
@@ -135,7 +146,7 @@ const options = [
       <v-card-text>
         确定要{{button.nextMsg}}<v-chip color="orange">{{task.taskName}}</v-chip>任务吗?
       </v-card-text>
-      <v-divider></v-divider>
+
       <v-card-actions class="pa-4">
         <v-spacer></v-spacer>
         <v-btn color="gray" variant="flat" @click="changeTaskDialog=false">Cancel</v-btn>
@@ -151,6 +162,19 @@ const options = [
     </v-card>
   </v-dialog>
 
+  <v-dialog v-model="logDialog" max-width="700">
+    <v-card>
+      <LogList :task="item"/>
+      <v-divider></v-divider>
+      <v-card-actions class="pa-4">
+        <v-spacer></v-spacer>
+        <v-btn color="gray" variant="flat" @click="logDialog=false">Close</v-btn>
+      </v-card-actions>
+    </v-card>
+
+  </v-dialog>
+
+
   <v-card max-width="480" class="mx-auto">
     <v-img cover :src="getImg()" height="200px">
       <v-toolbar color="transparent">
@@ -161,7 +185,7 @@ const options = [
             </template>
 
             <v-list density="compact">
-              <v-list-item @click="openDeleteDialog()">
+              <v-list-item @click="openLogDialog()">
                 <v-list-item-title class="d-inline-flex align-center">
                   <Icon
                     icon="flat-color-icons:sms"
@@ -230,13 +254,11 @@ const options = [
           class="py-3 pe-0"
           cols="auto"
         >
-          <v-chip color="rgb(38, 198, 218)">
-            <v-icon
-              icon="mdi-forum"
-              start
-            ></v-icon>
-
-            社交平台：{{task.platformCnZh}}
+          <v-chip color="#448ac4">
+            <v-icon >
+              <img :src="commonStore.getPlatformImgUrl(task.platform)" alt="My Icon" start />
+            </v-icon>
+            社交平台： {{task.platformCnZh}}
           </v-chip>
         </v-col>
       </v-row>
@@ -245,7 +267,7 @@ const options = [
         justify="start"
       >
         <v-col class="py-1 pe-0" cols="auto" >
-          <v-chip color="rgb(38, 198, 218)" >
+          <v-chip color="#448ac4" >
             <v-icon
               icon="mdi-file-tree"
               start

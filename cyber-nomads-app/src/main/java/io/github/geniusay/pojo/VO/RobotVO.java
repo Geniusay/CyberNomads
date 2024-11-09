@@ -18,7 +18,9 @@ import lombok.Data;
 public class RobotVO {
 
     private String id;
-    private String plat;
+    private String platform;
+    private Integer platformCode;
+    private String platformCnZh;
     private boolean ban;
     private String nickname;
     private String username;
@@ -27,7 +29,9 @@ public class RobotVO {
     public static RobotVO convert(RobotDO r){
         return RobotVO.builder()
                 .id(String.valueOf(r.getId()))
-                .plat(TaskTranslationUtil.translatePlatform(PlatformUtil.getPlatformByCode(r.getPlatform())))
+                .platform(PlatformUtil.getPlatformByCode(r.getPlatform()))
+                .platformCode(r.getPlatform())
+                .platformCnZh(TaskTranslationUtil.translatePlatform(PlatformUtil.getPlatformByCode(r.getPlatform())))
                 .username(r.getUsername())
                 .nickname(r.getNickname())
                 .ban(r.isBan())

@@ -30,7 +30,7 @@
             v-for="(item,index) in taskList"
             :key="item.id"
           >
-            <TaskCard :item="item" :index="index"/>
+            <TaskCard :item="item" :index="randomSeed+index"/>
           </v-col>
         </v-row>
       </v-container>
@@ -54,6 +54,7 @@ import { onMounted } from "vue";
 import { useCommonStore } from "@/stores/commonStore";
 import { useTaskStore,snackbarStore } from "@/views/workplace/task/taskStore"
 import {useRobotStore} from "@/views/workplace/robot/robotStore";
+import {images} from "@/views/workplace/task/taskListConfig";
 
 
 const taskStore = useTaskStore()
@@ -61,6 +62,7 @@ const commonStore = useCommonStore();
 const taskList = ref<TaskVO[]>([])
 const platformList = ref<PlatformVO[]>([])
 const robotStore = useRobotStore();
+const randomSeed = Math.floor(Math.random() * images.length);
 
 onMounted(async()=>{
   await taskStore.initTaskList()
