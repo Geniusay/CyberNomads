@@ -44,4 +44,9 @@ public interface TaskService {
      * 获取指定状态的任务(内部)
      */
     List<TaskDO> getTaskByStatus(List<String> status);
+
+    /**
+     * 删除任务
+     */
+    void deleteTask(Long taskId);
 }

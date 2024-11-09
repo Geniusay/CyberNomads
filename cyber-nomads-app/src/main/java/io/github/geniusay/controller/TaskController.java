@@ -55,4 +55,15 @@ public class TaskController {
         taskService.modifyTask(modifyTaskDTO);
         return Result.success();
     }
+
+    /**
+     * 删除任务
+     * 只能删除自己创建的任务，且任务状态不能为进行中或异常
+     */
+    @TokenRequire
+    @PostMapping("/delete/{taskId}")
+    public Result<?> deleteTask(@PathVariable Long taskId) {
+        taskService.deleteTask(taskId);
+        return Result.success();
+    }
 }

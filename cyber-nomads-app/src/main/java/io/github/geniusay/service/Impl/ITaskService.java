@@ -290,6 +290,30 @@ public class ITaskService implements TaskService {
         return taskDOList;
     }
 
+    /**
+     * 删除任务
+     */
+    @Override
+    @Transactional
+    public void deleteTask(Long taskId) {
+        String uid = ThreadUtil.getUid();  // 获取当前用户ID
+
+        TaskDO task = taskMapper.selectById(taskId);
+        if (task == null) {
+            throw new ServeException("任务不存在: " + taskId);
+        }
+
+        if (!task.getUid().equals(uid)) {
+            throw new ServeException("无权删除此任务: " + taskId);
+        }
+
+        if (task.getTaskStatus() == TaskStatus.RUNNING || task.getTaskStatus() == TaskStatus.EXCEPTION) {
+            throw new ServeException("任务当前状态不允许删除（进行中或异常状态下的任务不能删除）");
+        }
+
+        taskMapper.deleteById(taskId);
+    }
+
     @Override
     public List<TaskDO> getTaskByStatus(List<String> status) {
         return taskMapper.selectList(new QueryWrapper<TaskDO>().in("task_status", status));
