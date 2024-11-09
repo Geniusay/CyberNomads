@@ -25,4 +25,13 @@ public class PlatformUtil {
             throw new ServeException(500,"不支持的平台类型");
         }
     }
+
+    public static int convertCodeToString(String platform){
+        for(Platform plat:Platform.values()){
+            if (plat.getPlatform().equalsIgnoreCase(platform)) {
+                return plat.getCode();
+            }
+        }
+        throw new ServeException(500,"不支持的平台类型!");
+    }
 }

@@ -6,12 +6,14 @@ import io.github.geniusay.pojo.DTO.CreateTaskDTO;
 import io.github.geniusay.pojo.DTO.ModifyTaskDTO;
 import io.github.geniusay.pojo.DTO.UpdateTaskDTO;
 import io.github.geniusay.service.TaskService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
 @RestController
 @RequestMapping("/task")
+@Validated
 public class TaskController {
 
     @Resource
@@ -40,7 +42,8 @@ public class TaskController {
      */
     @TokenRequire
     @PostMapping("/update")
-    public Result<?> updateTask(@RequestBody UpdateTaskDTO updateTaskDTO) {
+    public Result<?> updateTask(@RequestBody
+                                    @Validated UpdateTaskDTO updateTaskDTO) {
         return Result.success(taskService.updateTask(updateTaskDTO));
     }
 
@@ -65,4 +68,6 @@ public class TaskController {
         taskService.deleteTask(taskId);
         return Result.success();
     }
+
+
 }

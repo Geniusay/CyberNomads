@@ -2,14 +2,19 @@ package io.github.geniusay.pojo.DTO;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
 
 @Data
 @NoArgsConstructor
+@Validated
 public class UpdateTaskDTO {
 
+    @NotNull(message = "taskId不能为空")
     private Long taskId;  // 任务ID，必须传递
 
     private String taskName;  // 可选，任务名称

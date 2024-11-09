@@ -15,11 +15,13 @@ import io.github.geniusay.mapper.TaskMapper;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.*;
+import io.github.geniusay.pojo.Platform;
 import io.github.geniusay.pojo.VO.TaskVO;
 import io.github.geniusay.service.TaskService;
 import io.github.geniusay.utils.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -87,7 +89,6 @@ public class ITaskService implements TaskService {
     @Transactional
     public TaskVO updateTask(UpdateTaskDTO updateTaskDTO) {
         String uid = ThreadUtil.getUid();
-
         // 1. 获取任务并校验权限
         TaskDO task = taskMapper.selectTaskByIdAndUid(updateTaskDTO.getTaskId(), uid);
         if (task == null) throw new ServeException("任务不存在或无权操作该任务: " + updateTaskDTO.getTaskId());
@@ -298,13 +299,9 @@ public class ITaskService implements TaskService {
     public void deleteTask(Long taskId) {
         String uid = ThreadUtil.getUid();
 
-        TaskDO task = taskMapper.selectById(taskId);
+        TaskDO task = taskMapper.selectTaskByIdAndUid(taskId,uid);
         if (task == null) {
-            throw new ServeException("任务不存在: " + taskId);
-        }
-
-        if (!task.getUid().equals(uid)) {
-            throw new ServeException("无权删除此任务: " + taskId);
+            throw new ServeException("任务不存在或无权删除此任务: " + taskId);
         }
 
         if (task.getTaskStatus() == TaskStatus.RUNNING || task.getTaskStatus() == TaskStatus.EXCEPTION) {
@@ -318,4 +315,5 @@ public class ITaskService implements TaskService {
     public List<TaskDO> getTaskByStatus(List<String> status) {
         return taskMapper.selectList(new QueryWrapper<TaskDO>().in("task_status", status));
     }
+
 }
