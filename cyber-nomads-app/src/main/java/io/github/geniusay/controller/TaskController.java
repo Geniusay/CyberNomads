@@ -5,6 +5,7 @@ import io.github.geniusay.core.anno.TokenRequire;
 import io.github.geniusay.pojo.DTO.CreateTaskDTO;
 import io.github.geniusay.pojo.DTO.ModifyTaskDTO;
 import io.github.geniusay.pojo.DTO.UpdateTaskDTO;
+import io.github.geniusay.service.TaskLogService;
 import io.github.geniusay.service.TaskService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,9 @@ public class TaskController {
 
     @Resource
     private TaskService taskService;
+
+    @Resource
+    private TaskLogService taskLogService;
 
     /**
      * 创建任务并返回任务详情
@@ -69,5 +73,12 @@ public class TaskController {
         return Result.success();
     }
 
-
+    /**
+     * 根据任务ID查询最近X条日志记录
+     */
+    @TokenRequire
+    @GetMapping("/getRecentLogs")
+    public Result<?> getRecentLogs(@RequestParam Long taskId, @RequestParam int limit) {
+        return Result.success(taskLogService.getRecentLogsByTaskId(taskId, limit));
+    }
 }

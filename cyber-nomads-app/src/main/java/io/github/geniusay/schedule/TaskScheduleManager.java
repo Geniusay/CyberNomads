@@ -113,4 +113,16 @@ public class TaskScheduleManager {
     public Map<String, Task> getWorldTask(){
         return WORLD_TASK;
     }
+
+    public Task getTaskById(String taskId){
+        return WORLD_TASK.get(taskId);
+    }
+
+    public RobotWorker getRobotById(String robotId){
+        return WORLD_ROBOTS.get(Long.valueOf(robotId));
+    }
+
+    public Map<String,Task> getRobotTaskById(String robotId){
+        return WORLD_ROBOTS_TASK.get(Long.valueOf(robotId));
+    }
 }
