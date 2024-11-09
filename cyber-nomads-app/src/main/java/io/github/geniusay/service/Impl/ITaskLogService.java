@@ -1,13 +1,18 @@
 package io.github.geniusay.service.Impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.mapper.TaskLogMapper;
 import io.github.geniusay.pojo.DO.TaskLogDO;
 import io.github.geniusay.core.supertask.task.RobotWorker;
+import io.github.geniusay.pojo.VO.TaskLogVO;
 import io.github.geniusay.service.TaskLogService;
 import io.github.geniusay.utils.LastWordUtil;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ITaskLogService implements TaskLogService {
@@ -43,4 +48,25 @@ public class ITaskLogService implements TaskLogService {
         // 保存日志到数据库
         taskLogMapper.insert(taskLog);
     }
+
+    /**
+     * 根据任务ID查询最近X条日志记录
+     */
+    @Override
+    public List<TaskLogVO> getRecentLogsByTaskId(Long taskId, int limit) {
+        if (limit > 20) {
+            limit = 20;
+        }
+        QueryWrapper<TaskLogDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("task_id", taskId)
+                .orderByDesc("create_time")  // 按创建时间倒序排列
+                .last("LIMIT " + limit);     // 限制查询条数
+
+        List<TaskLogDO> taskLogs = taskLogMapper.selectList(queryWrapper);
+
+        return taskLogs.stream()
+                .map(TaskLogVO::convertToTaskLogVO)
+                .collect(Collectors.toList());
+    }
+
 }
