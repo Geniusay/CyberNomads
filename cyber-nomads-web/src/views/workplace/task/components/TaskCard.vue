@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {mapTaskVOToTaskForm, TaskVO} from "@/views/workplace/task/taskTypes";
-import {status, buttonStatus, images, isStatusIn} from "@/views/workplace/task/taskListConfig"
+import {status, buttonStatus, images, isStatusIn, getButtonStatus} from "@/views/workplace/task/taskListConfig"
 import { Icon } from "@iconify/vue";
 import { useTaskStore,snackbarStore } from "@/views/workplace/task/taskStore"
 
@@ -9,7 +9,9 @@ interface Props {
   item: TaskVO;
 }
 
+
 const props = defineProps<Props>();
+const button = ref(getButtonStatus(props.item.taskStatus))
 
 const task = ref<TaskVO>({} as TaskVO)
 task.value = {...props.item}
@@ -36,10 +38,13 @@ const deleteTaskReq = async () =>{
 
 const deleteDialog = ref(false)
 
-const openDeleteDialog = ()=>{
+const openDeleteDialog =()=>{
   deleteDialog.value = true;
 }
 
+const changeTaskStatus =()=>{
+
+}
 
 </script>
 
@@ -165,7 +170,7 @@ const openDeleteDialog = ()=>{
         </v-col>
       </v-row>
     </v-card-text>
-    <v-btn style="float: right;margin: 15px" color="green" icon="mdi-play" size="x-large"></v-btn>
+    <v-btn style="float: right;margin: 15px" :color="button.color" :icon="button.icon" size="x-large"></v-btn>
     <v-divider class="mx-4 mb-1"></v-divider>
     <v-card-actions>
       <v-btn color="primary">

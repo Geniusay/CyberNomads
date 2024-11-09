@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { useSnackbarStore } from "@/stores/snackbarStore";
-import {getTaskList, getPlatformTaskType, createTask, updateTask, deleteTask} from "@/api/taskApi";
+import {getTaskList, getPlatformTaskType, createTask, updateTask, deleteTask, changeTaskStatus} from "@/api/taskApi";
 import {defaultValue, TaskForm, TaskType, TaskVO} from "@/views/workplace/task/taskTypes";
 
 
@@ -89,6 +89,13 @@ export const useTaskStore = defineStore({
         this.taskList.value.splice(index, 1);
       }).catch(error=>{
         snackbarStore.showErrorMessage(item.taskName+"删除失败："+error.message)
+      })
+    },
+    async changeStatus(task: TaskVO, toStatus: string, msg:string){
+      await changeTaskStatus(task.id, toStatus).then(res=>{
+          snackbarStore.showSuccessMessage(msg)
+      }).catch(error=>{
+        snackbarStore.showErrorMessage("任务状态改变失败:"+error.message)
       })
     }
   }

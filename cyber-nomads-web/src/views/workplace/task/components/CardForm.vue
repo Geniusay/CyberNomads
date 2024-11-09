@@ -72,7 +72,7 @@
 <!--        <small class="text-caption text-medium-emphasis">任务参数</small>-->
         <ParamsInput
           v-if="!!taskStore.taskForm.taskType"
-          :params="childParams()?.params ?? []"
+          :params="childParams(taskStore.taskForm.taskType)?.params ?? []"
           :key="taskStore.taskForm.taskType"
         />
       </v-row>
@@ -122,9 +122,9 @@ const robotStore = useRobotStore();
 
 onMounted(async ()=>{
   const platform = taskStore.taskForm.platform
-  console.log("初始化"+platform)
   if(!!platform){
     await taskStore.initPlatformTaskTypes(platform)
+    taskTypes.value = taskStore.getPlatformTaskTypes(platform)
   }
   robotList.value = robotStore.getRobotList
 })
@@ -146,11 +146,8 @@ const close = () =>{
   taskStore.closeDialog()
 }
 
-const childParams = () =>{
-  console.log(taskStore.platformTaskTypeMap)
-  console.log(taskStore.taskForm.platform)
-  console.log(taskStore.getPlatformTaskTypes(taskStore.taskForm.platform))
-  return taskStore.getPlatformTaskTypes(taskStore.taskForm.platform).find(param=>param.taskTypeKey===taskStore.taskForm.taskType)
+const childParams = (taskType) =>{
+  return taskTypes.value.find(param=>param.taskTypeKey===taskType)
 }
 
 const required = (v,required) =>{
@@ -162,6 +159,7 @@ watch(
   async (newValue, oldValue) => {
     await taskStore.initPlatformTaskTypes(newValue)
     taskStore.taskForm.taskType = ""
+    taskTypes.value = taskStore.getPlatformTaskTypes(newValue)
   }
 );
 

@@ -3,37 +3,43 @@ export const status = {
     icon: "mdi-alert-circle",
     color:"grey",
     content:"workplace.task.pending",
-    value:"pending"
+    value:"pending",
+    next:"running"
   },
   running:{
     icon:"mdi-arrow-right-drop-circle",
     color:"green",
     content:"workplace.task.running",
-    value:"running"
+    value:"running",
+    next:"paused"
   },
   exception:{
     icon:"mdi-alert-circle",
     color:"orange",
     content:"workplace.task.exception",
-    value:"exception"
+    value:"exception",
+    next:"paused"
   },
   paused:{
     icon:"mdi-pause-circle",
     color:"yellow",
     content:"workplace.task.pause",
-    value:"paused"
+    value:"paused",
+    next:"running"
   },
   finish:{
     icon:"mdi-check-circle",
     color:"green",
     content:"workplace.task.finish",
-    value:"finish"
+    value:"finish",
+    next:"running"
   },
   error:{
     icon: "mdi-application-variable",
     color:"red",
     content:"workplace.task.error",
-    value:"error"
+    value:"error",
+    next:"running"
   }
 }
 
@@ -58,6 +64,21 @@ export const buttonStatus = {
     icon: "mdi-reload",
     color: "grey",
   },
+}
+
+export const getButtonStatus =(itemStatus: string)=> {
+  if (isStatusIn(itemStatus, [status.pending.value])) {
+    return buttonStatus.ready
+  }
+  if(isStatusIn(itemStatus, [status.running.value, status.exception.value])){
+    return buttonStatus.running
+  }
+  if(isStatusIn(itemStatus, [status.paused.value])){
+    return buttonStatus.pause
+  }
+  if(isStatusIn(itemStatus, [status.error.value, status.finish.value])){
+    return buttonStatus.stop
+  }
 }
 
 export const images = [

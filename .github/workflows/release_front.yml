@@ -63,4 +63,4 @@ jobs:
                 docker rmi $(docker images ${{ secrets.DOCKER_REPO }}/cyber-nomads-web -q) || true
                 sleep 3
                 docker pull ${{ secrets.DOCKER_REPO }}/cyber-nomads-web
-                docker run --name cyber-nomads-web -d -p 0.0.0.0:80:80 -p 0.0.0.0:443:443 -v /home/nginx:/etc/nginx ${{ secrets.DOCKER_REPO }}/cyber-nomads-web
+                docker run --name cyber-nomads-web -d -p 0.0.0.0:80:80 ${{ secrets.DOCKER_REPO }}/cyber-nomads-web
