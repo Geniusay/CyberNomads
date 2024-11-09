@@ -91,9 +91,10 @@ export const useTaskStore = defineStore({
         snackbarStore.showErrorMessage(item.taskName+"删除失败："+error.message)
       })
     },
-    async changeStatus(task: TaskVO, toStatus: string, msg:string){
-      await changeTaskStatus(task.id, toStatus).then(res=>{
-          snackbarStore.showSuccessMessage(msg)
+    async changeStatus(task: TaskVO,next:string, action: string, msg:string){
+      await changeTaskStatus(task.id, action).then(res=>{
+          snackbarStore.showSuccessMessage(msg+"成功")
+          task.taskStatus = next
       }).catch(error=>{
         snackbarStore.showErrorMessage("任务状态改变失败:"+error.message)
       })

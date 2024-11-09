@@ -17,7 +17,7 @@ const task = ref<TaskVO>({} as TaskVO)
 task.value = {...props.item}
 
 const openEditDialog = () =>{
-  if(isStatusIn(props.item.taskStatus,[status.exception.value, status.running.value])){
+  if(isStatusIn(task.value.taskStatus,[status.exception.value, status.running.value])){
     snackbarStore.showWarningMessage("任务正在运行中，请暂停后编辑")
     return
   }
@@ -27,7 +27,7 @@ const openEditDialog = () =>{
 }
 
 const deleteTaskReq = async () =>{
-  if(isStatusIn(props.item.taskStatus,[status.exception.value, status.running.value])){
+  if(isStatusIn(task.value.taskStatus,[status.exception.value, status.running.value])){
     snackbarStore.showErrorMessage("任务正在运行中，无法删除")
     deleteDialog.value = false;
     return
@@ -41,14 +41,23 @@ const deleteDialog = ref(false)
 const openDeleteDialog =()=>{
   deleteDialog.value = true;
 }
+const changeTaskDialog = ref(false)
 
-const changeTaskStatus =()=>{
+const openChangeTaskStatusDialog = async()=>{
+  changeTaskDialog.value = true;
+}
 
+const changeTaskStatus = async() =>{
+  const currentStatus = status[task.value.taskStatus]
+  await taskStore.changeStatus(task.value, currentStatus.next, button.value.next, button.value.nextMsg)
+  button.value = getButtonStatus(task.value.taskStatus)
+  changeTaskDialog.value = false;
 }
 
 </script>
 
 <template>
+
   <v-dialog v-model="deleteDialog" max-width="700">
     <v-card>
       <v-card-title class="pa-4 bg-red">
@@ -69,6 +78,31 @@ const changeTaskStatus =()=>{
           variant="flat"
           @click="deleteTaskReq()"
         >Delete</v-btn
+        >
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <v-dialog v-model="changeTaskDialog" max-width="700">
+    <v-card>
+      <v-card-title class="pa-4 bg-pink">
+          <span class="title text-white">
+            <v-icon class="mr-2">mdi-cog</v-icon>
+           {{button.nextMsg}}</span>
+      </v-card-title>
+
+      <v-card-text>
+        确定要{{button.nextMsg}}<v-chip color="orange">{{task.taskName}}</v-chip>任务吗?
+      </v-card-text>
+      <v-divider></v-divider>
+      <v-card-actions class="pa-4">
+        <v-spacer></v-spacer>
+        <v-btn color="gray" variant="flat" @click="changeTaskDialog=false">Cancel</v-btn>
+        <v-btn
+          color="green"
+          variant="flat"
+          @click="changeTaskStatus()"
+        >Confirm</v-btn
         >
       </v-card-actions>
     </v-card>
@@ -170,7 +204,7 @@ const changeTaskStatus =()=>{
         </v-col>
       </v-row>
     </v-card-text>
-    <v-btn style="float: right;margin: 15px" :color="button.color" :icon="button.icon" size="x-large"></v-btn>
+    <v-btn @click="openChangeTaskStatusDialog()" style="float: right;margin: 15px" :color="button.color" :icon="button.icon" size="x-large"></v-btn>
     <v-divider class="mx-4 mb-1"></v-divider>
     <v-card-actions>
       <v-btn color="primary">

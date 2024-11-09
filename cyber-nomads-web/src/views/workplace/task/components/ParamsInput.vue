@@ -59,7 +59,7 @@ onMounted(()=>{
   console.log(props.params)
 
   props.params.forEach((param)=>{
-    if(param.required){
+    if(param.required&&!taskStore.taskForm.params[param.name]){
       taskStore.taskForm.params[param.name] = param.defaultValue
     }
   })

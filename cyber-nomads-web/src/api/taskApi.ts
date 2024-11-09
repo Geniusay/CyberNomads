@@ -4,10 +4,10 @@ export function createTask(createTaskForm){
   return request.post('/task/create',createTaskForm)
 }
 
-export function changeTaskStatus(taskId:string, status:string){
+export function changeTaskStatus(taskId:string, action:string){
   return request.post('/task/changeStatus',{
     taskId: taskId,
-    status: status
+    action: action
   })
 }
 
