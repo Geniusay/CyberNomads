@@ -76,8 +76,7 @@ watch(
   taskStore.taskList,
   (newList, oldList)=>{
     console.log(newList)
-    taskList.value = newList as TaskVO[]
-    console.log(taskList.value)
+    taskList.value = taskStore.taskList
   }
 )
 </script>

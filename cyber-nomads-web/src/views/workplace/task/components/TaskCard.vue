@@ -15,6 +15,10 @@ const task = ref<TaskVO>({} as TaskVO)
 task.value = {...props.item}
 
 const openEditDialog = () =>{
+  if(isStatusIn(props.item.taskStatus,[status.exception.value, status.running.value])){
+    snackbarStore.showWarningMessage("任务正在运行中，请暂停后编辑")
+    return
+  }
   taskStore.taskForm = mapTaskVOToTaskForm(task.value)
   taskStore.changeDialogMode(true)
   taskStore.openDialog()

@@ -77,7 +77,7 @@ export const useTaskStore = defineStore({
         console.log(index)
         this.taskList.value[index] = { ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() };
         console.log(this.taskList.value[index])
-        console.log({ ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() })
+        console.log(this.taskList.value)
       }).catch(error=>{
         snackbarStore.showErrorMessage("更新失败："+error.message)
       })
