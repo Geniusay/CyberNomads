@@ -13,10 +13,13 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -52,38 +55,38 @@ public class LoginController {
         ChromeDriver loginwebDriver = new ChromeDriver(options);
         loginwebDriver.get(URL); //
         loginwebDriver.manage().deleteAllCookies();
-        WebElement login = loginwebDriver.findElement(By.xpath("/html/body/div[2]/div[2]/div[1]/div[1]/ul[2]/li[1]/li/div/div/span"));
+        WebDriverWait wait = new WebDriverWait(loginwebDriver, Duration.ofSeconds(120));
+        WebElement login = loginwebDriver.findElement(By.xpath("/html/body/div[2]/div[2]/div[1]/div[1]/ul[2]/li[1]/li/div[1]/div"));
         login.click();
-        Thread.sleep(1000);
-        WebElement usernameInput = loginwebDriver.findElement(By.xpath("/html/body/div[5]/div/div[4]/div[2]/form/div[1]/input"));
+        WebElement usernameInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[5]/div/div[4]/div[2]/form/div[1]/input")));
         usernameInput.sendKeys(username);
-        WebElement passwordInput = loginwebDriver.findElement(By.xpath("/html/body/div[5]/div/div[4]/div[2]/form/div[3]/input"));
+        WebElement passwordInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[5]/div/div[4]/div[2]/form/div[3]/input")));
         passwordInput.sendKeys(password);
-        WebElement loginButton = loginwebDriver.findElement(By.xpath("/html/body/div[5]/div/div[4]/div[2]/div[2]/div[2]"));
+        WebElement loginButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[5]/div/div[4]/div[2]/div[2]/div[2]")));
         loginButton.click();
-        Thread.sleep(50000L);
-        Set<Cookie> cookies = loginwebDriver.manage().getCookies();
-        loginwebDriver.quit();
-        ChromeDriver confirmLogin = new ChromeDriver(options);
-        confirmLogin.get(URL);
-        HashSet<Cookie> set = new HashSet<>();
-        confirmLogin.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        confirmLogin.manage().deleteAllCookies();
-        for (Cookie cookie : cookies) {
-            if("".equals(cookie.getName())||cookie.getName()==null
-                    ||cookie.getValue()==null|| "".equals(cookie.getValue())
-                    ||cookie.getPath()==null||"".equals(cookie.getPath())) {
-                continue;
+        WebElement userImg = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div[2]/div[1]/div[1]/ul[2]/li[1]/div[1]/a[1]/picture/img")));
+        if(userImg!=null){
+            Set<Cookie> cookies = loginwebDriver.manage().getCookies();
+            loginwebDriver.quit();
+            ChromeDriver confirmLogin = new ChromeDriver(options);
+            WebDriverWait confirmWait = new WebDriverWait(confirmLogin, Duration.ofSeconds(120));
+            confirmLogin.get(URL);
+            HashSet<Cookie> set = new HashSet<>();
+            confirmLogin.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+            confirmLogin.manage().deleteAllCookies();
+            for (Cookie cookie : cookies) {
+                if("".equals(cookie.getName())||cookie.getName()==null
+                        ||cookie.getValue()==null|| "".equals(cookie.getValue())
+                        ||cookie.getPath()==null||"".equals(cookie.getPath())) {
+                    continue;
+                }
+                Cookie c = new Cookie(cookie.getName(),cookie.getValue());
+                set.add(c);
+                confirmLogin.manage().addCookie(cookie);
             }
-            Cookie c = new Cookie(cookie.getName(),cookie.getValue());
-            set.add(c);
-            confirmLogin.manage().addCookie(cookie);
-        }
-        confirmLogin.navigate().refresh();
-        Thread.sleep(2000L);
-        WebElement avator = confirmLogin.findElement(By.xpath("/html/body/div[2]/div[2]/div[1]/div[1]/ul[2]/li[1]"));
-        if(avator!=null){
-            COOKIES.put(username,set);
+            confirmLogin.navigate().refresh();
+            WebElement img = confirmWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div[2]/div[1]/div[1]/ul[2]/li[1]/div[1]/a[2]")));
+            COOKIES.put(username, set);
             confirmLogin.quit();
         }else{
             throw new RuntimeException("登陆失败!");
