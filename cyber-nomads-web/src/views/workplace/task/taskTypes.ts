@@ -27,6 +27,7 @@ export interface Parameter{
   type: string;
   desc: string;
   required: boolean;
+  inputType: string;
   defaultValue: string;
   params: Parameter[];
   selection: Parameter[];

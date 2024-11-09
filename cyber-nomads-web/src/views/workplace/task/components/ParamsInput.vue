@@ -6,17 +6,23 @@
     >
       <!-- 判断 childParams 是否为空 -->
       <v-text-field
-        v-if="param.selection.length === 0"
+        v-if="param.inputType === InputType.input"
         :label="param.desc"
         v-model="taskStore.taskForm.params[param.name]"
         :rules="[required(taskStore.taskForm.params[param.name], param.required)]"
         variant="outlined"
       ></v-text-field>
 
-      <v-textarea label="Label" variant="outlined"></v-textarea>
+      <v-textarea
+        v-if="param.inputType === InputType.textarea"
+        :label="param.desc"
+        v-model="taskStore.taskForm.params[param.name]"
+        :rules="[required(taskStore.taskForm.params[param.name], param.required)]"
+        variant="outlined">
+      </v-textarea>
 
       <v-select
-        v-if="param.selection.length !== 0"
+        v-if="param.inputType === InputType.selection"
         color="primary"
         density="compact"
         :items="param.selection"
@@ -30,7 +36,7 @@
       <!-- 如果 childParams 不为空，递归调用 ParamInput 组件 -->
 
         <ParamsInput
-          v-if="param.selection.length > 0 && !!taskStore.taskForm.params[param.name]"
+          v-if="param.inputType === InputType.selection && !!taskStore.taskForm.params[param.name]"
           :params="childParams(taskStore.taskForm.params[param.name], param.selection)"
           :key="taskStore.taskForm.params[param.name]"
         />
@@ -42,6 +48,7 @@
 import { useTaskStore,snackbarStore } from "@/views/workplace/task/taskStore"
 import {onMounted} from "vue";
 import {Parameter} from "@/views/workplace/task/taskTypes";
+import {InputType} from "@/views/workplace/task/taskListConfig";
 
 const taskStore = useTaskStore()
 
@@ -72,15 +79,15 @@ const childParams = (paramName, childParamsList) =>{
 }
 
 const computeInputWidth = (param, index) =>{
-  if(param.selection.length!=0){
-    return 12
+  if(param.inputType===InputType.input){
+    return index == getInputParamsNums()-1?12:6;
   }else{
-    return index == props.params.length - getSelectionParamsNums() -1?12:6;
+    return 12
   }
 }
 
-const getSelectionParamsNums = () =>{
-  return props.params.filter(params => params.selection.length != 0).length;
+const getInputParamsNums = () =>{
+  return props.params.filter(params => params.inputType === InputType.input).length;
 }
 
 const required = (v,required) =>{

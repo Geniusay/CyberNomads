@@ -49,6 +49,12 @@ export const status = {
   }
 }
 
+export const InputType = {
+  selection:"selection",
+  input:"input",
+  textarea:"textarea"
+}
+
 export const isStatusIn = (itemStatus: string, statuses: string[]): boolean => {
   return statuses.includes(itemStatus);
 }

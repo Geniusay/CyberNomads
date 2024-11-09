@@ -11,7 +11,6 @@ import java.util.List;
  * 提供给前端要输入的字段
  */
 @Data
-@Builder
 public class TaskNeedParams {
 
     private String name;
@@ -32,7 +31,7 @@ public class TaskNeedParams {
         this.type = type;
         this.desc = desc;
         this.required = true;
-        this.inputType = InputTypeEnum.SELECT.getValue();
+        this.inputType = InputTypeEnum.INPUT.getValue();
         this.defaultValue = null;
     }
 
@@ -42,7 +41,7 @@ public class TaskNeedParams {
         this.type = type;
         this.desc = desc;
         this.required = required;
-        this.inputType = InputTypeEnum.SELECT.getValue();
+        this.inputType = InputTypeEnum.INPUT.getValue();
         this.defaultValue = defaultValue;
     }
 
@@ -53,7 +52,7 @@ public class TaskNeedParams {
         this.desc = desc;
         this.required = required;
         this.defaultValue = defaultValue;
-        this.inputType = InputTypeEnum.SELECT.getValue();
+        this.inputType = InputTypeEnum.INPUT.getValue();
         this.selection = selection == null ? new ArrayList<>() : selection;
         this.params = params == null ? new ArrayList<>() : params;
     }
@@ -64,7 +63,7 @@ public class TaskNeedParams {
         this.type = null;
         this.desc = desc;
         this.required = required;
-        this.inputType = InputTypeEnum.SELECT.getValue();
+        this.inputType = InputTypeEnum.INPUT.getValue();
         this.selection = selection == null ? new ArrayList<>() : selection;
         this.params = params == null ? new ArrayList<>() : params;
     }
