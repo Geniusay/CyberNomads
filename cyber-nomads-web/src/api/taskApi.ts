@@ -4,12 +4,12 @@ export function createTask(createTaskForm){
   return request.post('/task/create',createTaskForm)
 }
 
-export function updateRobots(updateRobotsForm){
-  return request.post('/task/robots/update',updateRobotsForm)
+export function updateTask(updateTask){
+  return request.post('/task/update',updateTask)
 }
 
-export function updateParams(updateParamsForm){
-  return request.post('/task/params/update',updateParamsForm)
+export function deleteTask(taskId){
+  return request.post('/task/delete/'+taskId)
 }
 
 export function getTaskList(){

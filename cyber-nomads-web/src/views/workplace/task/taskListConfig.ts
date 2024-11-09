@@ -1,29 +1,44 @@
 export const status = {
-  error:{
-    icon: "mdi-alert-circle",
-    color:"orange",
-    content:"workplace.task.error"
-  },
   pending:{
     icon: "mdi-alert-circle",
     color:"grey",
-    content:"workplace.task.pending"
+    content:"workplace.task.pending",
+    value:"pending"
   },
   running:{
     icon:"mdi-arrow-right-drop-circle",
     color:"green",
-    content:"workplace.task.running"
+    content:"workplace.task.running",
+    value:"running"
+  },
+  exception:{
+    icon:"mdi-alert-circle",
+    color:"orange",
+    content:"workplace.task.exception",
+    value:"exception"
   },
   paused:{
     icon:"mdi-pause-circle",
     color:"yellow",
-    content:"workplace.task.pause"
+    content:"workplace.task.pause",
+    value:"paused"
   },
   finish:{
     icon:"mdi-check-circle",
     color:"green",
-    content:"workplace.task.finish"
+    content:"workplace.task.finish",
+    value:"finish"
+  },
+  error:{
+    icon: "mdi-application-variable",
+    color:"red",
+    content:"workplace.task.error",
+    value:"error"
   }
+}
+
+export const isStatusIn = (itemStatus: string, statuses: string[]): boolean => {
+  return statuses.includes(itemStatus);
 }
 
 export const buttonStatus = {

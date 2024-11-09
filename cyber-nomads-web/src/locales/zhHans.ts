@@ -14,6 +14,7 @@ export default {
       error:"失败",
       pending:"未开始",
       running:"运行中",
+      exception:"运行异常",
       pause:"暂停",
       finish:"已完成",
       taskName:"任务名称",

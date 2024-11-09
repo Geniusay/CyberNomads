@@ -16,6 +16,7 @@ export default {
       running:"running",
       pause:"pause",
       finish:"finish",
+      exception:"exception",
       taskName:"Task Name",
       platform:"Platform",
       taskType:"Task Type"

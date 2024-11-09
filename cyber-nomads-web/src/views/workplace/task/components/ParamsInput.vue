@@ -9,8 +9,7 @@
         v-if="param.selection.length === 0"
         :label="param.desc"
         v-model="taskStore.taskForm.params[param.name]"
-
-        :required="param.required"
+        :rules="[required(taskStore.taskForm.params[param.name], param.required)]"
         variant="outlined"
       ></v-text-field>
 
@@ -80,8 +79,8 @@ const getSelectionParamsNums = () =>{
   return props.params.filter(params => params.selection.length != 0).length;
 }
 
-const required = (v) =>{
-  return !!v || 'This field is required'
+const required = (v,required) =>{
+  return required && !v ? 'This field is required' : true;
 }
 
 watch(

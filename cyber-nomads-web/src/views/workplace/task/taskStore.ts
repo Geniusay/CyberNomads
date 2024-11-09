@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { useSnackbarStore } from "@/stores/snackbarStore";
-import { getTaskList,getPlatformTaskType } from "@/api/taskApi";
+import {getTaskList, getPlatformTaskType, createTask, updateTask, deleteTask} from "@/api/taskApi";
 import {defaultValue, TaskForm, TaskType, TaskVO} from "@/views/workplace/task/taskTypes";
 
 
@@ -61,6 +61,35 @@ export const useTaskStore = defineStore({
           snackbarStore.showErrorMessage(error.message)
         })
       }
+    },
+    async createTask(taskForm: TaskForm){
+      await createTask(taskForm).then(res=>{
+        snackbarStore.showSuccessMessage("添加成功")
+        this.taskList.value.push({ ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() });
+      }).catch(error=>{
+        snackbarStore.showErrorMessage("添加失败："+error.message)
+      })
+    },
+    async updateTask(taskForm: TaskForm){
+      await updateTask(taskForm).then(res=>{
+        snackbarStore.showSuccessMessage("更新成功")
+        const index = this.taskList.value.findIndex(item => item.id === taskForm.taskId)
+        console.log(index)
+        this.taskList.value[index] = { ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() };
+        console.log(this.taskList.value[index])
+        console.log({ ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() })
+      }).catch(error=>{
+        snackbarStore.showErrorMessage("更新失败："+error.message)
+      })
+    },
+    async deleteTask(item: TaskVO){
+      await deleteTask(item.id).then(res=>{
+        snackbarStore.showSuccessMessage(item.taskName+"已成功删除")
+        const index = this.taskList.value.findIndex(task => task.id === item.id);
+        this.taskList.value.splice(index, 1);
+      }).catch(error=>{
+        snackbarStore.showErrorMessage(item.taskName+"删除失败："+error.message)
+      })
     }
   }
 })

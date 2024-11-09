@@ -32,7 +32,7 @@ request.interceptors.response.use(
       console.log(res)
       return Promise.reject({
         response,
-        message: res.msg || "请求异常",
+        message: res.message || "请求异常",
       });
     }
     // 如果是返回的文件

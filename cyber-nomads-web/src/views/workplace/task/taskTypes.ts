@@ -14,7 +14,7 @@ export interface TaskVO {
 }
 
 export interface TaskForm{
-  id: string | null;
+  taskId: string | null;
   taskName: string;
   platform: string;
   taskType: string;
@@ -49,7 +49,7 @@ const defaultTaskForm: TaskForm = {
 
 export function mapTaskVOToTaskForm(taskVO: TaskVO): TaskForm {
   return {
-    id: taskVO.id,
+    taskId: taskVO.id,
     taskName: taskVO.taskName,
     platform: taskVO.platform,
     taskType: taskVO.taskType,

@@ -13,6 +13,7 @@
             :label="$t('workplace.task.taskName')"
             v-model="taskStore.getTaskForm.taskName"
             variant="outlined"
+            :rules="[required(taskStore.getTaskForm.taskName, true)]"
             required
           ></v-text-field>
         </v-col>
@@ -26,6 +27,7 @@
             density="compact"
             :items="platformList"
             v-model="taskStore.getTaskForm.platform"
+            :rules="[required(taskStore.getTaskForm.platform, true)]"
             :label="$t('workplace.task.platform')"
             item-title="platformCnZh"
             item-value="platform"
@@ -60,6 +62,7 @@
             :items="taskTypes"
             v-model="taskStore.taskForm.taskType"
             :label="$t('workplace.task.taskType')"
+            :rules="[required(taskStore.getTaskForm.taskType, true)]"
             item-title="taskTypeValue"
             item-value="taskTypeKey"
             variant="outlined"
@@ -103,7 +106,7 @@ import { useTaskStore,snackbarStore } from "@/views/workplace/task/taskStore"
 import { useCommonStore } from "@/stores/commonStore";
 import { PlatformVO } from "@/types/platformType";
 import { onMounted } from "vue";
-import { createTask } from "@/api/taskApi"
+import {createTask, updateTask} from "@/api/taskApi"
 import { defaultValue } from "@/views/workplace/task/taskTypes"
 import { TaskVO } from "@/views/workplace/task/taskTypes"
 import {RobotVO} from "@/views/workplace/robot/robotTypes";
@@ -117,10 +120,6 @@ const taskTypes = ref([])
 const robotList = ref<RobotVO[]>([])
 const robotStore = useRobotStore();
 
-const rules = {
-
-}
-
 onMounted(async ()=>{
   const platform = taskStore.taskForm.platform
   if(!!platform){
@@ -132,12 +131,12 @@ onMounted(async ()=>{
 
 const submit = async () =>{
   const taskForm = {...taskStore.taskForm}
-  await createTask(taskForm).then(res=>{
-    taskStore.taskList.value.push({ ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() });
-    snackbarStore.showSuccessMessage("添加成功")
-  }).catch(error=>{
-    snackbarStore.showErrorMessage("添加失败："+error.message)
-  })
+  if(!taskStore.isEdit){
+    await taskStore.createTask(taskForm)
+  }else{
+    await taskStore.updateTask(taskForm)
+  }
+
   taskStore.taskForm = {...defaultValue.defaultTaskForm}
   taskStore.closeDialog()
 }
@@ -149,6 +148,10 @@ const close = () =>{
 
 const childParams = (taskType) =>{
   return taskTypes.value.find(param=>param.taskTypeKey===taskType)
+}
+
+const required = (v,required) =>{
+  return required && !v ? 'This field is required' : true;
 }
 
 watch(
