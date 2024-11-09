@@ -68,5 +68,4 @@ public class ITaskLogService implements TaskLogService {
                 .map(TaskLogVO::convertToTaskLogVO)
                 .collect(Collectors.toList());
     }
-
 }

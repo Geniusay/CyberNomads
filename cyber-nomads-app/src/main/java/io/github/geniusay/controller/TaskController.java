@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/task")
@@ -28,7 +29,7 @@ public class TaskController {
      */
     @TokenRequire
     @PostMapping("/create")
-    public Result<?> createTask(@RequestBody CreateTaskDTO create) {
+    public Result<?> createTask(@RequestBody @Valid CreateTaskDTO create) {
         return Result.success(taskService.createTask(create));
     }
 
@@ -46,8 +47,7 @@ public class TaskController {
      */
     @TokenRequire
     @PostMapping("/update")
-    public Result<?> updateTask(@RequestBody
-                                    @Validated UpdateTaskDTO updateTaskDTO) {
+    public Result<?> updateTask(@RequestBody @Valid UpdateTaskDTO updateTaskDTO) {
         return Result.success(taskService.updateTask(updateTaskDTO));
     }
 
