@@ -81,7 +81,7 @@ public class IUserService implements UserService {
     public LoginVO register(RegisterRequestDTO req) {
         String code = req.getCode();
         String cacheCode = cacheUtil.getEmailAndRemove(req.getEmail());
-        if(!code.equals(cacheCode.toLowerCase())){
+        if(!code.toLowerCase().equals(cacheCode)){
             throw new ServeException("验证码错误");
         }
         UserDO user = UserDO.builder()
