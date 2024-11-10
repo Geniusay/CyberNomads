@@ -8,9 +8,11 @@ import io.github.geniusay.core.supertask.plugin.TaskPluginFactory;
 import io.github.geniusay.core.supertask.plugin.comment.AICommentGenerate;
 import io.github.geniusay.core.supertask.plugin.comment.AbstractCommentGenerate;
 import io.github.geniusay.core.supertask.plugin.terminator.CooldownTerminator;
+import io.github.geniusay.core.supertask.plugin.video.AbstractGetVideoPlugin;
 import io.github.geniusay.core.supertask.plugin.video.GetHotVideoPlugin;
 import io.github.geniusay.core.supertask.task.*;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
+import io.github.geniusay.crawler.po.bilibili.BilibiliVideoDetail;
 import io.github.geniusay.crawler.po.bilibili.VideoDetail;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import io.github.geniusay.pojo.DO.LastWord;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.github.geniusay.core.supertask.config.PluginConstant.COMMENT_GROUP_NAME;
+import static io.github.geniusay.core.supertask.config.PluginConstant.GET_VIDEO_GROUP_NAME;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.INFINITY_HOT_VIDEO_COMMENT;
 
@@ -53,11 +56,15 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
         Map<String, Object> params = task.getParams();
 
         String comment = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task).generateComment();
-        VideoDetail video = getHotVideoPlugin.getHandleVideoWithLimit(params, 1).get(0);
+        BilibiliVideoDetail videoDetail = taskPluginFactory.<AbstractGetVideoPlugin>buildPluginWithGroup(GET_VIDEO_GROUP_NAME, task).getHandleVideo(robot, task);
 
-        ApiResponse<Boolean> response = new ActionFlow<>(new BilibiliUserActor(robot), new BilibiliCommentActionLogic(comment, false), new BilibiliCommentReceiver(video.getData())).execute();
+        ApiResponse<Boolean> response = new ActionFlow<>(
+                new BilibiliUserActor(robot),
+                new BilibiliCommentActionLogic(comment, false),
+                new BilibiliCommentReceiver(videoDetail)
+        ).execute();
 
-        Map<String, Object> additionalInfo = Map.of("bvid", video.getData().getBvid(), "comment", comment);
+        Map<String, Object> additionalInfo = Map.of("bvid", videoDetail.getBvid(), "comment", comment);
         LastWord lastWord = new LastWord(response, additionalInfo);
         task.addLastWord(robot, lastWord);
     }
@@ -82,6 +89,6 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
-        return ParamsUtil.packageListParams(taskPluginFactory.pluginGroupParams(CooldownTerminator.class, AICommentGenerate.class));
+        return ParamsUtil.packageListParams(taskPluginFactory.pluginGroupParams(CooldownTerminator.class, AICommentGenerate.class, GetHotVideoPlugin.class));
     }
 }

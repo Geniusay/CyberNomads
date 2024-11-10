@@ -1,6 +1,7 @@
 package io.github.geniusay.core.actionflow.receiver;
 
 import io.github.geniusay.core.actionflow.frame.Receiver;
+import io.github.geniusay.crawler.po.bilibili.BilibiliVideoDetail;
 import io.github.geniusay.crawler.po.bilibili.VideoDetail;
 import lombok.Data;
 
@@ -31,6 +32,13 @@ public class BilibiliCommentReceiver implements Receiver {
         this.rpid = null;
         this.parentRpid = null;
         this.bvid = data.getBvid();
+    }
+
+    public BilibiliCommentReceiver(BilibiliVideoDetail videoDetail) {
+        this.oid = String.valueOf(videoDetail.getAid());
+        this.rpid = null;
+        this.parentRpid = null;
+        this.bvid = videoDetail.getBvid();
     }
 
     @Override
