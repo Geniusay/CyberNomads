@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHashHistory,createWebHistory } from "vue-router";
 import {useSnackbarStore} from "@/stores/snackbarStore";
 import WorkplaceRoutes from "@/router/workplace.routes";
 import {validAuth} from "@/utils/authUtil";
@@ -46,7 +46,7 @@ export const routes = [
 export const dynamicRoutes = [];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   // hash模式：createWebHashHistory，history模式：createWebHistory
   // process.env.NODE_ENV === "production"
 
