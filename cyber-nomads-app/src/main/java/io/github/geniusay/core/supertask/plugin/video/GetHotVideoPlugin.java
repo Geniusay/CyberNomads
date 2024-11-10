@@ -1,134 +1,106 @@
 package io.github.geniusay.core.supertask.plugin.video;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import io.github.geniusay.constants.VideoCacheConstants;
-import io.github.geniusay.crawler.api.bilibili.BilibiliHotApi;
-import io.github.geniusay.crawler.po.bilibili.VideoDetail;
-import io.github.geniusay.crawler.util.bilibili.ApiResponse;
+import io.github.geniusay.core.supertask.task.RobotWorker;
+import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
+import io.github.geniusay.crawler.po.bilibili.BilibiliVideoDetail;
+import org.springframework.context.annotation.Scope;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.util.Collections;
+import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-import static io.github.geniusay.constants.VideoCacheConstants.DEFAULT_CACHE_DURATION_MINUTES;
-import static io.github.geniusay.core.supertask.config.PluginConstant.HOT_VIDEO_PLUGIN;
-import static java.util.concurrent.TimeUnit.MINUTES;
+import static io.github.geniusay.constants.PluginConstant.*;
+import static io.github.geniusay.constants.RedisConstant.POPULAR_VIDEOS_DETAILS_KEY;
+import static io.github.geniusay.constants.RedisConstant.POPULAR_VIDEOS_SET_KEY;
+import static io.github.geniusay.core.supertask.config.PluginConstant.GET_VIDEO_GROUP_NAME;
 
-@Component
-public class GetHotVideoPlugin extends AbstractGetVideoPlugin<VideoDetail> {
+@Scope("prototype")
+@Component(GET_VIDEO_GROUP_NAME)
+public class GetHotVideoPlugin extends AbstractGetVideoPlugin implements GetHandleVideoPlugin {
 
-    // Caffeine缓存实例
-    private Cache<String, List<VideoDetail>> hotRankingVideosCache;
-    private Cache<String, List<VideoDetail>> popularVideosCache;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
-    /**
-     * 初始化缓存
-     * 这里的缓存时间是程序内部指定的，前端无法控制。
-     */
-    @PostConstruct
-    public void init() {
-        hotRankingVideosCache = createCache();
-        popularVideosCache = createCache();
-    }
+    private static final long VIDEO_MARK_EXPIRE_DAYS = 1;
+    private static final int MAX_RETRY_COUNT = 5;
+    private String scope;
 
-
-    public List<VideoDetail> getHandleVideoWithLimit(Map<String, Object> params, int limit) {
-        // 获取视频列表
-        List<VideoDetail> videoList = getHandleVideo(params);
-
-        // 如果视频数量少于请求的数量，返回全部视频
-        if (videoList.size() <= limit) {
-            return videoList;
-        }
-
-        // 随机打乱视频列表
-        Collections.shuffle(videoList);
-
-        // 返回指定数量的视频
-        return videoList.subList(0, limit);
-    }
-
-    /**
-     * 创建 Caffeine 缓存
-     *
-     * @return Cache 实例
-     */
-    private Cache<String, List<VideoDetail>> createCache() {
-        return Caffeine.newBuilder()
-                .expireAfterWrite(DEFAULT_CACHE_DURATION_MINUTES, MINUTES)
-                .maximumSize(100)
-                .build();
-    }
-
-    /**
-     * 获取视频列表，并使用缓存
-     *
-     * @param params 参数列表，支持以下参数：
-     *               - "videoType" (String): 指定要获取的视频类型。可选值为 "ranking" 或 "popular"。
-     *                 - "ranking": 获取排行榜前100的视频。
-     *                 - "popular" (默认): 获取当前热门视频列表。
-     *               - "tid" (Integer, 可选): 当 "videoType" 为 "ranking" 时，指定分区ID（tid），如果不传则获取所有分区的排行榜。
-     *               - "pn" (Integer, 可选): 当 "videoType" 为 "popular" 时，指定页码，默认为 1。
-     *               - "ps" (Integer, 可选): 当 "videoType" 为 "popular" 时，指定每页项数，默认为 20。
-     * @return 视频列表
-     */
     @Override
-    public List<VideoDetail> getHandleVideo(Map<String, Object> params) {
-        // 使用 ParamsHelper 提取并验证参数
-        Map<String, Object> validatedParams = getParams(params);
+    public void init(Task task) {
+        super.init(task);
+        // 从 task 参数中获取作用范围，默认为 "task"
+        scope = getValue(this.pluginParams, SCOPE, String.class);
+    }
 
-        // 判断获取哪种视频列表，默认是热门视频列表
-        String videoType = getValue(validatedParams, "videoType", String.class);
+    @Override
+    public BilibiliVideoDetail getHandleVideo(RobotWorker robot, Task task) {
+        // 根据作用范围，生成 Redis 的标记 key
+        String redisKey = generateRedisKey(scope, robot, task);
 
-        // TODO 暂时先换成排行榜前100
-        videoType = "ranking";
+        // 随机获取未被标记的视频，并加入重试机制
+        BilibiliVideoDetail video = getRandomUnmarkedVideo(redisKey);
 
-        if ("ranking".equalsIgnoreCase(videoType)) {
-            return hotRankingVideosCache.get(VideoCacheConstants.HOT_RANKING_VIDEOS_CACHE_KEY, key -> fetchHotRankingVideos(validatedParams));
-        } else {
-            return popularVideosCache.get(VideoCacheConstants.POPULAR_VIDEOS_CACHE_KEY, key -> fetchPopularVideos(validatedParams));
+        // 如果找到了未标记的视频，则打标记
+        if (video != null) {
+            markVideoInRedis(video, redisKey, VIDEO_MARK_EXPIRE_DAYS);
         }
+
+        return video;
     }
 
     /**
-     * 调用 BilibiliHotApi 获取排行榜前100的视频
+     * 随机获取一个未被标记的视频，加入重试机制
      */
-    private List<VideoDetail> fetchHotRankingVideos(Map<String, Object> params) {
-        Integer tid = getValue(params, "tid", Integer.class);
-        ApiResponse<List<VideoDetail>> response = BilibiliHotApi.getHotRankingVideos(tid);
-        if (response.isSuccess()) {
-            return response.getData();
-        } else {
-            throw new RuntimeException("获取B站排行榜视频失败: " + response.getMsg());
+    private BilibiliVideoDetail getRandomUnmarkedVideo(String redisKey) {
+        int retryCount = 0;
+
+        while (retryCount < MAX_RETRY_COUNT) {
+            // 从 Redis 的 Set 中随机获取一个热门视频的 bvid
+            String randomBvid = stringRedisTemplate.opsForSet().randomMember(POPULAR_VIDEOS_SET_KEY);
+
+            if (randomBvid != null) {
+                Boolean isMarked = stringRedisTemplate.opsForSet().isMember(redisKey, randomBvid);
+
+                if (Boolean.FALSE.equals(isMarked)) {
+                    String videoJson = (String) stringRedisTemplate.opsForHash().get(POPULAR_VIDEOS_DETAILS_KEY, randomBvid);
+                    if (videoJson != null) {
+                        return BilibiliVideoDetail.fromJson(videoJson);
+                    }
+                }
+            }
+
+            retryCount++;
         }
+
+        return null;
     }
 
     /**
-     * 调用 BilibiliHotApi 获取当前热门视频列表
+     * 在 Redis 中标记视频
      */
-    private List<VideoDetail> fetchPopularVideos(Map<String, Object> params) {
-        int pageNumber = getValue(params, "pn", Integer.class);
-        int pageSize = getValue(params, "ps", Integer.class);
-        ApiResponse<List<VideoDetail>> response = BilibiliHotApi.getPopularVideos(pageNumber, pageSize);
-        if (response.isSuccess()) {
-            return response.getData();
+    private void markVideoInRedis(BilibiliVideoDetail video, String redisKey, long expireDays) {
+        stringRedisTemplate.opsForSet().add(redisKey, video.getBvid());
+        stringRedisTemplate.expire(redisKey, expireDays, TimeUnit.DAYS);  // 设置标记的过期时间
+    }
+
+    /**
+     * 根据作用范围生成 Redis 的标记 key
+     */
+    private String generateRedisKey(String scope, RobotWorker robot, Task task) {
+        if ("robot".equals(scope)) {
+            return String.format("bili:video:robot:%s:handled", robot.getId());
         } else {
-            throw new RuntimeException("获取B站热门视频失败: " + response.getMsg());
+            return String.format("bili:video:task:%s:handled", task.getId());
         }
     }
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
-                new TaskNeedParams("videoType", String.class, "指定要获取的视频类型", false, "popular"),
-                new TaskNeedParams("tid", Integer.class, "分区ID", false, null),
-                new TaskNeedParams("pn", Integer.class, "页码", false, VideoCacheConstants.DEFAULT_PAGE_NUMBER),
-                new TaskNeedParams("ps", Integer.class, "每页项数", false, VideoCacheConstants.DEFAULT_PAGE_SIZE)
+                TaskNeedParams.ofKV(SCOPE, "task", "避免重复挑选视频规则，填：task/robot")
         );
     }
-
 }

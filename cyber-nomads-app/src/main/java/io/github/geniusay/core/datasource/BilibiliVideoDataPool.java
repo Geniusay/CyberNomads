@@ -13,15 +13,15 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static io.github.geniusay.constants.RedisConstant.*;
 
 @Slf4j
 @Component
 public class BilibiliVideoDataPool implements VideoDataPool {
-
-    private static final String RANKING_VIDEOS_KEY = "bilibili:rankingVideos";
-    private static final String POPULAR_VIDEOS_HASH_KEY = "bilibili:popularVideosHash";
 
     private static final long CACHE_EXPIRE_TIME = 1800;  // 排行榜缓存过期时间，单位秒，30分钟
     private static final int MAX_RANKING_VIDEO_COUNT = 100;  // 排行榜最大视频数量
@@ -75,7 +75,7 @@ public class BilibiliVideoDataPool implements VideoDataPool {
     @Override
     public List<BilibiliVideoDetail> getPopularVideos() {
         // 从 Redis 的 Hash 结构中获取所有热门视频
-        List<String> popularVideosJson = stringRedisTemplate.opsForHash().values(POPULAR_VIDEOS_HASH_KEY).stream()
+        List<String> popularVideosJson = stringRedisTemplate.opsForHash().values(POPULAR_VIDEOS_DETAILS_KEY).stream()
                 .map(Object::toString)
                 .collect(Collectors.toList());
 
@@ -109,13 +109,14 @@ public class BilibiliVideoDataPool implements VideoDataPool {
     @Scheduled(cron = "0 0 0 * * ?")
     private void scheduledClearPopularVideos() {
         log.info("清空热门视频缓存...");
-        stringRedisTemplate.delete(POPULAR_VIDEOS_HASH_KEY);
+        stringRedisTemplate.delete(POPULAR_VIDEOS_SET_KEY);
+        stringRedisTemplate.delete(POPULAR_VIDEOS_DETAILS_KEY);
     }
 
     /**
      * 更新排行榜视频缓存
      */
-    private void updateRankingVideos() {
+    public void updateRankingVideos() {
         try {
             ApiResponse<List<VideoDetail>> response = BilibiliHotApi.getHotRankingVideos(null);
             if (response.isSuccess()) {
@@ -127,16 +128,11 @@ public class BilibiliVideoDataPool implements VideoDataPool {
                 stringRedisTemplate.delete(RANKING_VIDEOS_KEY);
 
                 // 批量插入新数据到 Redis
-                List<String> rankingVideosJson = rankingVideos.stream()
-                        .map(BilibiliVideoDetail::toJson)
-                        .collect(Collectors.toList());
+                List<String> rankingVideosJson = rankingVideos.stream().map(BilibiliVideoDetail::toJson).collect(Collectors.toList());
 
                 stringRedisTemplate.opsForList().leftPushAll(RANKING_VIDEOS_KEY, rankingVideosJson);
-
-                // 保持列表长度为 100
                 stringRedisTemplate.opsForList().trim(RANKING_VIDEOS_KEY, 0, MAX_RANKING_VIDEO_COUNT - 1);
 
-                // 设置排行榜缓存的过期时间为 30 分钟
                 stringRedisTemplate.expire(RANKING_VIDEOS_KEY, CACHE_EXPIRE_TIME, TimeUnit.SECONDS);
 
                 log.info("成功更新排行榜视频缓存");
@@ -149,9 +145,9 @@ public class BilibiliVideoDataPool implements VideoDataPool {
     }
 
     /**
-     * 更新热门视频缓存
+     * 更新热门视频缓存（优化：批量操作 Redis）
      */
-    private void updatePopularVideos() {
+    public void updatePopularVideos() {
         try {
             // 爬取当前页的热门视频
             ApiResponse<List<VideoDetail>> response = BilibiliHotApi.getPopularVideos(currentPage, PAGE_SIZE);
@@ -160,15 +156,14 @@ public class BilibiliVideoDataPool implements VideoDataPool {
                         .map(BilibiliVideoDetail::fromVideoDetail)
                         .collect(Collectors.toList());
 
-                for (BilibiliVideoDetail video : popularVideos) {
-                    String videoJson = video.toJson();
+                Map<String, String> videoDetailsMap = popularVideos.stream()
+                        .collect(Collectors.toMap(BilibiliVideoDetail::getBvid, BilibiliVideoDetail::toJson));
 
-                    // 使用 bvid 作为 Hash 的 key，视频详情作为 value
-                    stringRedisTemplate.opsForHash().put(POPULAR_VIDEOS_HASH_KEY, video.getBvid(), videoJson);
-                }
+                stringRedisTemplate.opsForSet().add(POPULAR_VIDEOS_SET_KEY, videoDetailsMap.keySet().toArray(new String[0]));
+                stringRedisTemplate.opsForHash().putAll(POPULAR_VIDEOS_DETAILS_KEY, videoDetailsMap);
 
-                // 设置热门视频缓存的过期时间为 1 天
-                stringRedisTemplate.expire(POPULAR_VIDEOS_HASH_KEY, POPULAR_CACHE_EXPIRE_TIME, TimeUnit.SECONDS);
+                stringRedisTemplate.expire(POPULAR_VIDEOS_SET_KEY, POPULAR_CACHE_EXPIRE_TIME, TimeUnit.SECONDS);
+                stringRedisTemplate.expire(POPULAR_VIDEOS_DETAILS_KEY, POPULAR_CACHE_EXPIRE_TIME, TimeUnit.SECONDS);
 
                 log.info("成功更新热门视频缓存，当前页: " + currentPage);
 

@@ -12,4 +12,6 @@ public class PluginConstant {
     public static final String AI_COUNT_NUM = "aiCountNum";
 
     public static final String SLOGAN = "slogan";
+
+    public static final String SCOPE = "scope";
 }
