@@ -58,6 +58,7 @@ public class CacheUtil {
         return code;
     }
 
+
     public boolean emailCodeIsExpired(String key) {
         return Boolean.TRUE.equals(stringRedisTemplate.hasKey(RedisConstant.EMAIL_CAPTCHA + key));
     }
