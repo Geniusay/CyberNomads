@@ -54,11 +54,12 @@ onMounted(async ()=>{
 })
 
 const addRobotReq = async () => {
-  await addRobot(robotForm.value).then(res=>{
-    robotStore.initRobotList()
+  await addRobot(robotForm.value).then(async res=>{
+    await robotStore.initRobotList()
+    robotList.value = robotStore.getRobotList as RobotVO[]
     snackbarStore.showSuccessMessage("添加成功")
   }).catch(error=>{
-    snackbarStore.showErrorMessage("添加失败")
+    snackbarStore.showErrorMessage("添加失败: 请检查账号是否重复")
   })
 }
 
