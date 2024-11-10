@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.github.common.web.Result;
 import io.github.geniusay.constants.UserConstant;
 import io.github.geniusay.core.async.AsyncService;
+import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.mapper.UserMapper;
 import io.github.geniusay.pojo.DO.UserDO;
 import io.github.geniusay.pojo.DTO.*;
@@ -39,7 +40,7 @@ public class IUserService implements UserService {
     public UserVO queryUserById(String uid) {
         UserDO dto = userMapper.selectOne(new QueryWrapper<UserDO>().eq("uid",uid));
         if(dto==null){
-            throw new RuntimeException("用户不存在");
+            throw new ServeException("用户不存在");
         }
         return UserVO.convert(dto);
     }
@@ -56,13 +57,13 @@ public class IUserService implements UserService {
         String code = req.getCode();
         String emailCode = cacheUtil.getEmailAndRemove(req.getEmail());
         if(!StringUtils.equals(CyberStringUtils.toLower(code), emailCode)){
-            throw new IllegalArgumentException("验证码错误");
+            throw new ServeException("验证码错误");
         }
 
         UserDO user = userMapper.selectOne(new QueryWrapper<UserDO>()
                 .eq("email",req.getEmail()));
         if(user == null){
-            throw new RuntimeException("用户未注册");
+            throw new ServeException("用户未注册");
         }
         String token = TokenUtil.getToken(String.valueOf(user.getUid()), user.getEmail(), user.getNickname());
         return LoginVO.builder().userVO(UserVO.convert(user)).token(token).build();
@@ -78,7 +79,7 @@ public class IUserService implements UserService {
         String code = req.getCode();
         String cacheCode = cacheUtil.getEmailAndRemove(req.getEmail());
         if(!code.equals(cacheCode)){
-            throw new IllegalArgumentException("验证码错误");
+            throw new ServeException("验证码错误");
         }
         UserDO user = UserDO.builder()
                 .nickname(UserConstant.CYBER_NOMADS + RandomUtil.generateRandomString(8))
@@ -105,10 +106,10 @@ public class IUserService implements UserService {
     @Override
     public void generateEmailCode(String email,String pid,String code) {
         if(cacheUtil.emailCodeIsExpired(email)){
-            throw new RuntimeException("验证码冷却中");
+            throw new ServeException("验证码冷却中");
         }
         if(!StringUtils.equals(cacheUtil.getCaptchaAndRemove(pid), CyberStringUtils.toLower(code))){
-            throw new IllegalArgumentException("验证码错误");
+            throw new ServeException("验证码错误");
         }
         String emailCode = RandomUtil.generateRandomString(6);
         cacheUtil.putEmail(email, CyberStringUtils.toLower(emailCode));
