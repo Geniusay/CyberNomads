@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class BilibiliVideoDetail {
+
     private String bvid;
     private long aid;
     private int tid;

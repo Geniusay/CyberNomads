@@ -19,4 +19,9 @@ public interface TaskLogService {
      * 根据任务ID查询最近X条日志记录
      */
     List<TaskLogVO> getRecentLogsByTaskId(Long taskId, int limit);
+
+    /**
+     * 根据用户 UID 查询最近 20 条日志记录
+     */
+    List<TaskLogVO> getRecentLogsByUid(String uid);
 }

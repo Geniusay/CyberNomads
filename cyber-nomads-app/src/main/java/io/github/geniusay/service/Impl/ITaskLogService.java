@@ -86,4 +86,20 @@ public class ITaskLogService implements TaskLogService {
                 .map(TaskLogVO::convertToTaskLogVO)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * 根据用户 UID 查询最近 20 条日志记录
+     */
+    @Override
+    public List<TaskLogVO> getRecentLogsByUid(String uid) {
+        QueryWrapper<TaskLogDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("uid", uid)
+                .orderByDesc("create_time")
+                .last("LIMIT 20");
+
+        List<TaskLogDO> taskLogs = taskLogMapper.selectList(queryWrapper);
+        return taskLogs.stream()
+                .map(TaskLogVO::convertToTaskLogVO)
+                .collect(Collectors.toList());
+    }
 }

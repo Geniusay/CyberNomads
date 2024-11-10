@@ -21,6 +21,7 @@ public abstract class AbstractTerminator extends BaseTaskPlugin implements Termi
 
     @Override
     public abstract void doTask(RobotWorker worker);
+
     @Override
     public abstract boolean taskIsDone();
 

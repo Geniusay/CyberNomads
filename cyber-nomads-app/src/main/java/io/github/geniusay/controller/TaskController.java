@@ -7,6 +7,7 @@ import io.github.geniusay.pojo.DTO.ModifyTaskDTO;
 import io.github.geniusay.pojo.DTO.UpdateTaskDTO;
 import io.github.geniusay.service.TaskLogService;
 import io.github.geniusay.service.TaskService;
+import io.github.geniusay.utils.ThreadUtil;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -80,5 +81,14 @@ public class TaskController {
     @GetMapping("/getRecentLogs")
     public Result<?> getRecentLogs(@RequestParam Long taskId, @RequestParam int limit) {
         return Result.success(taskLogService.getRecentLogsByTaskId(taskId, limit));
+    }
+
+    /**
+     * 获取当前用户最近产生的 20 条日志记录
+     */
+    @TokenRequire
+    @GetMapping("/recentLogs")
+    public Result<?> getRecentLogsForCurrentUser() {
+        return Result.success(taskLogService.getRecentLogsByUid(ThreadUtil.getUid()));
     }
 }
