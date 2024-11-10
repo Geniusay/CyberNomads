@@ -146,7 +146,7 @@ const getTagColor = (log: TaskLog) => {
 
 <style lang="scss" scoped>
 .timeline-container {
-  min-height: 660px;
+  height: 360px;
   overflow: scroll;
 }
 .time-line {
