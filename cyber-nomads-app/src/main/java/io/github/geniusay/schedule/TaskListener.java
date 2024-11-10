@@ -9,7 +9,7 @@ import io.github.geniusay.core.supertask.task.Task;
  */
 public interface TaskListener {
 
-    void startTask(Task task);
+    void registerRobotWorker(Long robotId);
     void removeTask(Task task);
     void registerRobot(Long robotId);
     void removeRobot(Long robotId);

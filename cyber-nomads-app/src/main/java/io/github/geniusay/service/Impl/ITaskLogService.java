@@ -36,9 +36,7 @@ public class ITaskLogService implements TaskLogService {
     public void logTaskResult(RobotWorker robotWorker) {
         Task task = robotWorker.getCurrentTask();
         String finalLastWord = robotWorker.task().getLastWord().lastTalk(robotWorker);
-
         boolean success = LastWordUtil.isSuccess(finalLastWord);
-
         // 构建 TaskLogDO 对象
         TaskLogDO taskLog = new TaskLogDO();
         taskLog.setSuccess(success);

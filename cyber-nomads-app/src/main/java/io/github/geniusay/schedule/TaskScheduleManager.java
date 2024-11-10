@@ -70,12 +70,14 @@ public class TaskScheduleManager {
         WORLD_TASK.put(String.valueOf(taskDO.getId()), task);
 
         for (RobotDO robot : taskDO.getRobotList()) {
-            WORLD_ROBOTS.put(robot.getId(),new RobotWorker(robot));
-            Map<String, Task> taskMap = WORLD_ROBOTS_TASK.getOrDefault(robot.getId(), new ConcurrentHashMap<>());
-            taskMap.put(String.valueOf(taskDO.getId()),WORLD_TASK.get(String.valueOf(taskDO.getId())));
-            WORLD_ROBOTS_TASK.put(robot.getId(),taskMap);
+            WORLD_ROBOTS.computeIfAbsent(robot.getId(), id -> {
+                EVENT_PUBLISHER.startWork(id);
+                return new RobotWorker(robot);
+            });
+            WORLD_ROBOTS_TASK.computeIfAbsent(robot.getId(), id -> new ConcurrentHashMap<>())
+                    .put(String.valueOf(taskDO.getId()), WORLD_TASK.get(String.valueOf(taskDO.getId())));
         }
-        EVENT_PUBLISHER.startWork(WORLD_TASK.get(String.valueOf(taskDO.getId())));
+
     }
 
     public Task removeTask(Long taskId){

@@ -41,8 +41,8 @@ public class ScheduleExecutor implements TaskListener{
         while (true){
             try {
                 Long robotId = FREE_WORKER.take();
-                Map<Long, Map<String, Task>> worldRobotsTask = manager.getWorldRobotsTask(); //获取所有任务robot
-                Map<String, Task> taskMap = worldRobotsTask.get(robotId); //获取对应robot的任务列表
+                Map<Long, Map<String, Task>> worldRobotsTask = manager.getWorldRobotsTask();
+                Map<String, Task> taskMap = worldRobotsTask.get(robotId);
                 if(!Objects.isNull(taskMap)&&!taskMap.isEmpty()){
                     List<Task> tasks = new ArrayList<>(taskMap.values());
                     RobotWorker robotWorker = manager.getAllRobot().get(robotId);
@@ -68,10 +68,7 @@ public class ScheduleExecutor implements TaskListener{
                         }finally {
                             String lastTalk = robotWorker.task().getLastWord().lastTalk(robotWorker);
                             boolean success = LastWordUtil.isSuccess(lastTalk);
-
-                            // TODO 记录遗言
                             taskLogService.logTaskResult(robotWorker);
-
                             String taskId = robotWorker.task().getId();
                             if(robotWorker.task().getTerminator().taskIsDone() && canChangeTaskStatus(taskId)){
                                 taskMap.remove(robotWorker.task().getUid());
@@ -91,10 +88,8 @@ public class ScheduleExecutor implements TaskListener{
     }
 
     @Override
-    public void startTask(Task task) {
-        for (RobotDO robot : task.getRobots()) {
-            FREE_WORKER.add(robot.getId());
-        }
+    public void registerRobotWorker(Long robotId) {
+        FREE_WORKER.add(robotId);
     }
 
     @Override

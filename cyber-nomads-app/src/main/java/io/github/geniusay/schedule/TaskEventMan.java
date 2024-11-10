@@ -29,9 +29,9 @@ public class TaskEventMan {
         });
     }
 
-    public void startWork(Task task) {
+    public void startWork(Long robotId) {
         for (TaskListener listener : listeners) {
-            listener.startTask(task);
+            listener.registerRobotWorker(robotId);
         }
     }
 
