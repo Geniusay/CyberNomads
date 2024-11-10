@@ -87,8 +87,8 @@ public class TaskController {
      * 获取当前用户最近产生的 20 条日志记录
      */
     @TokenRequire
-    @GetMapping("/recentLogs")
-    public Result<?> getRecentLogsForCurrentUser() {
+    @GetMapping("/userAllRecentLogs")
+    public Result<?> getUserAllRecentLogs() {
         return Result.success(taskLogService.getRecentLogsByUid(ThreadUtil.getUid()));
     }
 }

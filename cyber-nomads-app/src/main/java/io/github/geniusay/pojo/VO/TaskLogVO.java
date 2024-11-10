@@ -14,10 +14,12 @@ public class TaskLogVO {
     private String content;
     private String robotName;
     private String createTime;
+    private String taskName;
 
     public static TaskLogVO convertToTaskLogVO(TaskLogDO taskLogDO) {
         TaskLogVO taskLogVO = new TaskLogVO();
         taskLogVO.setId(String.valueOf(taskLogDO.getId()));
+        taskLogVO.setTaskName(taskLogDO.getTaskName());
         taskLogVO.setSuccess(taskLogDO.isSuccess());
         taskLogVO.setContent(taskLogDO.getContent());
         taskLogVO.setRobotName(taskLogDO.getRobotName());
