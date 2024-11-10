@@ -21,7 +21,10 @@ export default {
       platform:"赛博世界(平台)",
       taskType:"任务类型",
       chooseCyberNomads:"选择CyberNomads账号",
-      log:"赛博游民日志"
+      log:"赛博游民日志",
+      addTask:"新建任务",
+      emptyTaskTitle:"目前还没有创建任何任务",
+      emptyTaskContent:"点击-新建任务-按钮，来创建一个新任务吧"
     }
   },
   common: {

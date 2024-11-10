@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ENC(H5JV5q1qQ8yVlCXslDGYlX8pkt8mjlb16ch8IjAQVcRmfC4G8mESPGE/Rzci2U9LFxGQmycwEKmKTSQ+jAOvLkvZIahz3tsL+IR9AB6Uk/P00i1UeYoyDjElXuI/ZIch1lVN/PQQxao9LFCANLfJkOwTCq4IAxRwwXuZN4cJOy/oKao8CUilgA==)
+    url: ENC(sBcCnetSBOU2DfmJ4aEpLGikB8VrKfjPt8JwrEeUZVk9poeYn2feOrg08vnr01dNanfgsORfaUY/Fu07KvivhutiWGkWHChSpI4KI1cTVR6HbjpQNCWfYvcF6roXa2Q1xgB1HDhdOPlhlwkHOS6WPdPog6GVYCq+og8DXbgFDlst40KT5dYj4Gcc10RsGhRR)
     username: ENC(yXBx5wdwZUEE3wx0VS/dA22j7rb/w5GU)
-    password: ENC(1H43h5CI+yrGgD1ndOjPi1EG+qs5NmNpIHKGrlWveoY=)
+    password: ENC(mSe62IQWgHVAhgiPlCnL+z7HlBGfSUsvxDodPhpewxc=)
     type: com.zaxxer.hikari.HikariDataSource # 使用 HikariCP 连接池
     hikari:
       minimum-idle: 10

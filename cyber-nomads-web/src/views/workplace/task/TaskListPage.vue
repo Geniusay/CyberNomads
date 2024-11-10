@@ -18,8 +18,17 @@
       </v-toolbar>
     </v-card-title>
     <div>
-      <v-container>
-        <v-row align="center">
+      <EmptyDataPage
+      v-if="emptyState"
+      :title="'workplace.task.emptyTaskTitle'"
+      :content="'workplace.task.emptyTaskContent'"
+      :handler=openAddDialog
+      :btnText="'workplace.task.addTask'"
+      :errorImg="'/assets/img/empty_tips.png'"
+      ></EmptyDataPage>
+      <v-container v-else>
+        <EmptyCardState v-if="pageLoading"></EmptyCardState>
+        <v-row v-else align="center">
           <v-col
             cols="12"
             xs="12"
@@ -52,9 +61,11 @@ import { TaskVO } from "@/views/workplace/task/taskTypes";
 import { PlatformVO } from "@/types/platformType";
 import { onMounted } from "vue";
 import { useCommonStore } from "@/stores/commonStore";
-import { useTaskStore,snackbarStore } from "@/views/workplace/task/taskStore"
+import { useTaskStore } from "@/views/workplace/task/taskStore"
 import {useRobotStore} from "@/views/workplace/robot/robotStore";
 import {images} from "@/views/workplace/task/taskListConfig";
+import EmptyCardState from "@/components/empty/EmptyCardState.vue";
+import EmptyDataPage from "@/components/empty/EmptyDataPage.vue";
 
 
 const taskStore = useTaskStore()
@@ -63,6 +74,8 @@ const taskList = ref<TaskVO[]>([])
 const platformList = ref<PlatformVO[]>([])
 const robotStore = useRobotStore();
 const randomSeed = Math.floor(Math.random() * images.length);
+const emptyState = ref(false)
+const pageLoading = ref(true)
 
 onMounted(async()=>{
   await taskStore.initTaskList()
@@ -70,6 +83,8 @@ onMounted(async()=>{
   await robotStore.initRobotList()
   platformList.value = commonStore.getPlatformList as PlatformVO[]
   taskList.value = taskStore.getTaskList.value as TaskVO[]
+  emptyState.value = taskList.value.length==0;
+  pageLoading.value = false
 })
 
 const openAddDialog = ()=>{

@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory,createWebHistory } from "vue-router";
+import { createRouter,createWebHistory } from "vue-router";
 import {useSnackbarStore} from "@/stores/snackbarStore";
 import WorkplaceRoutes from "@/router/workplace.routes";
 import {validAuth} from "@/utils/authUtil";

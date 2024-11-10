@@ -72,7 +72,7 @@ const sendEmailCode = async () => {
     await sendCodeToEmail(currentForm().value.email, picCode.value.pid, picCode.value.code).then(res=>{
       snackbarStore.showSuccessMessage("已发送邮箱验证码，请检查邮箱")
     }).catch((error)=>{
-      snackbarStore.showErrorMessage("图片验证码错误!")
+      snackbarStore.showErrorMessage("发送失败："+error.message)
       generatePicCode()
     })
     sendLoading.value = false

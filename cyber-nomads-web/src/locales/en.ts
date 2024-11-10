@@ -20,7 +20,8 @@ export default {
       taskName:"Task Name",
       platform:"Platform",
       taskType:"Task Type",
-      log:"Robot Log"
+      log:"Robot Log",
+      addTask:"Add Task"
     }
   },
   common: {
