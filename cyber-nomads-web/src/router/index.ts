@@ -1,10 +1,4 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import UserRoutes from "./user.routes";
-import AuthRoutes from "./auth.routes";
-import LandingRoutes from "./landing.routes";
-import UtilityRoutes from "./utility.routes";
-import AppsRoutes from "./apps.routes";
-import DataRoutes from "./data.routes";
 import {useSnackbarStore} from "@/stores/snackbarStore";
 import WorkplaceRoutes from "@/router/workplace.routes";
 import {validAuth} from "@/utils/authUtil";
@@ -37,10 +31,6 @@ export const routes = [
         },
         component: () => import("@/views/pages/DashBoard.vue"),
       },
-      ...UserRoutes,
-      ...LandingRoutes,
-      ...AuthRoutes,
-      ...UtilityRoutes,
       ...WorkplaceRoutes
     ]
   },

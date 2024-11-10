@@ -11,7 +11,7 @@ export default {
         {
           key: "menu.dashboard",
           text: "Dashboard",
-          link: "/dashboard",
+          link: "/workplace/dashboard",
           icon: "mdi-view-dashboard-outline",
         },
       ],

@@ -162,7 +162,7 @@ const openLogDialog = async()=>{
     </v-card>
   </v-dialog>
 
-  <v-dialog v-model="logDialog" max-width="700">
+  <v-dialog v-model="logDialog" max-width="900">
     <v-card>
       <LogList :task="item"/>
       <v-divider></v-divider>

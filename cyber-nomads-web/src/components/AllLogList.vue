@@ -1,27 +1,31 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
 import moment from "moment";
-import {TaskVO,TaskLog} from "@/views/workplace/task/taskTypes";
+import {TaskLog} from "@/views/workplace/task/taskTypes";
+import { getUserRecentLogs } from "@/api/taskApi"
+import {useSnackbarStore} from "@/stores/snackbarStore";
+
+const snackbarStore = useSnackbarStore()
 const loading = ref(false);
-import { useTaskStore } from "@/views/workplace/task/taskStore"
+const logList = ref<TaskLog[]>([])
 
-interface Props {
-  task: TaskVO;
+const getAllLogs = async() =>{
+  await getUserRecentLogs().then(res=>{
+    logList.value = [...res.data as TaskLog[]]
+  }).catch(error=>{
+    snackbarStore.showErrorMessage(error.message)
+  })
 }
-
-const props = defineProps<Props>();
-
-const taskStore = useTaskStore()
 
 onMounted(async()=>{
   loading.value = true
-  await taskStore.queryTaskLog(props.task, false)
+  await getAllLogs();
   loading.value = false
 })
 
 const refresh = async() =>{
   loading.value = true
-  await taskStore.queryTaskLog(props.task, true)
+  await getAllLogs();
   loading.value = false
 }
 const convertToHtml = (text) => {
@@ -99,7 +103,7 @@ const getTagColor = (log: TaskLog) => {
         truncate-line="start"
       >
         <v-timeline-item
-          v-for="log in task.taskLogs"
+          v-for="log in logList"
           :key="log.id"
           size="small"
         >
@@ -128,6 +132,7 @@ const getTagColor = (log: TaskLog) => {
               >
                 <span>{{ log.success?'SUCESS':'ERROR' }}</span>
               </v-chip>
+              <span class="text-body-2">{{ log.taskName }}</span>
             </v-card-subtitle>
             <v-card-text>
               <div v-html="convertToHtml(log.content)"></div>

@@ -165,8 +165,8 @@ export default {
 
   dashboard: {
     activity: "Activity",
-    weeklySales: "Weekly Sales",
-    sales: "Sales",
+    weeklySales: "Week Cost",
+    sales: "Nomads Coin",
     recentOrders: "Recent Orders",
     sources: "Traffic Sources",
     lastweek: "vs last week",

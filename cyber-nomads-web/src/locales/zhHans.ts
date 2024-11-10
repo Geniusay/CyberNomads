@@ -163,8 +163,8 @@ export default {
   },
   dashboard: {
     activity: "活动",
-    weeklySales: "每周销售",
-    sales: "营业额",
+    weeklySales: "本周花费",
+    sales: "游民币",
     recentOrders: "最近的订单",
     sources: "流量来源",
     lastweek: "与上周",

@@ -15,6 +15,7 @@ const currentColor = ref<Color>({
   colorName: "purple",
   colorValue: "#705CF6",
 });
+
 const primaryColors = ref([
   {
     colorId: 1,
@@ -138,12 +139,8 @@ const updatePrimaryColor = (newColor: Color) => {
             >Contact Me</v-btn
           >
         </div>
-        <div class="ml-5 mt-5 d-flex align-center">
-          <v-icon color="primary" class="mr-6">mdi-email-outline</v-icon>
-          <a href="mailto:yjkbako@gmail.com">yjkbako@gmail.com</a>
-        </div>
         <div>
-          <img src="@/assets/wechat.jpg" alt="" />
+          <img src="@/assets/QQ.png" alt="" />
         </div>
       </div>
     </v-navigation-drawer>

@@ -8,6 +8,8 @@ import configs from "@/configs";
 import MainMenu from "@/components/navigation/MainMenu.vue";
 import { useCustomizeThemeStore } from "@/stores/customizeTheme";
 import { Icon } from "@iconify/vue";
+import {joinQQGroup} from "@/utils/toolUtils"
+
 const customizeTheme = useCustomizeThemeStore();
 const navigation = ref(configs.navigation);
 
@@ -31,6 +33,8 @@ const scrollToBottom = () => {
     });
   }, 100);
 };
+
+
 </script>
 
 <template>
@@ -92,9 +96,9 @@ const scrollToBottom = () => {
           <v-card-actions>
             <v-btn
               block
-              prepend-icon="mdi-thumb-up-outline"
+              prepend-icon="mdi-human-greeting"
               variant="outlined"
-              @click="openGithubSite"
+              @click="joinQQGroup()"
               color="white"
             >
               Join-Us

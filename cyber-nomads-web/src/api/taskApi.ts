@@ -37,6 +37,13 @@ export function getRecentLogs(taskId, limit){
   })
 }
 
+export function getUserRecentLogs(){
+  return request({
+    url: '/task/userAllRecentLogs',
+    method:"get",
+  })
+}
+
 export function getPlatformTaskType(platform:string){
   return request({
     url: '/task/platforms/functions-params',

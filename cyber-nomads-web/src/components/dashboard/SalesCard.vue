@@ -26,7 +26,7 @@ const props = defineProps({
     default: () => [
       {
         name: "Sales",
-        data: [11, 32, 45, 13],
+        data: [10, 10, 10, 10],
       },
     ],
   },
@@ -128,7 +128,6 @@ onMounted(() => {
           variant="text"
           color="primary"
           class="font-weight-bold"
-          @click="$emit('action-clicked')"
           >{{ actionLabel }}</v-btn
         >
       </v-card-title>
@@ -136,10 +135,10 @@ onMounted(() => {
       <div class="d-flex flex-column flex-grow-1">
         <div class="pa-2">
           <div class="text-h4">
-            {{ formatCurrency(12145.49) }}
+            {{ formatCurrency(0) }}
           </div>
           <div class="text-primary mt-1">
-            {{ formatCurrency(4275.21) }}
+            {{ formatCurrency(0) }}
             {{ $t("dashboard.lastweek") }}
           </div>
         </div>
@@ -152,7 +151,7 @@ onMounted(() => {
           </div>
           <div class="d-flex align-center">
             <div class="text-h4">
-              {{ formatCurrency(value) }}
+              {{ formatCurrency(0) }}
             </div>
             <v-spacer></v-spacer>
             <div class="d-flex flex-column text-right">

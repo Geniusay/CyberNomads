@@ -19,3 +19,7 @@ export function getRandomColor(): string {
 export const buildImageUrl = (url:string)=>{
   return computed(() => new URL(url, import.meta.url).href);
 }
+
+export const joinQQGroup = () =>{
+  window.open("https://qm.qq.com/cgi-bin/qm/qr?k=SHDEebnC8VRCVj3nECvNq0kUvR7ptMCp&jump_from=webapi&authKey=1vucxCZY9wtjzHtub89JRhyCNIVbikb3GFe+v++sfVcVX+sm2OOGdVDWIMlwOTR/","_blank")
+}
