@@ -110,7 +110,7 @@ const register = async()=>{
       snackbarStore.showSuccessMessage("🌈 欢迎加入Cyber Nomads!")
     }).catch((error)=>{
       generatePicCode()
-      snackbarStore.showErrorMessage("注册失败，请检查邮箱或验证码是否正确!")
+      snackbarStore.showErrorMessage("注册失败："+error.message)
     })
   }else{
     snackbarStore.showErrorMessage(errorsMsg)

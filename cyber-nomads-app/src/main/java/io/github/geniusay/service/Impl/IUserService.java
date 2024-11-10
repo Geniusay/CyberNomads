@@ -91,7 +91,11 @@ public class IUserService implements UserService {
                 .email(req.getEmail()).point(3)
                 .password(DigestUtils.md5Hex(req.getPassword()))
                 .build();
-        userMapper.insert(user);
+        try {
+            userMapper.insert(user);
+        }catch (Exception e){
+            throw new ServeException("用户已注册或注册失败");
+        }
         String token = TokenUtil.getToken(user.getUid(), user.getEmail(), user.getNickname());
         return LoginVO.builder().userVO(UserVO.convert(user)).token(token).build();
     }
