@@ -14,6 +14,8 @@ import io.github.geniusay.service.UserService;
 import io.github.geniusay.utils.*;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,6 +29,7 @@ import java.util.*;
 @Service
 public class IUserService implements UserService {
 
+    private static final Logger log = LoggerFactory.getLogger(IUserService.class);
     @Resource
     private UserMapper userMapper;
     @Resource
@@ -98,7 +101,7 @@ public class IUserService implements UserService {
         String pid = UUID.randomUUID().toString();
         Map<String, String> code = imageUtil.generateCode();
         String seeCode = CyberStringUtils.toLower(code.get("code"));
-        System.out.println(seeCode);
+        log.info("验证码:{}", code);
         cacheUtil.putCaptcha(pid, seeCode);
         return Map.of("base64",code.get("base64"),"pid",pid);
     }

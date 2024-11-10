@@ -50,11 +50,7 @@ public class CacheUtil {
     }
 
     public String getEmailAndRemove(String key) {
-        String code = stringRedisTemplate.opsForValue().get(RedisConstant.EMAIL_CAPTCHA + key);
-        if (code != null) {
-            stringRedisTemplate.delete(RedisConstant.EMAIL_CAPTCHA + key);
-        }
-        return code;
+        return stringRedisTemplate.opsForValue().get(RedisConstant.EMAIL_CAPTCHA + key);
     }
 
     public boolean emailCodeIsExpired(String key) {
