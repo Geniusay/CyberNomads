@@ -15,14 +15,4 @@ public interface VideoDataPool {
      * 获取热门视频列表
      */
     List<BilibiliVideoDetail> getPopularVideos();
-
-    /**
-     * 手动触发更新排行榜视频
-     */
-    void updateRankingVideos();
-
-    /**
-     * 手动触发更新热门视频
-     */
-    void updatePopularVideos();
 }

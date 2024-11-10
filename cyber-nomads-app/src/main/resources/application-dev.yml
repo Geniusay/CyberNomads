@@ -61,3 +61,8 @@ point:
 
 Schedule:
   STRATEGY: ${DEFAULT_STRATEGY:freeRobot}
+
+
+bilibili:
+  video:
+    init-on-startup: false
