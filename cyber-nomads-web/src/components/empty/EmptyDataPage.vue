@@ -1,5 +1,5 @@
 <template>
-  <v-empty-state style="margin-top: 5%" :image="errorImg">
+  <v-empty-state style="margin-top: 5%; margin-bottom: 5%" :image="errorImg">
     <template v-slot:title>
       <div class="text-subtitle-1 mt-4" style="font-size:1.1em!important;">
         {{$t(title)}}

@@ -9,6 +9,8 @@ export default {
       platform:"Platform",
       isBan:"Ban",
       action:"Actions",
+      emptyTitle:"There are currently no cyber nomads",
+      emptyContent:"Click on the 'ADD ROBOT' button to create a new task"
     },
     task:{
       error:"error",
@@ -21,7 +23,9 @@ export default {
       platform:"Platform",
       taskType:"Task Type",
       log:"Robot Log",
-      addTask:"Add Task"
+      addTask:"Add Task",
+      emptyTaskTitle:"No tasks have been created yet.",
+      emptyTaskContent:"Click on the 'Add Task' button to create a new task"
     }
   },
   common: {

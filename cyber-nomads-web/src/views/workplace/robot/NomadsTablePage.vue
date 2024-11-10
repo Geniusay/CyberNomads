@@ -7,6 +7,8 @@ import { useSnackbarStore } from "@/stores/snackbarStore";
 import {validateAndReturn, Validators} from "@/utils/validate";
 import { useCommonStore } from "@/stores/commonStore";
 import { useRobotStore } from  "@/views/workplace/robot/robotStore"
+import EmptyDataPage from "@/components/empty/EmptyDataPage.vue";
+import CircleLoading from "@/components/loading/CircleLoading.vue";
 
 const robotStore = useRobotStore();
 const commonStore = useCommonStore();
@@ -15,6 +17,8 @@ const robotList = ref<RobotVO[]>([])
 const platformList = ref<PlatformVO[]>([])
 const robotForm = ref<RobotForm>({...defaultValue.defaultRobotForm})
 const isEdit = ref(false)
+const emptyState = ref(false)
+const pageLoading = ref(true)
 const robotFormValidator: Validators<RobotForm> = {
   id: (value)=>null,
   platform: (value) => platformList.value.some(platform=>platform.code === value) ? null : '请选择正确的平台',
@@ -45,6 +49,8 @@ onMounted(async ()=>{
   await robotStore.initRobotList()
   robotList.value = robotStore.getRobotList as RobotVO[]
   platformList.value = commonStore.getPlatformList as PlatformVO[]
+  emptyState.value = robotList.value.length == 0
+  pageLoading.value = false
 })
 
 const addRobotReq = async () => {
@@ -80,6 +86,12 @@ async function editItem(item: any) {
   isEdit.value = true;
   robotForm.value = Object.assign({}, item)  as RobotForm;
   robotForm.value.platform = item.platformCode
+  dialog.value = true;
+}
+
+async function openAddDialog() {
+  isEdit.value = false;
+  robotForm.value = {...defaultValue.defaultRobotForm}
   dialog.value = true;
 }
 
@@ -364,7 +376,16 @@ const deleteRobotReq = async () => {
     </v-card>
 
     <v-card class="mt-2">
-      <v-table class="mt-5">
+      <CircleLoading v-if="pageLoading" style="margin-top: 20%; margin-bottom: 20%"/>
+      <EmptyDataPage
+        v-else-if="emptyState"
+        :title="'workplace.nomads.emptyTitle'"
+        :content="'workplace.nomads.emptyTitle'"
+        :handler=openAddDialog
+        :btnText="'workplace.nomads.addRobot'"
+        :errorImg="'/assets/img/empty_tips.png'"
+      ></EmptyDataPage>
+      <v-table v-else class="mt-5">
         <thead>
           <tr>
             <th class="text-subtitle-1 font-weight-semibold">Id</th>
