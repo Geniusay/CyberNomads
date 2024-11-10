@@ -1,6 +1,7 @@
 package io.github.geniusay.utils;
 
 import io.github.geniusay.constants.RedisConstant;
+import io.github.geniusay.core.exception.ServeException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -50,7 +51,11 @@ public class CacheUtil {
     }
 
     public String getEmailAndRemove(String key) {
-        return stringRedisTemplate.opsForValue().get(RedisConstant.EMAIL_CAPTCHA + key);
+        String code = stringRedisTemplate.opsForValue().get(RedisConstant.EMAIL_CAPTCHA + key);
+        if (code == null) {
+            throw new ServeException("验证码错误");
+        }
+        return code;
     }
 
     public boolean emailCodeIsExpired(String key) {
