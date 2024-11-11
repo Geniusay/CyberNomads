@@ -1,7 +1,6 @@
 FROM adoptopenjdk:11-jre-hotspot
 COPY *.jar /cyber-nomads-app.jar
 
-ENV TimeZone=Asia/Shanghai
 ARG SERVER_PORT
 ARG ACTIVE
 ARG UNIQUE_ID
@@ -26,6 +25,9 @@ ARG MQ_PWD
 
 ENV SERVER_PORT=${SERVER_PORT}
 ENV ACTIVE=${ACTIVE}
+
+ENV TimeZone=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TimeZone /etc/localtime && echo $TimeZone > /etc/timezone
 
 EXPOSE ${SERVER_PORT}
 
