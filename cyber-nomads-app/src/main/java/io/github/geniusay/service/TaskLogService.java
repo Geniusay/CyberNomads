@@ -13,7 +13,7 @@ public interface TaskLogService {
     /**
      * 根据任务的遗言记录日志到数据库
      */
-    void logTaskResult(RobotWorker robotWorker);
+    void logTaskResult(RobotWorker robotWorker, String finalLastWord);
 
     /**
      * 根据任务ID查询最近X条日志记录
