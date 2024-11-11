@@ -38,7 +38,7 @@ public class LoginController {
     private String webDriver;
     private String browser;
     private static final String URL = "https://www.bilibili.com/";
-    private HashMap<String, HashSet<Cookie>> COOKIES = new HashMap<>();
+    private HashMap<String, Set<Cookie>> COOKIES = new HashMap<>();
 
     public LoginController() {
     }
@@ -67,11 +67,12 @@ public class LoginController {
         WebElement userImg = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div[2]/div[1]/div[1]/ul[2]/li[1]/div[1]/a[1]/picture/img")));
         if(userImg!=null){
             Set<Cookie> cookies = loginwebDriver.manage().getCookies();
+            System.out.println(cookies);
             loginwebDriver.quit();
             ChromeDriver confirmLogin = new ChromeDriver(options);
             WebDriverWait confirmWait = new WebDriverWait(confirmLogin, Duration.ofSeconds(120));
             confirmLogin.get(URL);
-            HashSet<Cookie> set = new HashSet<>();
+            Set<Cookie> set = new HashSet<>();
             confirmLogin.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
             confirmLogin.manage().deleteAllCookies();
             for (Cookie cookie : cookies) {

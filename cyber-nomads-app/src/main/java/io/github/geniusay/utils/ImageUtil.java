@@ -30,6 +30,11 @@ public class ImageUtil {
         return Map.of("base64",CodeToBase64(code), "code",code);
     }
 
+    public Map<String, String> generateCode(int length) {
+        String code = RandomUtil.generateRandomString(length);
+        return Map.of("base64",CodeToBase64(code), "code",code);
+    }
+
     public String CodeToBase64(String code){
         BufferedImage captchaImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2DBuilder graphics2DBuilder = new Graphics2DBuilder(captchaImage.createGraphics());

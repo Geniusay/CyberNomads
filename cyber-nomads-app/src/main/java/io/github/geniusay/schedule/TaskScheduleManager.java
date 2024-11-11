@@ -9,6 +9,7 @@ import io.github.geniusay.mapper.RobotMapper;
 import io.github.geniusay.mapper.TaskMapper;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
+import io.github.geniusay.schedule.strategy.WorkerExecuteStrategy;
 import io.github.geniusay.service.RobotService;
 import io.github.geniusay.service.TaskService;
 import io.github.geniusay.utils.ConvertorUtil;
@@ -37,11 +38,11 @@ public class TaskScheduleManager {
     TaskEventMan EVENT_PUBLISHER;
     @Resource
     TaskService taskService;
+    @Resource
+    WorkerExecuteStrategy executeStrategy;
     public static final Map<String, Task> WORLD_TASK = new ConcurrentHashMap<>();
     public static final Map<Long, RobotWorker> WORLD_ROBOTS = new ConcurrentHashMap<>();
     public static final Map<Long, Map<String,Task>> WORLD_ROBOTS_TASK = new ConcurrentHashMap<>();
-
-
     //TODO final map
     @PostConstruct
     public void init(){
@@ -70,12 +71,12 @@ public class TaskScheduleManager {
         WORLD_TASK.put(String.valueOf(taskDO.getId()), task);
 
         for (RobotDO robot : taskDO.getRobotList()) {
+            WORLD_ROBOTS_TASK.computeIfAbsent(robot.getId(), id -> new ConcurrentHashMap<>())
+                    .put(String.valueOf(taskDO.getId()), task);
             WORLD_ROBOTS.computeIfAbsent(robot.getId(), id -> {
                 EVENT_PUBLISHER.startWork(id);
                 return new RobotWorker(robot);
             });
-            WORLD_ROBOTS_TASK.computeIfAbsent(robot.getId(), id -> new ConcurrentHashMap<>())
-                    .put(String.valueOf(taskDO.getId()), WORLD_TASK.get(String.valueOf(taskDO.getId())));
         }
 
     }
