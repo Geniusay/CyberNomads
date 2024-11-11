@@ -67,8 +67,8 @@ public class ScheduleExecutor implements TaskListener{
                             TASK_STATUS.put(robotWorker.task().getId(),TaskStatus.EXCEPTION.toString());
                         } finally {
                             String lastTalk = robotWorker.task().getLastWord().lastTalk(robotWorker);
-                            boolean success = LastWordUtil.isSuccess(lastTalk);
-                            taskLogService.logTaskResult(robotWorker);
+                            taskLogService.logTaskResult(robotWorker, lastTalk);
+
                             String taskId = robotWorker.task().getId();
                             if(robotWorker.task().getTerminator().taskIsDone() && canChangeTaskStatus(taskId)){
                                 taskMap.remove(robotWorker.task().getUid());

@@ -6,6 +6,7 @@ import io.github.geniusay.core.actionflow.logic.BiliLikeLogic;
 import io.github.geniusay.core.actionflow.receiver.BiliVideoReceiver;
 import io.github.geniusay.core.supertask.plugin.TaskPluginFactory;
 import io.github.geniusay.core.supertask.plugin.terminator.GroupCountTerminator;
+import io.github.geniusay.core.supertask.plugin.terminator.SingleUseTerminator;
 import io.github.geniusay.core.supertask.task.*;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
@@ -71,10 +72,8 @@ public class BilibiliVideoLikeTaskBlueprint extends AbstractTaskBlueprint {
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
-        List<TaskNeedParams> pluginParams = taskPluginFactory.pluginGroupParams(GroupCountTerminator.class);
-        List<TaskNeedParams> blueprintParams = List.of(
-                TaskNeedParams.ofKV(LINK_OR_ID, "", "需要点赞的视频链接或 BV 号")
-        );
+        List<TaskNeedParams> pluginParams = taskPluginFactory.pluginGroupParams(SingleUseTerminator.class);
+        List<TaskNeedParams> blueprintParams = List.of(TaskNeedParams.ofKV(LINK_OR_ID, "", "需要点赞的视频链接或 BV 号"));
         return ParamsUtil.packageListParams(pluginParams, blueprintParams);
     }
 }

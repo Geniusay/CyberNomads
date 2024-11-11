@@ -65,4 +65,4 @@ Schedule:
 
 bilibili:
   video:
-    init-on-startup: true
+    init-on-startup: false
