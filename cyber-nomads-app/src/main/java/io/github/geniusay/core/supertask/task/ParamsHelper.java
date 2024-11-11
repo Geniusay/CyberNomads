@@ -1,11 +1,7 @@
 package io.github.geniusay.core.supertask.task;
 
-import com.alibaba.fastjson.JSON;
-import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.utils.ParamsUtil;
-
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 任务参数帮助列表
@@ -38,9 +34,7 @@ public interface ParamsHelper {
      * @param clazz 转换的类型
      * @return 返回转化后的值
      */
-    default <T> T getValue(Map<String,Object> readyMap,String name, Class<T> clazz){
+    default <T> T getValue(Map<String,Object> readyMap, String name, Class<T> clazz){
         return ParamsUtil.getValue(readyMap, name, clazz);
     }
-
-
 }

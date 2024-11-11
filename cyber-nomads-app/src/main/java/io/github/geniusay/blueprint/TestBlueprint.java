@@ -60,10 +60,7 @@ public class TestBlueprint extends AbstractTaskBlueprint {
                 new BiliTestLogic(comment),
                 new BiliCommentReceiver(videoDetail)
         ).execute();
-
-        Map<String, Object> additionalInfo = Map.of("bvid", videoDetail.getBvid(), "comment", comment);
-        LastWord lastWord = new LastWord(response, additionalInfo);
-        task.addLastWord(robot, lastWord);
+        task.addLastWord(robot, response, Map.of("bvid", videoDetail.getBvid(), "comment", comment));
     }
 
     @Override

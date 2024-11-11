@@ -6,9 +6,11 @@ import io.github.geniusay.core.actionflow.logic.BiliLikeLogic;
 import io.github.geniusay.core.actionflow.receiver.BiliVideoReceiver;
 import io.github.geniusay.core.supertask.plugin.TaskPluginFactory;
 import io.github.geniusay.core.supertask.plugin.terminator.GroupCountTerminator;
-import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.core.supertask.task.*;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
+import io.github.geniusay.crawler.util.bilibili.ApiResponse;
+import io.github.geniusay.pojo.DO.LastWord;
+import io.github.geniusay.utils.LastWordUtil;
 import io.github.geniusay.utils.ParamsUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,7 +29,7 @@ public class BilibiliVideoLikeTaskBlueprint extends AbstractTaskBlueprint {
     @Resource
     TaskPluginFactory taskPluginFactory;
 
-    private static final String VIDEO_ID = "videoId";
+    private static final String LINK_OR_ID = "linkOrId";
 
     @Override
     public String platform() {
@@ -41,32 +43,38 @@ public class BilibiliVideoLikeTaskBlueprint extends AbstractTaskBlueprint {
 
     @Override
     protected void executeTask(RobotWorker robot, Task task) throws Exception {
-        // 获取任务参数
-        Map<String, Object> params = task.getParams();
-        String videoId = (String) params.get("videoId");  // 单个视频的 bvid 或 aid
-        log.info("拿到：{}", videoId);
-        new ActionFlow<>(new BiliUserActor(robot), new BiliLikeLogic(), new BiliVideoReceiver(videoId)).execute();
+        String videoLinkOrId = task.getParam(LINK_OR_ID);
+        ApiResponse<Boolean> response = new ActionFlow<>(
+                new BiliUserActor(robot),
+                new BiliLikeLogic(true),
+                new BiliVideoReceiver(videoLinkOrId)
+        ).execute();
+        task.addLastWord(robot, response, Map.of("videoId", videoLinkOrId));
     }
 
     @Override
     protected String lastWord(RobotWorker robot, Task task) {
-        Terminator terminator = task.getTerminator();
-        String robotName = robot.getNickname();
+        LastWord lastWord = task.getLastWord(robot);
+        if (lastWord == null) {
+            return LastWordUtil.buildLastWord(robot.getNickname() + " robot 没有执行任务", false);
+        }
 
-        if (terminator.taskIsDone()) {
-            return String.format("[Success] %s robot 已经完成对视频的点赞任务", robotName);
+        ApiResponse<Boolean> response = lastWord.getResponse();
+        String videoId = (String) lastWord.getAdditionalInfo("videoId");
+
+        if (response.isSuccess()) {
+            return LastWordUtil.buildLastWord(String.format("%s robot 成功对视频 %s 进行了点赞操作", robot.getNickname(), videoId), true);
         } else {
-            return String.format("[Error] %s robot 执行任务失败，未能完成所有点赞任务", robotName);
+            return LastWordUtil.buildLastWord(String.format("%s robot 点赞失败，视频: %s，状态码: %d，错误消息: %s", robot.getNickname(), videoId, response.getCode(), response.getMsg()), false);
         }
     }
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
-
         List<TaskNeedParams> pluginParams = taskPluginFactory.pluginGroupParams(GroupCountTerminator.class);
-
-        List<TaskNeedParams> blueprintParams = List.of(TaskNeedParams.ofKV(VIDEO_ID, "", "需要点赞的单个视频ID (bvid 或 aid)"));
-
+        List<TaskNeedParams> blueprintParams = List.of(
+                TaskNeedParams.ofKV(LINK_OR_ID, "", "需要点赞的视频链接或 BV 号")
+        );
         return ParamsUtil.packageListParams(pluginParams, blueprintParams);
     }
 }

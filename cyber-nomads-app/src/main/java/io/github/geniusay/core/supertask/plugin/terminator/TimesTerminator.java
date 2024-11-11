@@ -65,6 +65,4 @@ public class TimesTerminator extends AbstractTerminator {
                 TaskNeedParams.ofKV(PARAM_TIMES, 5, "游民执行次数")
         );
     }
-
-
 }
