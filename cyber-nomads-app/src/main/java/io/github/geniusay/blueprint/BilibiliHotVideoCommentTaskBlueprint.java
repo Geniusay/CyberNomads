@@ -1,9 +1,9 @@
 package io.github.geniusay.blueprint;
 
-import io.github.geniusay.core.actionflow.actor.BilibiliUserActor;
+import io.github.geniusay.core.actionflow.actor.BiliUserActor;
 import io.github.geniusay.core.actionflow.frame.ActionFlow;
-import io.github.geniusay.core.actionflow.logic.BilibiliCommentActionLogic;
-import io.github.geniusay.core.actionflow.receiver.BilibiliCommentReceiver;
+import io.github.geniusay.core.actionflow.logic.BiliCommentLogic;
+import io.github.geniusay.core.actionflow.receiver.BiliCommentReceiver;
 import io.github.geniusay.core.supertask.plugin.TaskPluginFactory;
 import io.github.geniusay.core.supertask.plugin.comment.AICommentGenerate;
 import io.github.geniusay.core.supertask.plugin.comment.AbstractCommentGenerate;
@@ -13,7 +13,6 @@ import io.github.geniusay.core.supertask.plugin.video.GetHotVideoPlugin;
 import io.github.geniusay.core.supertask.task.*;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
 import io.github.geniusay.crawler.po.bilibili.BilibiliVideoDetail;
-import io.github.geniusay.crawler.po.bilibili.VideoDetail;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import io.github.geniusay.pojo.DO.LastWord;
 import io.github.geniusay.utils.LastWordUtil;
@@ -54,9 +53,9 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
         BilibiliVideoDetail videoDetail = taskPluginFactory.<AbstractGetVideoPlugin>buildPluginWithGroup(GET_VIDEO_GROUP_NAME, task).getHandleVideo(robot, task);
 
         ApiResponse<Boolean> response = new ActionFlow<>(
-                new BilibiliUserActor(robot),
-                new BilibiliCommentActionLogic(comment, false),
-                new BilibiliCommentReceiver(videoDetail)
+                new BiliUserActor(robot),
+                new BiliCommentLogic(comment),
+                new BiliCommentReceiver(videoDetail)
         ).execute();
 
         Map<String, Object> additionalInfo = Map.of("bvid", videoDetail.getBvid(), "comment", comment);

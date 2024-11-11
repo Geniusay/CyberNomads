@@ -1,9 +1,9 @@
 package io.github.geniusay.blueprint;
 
-import io.github.geniusay.core.actionflow.actor.BilibiliUserActor;
+import io.github.geniusay.core.actionflow.actor.BiliUserActor;
 import io.github.geniusay.core.actionflow.frame.ActionFlow;
-import io.github.geniusay.core.actionflow.logic.BilibiliLikeActionLogic;
-import io.github.geniusay.core.actionflow.receiver.BilibiliVideoReceiver;
+import io.github.geniusay.core.actionflow.logic.BiliLikeLogic;
+import io.github.geniusay.core.actionflow.receiver.BiliVideoReceiver;
 import io.github.geniusay.core.supertask.plugin.TaskPluginFactory;
 import io.github.geniusay.core.supertask.plugin.terminator.GroupCountTerminator;
 import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
@@ -17,7 +17,6 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.geniusay.constants.TerminatorConstants.TERMINATOR_TYPE_GROUP_COUNT;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_LIKE;
 
@@ -46,7 +45,7 @@ public class BilibiliVideoLikeTaskBlueprint extends AbstractTaskBlueprint {
         Map<String, Object> params = task.getParams();
         String videoId = (String) params.get("videoId");  // 单个视频的 bvid 或 aid
         log.info("拿到：{}", videoId);
-        new ActionFlow<>(new BilibiliUserActor(robot), new BilibiliLikeActionLogic(), new BilibiliVideoReceiver(videoId)).execute();
+        new ActionFlow<>(new BiliUserActor(robot), new BiliLikeLogic(), new BiliVideoReceiver(videoId)).execute();
     }
 
     @Override

@@ -14,9 +14,9 @@ public class TestCommentAPI {
 
     @Test
     public void sendComment() throws Exception {
-        String oid = "1154116168";
+        String oid = "113462298546851";
         // 发送一级评论
-        BilibiliCommentApi.sendCommentOrReply(cookie, oid, "Genius 80我", null, null);
+        BilibiliCommentApi.sendCommentOrReply(cookie, oid, "老马真的 往那一坐就是节目效果哈哈哈", null, null);
     }
 
     @Test

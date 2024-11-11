@@ -4,15 +4,15 @@ import io.github.geniusay.core.actionflow.frame.Receiver;
 import lombok.Data;
 
 @Data
-public class BilibiliVideoReceiver implements Receiver {
+public class BiliVideoReceiver implements Receiver {
 
     private final String videoId;  // 视频的 bvid 或 aid
 
-    public BilibiliVideoReceiver(String videoId) {
+    public BiliVideoReceiver(String videoId) {
         this.videoId = videoId;
     }
 
-    public BilibiliVideoReceiver(String videoId, String videoTitle) {
+    public BiliVideoReceiver(String videoId, String videoTitle) {
         this.videoId = videoId;
     }
 
