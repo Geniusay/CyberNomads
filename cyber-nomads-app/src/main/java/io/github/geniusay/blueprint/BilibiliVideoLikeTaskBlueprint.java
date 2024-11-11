@@ -47,7 +47,7 @@ public class BilibiliVideoLikeTaskBlueprint extends AbstractTaskBlueprint {
         String videoLinkOrId = task.getParam(LINK_OR_ID);
         ApiResponse<Boolean> response = new ActionFlow<>(
                 new BiliUserActor(robot),
-                new BiliLikeLogic(true),
+                new BiliLikeLogic(false),
                 new BiliVideoReceiver(videoLinkOrId)
         ).execute();
         task.addLastWord(robot, response, Map.of("videoId", videoLinkOrId));

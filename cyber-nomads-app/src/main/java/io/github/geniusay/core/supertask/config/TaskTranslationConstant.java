@@ -1,5 +1,6 @@
 package io.github.geniusay.core.supertask.config;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static io.github.geniusay.constants.TerminatorConstants.*;
@@ -24,16 +25,24 @@ public class TaskTranslationConstant {
             TEST_VIDEO_COMMENT, "永久任务测试"
     );
 
-    // 插件中文名
-    public static final Map<String, String> PLUGIN_TRANSLATION = Map.of(
-            TERMINATOR_GROUP_NAME,"终止器(任务执行次数规则)",
-            COMMENT_GROUP_NAME,"评论内容生成器",
-            GET_VIDEO_GROUP_NAME,"视频选择器",
-            AI_COMMENT_GENERATE_PLUGIN, "AI生成插件",
-            TERMINATOR_TYPE_GROUP_COUNT, "总计数器",
-            TERMINATOR_TYPE_TIMES, "计数器(每个赛博人单独计数)",
-            COOL_DOWN_TYPE_TIMES, "定时器"
-    );
+    private static Map<String, String> initPluginTranslation() {
+        Map<String, String> pluginTranslation = new LinkedHashMap<>();
+        pluginTranslation.put(TERMINATOR_GROUP_NAME, "终止器(任务执行次数规则)");
+        pluginTranslation.put(COMMENT_GROUP_NAME, "评论内容生成器");
+        pluginTranslation.put(GET_VIDEO_GROUP_NAME, "视频选择器");
+        pluginTranslation.put(AI_COMMENT_GENERATE_PLUGIN, "AI生成插件");
+        pluginTranslation.put(TERMINATOR_TYPE_GROUP_COUNT, "总计数器");
+        pluginTranslation.put(TERMINATOR_TYPE_TIMES, "计数器(每个赛博人单独计数)");
+        pluginTranslation.put(COOL_DOWN_TYPE_TIMES, "定时器");
+        pluginTranslation.put(SINGLE_USE, "只教一次");
+        pluginTranslation.put(HOT_VIDEO_PLUGIN, "随机挑选热门视频");
+        pluginTranslation.put(LIKE_LOGIC_SELECTOR, "点赞行为");
+        pluginTranslation.put(COIN_LOGIC_SELECTOR, "投币行为");
+        pluginTranslation.put(USER_RECEIVER_SELECTOR, "用户接收器");
+        pluginTranslation.put(VIDEO_RECEIVER_SELECTOR, "视频接收器");
+
+        return pluginTranslation;
+    }
 
     public static String getTranslation(Map<String, String> translationMap, String name){
         return translationMap.getOrDefault(name, name);
