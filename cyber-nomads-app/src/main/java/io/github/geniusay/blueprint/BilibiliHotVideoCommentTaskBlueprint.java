@@ -35,9 +35,6 @@ import static io.github.geniusay.core.supertask.config.TaskTypeConstant.INFINITY
 public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
 
     @Resource
-    GetHotVideoPlugin getHotVideoPlugin;
-
-    @Resource
     TaskPluginFactory taskPluginFactory;
 
     @Override
@@ -52,8 +49,6 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
 
     @Override
     protected void executeTask(RobotWorker robot, Task task) throws Exception {
-        // 获取任务参数
-        Map<String, Object> params = task.getParams();
 
         String comment = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task).generateComment();
         BilibiliVideoDetail videoDetail = taskPluginFactory.<AbstractGetVideoPlugin>buildPluginWithGroup(GET_VIDEO_GROUP_NAME, task).getHandleVideo(robot, task);

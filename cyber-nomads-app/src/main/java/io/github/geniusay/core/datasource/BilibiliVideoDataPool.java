@@ -90,7 +90,6 @@ public class BilibiliVideoDataPool implements VideoDataPool {
      */
     @Scheduled(cron = "0 0/30 * * * ?")
     private void scheduledUpdateRankingVideos() {
-        log.info("定时更新排行榜视频缓存...");
         updateRankingVideos();
     }
 
@@ -99,7 +98,6 @@ public class BilibiliVideoDataPool implements VideoDataPool {
      */
     @Scheduled(cron = "0 * * * * ?")
     private void scheduledUpdatePopularVideos() {
-        log.info("定时更新热门视频缓存...");
         updatePopularVideos();
     }
 
@@ -164,8 +162,6 @@ public class BilibiliVideoDataPool implements VideoDataPool {
 
                 stringRedisTemplate.expire(POPULAR_VIDEOS_SET_KEY, POPULAR_CACHE_EXPIRE_TIME, TimeUnit.SECONDS);
                 stringRedisTemplate.expire(POPULAR_VIDEOS_DETAILS_KEY, POPULAR_CACHE_EXPIRE_TIME, TimeUnit.SECONDS);
-
-                log.info("成功更新热门视频缓存，当前页: " + currentPage);
 
                 // 更新页码，循环获取 1~10 页
                 currentPage = (currentPage % POPULAR_PAGES) + 1;

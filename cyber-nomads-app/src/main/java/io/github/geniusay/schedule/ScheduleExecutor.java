@@ -65,7 +65,7 @@ public class ScheduleExecutor implements TaskListener{
                             log.error("robot执行异常:{},robot信息:{}", e.getMessage()+":"+e.getStackTrace()[0],robotWorker.getId());
                             taskStatusManager.modifyTask(Long.valueOf(robotWorker.task().getId()),TaskActionConstant.EXCEPTION);
                             TASK_STATUS.put(robotWorker.task().getId(),TaskStatus.EXCEPTION.toString());
-                        }finally {
+                        } finally {
                             String lastTalk = robotWorker.task().getLastWord().lastTalk(robotWorker);
                             boolean success = LastWordUtil.isSuccess(lastTalk);
                             taskLogService.logTaskResult(robotWorker);
