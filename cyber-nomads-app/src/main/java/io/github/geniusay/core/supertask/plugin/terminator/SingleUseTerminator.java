@@ -49,25 +49,20 @@ public class SingleUseTerminator extends AbstractTerminator {
     public boolean robotCanDo(RobotWorker worker) {
         long currentTime = System.currentTimeMillis();
 
-        // 检查任务是否处于冷却状态
-        if (currentTime < nextAvailableTime.get() || workerDoneMap.getOrDefault(worker.getId(), false)) {
+        long temp = nextAvailableTime.get();
+
+        if (currentTime < temp || workerDoneMap.getOrDefault(worker.getId(), false)) {
             return false;
         }
 
-        if (completedCount.get() < targetCount) {
-            workerDoneMap.put(worker.getId(), true);
-            nextAvailableTime.set(System.currentTimeMillis() + cooldownTime);
-            return true;
-        }
-
-        return false;
+        return nextAvailableTime.compareAndSet(temp, currentTime + cooldownTime);
     }
 
     @Override
     public void doTask(RobotWorker worker) {
+        workerDoneMap.put(worker.getId(), true);
         int currentCount = completedCount.incrementAndGet();
-        log.info("工作者 {} 完成任务，当前已完成任务数: {}", worker.getId(), currentCount);
-        log.info("工作者 {} 触发冷却，任务进入冷却状态，冷却时间: {} 秒", worker.getId(), cooldownTime / 1000);
+        log.info("工作者 {} 完成任务，当前已完成任务数: {}, 任务进入冷却状态，冷却时间: {} 秒", worker.getId(), currentCount, cooldownTime / 1000);
     }
 
     @Override
