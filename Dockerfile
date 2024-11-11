@@ -1,7 +1,7 @@
 FROM adoptopenjdk:11-jre-hotspot
 COPY *.jar /cyber-nomads-app.jar
 
-
+ENV TimeZone=Asia/Shanghai
 ARG SERVER_PORT
 ARG ACTIVE
 ARG UNIQUE_ID
