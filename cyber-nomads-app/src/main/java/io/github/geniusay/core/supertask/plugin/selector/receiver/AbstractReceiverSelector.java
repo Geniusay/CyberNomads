@@ -1,6 +1,5 @@
 package io.github.geniusay.core.supertask.plugin.selector.receiver;
 
-import io.github.geniusay.core.actionflow.frame.Receiver;
 import io.github.geniusay.core.supertask.plugin.BaseTaskPlugin;
 
 import static io.github.geniusay.core.supertask.config.PluginConstant.RECEIVER_SELECTOR_GROUP_NAME;

@@ -22,8 +22,11 @@ public class TaskTranslationConstant {
             VIDEO_LIKE, "对某个视频点赞",
             VIDEO_COIN, "对某个视频投币",
             INFINITY_HOT_VIDEO_COMMENT, "永无止境的在热门视频下面进行评论",
-            TEST_VIDEO_COMMENT, "永久任务测试"
+            TEST_VIDEO_COMMENT, "永久任务测试",
+            INTERACTION, "点赞，投币，三连，关注等等"
     );
+
+    public static final Map<String, String> PLUGIN_TRANSLATION = initPluginTranslation();
 
     private static Map<String, String> initPluginTranslation() {
         Map<String, String> pluginTranslation = new LinkedHashMap<>();
@@ -38,6 +41,7 @@ public class TaskTranslationConstant {
         pluginTranslation.put(HOT_VIDEO_PLUGIN, "随机挑选热门视频");
         pluginTranslation.put(LIKE_LOGIC_SELECTOR, "点赞行为");
         pluginTranslation.put(COIN_LOGIC_SELECTOR, "投币行为");
+        pluginTranslation.put(FOLLOW_LOGIC_SELECTOR, "关注行为");
         pluginTranslation.put(USER_RECEIVER_SELECTOR, "用户接收器");
         pluginTranslation.put(VIDEO_RECEIVER_SELECTOR, "视频接收器");
 

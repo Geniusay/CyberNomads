@@ -9,15 +9,15 @@ import java.util.regex.Pattern;
 @Data
 public class BiliUserReceiver implements Receiver {
 
-    private final String id;
+    private final String uid;
 
-    public BiliUserReceiver(String id) {
-        this.id = id;
+    public BiliUserReceiver(String uid) {
+        this.uid = uid;
     }
 
     @Override
     public String getId() {
-        return id;
+        return uid;
     }
 
     @Override

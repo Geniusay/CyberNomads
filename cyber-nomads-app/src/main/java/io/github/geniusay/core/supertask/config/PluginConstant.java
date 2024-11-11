@@ -27,6 +27,7 @@ public class PluginConstant {
     // LOGIC_SELECTOR_GROUP_NAME
     public final static String LIKE_LOGIC_SELECTOR = "likeLogicSelector";
     public final static String COIN_LOGIC_SELECTOR = "coinLogicSelector";
+    public final static String FOLLOW_LOGIC_SELECTOR = "followLogicSelector";
 
     // RECEIVER_SELECTOR_GROUP_NAME
     public final static String USER_RECEIVER_SELECTOR = "userReceiverSelector";

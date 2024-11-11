@@ -6,4 +6,6 @@ public class TaskTypeConstant {
     public static final String VIDEO_COIN = "video:coin:";
     public static final String INFINITY_HOT_VIDEO_COMMENT = "infinity:hot:video:comment:";
     public static final String TEST_VIDEO_COMMENT = "test:video:comment:";
+
+    public static final String INTERACTION = "interaction";
 }

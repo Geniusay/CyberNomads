@@ -17,6 +17,11 @@ public class BiliLikeLogic extends ActionLogic<BiliUserActor, BiliVideoReceiver>
     }
 
     @Override
+    public String getLogicName() {
+        return "点赞操作";
+    }
+
+    @Override
     public ApiResponse<Boolean> performAction(BiliUserActor actor, BiliVideoReceiver receiver) throws Exception {
         if (isTestMode) {
             logAction(actor, receiver, "【测试模式】执行点赞操作");

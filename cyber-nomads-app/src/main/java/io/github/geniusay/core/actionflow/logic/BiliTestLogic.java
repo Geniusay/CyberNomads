@@ -15,6 +15,11 @@ public class BiliTestLogic extends ActionLogic<BiliUserActor, BiliCommentReceive
     }
 
     @Override
+    public String getLogicName() {
+        return "测试操作";
+    }
+
+    @Override
     public ApiResponse<Boolean> performAction(BiliUserActor actor, BiliCommentReceiver receiver) throws Exception {
         logAction(actor, receiver, "【测试模式】发表评论/回复: " + commentStr);
         return new ApiResponse<>(0, "测试成功", true, true, System.currentTimeMillis(), System.currentTimeMillis(), 0);
