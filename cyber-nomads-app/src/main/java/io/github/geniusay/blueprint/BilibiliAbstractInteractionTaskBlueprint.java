@@ -4,28 +4,16 @@ import io.github.geniusay.core.actionflow.actor.BiliUserActor;
 import io.github.geniusay.core.actionflow.frame.ActionFlow;
 import io.github.geniusay.core.actionflow.frame.ActionLogic;
 import io.github.geniusay.core.actionflow.frame.Receiver;
-import io.github.geniusay.core.actionflow.logic.BiliFollowLogic;
-import io.github.geniusay.core.actionflow.logic.BiliLikeLogic;
-import io.github.geniusay.core.actionflow.receiver.BiliVideoReceiver;
 import io.github.geniusay.core.supertask.plugin.TaskPluginFactory;
-import io.github.geniusay.core.supertask.plugin.comment.AICommentGenerate;
-import io.github.geniusay.core.supertask.plugin.comment.AbstractCommentGenerate;
 import io.github.geniusay.core.supertask.plugin.selector.logic.AbstractLogicSelector;
 import io.github.geniusay.core.supertask.plugin.selector.logic.BiliCoinLogicSelector;
-import io.github.geniusay.core.supertask.plugin.selector.logic.BiliFollowLogicSelector;
 import io.github.geniusay.core.supertask.plugin.selector.logic.BiliLikeLogicSelector;
-import io.github.geniusay.core.supertask.plugin.selector.receiver.AbstractReceiverSelector;
-import io.github.geniusay.core.supertask.plugin.selector.receiver.BiliUserReceiverSelector;
 import io.github.geniusay.core.supertask.plugin.selector.receiver.BiliVideoReceiverSelector;
-import io.github.geniusay.core.supertask.plugin.terminator.CooldownTerminator;
 import io.github.geniusay.core.supertask.plugin.terminator.SingleUseTerminator;
-import io.github.geniusay.core.supertask.plugin.video.AbstractGetVideoPlugin;
-import io.github.geniusay.core.supertask.plugin.video.GetHotVideoPlugin;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
-import io.github.geniusay.crawler.po.bilibili.BilibiliVideoDetail;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import io.github.geniusay.pojo.DO.LastWord;
 import io.github.geniusay.utils.LastWordUtil;
@@ -39,15 +27,13 @@ import java.util.Map;
 
 import static io.github.geniusay.constants.PluginConstant.LOGIC_NAME;
 import static io.github.geniusay.constants.PluginConstant.RECEIVER_NAME;
-import static io.github.geniusay.core.supertask.config.PluginConstant.COMMENT_GROUP_NAME;
-import static io.github.geniusay.core.supertask.config.PluginConstant.GET_VIDEO_GROUP_NAME;
+import static io.github.geniusay.core.supertask.config.PluginConstant.LOGIC_SELECTOR_GROUP_NAME;
+import static io.github.geniusay.core.supertask.config.PluginConstant.RECEIVER_SELECTOR_GROUP_NAME;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
-import static io.github.geniusay.core.supertask.config.TaskTypeConstant.INTERACTION;
-import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_LIKE;
+import static io.github.geniusay.core.supertask.config.TaskTypeConstant.USER_INTERACTION;
 
 @Slf4j
-@Component
-public class BilibiliInteractionTaskBlueprint extends AbstractTaskBlueprint {
+public abstract class BilibiliAbstractInteractionTaskBlueprint extends AbstractTaskBlueprint {
 
     @Resource
     TaskPluginFactory taskPluginFactory;
@@ -58,23 +44,19 @@ public class BilibiliInteractionTaskBlueprint extends AbstractTaskBlueprint {
     }
 
     @Override
-    public String taskType() {
-        return INTERACTION;
-    }
-
-    @Override
     protected void executeTask(RobotWorker robot, Task task) throws Exception {
+        // 获取 Logic 和 Receiver（针对视频）
+        ActionLogic logic = taskPluginFactory.<AbstractLogicSelector>buildPluginWithGroup(LOGIC_SELECTOR_GROUP_NAME, task).getLogic();
+        Receiver receiver = taskPluginFactory.<BiliVideoReceiverSelector>buildPluginWithGroup(RECEIVER_SELECTOR_GROUP_NAME, task).getReceiver();
 
-        ActionLogic logic = taskPluginFactory.<AbstractLogicSelector>buildPluginWithGroup(COMMENT_GROUP_NAME, task).getLogic();
-        Receiver receiver = taskPluginFactory.<AbstractReceiverSelector>buildPluginWithGroup(GET_VIDEO_GROUP_NAME, task).getReceiver();
-
-        ApiResponse response = new ActionFlow<>(new BiliUserActor(robot), logic, receiver).execute();
+        // 执行任务
+        ApiResponse<Boolean> response = new ActionFlow<>(new BiliUserActor(robot), logic, receiver).execute();
+        // 保存任务结果
         task.addLastWord(robot, response, Map.of(LOGIC_NAME, logic.getLogicName(), RECEIVER_NAME, receiver.getId()));
     }
 
     @Override
     protected String lastWord(RobotWorker robot, Task task) {
-        // 获取任务执行的最后结果
         LastWord lastWord = task.getLastWord(robot);
         if (lastWord == null) {
             return LastWordUtil.buildLastWord(robot.getNickname() + " robot 没有执行任务", false);
@@ -84,7 +66,7 @@ public class BilibiliInteractionTaskBlueprint extends AbstractTaskBlueprint {
         String logicName = (String) lastWord.getAdditionalInfo(LOGIC_NAME);
         String receiverName = (String) lastWord.getAdditionalInfo(RECEIVER_NAME);
 
-        String actionDescription = String.format("%s robot 执行了 %s 行为，目标: %s",
+        String actionDescription = String.format("%s robot 执行了 %s 行为，目标视频: %s",
                 robot.getNickname(),
                 logicName,
                 receiverName);
@@ -98,13 +80,6 @@ public class BilibiliInteractionTaskBlueprint extends AbstractTaskBlueprint {
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
-        return ParamsUtil.packageListParams(taskPluginFactory.pluginGroupParams(
-                SingleUseTerminator.class,
-                BiliCoinLogicSelector.class,
-                BiliLikeLogicSelector.class,
-                BiliFollowLogicSelector.class,
-                BiliUserReceiverSelector.class,
-                BiliVideoReceiverSelector.class
-        ));
+       return null;
     }
 }
