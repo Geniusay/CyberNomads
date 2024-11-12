@@ -35,7 +35,8 @@ public class HttpClientUtil {
     private static OkHttpClient getClient(String cookie) {
         // 这里可以返回代理池的 OkHttpClient 实例
         // 目前直接返回本地的默认 OkHttpClient
-        return requestUtil.getClient(cookie);
+        OkHttpClient client = requestUtil.getClient(cookie);
+        return client == null ? defaultClient : client;
     }
 
     /**
