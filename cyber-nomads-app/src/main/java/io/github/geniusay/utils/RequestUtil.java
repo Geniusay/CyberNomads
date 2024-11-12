@@ -28,64 +28,64 @@ public class RequestUtil {
 
     private final Map<String, ProxyClient> proxyCache = new ConcurrentHashMap<>();
 
-    public <K, V> String get(String url, Map<K, V> headers, Map<K, V>  params){
-        return get(transToHttpUrl(url, params), transToHeaders(headers));
+    public <K, V> String get(String url, Map<K, V> headers, Map<K, V>  params, String robotId){
+        return get(transToHttpUrl(url, params), transToHeaders(headers), robotId);
     }
 
-    public String get(String url){
+    public String get(String url, String robotId) {
         return execute(new Request.Builder()
                 .url(url)
                 .get()
-                .build());
+                .build(), robotId);
     }
 
-    public String get(HttpUrl url, Headers headers){
+    public String get(HttpUrl url, Headers headers, String robotId){
         return execute(new Request.Builder()
                 .url(url)
                 .headers(headers)
                 .get()
-                .build());
+                .build(), robotId);
     }
 
-    public String post(String url, Headers headers, String body, MediaType type){
-        return post(url, headers, RequestBody.create(type, body));
+    public String post(String url, Headers headers, String body, MediaType type, String robotId){
+        return post(url, headers, RequestBody.create(type, body), robotId);
     }
 
-    public String post(String url, Headers headers, RequestBody requestBody){
+    public String post(String url, Headers headers, RequestBody requestBody, String robotId){
         return execute(new Request.Builder()
                 .url(url)
                 .headers(headers)
                 .post(requestBody)
-                .build());
+                .build(), robotId);
     }
 
-    public String put(String url, Headers headers, String body, MediaType type){
-        return post(url, headers, RequestBody.create(type, body));
+    public String put(String url, Headers headers, String body, MediaType type, String robotId){
+        return post(url, headers, RequestBody.create(type, body), robotId);
     }
 
-    public String put(String url, Headers headers, RequestBody requestBody){
+    public String put(String url, Headers headers, RequestBody requestBody, String robotId){
         return execute(new Request.Builder()
                 .url(url)
                 .headers(headers)
                 .put(requestBody)
-                .build());
+                .build(), robotId);
     }
 
-    public <K, V> String delete(String url, Map<K, V> headers, Map<K, V> params){
-        return delete(transToHttpUrl(url, params), transToHeaders(headers));
+    public <K, V> String delete(String url, Map<K, V> headers, Map<K, V> params, String robotId){
+        return delete(transToHttpUrl(url, params), transToHeaders(headers), robotId);
     }
 
-    public String delete(HttpUrl url, Headers headers){
+    public String delete(HttpUrl url, Headers headers, String robotId){
         return execute(new Request.Builder()
                 .url(url)
                 .headers(headers)
                 .delete()
-                .build());
+                .build(), robotId);
     }
 
-    public String execute(Request request){
+    public String execute(Request request, String robotId){
         Callable<String> callable = () -> {
-            OkHttpClient client = getClient();
+            OkHttpClient client = getClient(robotId);
             try (Response response = client.newCall(request).execute()) {
                 return response.body().string();
             } catch (IOException e) {
@@ -96,24 +96,21 @@ public class RequestUtil {
             Future<String> future = requestThreadPool.submit(callable);
             return future.get();
         } catch (ExecutionException | InterruptedException e) {
-            String uid = ThreadUtil.getUid();
-            nextClient();
-            log.info("{}请求失败，代理切换", uid);
+            nextClient(robotId);
+            log.info("{}请求失败，代理切换", robotId);
             throw new RuntimeException(e);
         }
     }
 
-    public OkHttpClient getClient(){
-        String uid = ThreadUtil.getUid();
-        return proxyCache.computeIfAbsent(uid, k -> proxyManager.getClient()).getClient();
+    public OkHttpClient getClient(String robotId){
+        return proxyCache.computeIfAbsent(robotId, k -> proxyManager.getClient()).getClient();
     }
 
-    private void nextClient(){
-        String uid = ThreadUtil.getUid();
-        if(!proxyCache.containsKey(uid)) return;
-        addRetryTask(proxyCache.get(uid));
-        proxyManager.unavailableProxies(proxyCache.get(uid));
-        proxyCache.put(uid, proxyManager.getClient());
+    private void nextClient(String robotId){
+        if(!proxyCache.containsKey(robotId)) return;
+        addRetryTask(proxyCache.get(robotId));
+        proxyManager.unavailableProxies(proxyCache.get(robotId));
+        proxyCache.put(robotId, proxyManager.getClient());
     }
 
     private void addRetryTask(ProxyClient client){
