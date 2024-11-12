@@ -28,4 +28,6 @@ public interface RobotService {
     Boolean addRobot(AddRobotDTO robotDTO);
 
     Map<String, String> getCookie(GetCookieDTO getCookieDTO);
+
+    Boolean insertOrUpdateRobot(LoginMachineDTO loginMachineDTO);
 }

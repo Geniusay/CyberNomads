@@ -1,19 +1,18 @@
 package io.github.geniusay.service.Impl;
 
 import io.github.geniusay.core.exception.ServeException;
-import io.github.geniusay.pojo.DTO.VerityCodeDTO;
+import io.github.geniusay.mapper.RegisterMachineMapper;
+import io.github.geniusay.pojo.DO.RegisterMachineDO;
 import io.github.geniusay.service.LoginMachineService;
-import io.github.geniusay.utils.CacheUtil;
-import io.github.geniusay.utils.CyberStringUtils;
-import io.github.geniusay.utils.ImageUtil;
-import io.github.geniusay.utils.ThreadUtil;
-import org.apache.commons.codec.binary.StringUtils;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import io.github.geniusay.utils.*;
+import org.jasypt.encryption.StringEncryptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Map;
-import java.util.UUID;
+
+import static io.github.geniusay.constants.RedisConstant.LOGIN_MACHINE_CAPTCHA;
 
 /**
  * @Description
@@ -24,23 +23,14 @@ import java.util.UUID;
 public class ILoginMachineServiceImpl implements LoginMachineService {
 
     @Resource
-    StringRedisTemplate template;
+    RegisterMachineMapper mapper;
+    @Resource
+    StringEncryptor encryptor;
+
     @Resource
     ImageUtil imageUtil;
     @Resource
     CacheUtil cacheUtil;
-
-    @Override
-    public String verity(VerityCodeDTO verityCodeDTO) {
-        String uid = verityCodeDTO.getUid();
-        String code = verityCodeDTO.getCode();
-        if(!StringUtils.equals(cacheUtil.getCaptchaAndRemove(uid), CyberStringUtils.toUpper(code))){
-            throw new ServeException("验证码错误");
-        }
-
-
-        return null;
-    }
 
     @Override
     public String generateCode() {
@@ -50,7 +40,15 @@ public class ILoginMachineServiceImpl implements LoginMachineService {
         }
         Map<String, String> code = imageUtil.generateCode(6);
         String seeCode = CyberStringUtils.toUpper(code.get("code"));
-        cacheUtil.putCaptcha(pid, seeCode);
-        return code.get("base64");
+        System.out.println(seeCode);
+        String script = encryptor.encrypt(seeCode);
+        String token = TokenUtil.getToken(ThreadUtil.getUid(), ThreadUtil.getEmail(), ThreadUtil.getNickname());
+        cacheUtil.put(LOGIN_MACHINE_CAPTCHA+seeCode, token);
+        return script;
+    }
+
+    @Override
+    public RegisterMachineDO queryMachineInfo(int id) {
+        return mapper.selectById(id);
     }
 }

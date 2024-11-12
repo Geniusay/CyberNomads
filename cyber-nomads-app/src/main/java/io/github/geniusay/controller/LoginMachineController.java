@@ -2,11 +2,9 @@ package io.github.geniusay.controller;
 
 import io.github.common.web.Result;
 import io.github.geniusay.core.anno.TokenRequire;
-import io.github.geniusay.pojo.DTO.VerityCodeDTO;
 import io.github.geniusay.service.LoginMachineService;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,16 +21,17 @@ public class LoginMachineController {
 
     @Resource
     LoginMachineService service;
-    @PostMapping("/verity")
-    public Result<?> verityCode(@RequestBody
-                                    @Validated VerityCodeDTO verityCodeDTO){
-        return Result.success(service.verity(verityCodeDTO));
-    }
 
     @PostMapping("/code")
     @TokenRequire
     public Result<?> generateCode(){
         return Result.success(service.generateCode());
+    }
+
+    @GetMapping("/queryMachineInfo")
+    @TokenRequire
+    public Result<?> queryMachineInfo(int id){
+        return Result.success(service.queryMachineInfo(id));
     }
 
 }

@@ -2,12 +2,11 @@ package io.github.geniusay.controller;
 
 import io.github.common.web.Result;
 import io.github.geniusay.core.anno.Counters;
+import io.github.geniusay.core.anno.LoginMachineToken;
 import io.github.geniusay.core.anno.TokenRequire;
-import io.github.geniusay.pojo.DTO.AddRobotDTO;
-import io.github.geniusay.pojo.DTO.ChangeRobotDTO;
-import io.github.geniusay.pojo.DTO.GetCookieDTO;
-import io.github.geniusay.pojo.DTO.UpdateCookieDTO;
+import io.github.geniusay.pojo.DTO.*;
 import io.github.geniusay.service.RobotService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +29,7 @@ public class RobotController {
     }
 
     @GetMapping("/search")
+    @LoginMachineToken
     @TokenRequire
     public Result<?> getUserRobot(){
         return Result.success(robotService.queryRobot());
@@ -69,5 +69,12 @@ public class RobotController {
     @TokenRequire
     public Result<?> changeCookie(@RequestBody @Valid UpdateCookieDTO updateCookieDTO){
         return Result.success(robotService.changeRobotCookie(updateCookieDTO));
+    }
+
+    @PostMapping("/insertOrUpdate")
+    @TokenRequire
+    @LoginMachineToken
+    public Result<?> insertOrUpdate(@RequestBody @Validated LoginMachineDTO loginMachineDTO){
+        return Result.success(robotService.insertOrUpdateRobot(loginMachineDTO));
     }
 }

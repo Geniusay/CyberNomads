@@ -1,5 +1,11 @@
 package io.github.geniusay.service;
 
+import io.github.geniusay.pojo.DTO.LoginDTO;
+import io.github.geniusay.pojo.DTO.VerityDTO;
+import io.github.geniusay.pojo.VO.RobotVO;
+
+import java.util.List;
+
 /**
  * @Description
  * @Author welsir
@@ -7,8 +13,10 @@ package io.github.geniusay.service;
  */
 public interface UserService {
 
-    //验证令牌合法性
-    String verifyTokenLegitimacy(String code);
+    //登录账号
+    Boolean login(LoginDTO loginDTO);
 
+    Object queryRobots();
 
+    void saveKey(String scriptKey);
 }

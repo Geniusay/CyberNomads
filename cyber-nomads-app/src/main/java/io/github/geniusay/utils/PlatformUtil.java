@@ -26,12 +26,12 @@ public class PlatformUtil {
         }
     }
 
-    public static int convertCodeToString(String platform){
+    public static int convertStringToCode(String platform){
         for(Platform plat:Platform.values()){
             if (plat.getPlatform().equalsIgnoreCase(platform)) {
                 return plat.getCode();
             }
         }
-        throw new ServeException(500,"不支持的平台类型!");
+        throw new ServeException(500,"不支持的平台类型:"+platform);
     }
 }

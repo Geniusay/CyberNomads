@@ -66,4 +66,16 @@ public class CacheUtil {
     public boolean captchaCodeIsExpired(String key) {
         return Boolean.TRUE.equals(stringRedisTemplate.hasKey(RedisConstant.PIC_CAPTCHA + key));
     }
+
+    public void put(String key,String value,Integer time){
+        stringRedisTemplate.opsForValue().set(key,value,time,TimeUnit.SECONDS);
+    }
+
+    public void put(String key,String value){
+        stringRedisTemplate.opsForValue().set(key,value);
+    }
+
+    public String get(String key){
+        return stringRedisTemplate.opsForValue().get(key);
+    }
 }

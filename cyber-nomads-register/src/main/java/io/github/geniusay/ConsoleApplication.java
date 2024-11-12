@@ -9,10 +9,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @Author welsir
  * @Date 2024/10/27 14:05
  */
-@SpringBootApplication
-public class ConsoleApplication implements CommandLineRunner {
-    @Override
-    public void run(String... args) {
-        Application.launch(MainApp.class, args);
-    }
-}
+//@SpringBootApplication
+//public class ConsoleApplication implements CommandLineRunner {
+//    @Override
+//    public void run(String... args) {
+//        Application.launch(MainApp.class, args);
+//    }
+//}

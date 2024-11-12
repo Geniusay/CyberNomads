@@ -1,6 +1,6 @@
 package io.github.geniusay.service;
 
-import io.github.geniusay.pojo.DTO.VerityCodeDTO;
+import io.github.geniusay.pojo.DO.RegisterMachineDO;
 
 /**
  * @Description
@@ -9,8 +9,7 @@ import io.github.geniusay.pojo.DTO.VerityCodeDTO;
  */
 public interface LoginMachineService {
 
-    String verity(VerityCodeDTO verityCodeDTO);
-
+    RegisterMachineDO queryMachineInfo(int id);
     String generateCode();
 
 }

@@ -9,16 +9,15 @@ import javax.validation.constraints.NotBlank;
 /**
  * @Description
  * @Author welsir
- * @Date 2024/11/11 15:08
+ * @Date 2024/11/11 16:46
  */
 @Data
 @Validated
-public class VerityCodeDTO {
+public class VerityDTO {
 
     @NotBlank(message = "email不能为空")
     @Email
     private String email;
     @NotBlank(message = "令牌不能为空")
     private String code;
-
 }

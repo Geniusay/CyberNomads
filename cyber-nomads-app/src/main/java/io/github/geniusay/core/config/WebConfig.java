@@ -1,5 +1,6 @@
 package io.github.geniusay.core.config;
 
+import io.github.geniusay.core.interceptor.LoginMachineTokenInterceptor;
 import io.github.geniusay.core.interceptor.TestInterceptor;
 import io.github.geniusay.core.interceptor.TokenInterceptor;
 import org.springframework.context.annotation.Configuration;
@@ -13,9 +14,10 @@ import javax.annotation.Resource;
 public class WebConfig implements WebMvcConfigurer {
     @Resource
     private TokenInterceptor tokenInterceptor;
-
     @Resource
     private TestInterceptor testInterceptor;
+    @Resource
+    private LoginMachineTokenInterceptor machineTokenInterceptor;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {

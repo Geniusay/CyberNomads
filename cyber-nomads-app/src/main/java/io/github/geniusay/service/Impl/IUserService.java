@@ -122,4 +122,12 @@ public class IUserService implements UserService {
         cacheUtil.putEmail(email, CyberStringUtils.toLower(emailCode));
         asyncService.sendCodeToEmail(email, emailCode);
     }
+
+    @Override
+    public UserVO queryUserByEmail(String email) {
+        UserDO userDO = userMapper.selectOne(new QueryWrapper<UserDO>().eq("email", email));
+        if(userDO==null)
+            throw new ServeException("用户不存在");
+        return UserVO.convert(userDO);
+    }
 }

@@ -32,4 +32,6 @@ public interface UserService {
     Map<String,String> generateCaptcha();
 
     void generateEmailCode(String email,String pid,String code);
+
+    UserVO queryUserByEmail(String email);
 }

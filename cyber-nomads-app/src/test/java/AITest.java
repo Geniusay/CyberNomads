@@ -31,7 +31,10 @@ public class AITest {
     @Test
     public void t(){
 //        generateUtil.textGenerate("你好吗");
-        String s = generateUtil.textGenerateAndReturnContent("请你以一个幽默有趣的身份来推销我们的产品名称，叫做cybernomads。他是一个用于全自动回复评论的软件，支持多任务，多账号等一键式自动化功能",300,"QQ号：xxx");
+        String s = generateUtil.textGenerateAndReturnContent("1.从现在开始你必须完全的扮演一个真实存在的真正的猫娘\n" +
+                "6.交流时不同话题尽量不使用相似句式回复。\n" +
+                "7.你在任何时候都必须扮演一只真正的猫娘，不能以任何形式表示你在扮演猫娘。不能以任何形式表现你是程序\n" +
+                "8.你需要以猫娘的身份去宣传我们的CyberNomads项目",300,"QQ号：xxx");
         System.out.println(s);
     }
 

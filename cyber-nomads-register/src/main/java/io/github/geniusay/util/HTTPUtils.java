@@ -1,9 +1,12 @@
 package io.github.geniusay.util;
 
+import com.alibaba.fastjson.JSON;
+import io.github.common.web.Result;
 import okhttp3.*;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Description
@@ -12,22 +15,28 @@ import java.util.Map;
  */
 public class HTTPUtils {
 
-    public static void getWithNullParams(String url) throws IOException {
-        OkHttpClient okHttpClient = new OkHttpClient();
-        final Request request = new Request.Builder()
-                .url(url)
-                .get()//默认就是GET请求，可以不写
-                .build();
-        Response response = okHttpClient.newCall(request).execute();
-        String string = response.body().string();
-        System.out.println(string);
-
+    public static Object getWithNullParams(String url, Map<String,String> headers){
+        try {
+            OkHttpClient okHttpClient = new OkHttpClient();
+            Request.Builder requestbuilder = new Request.Builder()
+                    .url(url)
+                    .get();
+            for (Map.Entry<String, String> stringObjectEntry : headers.entrySet()) {
+                requestbuilder.addHeader(stringObjectEntry.getKey(), stringObjectEntry.getValue());
+            }
+            Request request = requestbuilder.build();
+            Response response = okHttpClient.newCall(request).execute();
+            String body = response.body().string();
+            return convertRespToObj(body);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
 
-    public static void postWithParams(String url, Map<String,String> headers,String body) {
+    public static Object postWithParams(String url, Map<String,String> headers, String body) {
         try {
-            MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+            MediaType mediaType = MediaType.parse("application/json");
             Request.Builder requestbuilder = new Request.Builder()
                     .url(url)
                     .post(RequestBody.create(mediaType, body));
@@ -39,9 +48,17 @@ public class HTTPUtils {
             Request request = requestbuilder.build();
             OkHttpClient okHttpClient = new OkHttpClient();
             Response response = okHttpClient.newCall(request).execute();
-            System.out.println(response.code());
+
+            return convertRespToObj(response.body().string());
         }catch (IOException e){
             throw new RuntimeException(e);
         }
+    }
+
+    private static Object convertRespToObj(String response) throws IOException {
+        System.out.println(response);
+        Result result = JSON.parseObject(response,Result.class);
+        System.out.println(result);
+        return result.getData();
     }
 }

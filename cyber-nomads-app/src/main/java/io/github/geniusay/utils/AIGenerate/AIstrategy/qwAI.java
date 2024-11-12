@@ -51,12 +51,6 @@ public class qwAI implements BaseGenerate {
                 byte[] input = jsonInputString.getBytes("utf-8");
                 os.write(input, 0, input.length);
             }
-
-            // 获取响应
-            int responseCode = connection.getResponseCode();
-            if(responseCode!=200){
-                throw new ServeException(500,"AI接口调用失败");
-            }
             StringBuilder response = new StringBuilder();
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"))) {
 
@@ -65,6 +59,13 @@ public class qwAI implements BaseGenerate {
                     response.append(responseLine.trim());
                 }
             }
+
+            // 获取响应
+            int responseCode = connection.getResponseCode();
+            if(responseCode!=200){
+                throw new ServeException(500,"AI接口调用失败");
+            }
+
             return response.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
