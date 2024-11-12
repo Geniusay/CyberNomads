@@ -10,7 +10,7 @@ spring:
       maximum-pool-size: 100
       idle-timeout: 600000
       pool-name: DatebookHikariCP
-      max-lifetime: 1800000
+      max-lifetime: 120000
       connection-timeout: 30000
 #      connection-test-query: SELECT 1
 
