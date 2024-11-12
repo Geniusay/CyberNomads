@@ -18,6 +18,8 @@ public class PluginConstant {
 
     public static final String COIN_SUM = "coinSum";
 
+    public static final String RE_SRC = "reSrc";
+
     public static final String AND_LIKE = "andLike";
 
     public static final String UID = "uid";
