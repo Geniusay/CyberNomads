@@ -41,11 +41,11 @@ public class ScheduleExecutor implements TaskListener{
         while (true){
             try {
                 Long robotId = FREE_WORKER.take();
-                Map<Long, Map<String, Task>> worldRobotsTask = manager.getWorldRobotsTask();
-                Map<String, Task> taskMap = worldRobotsTask.get(robotId);
+                Map<String, Task> taskMap = manager.getRobotTaskById(robotId);
+                log.info("robotId:{}",robotId);
                 if(!Objects.isNull(taskMap)&&!taskMap.isEmpty()){
                     List<Task> tasks = new ArrayList<>(taskMap.values());
-                    RobotWorker robotWorker = manager.getAllRobot().get(robotId);
+                    RobotWorker robotWorker = manager.getRobotById(robotId);
                     Task selectedTask = null;
                     for (Task task : tasks) {
                         if(task.getTerminator().robotCanDo(robotWorker)){
@@ -53,9 +53,11 @@ public class ScheduleExecutor implements TaskListener{
                         }
                     }
                     if(selectedTask==null){
+                        log.info("无可用任务");
                         FREE_WORKER.add(robotId);
                         continue;
                     }
+                    log.info("选中任务:{}",selectedTask.getId());
                     robotWorker.setTask(selectedTask);
                     TASK_STATUS.putIfAbsent(selectedTask.getId(), TaskStatus.RUNNING.toString());
                     taskExecutor.execute(() -> {
@@ -71,15 +73,21 @@ public class ScheduleExecutor implements TaskListener{
 
                             String taskId = robotWorker.task().getId();
                             if(robotWorker.task().getTerminator().taskIsDone() && canChangeTaskStatus(taskId)){
-                                taskMap.remove(robotWorker.task().getUid());
+                                log.info("任务做完，删除任务");
+                                manager.removeWorldRobotTask(robotId,robotWorker.getCurrentTask().getId());
+                                if(manager.getRobotTaskById(robotId).isEmpty()){
+                                    manager.removeWorldRobot(robotId);
+                                }
                                 taskStatusManager.modifyTask(Long.valueOf(taskId), TaskActionConstant.FINISH);
                             }else{
+                                log.info("robot任务没做完，继续做");
                                 FREE_WORKER.add(robotId);
                             }
                         }
                     });
                 } else{
-                    manager.getAllRobot().remove(robotId);
+                    log.info("robot无任务可做");
+                    manager.removeWorldRobot(robotId);
                 }
             } catch (Exception e) {
                 log.error("调度器异常:{}",e.getMessage());
@@ -114,7 +122,7 @@ public class ScheduleExecutor implements TaskListener{
     }
 
     private boolean canChangeTaskStatus(String taskId){
-        return TASK_STATUS.remove(taskId)!=null&&manager.getWorldTask().remove(taskId)!=null;
+        return TASK_STATUS.remove(taskId)!=null&&manager.removeWorldTask(taskId)!=null;
     }
 
 }

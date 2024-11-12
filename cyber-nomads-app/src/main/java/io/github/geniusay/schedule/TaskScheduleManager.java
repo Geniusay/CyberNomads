@@ -40,9 +40,9 @@ public class TaskScheduleManager {
     TaskService taskService;
     @Resource
     WorkerExecuteStrategy executeStrategy;
-    public static final Map<String, Task> WORLD_TASK = new ConcurrentHashMap<>();
-    public static final Map<Long, RobotWorker> WORLD_ROBOTS = new ConcurrentHashMap<>();
-    public static final Map<Long, Map<String,Task>> WORLD_ROBOTS_TASK = new ConcurrentHashMap<>();
+    private static final Map<String, Task> WORLD_TASK = new ConcurrentHashMap<>();
+    private static final Map<Long, RobotWorker> WORLD_ROBOTS = new ConcurrentHashMap<>();
+    private static final Map<Long, Map<String,Task>> WORLD_ROBOTS_TASK = new ConcurrentHashMap<>();
     //TODO final map
     @PostConstruct
     public void init(){
@@ -79,10 +79,6 @@ public class TaskScheduleManager {
             });
         }
 
-    }
-
-    public Task removeTask(Long taskId){
-        return WORLD_TASK.remove(taskId);
     }
 
     public void registerRobot(RobotDO robotDO){
@@ -123,11 +119,22 @@ public class TaskScheduleManager {
         return WORLD_TASK.get(taskId);
     }
 
-    public RobotWorker getRobotById(String robotId){
-        return WORLD_ROBOTS.get(Long.valueOf(robotId));
+    public RobotWorker getRobotById(Long robotId){
+        return WORLD_ROBOTS.get(robotId);
     }
 
-    public Map<String,Task> getRobotTaskById(String robotId){
-        return WORLD_ROBOTS_TASK.get(Long.valueOf(robotId));
+    public Map<String,Task> getRobotTaskById(Long robotId){
+        return WORLD_ROBOTS_TASK.get(robotId);
+    }
+
+    public Task removeWorldTask(String taskId){
+        return WORLD_TASK.remove(taskId);
+    }
+    public void removeWorldRobot(Long robotId){
+        WORLD_ROBOTS.remove(robotId);
+        WORLD_ROBOTS_TASK.remove(robotId);
+    }
+    public void removeWorldRobotTask(Long robotId,String taskId){
+        WORLD_ROBOTS_TASK.get(robotId).remove(taskId);
     }
 }
