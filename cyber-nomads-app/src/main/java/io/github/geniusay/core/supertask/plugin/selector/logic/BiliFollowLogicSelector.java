@@ -26,7 +26,12 @@ public class BiliFollowLogicSelector extends AbstractLogicSelector implements Lo
     @Override
     public void init(Task task) {
         super.init(task);
-        reSrc = getValue(this.pluginParams, RE_SRC, Integer.class);
+        Integer temp = getValue(this.pluginParams, RE_SRC, Integer.class);
+        if (temp.equals(11) || temp.equals(14) || temp.equals(115) || temp.equals(222)) {
+            reSrc = temp;
+        } else {
+            reSrc = 11;
+        }
     }
 
     @Override

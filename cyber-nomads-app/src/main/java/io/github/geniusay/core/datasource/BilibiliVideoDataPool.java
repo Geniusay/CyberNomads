@@ -25,7 +25,7 @@ public class BilibiliVideoDataPool implements VideoDataPool {
 
     private static final long CACHE_EXPIRE_TIME = 1800;  // 排行榜缓存过期时间，单位秒，30分钟
     private static final int MAX_RANKING_VIDEO_COUNT = 100;  // 排行榜最大视频数量
-    private static final int POPULAR_PAGES = 10;  // 热门视频的页数
+    private static final int POPULAR_PAGES = 20;  // 热门视频的页数
     private static final int PAGE_SIZE = 20;  // 每页爬取的视频数量
     private static final long POPULAR_CACHE_EXPIRE_TIME = 86400;  // 热门视频缓存过期时间，单位秒，1天
 
