@@ -15,6 +15,11 @@ public class BiliCommentLogic extends ActionLogic<BiliUserActor, BiliCommentRece
     }
 
     @Override
+    public String getLogicName() {
+        return "评论操作";
+    }
+
+    @Override
     public ApiResponse<Boolean> performAction(BiliUserActor actor, BiliCommentReceiver receiver) throws Exception {
         String cookie = actor.getCookie();
         String oid = receiver.getId();

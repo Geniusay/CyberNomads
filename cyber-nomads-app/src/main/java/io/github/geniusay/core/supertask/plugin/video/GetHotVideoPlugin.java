@@ -17,11 +17,11 @@ import java.util.concurrent.TimeUnit;
 import static io.github.geniusay.constants.PluginConstant.*;
 import static io.github.geniusay.constants.RedisConstant.POPULAR_VIDEOS_DETAILS_KEY;
 import static io.github.geniusay.constants.RedisConstant.POPULAR_VIDEOS_SET_KEY;
-import static io.github.geniusay.core.supertask.config.PluginConstant.GET_VIDEO_GROUP_NAME;
+import static io.github.geniusay.core.supertask.config.PluginConstant.HOT_VIDEO_PLUGIN;
 
 @Slf4j
 @Scope("prototype")
-@Component(GET_VIDEO_GROUP_NAME)
+@Component(HOT_VIDEO_PLUGIN)
 public class GetHotVideoPlugin extends AbstractGetVideoPlugin implements GetHandleVideoPlugin {
 
     @Resource

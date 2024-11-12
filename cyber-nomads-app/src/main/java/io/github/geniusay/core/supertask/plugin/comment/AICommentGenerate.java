@@ -52,5 +52,4 @@ public class AICommentGenerate extends AbstractCommentGenerate implements Commen
             TaskNeedParams.ofK(SLOGAN, String.class, "Slogan标语在结尾处追加")
         );
     }
-
 }

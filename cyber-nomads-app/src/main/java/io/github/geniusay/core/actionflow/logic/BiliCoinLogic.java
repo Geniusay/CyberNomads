@@ -8,29 +8,39 @@ import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class BiliLikeLogic extends ActionLogic<BiliUserActor, BiliVideoReceiver> {
+public class BiliCoinLogic extends ActionLogic<BiliUserActor, BiliVideoReceiver> {
 
     private final boolean isTestMode;  // 是否为测试模式
 
-    public BiliLikeLogic(boolean isTestMode) {
+    private Integer coinSum;
+
+    private Integer andLike;
+
+    public BiliCoinLogic(Integer coinSum, boolean andLike, boolean isTestMode) {
+        this.coinSum = coinSum;
+        if (andLike) {
+            this.andLike = 1;
+        } else {
+            this.andLike = 0;
+        }
         this.isTestMode = isTestMode;
     }
 
     @Override
     public String getLogicName() {
-        return "点赞操作";
+        return "投币操作";
     }
 
     @Override
     public ApiResponse<Boolean> performAction(BiliUserActor actor, BiliVideoReceiver receiver) throws Exception {
         if (isTestMode) {
-            logAction(actor, receiver, "【测试模式】执行点赞操作");
+            logAction(actor, receiver, "【测试模式】执行投币操作，投币数量：" + coinSum + "是否同时点赞：" + andLike);
             return new ApiResponse<>(0, "测试成功", true, true, System.currentTimeMillis(), System.currentTimeMillis(), 0);
         }
 
         String cookie = actor.getCookie();
         String videoId = receiver.getId();
-        logAction(actor, receiver, "执行点赞操作");
-        return BilibiliVideoApi.likeVideo(cookie, videoId, 1);
+        logAction(actor, receiver, "执行投币操作");
+        return BilibiliVideoApi.coinVideo(cookie, videoId, coinSum, andLike);
     }
 }

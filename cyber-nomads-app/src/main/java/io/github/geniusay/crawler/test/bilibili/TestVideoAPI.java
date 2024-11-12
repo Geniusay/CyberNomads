@@ -32,7 +32,7 @@ public class TestVideoAPI {
 
     @Test
     public void likeVideo() throws Exception {
-        String oid = "1154116168";
+        String oid = "BV177D1YdEJa";
         BilibiliVideoApi.likeVideo(cookie, oid, 1);
     }
 

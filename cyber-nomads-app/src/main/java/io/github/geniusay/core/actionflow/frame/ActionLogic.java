@@ -9,6 +9,8 @@ import io.github.geniusay.crawler.util.bilibili.ApiResponse;
  */
 public abstract class ActionLogic<A extends Actor, R extends Receiver> {
 
+    public abstract String getLogicName();
+
     public abstract ApiResponse<Boolean> performAction(A actor, R receiver) throws Exception;
 
     protected void logAction(A actor, R receiver, String actionDescription) {
