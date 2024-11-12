@@ -27,6 +27,7 @@ public class IFAQService implements FAQService {
     @PostConstruct
     public List<AnswerQuestion> init() {
         log.info("问题和回答缓存初始化...");
+        redisTemplate.delete("answerQuestions");
         List<AnswerQuestion> answerQuestions = answerQuestionMapper.selectList(null);
         redisTemplate.opsForList().leftPushAll("answerQuestions", answerQuestions);
         log.info("问题和回答缓存初始化成功，当前缓存数量{}", answerQuestions.size());
