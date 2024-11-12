@@ -103,6 +103,7 @@ public class RequestUtil {
     }
 
     public OkHttpClient getClient(String robotId){
+        log.info("代理获取{}", robotId);
         return proxyCache.computeIfAbsent(robotId, k -> proxyManager.getClient()).getClient();
     }
 

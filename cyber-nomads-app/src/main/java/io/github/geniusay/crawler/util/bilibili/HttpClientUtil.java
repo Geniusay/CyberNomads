@@ -2,28 +2,40 @@ package io.github.geniusay.crawler.util.bilibili;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import io.github.geniusay.utils.RequestUtil;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.io.*;
 
 import static io.github.geniusay.utils.DecompressUtil.decompressDeflateStream;
 
+@Component
 public class HttpClientUtil {
 
     private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Edg/130.0.0.0";
 
     private static OkHttpClient defaultClient = new OkHttpClient();
 
+    private static RequestUtil requestUtil;
+
+    @Resource
+    public void set(RequestUtil requestUtil){
+        HttpClientUtil.requestUtil = requestUtil;
+    }
+
     /**
      * 获取 OkHttpClient 实例
      *
      * @return OkHttpClient
      */
-    private static OkHttpClient getClient() {
+    private static OkHttpClient getClient(String cookie) {
         // 这里可以返回代理池的 OkHttpClient 实例
         // 目前直接返回本地的默认 OkHttpClient
-        return defaultClient;
+        return requestUtil.getClient(cookie);
     }
 
     /**
@@ -45,7 +57,7 @@ public class HttpClientUtil {
                 .addHeader("User-Agent", DEFAULT_USER_AGENT)
                 .build();
 
-        try (Response response = getClient().newCall(request).execute()) {
+        try (Response response = getClient(cookie).newCall(request).execute()) {
             long responseTimestamp = System.currentTimeMillis(); // 记录响应时间
             long duration = responseTimestamp - requestTimestamp; // 计算耗时
 
@@ -82,7 +94,7 @@ public class HttpClientUtil {
                 .addHeader("User-Agent", DEFAULT_USER_AGENT)
                 .build();
 
-        return getStringApiResponse(requestTimestamp, request);
+        return getStringApiResponse(requestTimestamp, request, cookie);
     }
 
     /**
@@ -105,12 +117,12 @@ public class HttpClientUtil {
                 .addHeader("User-Agent", DEFAULT_USER_AGENT)
                 .build();
 
-        return getStringApiResponse(requestTimestamp, request);
+        return getStringApiResponse(requestTimestamp, request, cookie);
     }
 
     @NotNull
-    public static ApiResponse<String> getStringApiResponse(long requestTimestamp, Request request) throws IOException {
-        try (Response response = getClient().newCall(request).execute()) {
+    public static ApiResponse<String> getStringApiResponse(long requestTimestamp, Request request, String cookie) throws IOException {
+        try (Response response = getClient(cookie).newCall(request).execute()) {
             long responseTimestamp = System.currentTimeMillis(); // 记录响应时间
             long duration = responseTimestamp - requestTimestamp; // 计算耗时
 
