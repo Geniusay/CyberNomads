@@ -55,7 +55,7 @@ public abstract class BilibiliAbstractInteractionTaskBlueprint extends AbstractT
         String logicName = (String) lastWord.getAdditionalInfo(LOGIC_NAME);
         String receiverName = (String) lastWord.getAdditionalInfo(RECEIVER_NAME);
 
-        String actionDescription = String.format("%s robot 执行了 %s 行为，目标视频: %s",
+        String actionDescription = String.format("%s robot 执行了 %s 行为，目标: %s",
                 robot.getNickname(),
                 logicName,
                 receiverName);
