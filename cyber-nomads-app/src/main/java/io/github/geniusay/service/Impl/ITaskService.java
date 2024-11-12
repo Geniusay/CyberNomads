@@ -94,7 +94,7 @@ public class ITaskService implements TaskService {
         if (task == null) throw new ServeException("任务不存在或无权操作该任务: " + updateTaskDTO.getTaskId());
 
         // TODO 跟新任务状态判断
-        if (task.getTaskStatus() != TaskStatus.PENDING && task.getTaskStatus() != TaskStatus.PAUSED) {
+        if (task.inStatusList(TaskStatus.RUNNING, TaskStatus.EXCEPTION)) {
             throw new ServeException("任务当前状态不允许更新，只有未开始或暂停状态下的任务才可以更新");
         }
 

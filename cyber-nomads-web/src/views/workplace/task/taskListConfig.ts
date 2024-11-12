@@ -33,12 +33,12 @@ export const status = {
     next:"running",
     nextMsg:"重启任务"
   },
-  finish:{
+  completed:{
     icon:"mdi-check-circle",
     color:"green",
     content:"workplace.task.finish",
-    value:"finish",
-    next:"running",
+    value:"completed",
+    next:"reset",
     nextMsg:"重启任务"
   },
   error:{
@@ -46,7 +46,7 @@ export const status = {
     color:"red",
     content:"workplace.task.error",
     value:"error",
-    next:"running",
+    next:"reset",
     nextMsg:"重启任务"
   }
 }
@@ -78,12 +78,14 @@ export const buttonStatus = {
     icon: "mdi-play-pause",
     color: "grey",
     next: "start",
+    action:"start",
     nextMsg:"继续任务"
   },
-  reset:{
+  finished:{
     icon: "mdi-reload",
     color: "grey",
-    next: "start",
+    next: "reset",
+    action:"reset",
     nextMsg:"重置任务"
   },
 }
@@ -98,8 +100,8 @@ export const getButtonStatus =(itemStatus: string)=> {
   if(isStatusIn(itemStatus, [status.paused.value])){
     return buttonStatus.pause
   }
-  if(isStatusIn(itemStatus, [status.error.value, status.finish.value])){
-    return buttonStatus.reset
+  if(isStatusIn(itemStatus, [status.error.value, status.completed.value])){
+    return buttonStatus.finished
   }
 }
 

@@ -1,0 +1,37 @@
+@import "./main.scss";
+
+.newsletter { color: var(--white); }
+
+.newsletter .container {
+  display: grid;
+  gap: 50px;
+}
+
+.newsletter-banner { max-width: max-content; }
+
+.newsletter .section-subtitle { color: var(--light-gray); }
+
+.newsletter .section-title {
+  color: var(--white);
+  margin-block: 20px 35px;
+}
+
+.email-field {
+  background-color: var(--majorelle-blue);
+  color: var(--white);
+  font-size: var(--fs-9);
+  min-height: 60px;
+  padding-inline: 20px;
+  border-radius: var(--radius-8);
+  margin-block-end: 20px;
+  box-shadow: var(--shadow-5);
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  transition: var(--transition-1);
+}
+
+.email-field:focus { outline-color: var(--white); }
+
+.email-field::placeholder { color: inherit; }
+
+@import "./media.scss";

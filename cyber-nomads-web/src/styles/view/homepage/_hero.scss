@@ -3,17 +3,60 @@
 \*-----------------------------------*/
 @import "./main.scss";
 
-.hero {
-    padding-block: 150px 140px;
-}
+.hero { padding-block-start: calc(var(--section-padding) + 60px); }
 
-.hero-content {
-    margin-block-end: 80px;
+.hero .container {
+    display: grid;
+    gap: 70px;
 }
 
 .hero-text {
-    font-size: var(--fs-5);
-    margin-block: 25px 40px;
+    font-size: var(--fs-7);
+    margin-block: 30px 35px;
 }
 
-@import "./media.scss"
+.hero-content :is(.wrapper, .hero-btn) {
+    display: flex;
+    align-items: center;
+}
+
+.hero-content .wrapper {
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-block-end: 30px;
+}
+
+.hero-btn {
+    gap: 15px;
+    color: var(--raisin-black-1);
+    transition: var(--transition-1);
+}
+
+.hero-btn:is(:hover, :focus) { color: var(--majorelle-blue); }
+
+.hero-btn ion-icon { font-size: 24px; }
+
+.hero-btn .span {
+    font-size: var(--fs-6);
+    font-weight: var(--fw-500);
+}
+
+.hero .social-link .span { display: none; }
+
+.hero .social-list { gap: 12px; }
+
+.hero .social-link {
+    background-color: var(--white);
+    color: var(--color);
+    padding: 12px;
+    box-shadow: var(--shadow-1);
+    border-radius: var(--radius-8);
+    transition: var(--transition-2);
+}
+
+.hero .social-link:is(:hover, :focus) {
+    background-color: var(--color);
+    color: var(--white);
+}
+
+@import "./media.scss";

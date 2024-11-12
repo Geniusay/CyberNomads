@@ -230,5 +230,5 @@ onMounted(() => {
 </style>
 
 <style scoped>
-@import "@/styles/view/homepage/_code-landing.scss";
+@import "@/styles/view/homepage/old/_code-landing.scss";
 </style>

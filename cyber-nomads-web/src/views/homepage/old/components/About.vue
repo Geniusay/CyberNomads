@@ -62,5 +62,5 @@
 </template>
 
 <style lang="scss" scoped>
-@import url("@/styles/view/homepage/_about.scss");
+@import url("@/styles/view/homepage/old/_about.scss");
 </style>

@@ -110,5 +110,5 @@
 </template>
 
 <style scoped>
-@import url("@/styles/view/homepage/_instruction.scss");
+@import url("@/styles/view/homepage/old/_instruction.scss");
 </style>

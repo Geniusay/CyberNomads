@@ -1,7 +1,7 @@
 /*-----------------------------------*\
   #TREND
 \*-----------------------------------*/
-@import "./main.scss";
+@import "../main.scss";
 
 .trend {
     background-color: var(--eerie-black-1);
@@ -94,4 +94,4 @@
     font-size: var(--fs-7);
 }
 
-@import "./media.scss"
+@import "../media.scss"

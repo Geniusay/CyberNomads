@@ -1,56 +1,57 @@
 <template>
   <header class="header" data-header>
     <div class="container">
-      <a href="#" class="logo">
-        <img
-          src="@/assets/svg/logo.svg"
-          width="32"
-          height="32"
-          alt="Cryptex logo"
-        />
-        CyberNomads
-      </a>
+
+      <a href="#" class="logo">Pixology</a>
 
       <nav class="navbar" data-navbar>
+
+        <div class="wrapper">
+          <a href="#" class="logo">Pixology</a>
+
+          <button class="nav-close-btn" aria-label="close menu" data-nav-toggler>
+            <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
+          </button>
+        </div>
+
         <ul class="navbar-list">
+
           <li class="navbar-item">
-            <a href="#" class="navbar-link active" data-nav-link>首页</a>
+            <a href="#home" class="navbar-link" data-nav-link>Home</a>
           </li>
 
           <li class="navbar-item">
-            <a href="#" class="navbar-link" data-nav-link>Buy Crypto</a>
+            <a href="#service" class="navbar-link" data-nav-link>Services</a>
           </li>
 
           <li class="navbar-item">
-            <a href="#" class="navbar-link" data-nav-link>Markets</a>
+            <a href="#feature" class="navbar-link" data-nav-link>Features</a>
           </li>
 
           <li class="navbar-item">
-            <a href="#" class="navbar-link" data-nav-link>Sell Crypto</a>
+            <a href="#project" class="navbar-link" data-nav-link>Portfolio</a>
           </li>
 
           <li class="navbar-item">
-            <a href="#" class="navbar-link" data-nav-link>Blog</a>
+            <a href="#blog" class="navbar-link" data-nav-link>Blog</a>
           </li>
 
-          <li class="navbar-item">
-            <a href="#" class="navbar-link" data-nav-link>BITUSDT</a>
-          </li>
         </ul>
+
       </nav>
 
-      <button class="nav-toggle-btn" aria-label="Toggle menu" data-nav-toggler>
-        <span class="line line-1"></span>
-        <span class="line line-2"></span>
-        <span class="line line-3"></span>
+      <button class="nav-open-btn" aria-label="open menu" data-nav-toggler>
+        <ion-icon name="menu-outline" aria-hidden="true"></ion-icon>
       </button>
-      <router-link to="/login" class="logo">
-        <a class="btn btn-outline">登录</a>
-      </router-link>
+
+      <a href="#" class="btn btn-primary has-before has-after">Let’s Talk 👋</a>
+
+      <div class="overlay" data-nav-toggler data-overlay></div>
+
     </div>
   </header>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 @import url("@/styles/view/homepage/_header.scss");
 </style>

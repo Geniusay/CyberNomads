@@ -1,17 +1,13 @@
 <script setup lang="ts">
 import Header from "@/views/homepage/components/Header.vue";
 import Hero from "@/views/homepage/components/Hero.vue";
-import Trend from "@/views/homepage/components/Trend.vue";
-import Market from "@/views/homepage/components/Market.vue";
-import Instruction from "@/views/homepage/components/Instruction.vue";
-import About from "@/views/homepage/components/About.vue";
-import App from "@/views/homepage/components/App.vue";
+import Service from "@/views/homepage/components/Service.vue";
+import Project from "@/views/homepage/components/Project.vue";
+import NewSletter from "@/views/homepage/components/NewSletter.vue";
 import Footer from "@/views/homepage/components/Footer.vue";
-onMounted(() => {
-  /**
-   * add event on element
-   */
+import Top from "@/views/homepage/components/Top.vue";
 
+onMounted(() => {
   const addEventOnElem = function (elem, type, callback) {
     if (elem.length > 1) {
       for (let i = 0; i < elem.length; i++) {
@@ -20,96 +16,65 @@ onMounted(() => {
     } else {
       elem.addEventListener(type, callback);
     }
-  };
+  }
 
   /**
    * navbar toggle
    */
 
   const navbar = document.querySelector("[data-navbar]");
+  const navTogglers = document.querySelectorAll("[data-nav-toggler]");
   const navbarLinks = document.querySelectorAll("[data-nav-link]");
-  const navToggler = document.querySelector("[data-nav-toggler]");
+  const overlay = document.querySelector("[data-overlay]");
 
   const toggleNavbar = function () {
     navbar.classList.toggle("active");
-    navToggler.classList.toggle("active");
-    document.body.classList.toggle("active");
-  };
+    overlay.classList.toggle("active");
+  }
 
-  addEventOnElem(navToggler, "click", toggleNavbar);
+  addEventOnElem(navTogglers, "click", toggleNavbar);
 
   const closeNavbar = function () {
     navbar.classList.remove("active");
-    navToggler.classList.remove("active");
-    document.body.classList.remove("active");
-  };
+    overlay.classList.remove("active");
+  }
 
   addEventOnElem(navbarLinks, "click", closeNavbar);
 
   /**
-   * header active
+   * header & back top btn show when scroll down to 100px
    */
 
   const header = document.querySelector("[data-header]");
+  const backTopBtn = document.querySelector("[data-back-top-btn]");
 
-  const activeHeader = function () {
-    if (window.scrollY > 300) {
+  const headerActive = function () {
+    if (window.scrollY > 80) {
       header.classList.add("active");
+      backTopBtn.classList.add("active");
     } else {
       header.classList.remove("active");
+      backTopBtn.classList.remove("active");
     }
-  };
+  }
 
-  addEventOnElem(window, "scroll", activeHeader);
-
-  /**
-   * toggle active on add to fav
-   */
-
-  const addToFavBtns = document.querySelectorAll("[data-add-to-fav]");
-
-  const toggleActive = function () {
-    this.classList.toggle("active");
-  };
-
-  addEventOnElem(addToFavBtns, "click", toggleActive);
-
-  /**
-   * scroll revreal effect
-   */
-
-  const sections = document.querySelectorAll("[data-section]");
-
-  const scrollReveal = function () {
-    for (let i = 0; i < sections.length; i++) {
-      if (sections[i].getBoundingClientRect().top < window.innerHeight / 1.5) {
-        sections[i].classList.add("active");
-      } else {
-        sections[i].classList.remove("active");
-      }
-    }
-  };
-
-  scrollReveal();
-
-  addEventOnElem(window, "scroll", scrollReveal);
+  addEventOnElem(window, "scroll", headerActive);
 });
 </script>
 
 <template>
-  <div class="home-container">
+  <div id="top" class="home-container">
     <Header></Header>
     <main>
       <article>
         <Hero />
-        <Trend />
-        <Market />
-        <Instruction />
-        <About />
-        <App />
+        <Service />
+        <Project />
+        <NewSletter />
+        <Footer />
       </article>
     </main>
-    <Footer />
+
   </div>
 </template>
 

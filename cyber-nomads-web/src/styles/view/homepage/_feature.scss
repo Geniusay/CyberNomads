@@ -1,0 +1,39 @@
+/*-----------------------------------*\
+  #TREND
+\*-----------------------------------*/
+@import "./main.scss";
+
+.feature .container,
+.feature-list {
+    display: grid;
+    gap: 60px;
+}
+
+.feature-card .card-icon {
+    background-color: hsla(var(--color), 0.15);
+    font-size: 24px;
+    max-width: max-content;
+    padding: 18px;
+    border-radius: 50%;
+    margin-block-end: 20px;
+    transition: var(--transition-2);
+}
+
+.feature-card .card-icon ion-icon {
+    color: hsl(var(--color));
+    transition: var(--transition-1);
+}
+
+.feature-card .card-text {
+    color: var(--cool-gray);
+    font-size: var(--fs-7);
+    margin-block-start: 10px;
+}
+
+.feature-card:is(:hover, :focus) .card-icon {
+    box-shadow: inset 0 0 0 30px hsla(var(--color), 0.9);
+}
+
+.feature-card:is(:hover, :focus) .card-icon ion-icon { color: var(--white); }
+
+@import "./media.scss";

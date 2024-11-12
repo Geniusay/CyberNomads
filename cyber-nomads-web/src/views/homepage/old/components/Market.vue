@@ -556,5 +556,5 @@
 </template>
 
 <style scoped>
-@import url("@/styles/view/homepage/_market.scss");
+@import url("@/styles/view/homepage/old/_market.scss");
 </style>

@@ -147,5 +147,5 @@
 </template>
 
 <style scoped>
-@import url("@/styles/view/homepage/_trend.scss");
+@import url("@/styles/view/homepage/old/_trend.scss");
 </style>

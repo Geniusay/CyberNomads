@@ -1,0 +1,65 @@
+
+@import "./main.scss";
+
+.service { background-color: var(--ghost-white); }
+
+.service .section-title { margin-block: 30px 60px; }
+
+.service-card,
+.service .link-card {
+    padding: 45px;
+    border-radius: var(--radius-20);
+}
+
+.service-card {
+    height: 100%;
+    background-color: var(--white);
+    padding-block-end: 40px;
+    border-block-end: 3px solid transparent;
+    box-shadow: var(--shadow-3);
+    transition: var(--transition-1);
+}
+
+.service-card:is(:hover, :focus-within) { border-color: hsl(var(--color)); }
+
+.service-card .card-icon {
+    max-width: max-content;
+    padding: 15px;
+    border-radius: var(--radius-8);
+    background-color: hsla(var(--color), 0.15);
+    margin-block-end: 25px;
+    transition: var(--transition-2);
+}
+
+.service-card:is(:hover, :focus-within) .card-icon { transform: rotateY(0.5turn); }
+
+.service-card .card-title { transition: var(--transition-1); }
+
+.service-card .card-title:is(:hover, :focus-within) { color: hsl(var(--color)); }
+
+.service .link-card {
+    background-color: hsla(var(--color), 0.15);
+    text-align: center;
+}
+
+.service .link-card .span {
+    color: var(--raisin-black-1);
+    font-size: var(--fs-6);
+    font-weight: var(--fw-500);
+    margin-block-end: 20px;
+    transition: var(--transition-1);
+}
+
+.service .link-card:is(:hover, :focus) .span { color: var(--majorelle-blue); }
+
+.service .link-card ion-icon {
+    color: var(--majorelle-blue);
+    font-size: 150px;
+    transform: rotate(-45deg);
+    margin: -25px auto;
+    transition: var(--transition-1);
+}
+
+.service .link-card:is(:hover, :focus) ion-icon { color: hsl(var(--color)); }
+
+@import "./media.scss";

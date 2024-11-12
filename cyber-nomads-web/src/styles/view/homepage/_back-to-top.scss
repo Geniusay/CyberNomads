@@ -1,0 +1,35 @@
+/*-----------------------------------*\
+  #ABOUT
+\*-----------------------------------*/
+@import "./main.scss";
+
+.back-top-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  background-color: var(--majorelle-blue);
+  color: var(--white);
+  font-size: 18px;
+  padding: 16px;
+  border-radius: var(--radius-8);
+  z-index: 4;
+  visibility: hidden;
+  opacity: 0;
+  transition: var(--transition-1);
+}
+
+.back-top-btn.active {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(-10px);
+}
+
+.back-top-btn::after {
+  bottom: -12px;
+  right: 0;
+  width: 100%;
+  height: 10px;
+  background-image: var(--gradient);
+}
+
+@import "./media.scss";

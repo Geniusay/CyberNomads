@@ -1,184 +1,123 @@
+<script setup lang="ts">
+  const icons = [
+    "logo-youtube","logo-twitter","logo-facebook","logo-skype"
+  ]
+
+  const usefulLinks = [
+    { title: "Usefull Links", type: "title" },
+    { label: "Contact us", href: "#" },
+    { label: "How it Works", href: "#" },
+    { label: "Create", href: "#" },
+    { label: "Explore", href: "#" },
+    { label: "Terms & Services", href: "#" }
+  ];
+
+  const communityLinks = [
+    { title: "Community", type: "title" },
+    { label: "Help Center", href: "#" },
+    { label: "Partners", href: "#" },
+    { label: "Suggestions", href: "#" },
+    { label: "Blog", href: "#" },
+    { label: "Newsletters", href: "#" }
+  ];
+
+  const instaPosts = [
+    { src: "./assets/images/homepage/insta-post-1.jpg", href: "#" },
+    { src: "./assets/images/homepage/insta-post-2.jpg", href: "#" },
+    { src: "./assets/images/homepage/insta-post-3.jpg", href: "#" },
+    { src: "./assets/images/homepage/insta-post-4.jpg", href: "#" },
+    { src: "./assets/images/homepage/insta-post-5.jpg", href: "#" },
+    { src: "./assets/images/homepage/insta-post-6.jpg", href: "#" }
+  ];
+
+</script>
+
 <template>
   <footer class="footer">
-    <div class="footer-top" data-section>
-      <div class="container">
+    <div class="container">
+
+      <div class="footer-top section">
+
         <div class="footer-brand">
-          <a href="#" class="logo">
-            <img
-              src="@/assets/svg/logo.svg"
-              width="50"
-              height="50"
-              alt="CyberNomads logo"
-            />
-            CyberNomads
-          </a>
 
-          <h2 class="footer-title">Let's talk! 🤙</h2>
+          <p class="footer-list-title">About Pixology</p>
 
-          <a href="tel:+666666666" class="footer-contact-link"
-            >+86 666 666 666</a
-          >
+          <p class="footer-text">
+            A new way to make the payments easy, reliable and 100% secure. claritatem itamconse quat. Exerci tationulla
+          </p>
 
-          <a href="mailto:hello.cryptex@gmail.com" class="footer-contact-link"
-            >hello.cryptex@gmail.com</a
-          >
+          <ul class="social-list">
 
-          <address class="footer-contact-link">
-            Cecilia Chapman 711-2880 Nulla St. Mankato Mississippi 96522
-          </address>
+            <li v-for="icon in icons">
+              <a href="#" class="social-link">
+                <ion-icon :name="icon"></ion-icon>
+              </a>
+            </li>
+          </ul>
+
         </div>
 
         <ul class="footer-list">
-          <li>
-            <p class="footer-list-title">Products</p>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Spot</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Inverse Perpetual</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">USDT Perpetual</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Exchange</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Launchpad</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Binance Pay</a>
+          <li v-for="(link, index) in usefulLinks" :key="index">
+            <p v-if="link.type === 'title'" class="footer-list-title">{{ link.title }}</p>
+            <a v-else :href="link.href" class="footer-link">{{ link.label }}</a>
           </li>
         </ul>
 
         <ul class="footer-list">
-          <li>
-            <p class="footer-list-title">Services</p>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Buy Crypto</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Markets</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Tranding Fee</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Affiliate Program</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Referral Program</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">API</a>
+          <li v-for="(link, index) in communityLinks" :key="'community-' + index">
+            <p v-if="link.type === 'title'" class="footer-list-title">{{ link.title }}</p>
+            <a v-else :href="link.href" class="footer-link">{{ link.label }}</a>
           </li>
         </ul>
 
         <ul class="footer-list">
-          <li>
-            <p class="footer-list-title">Support</p>
-          </li>
+        <li>
+          <p class="footer-list-title">Instagram Post</p>
+        </li>
 
-          <li>
-            <a href="#" class="footer-link">Bybit Learn</a>
-          </li>
+        <li>
+          <ul class="insta-post">
+            <li v-for="(post, index) in instaPosts" :key="index">
+              <div class="insta-card">
+                <figure class="post-banner">
+                  <img :src="post.src" width="77" height="63" loading="lazy" alt="instagram post" class="img-cover">
+                </figure>
+                <a :href="post.href" class="card-content">
+                  <ion-icon name="logo-instagram" aria-hidden="true"></ion-icon>
+                </a>
+              </div>
+            </li>
+          </ul>
+        </li>
+      </ul>
 
-          <li>
-            <a href="#" class="footer-link">Help Center</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">User Feedback</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Submit a request</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">API Documentation</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Trading Rules</a>
-          </li>
-        </ul>
-
-        <ul class="footer-list">
-          <li>
-            <p class="footer-list-title">About Us</p>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">About Bybit</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Authenticity Check</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Careers</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Business Contacts</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Blog</a>
-          </li>
-        </ul>
       </div>
-    </div>
 
-    <div class="footer-bottom">
-      <div class="container">
+      <div class="footer-bottom">
+
         <p class="copyright">
-          &copy; 2024 CyberNomads All Rights Reserved by
-          <a href="#" class="copyright-link">TML</a>
+          &copy; 2022 Pixology. All Rights Reserved by codewithsadee
         </p>
 
-        <ul class="social-list">
+        <ul class="footer-bottom-list">
+
           <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-facebook"></ion-icon>
-            </a>
+            <a href="#" class="footer-bottom-link">Terms and conditions</a>
           </li>
 
           <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-twitter"></ion-icon>
-            </a>
+            <a href="#" class="footer-bottom-link">Privacy policy</a>
           </li>
 
           <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-instagram"></ion-icon>
-            </a>
+            <a href="#" class="footer-bottom-link">Login / Signup</a>
           </li>
 
-          <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-linkedin"></ion-icon>
-            </a>
-          </li>
         </ul>
+
       </div>
+
     </div>
   </footer>
 </template>

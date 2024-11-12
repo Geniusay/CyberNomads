@@ -1,7 +1,7 @@
 /*-----------------------------------*\
   #ABOUT
 \*-----------------------------------*/
-@import "./main.scss";
+@import "../main.scss";
 
 .about {
     background-color: var(--eerie-black-1);
@@ -22,4 +22,4 @@
 .list-title{
   font-size: var(--fs-6);
 }
-@import "./media.scss"
+@import "../media.scss"

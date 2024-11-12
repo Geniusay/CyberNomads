@@ -76,5 +76,5 @@
 </template>
 
 <style lang="scss" scoped>
-@import url("@/styles/view/homepage/_app.scss");
+@import url("@/styles/view/homepage/old/_app.scss");
 </style>
