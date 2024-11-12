@@ -6,6 +6,7 @@ import io.github.geniusay.core.actionflow.frame.ActionLogic;
 import io.github.geniusay.core.actionflow.frame.Receiver;
 import io.github.geniusay.core.supertask.plugin.TaskPluginFactory;
 import io.github.geniusay.core.supertask.plugin.selector.logic.AbstractLogicSelector;
+import io.github.geniusay.core.supertask.plugin.selector.receiver.AbstractReceiverSelector;
 import io.github.geniusay.core.supertask.plugin.selector.receiver.BiliVideoReceiverSelector;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
@@ -41,7 +42,7 @@ public abstract class BilibiliAbstractInteractionTaskBlueprint extends AbstractT
     protected void executeTask(RobotWorker robot, Task task) throws Exception {
         // 获取 Logic 和 Receiver（针对视频）
         ActionLogic logic = taskPluginFactory.<AbstractLogicSelector>buildPluginWithGroup(LOGIC_SELECTOR_GROUP_NAME, task).getLogic();
-        Receiver receiver = taskPluginFactory.<BiliVideoReceiverSelector>buildPluginWithGroup(RECEIVER_SELECTOR_GROUP_NAME, task).getReceiver();
+        Receiver receiver = taskPluginFactory.<AbstractReceiverSelector>buildPluginWithGroup(RECEIVER_SELECTOR_GROUP_NAME, task).getReceiver();
 
         // 执行任务
         ApiResponse<Boolean> response = new ActionFlow<>(new BiliUserActor(robot), logic, receiver).execute();

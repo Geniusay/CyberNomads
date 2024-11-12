@@ -3,8 +3,8 @@ package io.github.geniusay.crawler.util.bilibili;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.github.geniusay.utils.RequestUtil;
+import io.netty.util.internal.StringUtil;
 import okhttp3.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -19,6 +19,7 @@ public class HttpClientUtil {
     private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Edg/130.0.0.0";
 
     private static OkHttpClient defaultClient = new OkHttpClient();
+    private static String defaultCookie = "defaultCookie";
 
     private static RequestUtil requestUtil;
 
@@ -33,10 +34,14 @@ public class HttpClientUtil {
      * @return OkHttpClient
      */
     private static OkHttpClient getClient(String cookie) {
-        // 这里可以返回代理池的 OkHttpClient 实例
-        // 目前直接返回本地的默认 OkHttpClient
-        OkHttpClient client = requestUtil.getClient(cookie);
-        return client == null ? defaultClient : client;
+//        if (StringUtil.isNullOrEmpty(cookie)) {
+//            cookie = defaultCookie;
+//        }
+//        // 这里可以返回代理池的 OkHttpClient 实例
+//        // 目前直接返回本地的默认 OkHttpClient
+//        OkHttpClient client = requestUtil.getClient(cookie);
+//        return client == null ? defaultClient : client;
+        return defaultClient;
     }
 
     /**
