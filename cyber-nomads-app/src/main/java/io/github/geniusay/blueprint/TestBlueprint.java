@@ -2,7 +2,6 @@ package io.github.geniusay.blueprint;
 
 import io.github.geniusay.core.actionflow.actor.BiliUserActor;
 import io.github.geniusay.core.actionflow.frame.ActionFlow;
-import io.github.geniusay.core.actionflow.logic.BiliCommentLogic;
 import io.github.geniusay.core.actionflow.logic.BiliTestLogic;
 import io.github.geniusay.core.actionflow.receiver.BiliCommentReceiver;
 import io.github.geniusay.core.supertask.plugin.TaskPluginFactory;
@@ -64,11 +63,7 @@ public class TestBlueprint extends AbstractTaskBlueprint {
     }
 
     @Override
-    protected String lastWord(RobotWorker robot, Task task) {
-        LastWord lastWord = task.getLastWord(robot);
-        if (lastWord == null) {
-            return LastWordUtil.buildLastWord(robot.getNickname() + " robot 没有执行任务", false);
-        }
+    protected String lastWord(RobotWorker robot, Task task, LastWord lastWord) {
         ApiResponse<Boolean> response = lastWord.getResponse();
         String bvid = (String) lastWord.getAdditionalInfo("bvid");
         String comment = (String) lastWord.getAdditionalInfo("comment");

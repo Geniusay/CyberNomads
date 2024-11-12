@@ -61,16 +61,10 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
     }
 
     @Override
-    protected String lastWord(RobotWorker robot, Task task) {
-        LastWord lastWord = task.getLastWord(robot);
-        if (lastWord == null) {
-            return LastWordUtil.buildLastWord(robot.getNickname() + " robot 没有执行任务", false);
-        }
-
+    protected String lastWord(RobotWorker robot, Task task, LastWord lastWord) {
         ApiResponse<Boolean> response = lastWord.getResponse();
         String bvid = (String) lastWord.getAdditionalInfo("bvid");
         String comment = (String) lastWord.getAdditionalInfo("comment");
-
         if (response.isSuccess()) {
             return LastWordUtil.buildLastWord(String.format("%s robot 成功对视频 %s 发表评论，评论内容: %s", robot.getNickname(), bvid, comment), true);
         } else {

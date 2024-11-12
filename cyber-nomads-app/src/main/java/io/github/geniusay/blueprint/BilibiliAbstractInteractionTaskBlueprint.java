@@ -6,10 +6,7 @@ import io.github.geniusay.core.actionflow.frame.ActionLogic;
 import io.github.geniusay.core.actionflow.frame.Receiver;
 import io.github.geniusay.core.supertask.plugin.TaskPluginFactory;
 import io.github.geniusay.core.supertask.plugin.selector.logic.AbstractLogicSelector;
-import io.github.geniusay.core.supertask.plugin.selector.logic.BiliCoinLogicSelector;
-import io.github.geniusay.core.supertask.plugin.selector.logic.BiliLikeLogicSelector;
 import io.github.geniusay.core.supertask.plugin.selector.receiver.BiliVideoReceiverSelector;
-import io.github.geniusay.core.supertask.plugin.terminator.SingleUseTerminator;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
@@ -17,9 +14,7 @@ import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import io.github.geniusay.pojo.DO.LastWord;
 import io.github.geniusay.utils.LastWordUtil;
-import io.github.geniusay.utils.ParamsUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -30,7 +25,6 @@ import static io.github.geniusay.constants.PluginConstant.RECEIVER_NAME;
 import static io.github.geniusay.core.supertask.config.PluginConstant.LOGIC_SELECTOR_GROUP_NAME;
 import static io.github.geniusay.core.supertask.config.PluginConstant.RECEIVER_SELECTOR_GROUP_NAME;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
-import static io.github.geniusay.core.supertask.config.TaskTypeConstant.USER_INTERACTION;
 
 @Slf4j
 public abstract class BilibiliAbstractInteractionTaskBlueprint extends AbstractTaskBlueprint {
@@ -56,12 +50,7 @@ public abstract class BilibiliAbstractInteractionTaskBlueprint extends AbstractT
     }
 
     @Override
-    protected String lastWord(RobotWorker robot, Task task) {
-        LastWord lastWord = task.getLastWord(robot);
-        if (lastWord == null) {
-            return LastWordUtil.buildLastWord(robot.getNickname() + " robot 没有执行任务", false);
-        }
-
+    protected String lastWord(RobotWorker robot, Task task, LastWord lastWord) {
         ApiResponse<Boolean> response = lastWord.getResponse();
         String logicName = (String) lastWord.getAdditionalInfo(LOGIC_NAME);
         String receiverName = (String) lastWord.getAdditionalInfo(RECEIVER_NAME);

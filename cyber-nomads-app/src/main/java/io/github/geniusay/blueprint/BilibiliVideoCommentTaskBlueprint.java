@@ -2,7 +2,6 @@ package io.github.geniusay.blueprint;
 
 import io.github.geniusay.core.supertask.plugin.TaskPluginFactory;
 import io.github.geniusay.core.supertask.plugin.terminator.GroupCountTerminator;
-import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.core.supertask.task.*;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
 import io.github.geniusay.crawler.api.bilibili.BilibiliCommentApi;
@@ -15,11 +14,9 @@ import io.github.geniusay.utils.ParamsUtil;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.geniusay.constants.TerminatorConstants.TERMINATOR_TYPE_GROUP_COUNT;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_COMMENT;
 
@@ -59,12 +56,7 @@ public class BilibiliVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
     }
 
     @Override
-    protected String lastWord(RobotWorker robot, Task task) {
-        LastWord lastWord = task.getLastWord(robot);
-        if (lastWord == null) {
-            return LastWordUtil.buildLastWord(robot.getNickname() + " robot 没有执行任务", false);
-        }
-
+    protected String lastWord(RobotWorker robot, Task task, LastWord lastWord) {
         ApiResponse<Boolean> response = lastWord.getResponse();
         String bvid = (String) lastWord.getAdditionalInfo("bvid");
         String comment = (String) lastWord.getAdditionalInfo("comment");
