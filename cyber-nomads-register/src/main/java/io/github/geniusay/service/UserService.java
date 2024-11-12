@@ -19,4 +19,6 @@ public interface UserService {
     Object queryRobots();
 
     void saveKey(String scriptKey);
+
+    void removeMachineCode();
 }

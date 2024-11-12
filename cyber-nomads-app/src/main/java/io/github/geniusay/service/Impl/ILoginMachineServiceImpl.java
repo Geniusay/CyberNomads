@@ -5,6 +5,7 @@ import io.github.geniusay.mapper.RegisterMachineMapper;
 import io.github.geniusay.pojo.DO.RegisterMachineDO;
 import io.github.geniusay.service.LoginMachineService;
 import io.github.geniusay.utils.*;
+import org.apache.commons.lang.StringUtils;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,8 +44,15 @@ public class ILoginMachineServiceImpl implements LoginMachineService {
         System.out.println(seeCode);
         String script = encryptor.encrypt(seeCode);
         String token = TokenUtil.getToken(ThreadUtil.getUid(), ThreadUtil.getEmail(), ThreadUtil.getNickname());
-        cacheUtil.put(LOGIN_MACHINE_CAPTCHA+seeCode, token);
+        cacheUtil.put(LOGIN_MACHINE_CAPTCHA+seeCode, token,600);
         return script;
+    }
+
+    @Override
+    public Boolean logout(String scriptCode) {
+        String captcha = encryptor.decrypt(scriptCode);
+        cacheUtil.remove(LOGIN_MACHINE_CAPTCHA+captcha);
+        return null;
     }
 
     @Override

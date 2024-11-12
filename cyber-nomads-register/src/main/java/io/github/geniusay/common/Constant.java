@@ -13,7 +13,6 @@ public class Constant {
     public static final String POST_CODE_VERITY_URL = "/loginMachine/verity";
     public static final String QUERY_USER_ROBOT = "/robot/search";
     public static final String INSERT_ROBOT = "/robot/insertOrUpdate";
-
-
+    public static final String REMOVE_CODE = "/loginMachine/logout";
 
 }

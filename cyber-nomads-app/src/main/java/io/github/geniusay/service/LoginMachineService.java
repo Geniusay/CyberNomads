@@ -12,4 +12,5 @@ public interface LoginMachineService {
     RegisterMachineDO queryMachineInfo(int id);
     String generateCode();
 
+    Boolean logout(String scriptCode);
 }

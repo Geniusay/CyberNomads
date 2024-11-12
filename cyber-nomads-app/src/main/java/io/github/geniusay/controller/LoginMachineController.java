@@ -1,6 +1,7 @@
 package io.github.geniusay.controller;
 
 import io.github.common.web.Result;
+import io.github.geniusay.core.anno.LoginMachineToken;
 import io.github.geniusay.core.anno.TokenRequire;
 import io.github.geniusay.service.LoginMachineService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +33,13 @@ public class LoginMachineController {
     @TokenRequire
     public Result<?> queryMachineInfo(int id){
         return Result.success(service.queryMachineInfo(id));
+    }
+
+    @PostMapping("/logout")
+    @TokenRequire
+    @LoginMachineToken
+    public Result<?> loginMachineLogout(String scriptCode){
+        return Result.success(service.logout(scriptCode));
     }
 
 }

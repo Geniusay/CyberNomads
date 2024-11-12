@@ -78,4 +78,7 @@ public class CacheUtil {
     public String get(String key){
         return stringRedisTemplate.opsForValue().get(key);
     }
+    public void remove(String key){
+        stringRedisTemplate.delete(key);
+    }
 }

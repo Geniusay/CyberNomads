@@ -61,4 +61,10 @@ public class IUserServiceImpl implements UserService {
         CacheUtils.key = scriptKey.split(":")[1];
     }
 
+    @Override
+    public void removeMachineCode() {
+        HTTPUtils.postWithParams(HTTP+LOCAL_TARGET_PATH+REMOVE_CODE,Map.of("machine-token",CacheUtils.key),CacheUtils.key);
+        CacheUtils.key = null;
+    }
+
 }

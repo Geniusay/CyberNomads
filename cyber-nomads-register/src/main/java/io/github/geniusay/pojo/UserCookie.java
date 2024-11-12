@@ -1,4 +1,4 @@
-package io.github.geniusay;
+package io.github.geniusay.pojo;
 
 import lombok.Builder;
 import lombok.Data;
