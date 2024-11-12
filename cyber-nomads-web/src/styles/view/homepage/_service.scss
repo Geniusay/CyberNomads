@@ -62,4 +62,10 @@
 
 .service .link-card:is(:hover, :focus) ion-icon { color: hsl(var(--color)); }
 
+.card-text {
+    color: var(--cool-gray);
+    font-size: 1.0rem;
+    margin-block-start: 10px;
+}
+
 @import "./media.scss";

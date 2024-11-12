@@ -38,7 +38,7 @@ export const status = {
     color:"green",
     content:"workplace.task.finish",
     value:"completed",
-    next:"reset",
+    next:"pending",
     nextMsg:"重启任务"
   },
   error:{
@@ -46,7 +46,7 @@ export const status = {
     color:"red",
     content:"workplace.task.error",
     value:"error",
-    next:"reset",
+    next:"pending",
     nextMsg:"重启任务"
   }
 }
@@ -78,14 +78,12 @@ export const buttonStatus = {
     icon: "mdi-play-pause",
     color: "grey",
     next: "start",
-    action:"start",
     nextMsg:"继续任务"
   },
   finished:{
     icon: "mdi-reload",
     color: "grey",
     next: "reset",
-    action:"reset",
     nextMsg:"重置任务"
   },
 }

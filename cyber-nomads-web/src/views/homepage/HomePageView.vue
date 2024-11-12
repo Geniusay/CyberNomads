@@ -5,7 +5,7 @@ import Service from "@/views/homepage/components/Service.vue";
 import Project from "@/views/homepage/components/Project.vue";
 import NewSletter from "@/views/homepage/components/NewSletter.vue";
 import Footer from "@/views/homepage/components/Footer.vue";
-import Top from "@/views/homepage/components/Top.vue";
+import Feature from "@/views/homepage/components/Feature.vue";
 
 onMounted(() => {
   const addEventOnElem = function (elem, type, callback) {
@@ -69,6 +69,7 @@ onMounted(() => {
       <article>
         <Hero />
         <Service />
+        <Feature/>
         <Project />
         <NewSletter />
         <Footer />

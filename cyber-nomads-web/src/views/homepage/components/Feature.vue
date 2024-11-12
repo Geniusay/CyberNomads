@@ -9,7 +9,7 @@
 
       <div class="feature-content">
 
-        <p class="section-subtitle has-before">Why Choose us</p>
+        <p class="section-subtitle has-before">什么是 Cyber Nomads？</p>
 
         <h2 class="h2 section-title">
           Specialist in aviding clients of financial <span class="has-before">challenges</span>

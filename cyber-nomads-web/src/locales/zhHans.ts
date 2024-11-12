@@ -29,6 +29,9 @@ export default {
       emptyTaskContent:"点击-新建任务-按钮，来创建一个新任务吧"
     }
   },
+  homepage:{
+
+  },
   common: {
     add: "新增",
     cancel: "取消",

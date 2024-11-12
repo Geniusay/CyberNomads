@@ -2,12 +2,12 @@
   <header class="header" data-header>
     <div class="container">
 
-      <a href="#" class="logo">Pixology</a>
+      <a href="#" class="logo">Cyber Nomads</a>
 
       <nav class="navbar" data-navbar>
 
         <div class="wrapper">
-          <a href="#" class="logo">Pixology</a>
+          <a href="#" class="logo">Cyber Nomads</a>
 
           <button class="nav-close-btn" aria-label="close menu" data-nav-toggler>
             <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
@@ -44,7 +44,7 @@
         <ion-icon name="menu-outline" aria-hidden="true"></ion-icon>
       </button>
 
-      <a href="#" class="btn btn-primary has-before has-after">Let’s Talk 👋</a>
+      <a href="#" class="btn btn-primary has-before has-after">Let’s Go 👋</a>
 
       <div class="overlay" data-nav-toggler data-overlay></div>
 
