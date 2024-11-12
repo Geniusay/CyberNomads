@@ -30,9 +30,9 @@ public interface RobotMapper extends BaseMapper<RobotDO> {
             "</script>")
     Boolean queryRobotValid(List<Long> robotDOList,String uid,Integer platform);
 
-    @Insert("INSERT INTO robot (username, platform, cookie, uid) " +
-            "VALUES (#{username}, #{platform}, #{cookie}, #{uid}) " +
-            "ON DUPLICATE KEY UPDATE cookie = #{cookie}")
+    @Insert("INSERT INTO robot (username, nickname, platform, cookie, uid, ban, has_delete, create_time, update_time) " +
+            "VALUES (#{username}, #{username}, #{platform}, #{cookie}, #{uid}, 0, 0, NOW(), NOW()) " +
+            "ON DUPLICATE KEY UPDATE cookie = #{cookie}, update_time = NOW()")
     int insertOrUpdate(@Param("username") String username,
                        @Param("platform") Integer platform,
                        @Param("cookie") String cookie,

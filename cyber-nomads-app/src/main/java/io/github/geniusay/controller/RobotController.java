@@ -73,7 +73,6 @@ public class RobotController {
 
     @PostMapping("/insertOrUpdate")
     @TokenRequire
-    @LoginMachineToken
     public Result<?> insertOrUpdate(@RequestBody @Validated LoginMachineDTO loginMachineDTO){
         return Result.success(robotService.insertOrUpdateRobot(loginMachineDTO));
     }
