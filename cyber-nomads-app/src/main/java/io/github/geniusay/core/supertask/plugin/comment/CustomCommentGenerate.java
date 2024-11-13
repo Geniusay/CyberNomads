@@ -33,10 +33,7 @@ public class CustomCommentGenerate extends AbstractCommentGenerate implements Co
                 .filter(comment -> !comment.isEmpty())
                 .collect(Collectors.toList());
 
-        // 获取机器人列表
         List<RobotDO> robots = task.getRobots();
-
-        // 如果评论数量大于机器人数量，随机丢弃多余的评论
         if (comments.size() > robots.size()) {
             Collections.shuffle(comments);
             comments = comments.subList(0, robots.size());
@@ -49,11 +46,7 @@ public class CustomCommentGenerate extends AbstractCommentGenerate implements Co
             String comment = comments.get(i % comments.size());
             assignedComments.add(comment);
         }
-
-        // 随机打乱机器人列表
         Collections.shuffle(robots);
-
-        // 将评论随机分配给机器人
         for (int i = 0; i < robots.size(); i++) {
             robotCommentMap.put(robots.get(i).getId(), assignedComments.get(i));
         }
@@ -74,7 +67,7 @@ public class CustomCommentGenerate extends AbstractCommentGenerate implements Co
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
-                TaskNeedParams.ofK(CUSTOM_COMMENT_CONTENT, String.class, "请编写需要指定的评论，使用 '" + COMMENT_SEPARATOR + "' 分隔每条评论，最多填写机器人数量的评论条数")
+                TaskNeedParams.ofK(CUSTOM_COMMENT_CONTENT, String.class, "请编写需要指定的评论，使用 '" + COMMENT_SEPARATOR + "' 分隔每条评论")
                         .setInputType(TaskNeedParams.InputTypeEnum.TEXTAREA)
         );
     }
