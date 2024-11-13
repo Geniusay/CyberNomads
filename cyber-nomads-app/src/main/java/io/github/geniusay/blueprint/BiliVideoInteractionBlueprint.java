@@ -16,7 +16,7 @@ import static io.github.geniusay.core.supertask.config.TaskTypeConstant.VIDEO_IN
 
 @Slf4j
 @Component
-public class BilibiliVideoInteractionTaskBlueprint extends BilibiliAbstractInteractionTaskBlueprint {
+public class BiliVideoInteractionBlueprint extends BiliAbstractInteractionBlueprint {
 
     @Override
     public String taskType() {

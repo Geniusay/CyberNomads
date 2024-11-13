@@ -73,7 +73,7 @@ public class SingleUseTerminator extends AbstractTerminator {
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
-                TaskNeedParams.ofKV(PARAM_TARGET_COUNT, 5, "任务目标数，填写数量不能超过工作者数量"),
+                TaskNeedParams.ofKV(PARAM_TARGET_COUNT, 1, "任务目标数，填写数量不能超过工作者数量"),
                 TaskNeedParams.ofKV(PARAM_COOLDOWN_TIME, 10L, "任务冷却时间（秒）")
         );
     }

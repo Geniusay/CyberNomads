@@ -18,13 +18,11 @@ public class TaskTranslationConstant {
 
     // 任务类型中英文对照表
     public static final Map<String, String> TASK_TYPE_TRANSLATION = Map.of(
-            VIDEO_COMMENT, "评论视频",
-            VIDEO_LIKE, "点赞视频",
-            VIDEO_COIN, "投币视频",
             INFINITY_HOT_VIDEO_COMMENT, "无限评论热门视频",
             TEST_VIDEO_COMMENT, "测试视频评论",
             VIDEO_INTERACTION, "互动任务（点赞、投币、三连）",
-            USER_INTERACTION, "互动任务（关注）"
+            USER_INTERACTION, "互动任务（关注）",
+            SINGLE_VIDEO_CUSTOM_COMMENT, "单一视频定制评论"
     );
 
     // 插件名称中英文对照表

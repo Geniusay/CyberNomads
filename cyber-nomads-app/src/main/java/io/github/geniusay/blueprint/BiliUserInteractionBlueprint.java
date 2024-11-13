@@ -13,7 +13,7 @@ import static io.github.geniusay.core.supertask.config.TaskTypeConstant.USER_INT
 
 @Slf4j
 @Component
-public class BilibiliUserInteractionTaskBlueprint extends BilibiliAbstractInteractionTaskBlueprint {
+public class BiliUserInteractionBlueprint extends BiliAbstractInteractionBlueprint {
 
     @Override
     public String taskType() {

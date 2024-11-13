@@ -31,7 +31,7 @@ import static io.github.geniusay.core.supertask.config.TaskTypeConstant.INFINITY
 
 @Slf4j
 @Component
-public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint {
+public class BiliInfinityHotCommentBlueprint extends AbstractTaskBlueprint {
 
     @Resource
     TaskPluginFactory taskPluginFactory;
@@ -48,10 +48,8 @@ public class BilibiliHotVideoCommentTaskBlueprint extends AbstractTaskBlueprint 
 
     @Override
     protected void executeTask(RobotWorker robot, Task task) throws Exception {
-
         String comment = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task).generateComment();
         BilibiliVideoDetail videoDetail = taskPluginFactory.<AbstractGetVideoPlugin>buildPluginWithGroup(GET_VIDEO_GROUP_NAME, task).getHandleVideo(robot, task);
-
         ApiResponse<Boolean> response = new ActionFlow<>(
                 new BiliUserActor(robot),
                 new BiliCommentLogic(comment),

@@ -7,7 +7,6 @@ import io.github.geniusay.core.actionflow.frame.Receiver;
 import io.github.geniusay.core.supertask.plugin.TaskPluginFactory;
 import io.github.geniusay.core.supertask.plugin.selector.logic.AbstractLogicSelector;
 import io.github.geniusay.core.supertask.plugin.selector.receiver.AbstractReceiverSelector;
-import io.github.geniusay.core.supertask.plugin.selector.receiver.BiliVideoReceiverSelector;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
@@ -28,7 +27,7 @@ import static io.github.geniusay.core.supertask.config.PluginConstant.RECEIVER_S
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
 
 @Slf4j
-public abstract class BilibiliAbstractInteractionTaskBlueprint extends AbstractTaskBlueprint {
+public abstract class BiliAbstractInteractionBlueprint extends AbstractTaskBlueprint {
 
     @Resource
     TaskPluginFactory taskPluginFactory;
