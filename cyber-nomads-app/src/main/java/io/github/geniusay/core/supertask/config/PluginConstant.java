@@ -8,6 +8,7 @@ public class PluginConstant {
     public static final String TERMINATOR_GROUP_NAME = "terminator";  // 任务终止器组
     public static final String COMMENT_GROUP_NAME = "comment";  // 评论生成器组
     public static final String GET_VIDEO_GROUP_NAME = "getVideo";  // 视频选择器组
+    public static final String GET_COMMENT_GROUP_NAME = "getComment";  // 评论选择器组
     public static final String LOGIC_SELECTOR_GROUP_NAME = "logicSelector";  // 操作选择器组
     public static final String RECEIVER_SELECTOR_GROUP_NAME = "receiverSelector";  // 目标选择器组
 
@@ -21,6 +22,9 @@ public class PluginConstant {
 
     // 视频选择器插件
     public static final String HOT_VIDEO_PLUGIN = "hotVideo";  // 随机热门视频
+
+    // 评论选择器插件
+    public static final String HOT_COMMENT_PLUGIN = "hotComment";  // 随机热门评论
 
     // 操作选择器插件
     public static final String LIKE_LOGIC_SELECTOR = "likeLogicSelector";  // 点赞操作

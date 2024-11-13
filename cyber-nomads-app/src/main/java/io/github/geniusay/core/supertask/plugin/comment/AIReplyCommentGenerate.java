@@ -41,7 +41,10 @@ public class AIReplyCommentGenerate extends AbstractCommentGenerate implements C
 
     @Override
     public String generateComment(String content) {
-        String temp = preText + "请用以上描述的身份回复以下评论：" + content;
+        // 过滤掉换行符并去除多余空格
+        String sanitizedPreText = preText.replaceAll("[\\n\\r]+", " ").trim();
+        String sanitizedContent = content.replaceAll("[\\n\\r]+", " ").trim();
+        String temp = sanitizedPreText + " 请用以上描述的身份回复以下评论：" + sanitizedContent;
         return generateUtil.textGenerateAndReturnContent(temp, textCount, slogan);
     }
 

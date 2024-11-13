@@ -182,48 +182,52 @@ public class BilibiliCommentHandler {
      * @return CommentPage 评论分页信息和列表
      */
     private static CommentPage parseCommentResponse(String response) {
-        CommentPage commentPage = new CommentPage();
-        List<CommentDetail> comments = new ArrayList<>();
-        JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
+       try {
+           CommentPage commentPage = new CommentPage();
+           List<CommentDetail> comments = new ArrayList<>();
+           JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
 
-        if (jsonObject.get("code").getAsInt() == 0) {
-            JsonObject data = jsonObject.getAsJsonObject("data");
+           if (jsonObject.get("code").getAsInt() == 0) {
+               JsonObject data = jsonObject.getAsJsonObject("data");
 
-            // 提取分页信息
-            JsonObject page = data.getAsJsonObject("page");
-            commentPage.setPageNum(page.get("num").getAsInt());
-            commentPage.setPageSize(page.get("size").getAsInt());
-            commentPage.setTotalCount(page.get("count").getAsInt());
-            commentPage.setTotalPages((int) Math.ceil((double) page.get("count").getAsInt() / page.get("size").getAsInt()));
+               // 提取分页信息
+               JsonObject page = data.getAsJsonObject("page");
+               commentPage.setPageNum(page.get("num").getAsInt());
+               commentPage.setPageSize(page.get("size").getAsInt());
+               commentPage.setTotalCount(page.get("count").getAsInt());
+               commentPage.setTotalPages((int) Math.ceil((double) page.get("count").getAsInt() / page.get("size").getAsInt()));
 
-            // 提取评论列表
-            JsonArray replies = data.getAsJsonArray("replies");
-            if (replies != null) {
-                for (int i = 0; i < replies.size(); i++) {
-                    JsonObject reply = replies.get(i).getAsJsonObject();
-                    JsonObject member = reply.getAsJsonObject("member");
-                    JsonObject content = reply.getAsJsonObject("content");
+               // 提取评论列表
+               JsonArray replies = data.getAsJsonArray("replies");
+               if (replies != null) {
+                   for (int i = 0; i < replies.size(); i++) {
+                       JsonObject reply = replies.get(i).getAsJsonObject();
+                       JsonObject member = reply.getAsJsonObject("member");
+                       JsonObject content = reply.getAsJsonObject("content");
 
-                    CommentDetail commentDetail = new CommentDetail();
-                    commentDetail.setUsername(member.get("uname").getAsString());
-                    commentDetail.setMessage(content.get("message").getAsString());
-                    commentDetail.setDate(DateUtil.formatTimestamp(reply.get("ctime").getAsLong()));
-                    commentDetail.setCtime(reply.get("ctime").getAsLong());
-                    commentDetail.setLike(reply.get("like").getAsInt());
-                    commentDetail.setRcount(reply.get("rcount").getAsInt());
-                    commentDetail.setRpid(reply.get("rpid").getAsString());  // 保存rpid
+                       CommentDetail commentDetail = new CommentDetail();
+                       commentDetail.setUsername(member.get("uname").getAsString());
+                       commentDetail.setMessage(content.get("message").getAsString());
+                       commentDetail.setDate(DateUtil.formatTimestamp(reply.get("ctime").getAsLong()));
+                       commentDetail.setCtime(reply.get("ctime").getAsLong());
+                       commentDetail.setLike(reply.get("like").getAsInt());
+                       commentDetail.setRcount(reply.get("rcount").getAsInt());
+                       commentDetail.setRpid(reply.get("rpid").getAsString());  // 保存rpid
 
-                    // 获取用户等级
-                    commentDetail.setLevel(member.get("level_info").getAsJsonObject().get("current_level").getAsInt());
+                       // 获取用户等级
+                       commentDetail.setLevel(member.get("level_info").getAsJsonObject().get("current_level").getAsInt());
 
-                    comments.add(commentDetail);
-                }
-            }
+                       comments.add(commentDetail);
+                   }
+               }
 
-            // 设置评论列表
-            commentPage.setComments(comments);
-        }
+               // 设置评论列表
+               commentPage.setComments(comments);
+           }
 
-        return commentPage;
+           return commentPage;
+       } catch (Exception e) {
+           return new CommentPage();
+       }
     }
 }

@@ -12,4 +12,8 @@ public class CommentDetail {
     private int rcount;       // 回复数
     private String username;  // 评论者昵称
     private int level;        // 评论者的等级
+
+    private String bvid;
+
+    private String oid;
 }
