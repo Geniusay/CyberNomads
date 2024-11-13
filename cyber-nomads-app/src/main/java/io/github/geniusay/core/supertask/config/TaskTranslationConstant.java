@@ -52,6 +52,7 @@ public class TaskTranslationConstant {
         pluginTranslation.put(LOGIC_SELECTOR_GROUP_NAME, "操作选择器");
         pluginTranslation.put(LIKE_LOGIC_SELECTOR, "点赞操作");
         pluginTranslation.put(COIN_LOGIC_SELECTOR, "投币操作");
+        pluginTranslation.put(TRIPLET_LOGIC_SELECTOR, "三连操作");
         pluginTranslation.put(FOLLOW_LOGIC_SELECTOR, "关注操作");
 
         // 接收者选择器

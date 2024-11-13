@@ -22,6 +22,7 @@ public class PluginConstant {
 
     // 操作选择器插件
     public static final String LIKE_LOGIC_SELECTOR = "likeLogicSelector";  // 点赞操作
+    public static final String TRIPLET_LOGIC_SELECTOR = "tripletLogicSelector";  // 三连操作
     public static final String COIN_LOGIC_SELECTOR = "coinLogicSelector";  // 投币操作
     public static final String FOLLOW_LOGIC_SELECTOR = "followLogicSelector";  // 关注操作
 

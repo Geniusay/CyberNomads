@@ -8,18 +8,18 @@ import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class BiliLikeLogic extends ActionLogic<BiliUserActor, BiliVideoReceiver> {
+public class BiliTripletLogic extends ActionLogic<BiliUserActor, BiliVideoReceiver> {
 
     @Override
     public String getLogicName() {
-        return "点赞操作";
+        return "三连操作";
     }
 
     @Override
     public ApiResponse<Boolean> performAction(BiliUserActor actor, BiliVideoReceiver receiver) throws Exception {
         String cookie = actor.getCookie();
         String videoId = receiver.getId();
-        logAction(actor, receiver, "执行点赞操作");
-        return BilibiliVideoApi.likeVideo(cookie, videoId, 1);
+        logAction(actor, receiver, "执行三连操作");
+        return BilibiliVideoApi.tripleAction(cookie, videoId);
     }
 }
