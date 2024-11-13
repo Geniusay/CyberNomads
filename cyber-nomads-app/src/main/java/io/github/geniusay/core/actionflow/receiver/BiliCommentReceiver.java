@@ -13,18 +13,11 @@ public class BiliCommentReceiver implements Receiver {
     private final String parentRpid;  // 父评论的rpid（可选）
     private final String bvid;
 
-    public BiliCommentReceiver(String oid, String rpid, String parentRpid, String bvid) {
-        this.oid = oid;
-        this.rpid = rpid;
-        this.parentRpid = parentRpid;
-        this.bvid = bvid;
-    }
-
-    public BiliCommentReceiver(String oid) {
+    public BiliCommentReceiver(String bvid, String oid) {
         this.oid = oid;
         this.rpid = null;
         this.parentRpid = null;
-        this.bvid = null;
+        this.bvid = bvid;
     }
 
     public BiliCommentReceiver(VideoDetail.Data data) {

@@ -55,8 +55,9 @@ public class TaskTranslationConstant {
 
         // 接收者选择器
         pluginTranslation.put(RECEIVER_SELECTOR_GROUP_NAME, "目标选择器");
-        pluginTranslation.put(VIDEO_RECEIVER_SELECTOR, "选择视频");
-        pluginTranslation.put(USER_RECEIVER_SELECTOR, "选择用户");
+        pluginTranslation.put(VIDEO_RECEIVER_SELECTOR, "指定视频");
+        pluginTranslation.put(USER_RECEIVER_SELECTOR, "指定用户");
+        pluginTranslation.put(COMMENT_RECEIVER_SELECTOR, "评论目标");
 
         return pluginTranslation;
     }

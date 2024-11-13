@@ -72,6 +72,10 @@ public class BiliInfinityHotCommentBlueprint extends AbstractTaskBlueprint {
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
-        return ParamsUtil.packageListParams(taskPluginFactory.pluginGroupParams(CooldownTerminator.class, AICommentGenerate.class, GetHotVideoPlugin.class));
+        return ParamsUtil.packageListParams(taskPluginFactory.pluginGroupParams(
+                CooldownTerminator.class,
+                AICommentGenerate.class,
+                GetHotVideoPlugin.class
+        ));
     }
 }

@@ -29,4 +29,5 @@ public class PluginConstant {
     // 目标选择器插件
     public static final String USER_RECEIVER_SELECTOR = "userReceiverSelector";  // 用户目标选择
     public static final String VIDEO_RECEIVER_SELECTOR = "videoReceiverSelector";  // 视频目标选择
+    public static final String COMMENT_RECEIVER_SELECTOR = "commentReceiverSelector";  // 评论目标选择
 }

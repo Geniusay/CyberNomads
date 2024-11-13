@@ -2,11 +2,14 @@ package io.github.geniusay.blueprint;
 
 import io.github.geniusay.core.actionflow.actor.BiliUserActor;
 import io.github.geniusay.core.actionflow.frame.ActionFlow;
+import io.github.geniusay.core.actionflow.frame.Receiver;
 import io.github.geniusay.core.actionflow.logic.BiliCommentLogic;
 import io.github.geniusay.core.actionflow.receiver.BiliCommentReceiver;
 import io.github.geniusay.core.supertask.plugin.TaskPluginFactory;
 import io.github.geniusay.core.supertask.plugin.comment.AICommentGenerate;
 import io.github.geniusay.core.supertask.plugin.comment.AbstractCommentGenerate;
+import io.github.geniusay.core.supertask.plugin.selector.receiver.AbstractReceiverSelector;
+import io.github.geniusay.core.supertask.plugin.selector.receiver.BiliVideoReceiverSelector;
 import io.github.geniusay.core.supertask.plugin.terminator.CooldownTerminator;
 import io.github.geniusay.core.supertask.plugin.video.AbstractGetVideoPlugin;
 import io.github.geniusay.core.supertask.plugin.video.GetHotVideoPlugin;
@@ -26,8 +29,7 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.geniusay.core.supertask.config.PluginConstant.COMMENT_GROUP_NAME;
-import static io.github.geniusay.core.supertask.config.PluginConstant.GET_VIDEO_GROUP_NAME;
+import static io.github.geniusay.core.supertask.config.PluginConstant.*;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.SINGLE_VIDEO_CUSTOM_COMMENT;
 
@@ -52,7 +54,6 @@ public class BiliSingleCustomCommentBlueprint extends AbstractTaskBlueprint {
     protected void executeTask(RobotWorker robot, Task task) throws Exception {
         String comment = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task).generateComment();
         BilibiliVideoDetail videoDetail = taskPluginFactory.<AbstractGetVideoPlugin>buildPluginWithGroup(GET_VIDEO_GROUP_NAME, task).getHandleVideo(robot, task);
-
         ApiResponse<Boolean> response = new ActionFlow<>(
                 new BiliUserActor(robot),
                 new BiliCommentLogic(comment),
@@ -75,6 +76,11 @@ public class BiliSingleCustomCommentBlueprint extends AbstractTaskBlueprint {
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
-        return ParamsUtil.packageListParams(taskPluginFactory.pluginGroupParams(CooldownTerminator.class, AICommentGenerate.class, GetHotVideoPlugin.class));
+        return ParamsUtil.packageListParams(taskPluginFactory.pluginGroupParams(
+                CooldownTerminator.class,
+                AICommentGenerate.class,
+                GetHotVideoPlugin.class,
+                BiliVideoReceiverSelector.class
+        ));
     }
 }
