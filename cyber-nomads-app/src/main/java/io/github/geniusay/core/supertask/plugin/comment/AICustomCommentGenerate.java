@@ -8,27 +8,18 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 
 import static io.github.geniusay.constants.PluginConstant.*;
-import static io.github.geniusay.core.supertask.config.PluginConstant.AI_COMMENT_GENERATE_PLUGIN;
+import static io.github.geniusay.core.supertask.config.PluginConstant.AI_CUSTOM_COMMENT_GENERATE;
 
-
-/**
- * @Description
- * @Author welsir
- * @Date 2024/11/4 1:18
- */
 @Scope("prototype")
-@Component(AI_COMMENT_GENERATE_PLUGIN)
-public class AICommentGenerate extends AbstractCommentGenerate implements CommentGenerate {
+@Component(AI_CUSTOM_COMMENT_GENERATE)
+public class AICustomCommentGenerate extends AbstractCommentGenerate implements CommentGenerate {
+
     @Resource
     AIGenerateUtil generateUtil;
-
     private String preText;
-
     private Integer textCount;
-
     private String slogan;
 
     @Override

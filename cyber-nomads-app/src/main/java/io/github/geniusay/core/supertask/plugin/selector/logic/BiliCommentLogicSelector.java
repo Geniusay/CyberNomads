@@ -13,11 +13,6 @@ import static io.github.geniusay.core.supertask.config.PluginConstant.COMMENT_LO
 public class BiliCommentLogicSelector extends AbstractLogicSelector implements LogicSelector {
 
     @Override
-    public ActionLogic getLogic() {
-        return new BiliCommentLogic(null);
-    }
-
-    @Override
     public ActionLogic getLogic(String help) {
         return new BiliCommentLogic(help);
     }

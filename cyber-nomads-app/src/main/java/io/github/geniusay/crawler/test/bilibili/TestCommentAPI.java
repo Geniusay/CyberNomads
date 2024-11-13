@@ -22,10 +22,10 @@ public class TestCommentAPI {
     @Test
     public void getVideoComment() throws Exception {
 
-        String oid = "113377405899927";
+        String oid = "592055874";
 
         // 获取第一页的根评论，每页5条，按点赞数排序，不显示热评
-        ApiResponse<CommentPage> response = BilibiliCommentApi.getComments(cookie, oid, 2, 20, 0, 1);
+        ApiResponse<CommentPage> response = BilibiliCommentApi.getComments(cookie, oid, 1, 20, 1, 1);
 
         if (response.isSuccess()) {
             CommentPage commentPage = response.getData();
@@ -48,25 +48,25 @@ public class TestCommentAPI {
                     System.out.println("根评论rpid: " + comment.getRpid());
                     System.out.println("------------------------");
 
-                    // 获取该根评论下的回复
-                    ApiResponse<CommentPage> response1 = BilibiliCommentApi.getReplies(cookie, oid, comment.getRpid(), 1, 5);
-
-                    if (response1.isSuccess()) {
-                        CommentPage replyPage = response1.getData();
-                        // 输出回复信息
-                        if (replyPage != null) {
-                            List<CommentDetail> replies = replyPage.getComments();
-                            for (CommentDetail reply : replies) {
-                                System.out.println("回复者: " + reply.getUsername());
-                                System.out.println("回复内容: " + reply.getMessage());
-                                System.out.println("点赞数: " + reply.getLike());
-                                System.out.println("回复数: " + reply.getRcount());
-                                System.out.println("评论者等级: " + reply.getLevel());
-                                System.out.println("评论时间: " + reply.getDate());
-                                System.out.println("------------------------");
-                            }
-                        }
-                    }
+//                    // 获取该根评论下的回复
+//                    ApiResponse<CommentPage> response1 = BilibiliCommentApi.getReplies(cookie, oid, comment.getRpid(), 1, 5);
+//
+//                    if (response1.isSuccess()) {
+//                        CommentPage replyPage = response1.getData();
+//                        // 输出回复信息
+//                        if (replyPage != null) {
+//                            List<CommentDetail> replies = replyPage.getComments();
+//                            for (CommentDetail reply : replies) {
+//                                System.out.println("回复者: " + reply.getUsername());
+//                                System.out.println("回复内容: " + reply.getMessage());
+//                                System.out.println("点赞数: " + reply.getLike());
+//                                System.out.println("回复数: " + reply.getRcount());
+//                                System.out.println("评论者等级: " + reply.getLevel());
+//                                System.out.println("评论时间: " + reply.getDate());
+//                                System.out.println("------------------------");
+//                            }
+//                        }
+//                    }
                 }
             } else {
                 System.out.println("获取评论失败");

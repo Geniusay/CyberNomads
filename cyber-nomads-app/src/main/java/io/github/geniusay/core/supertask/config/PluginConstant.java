@@ -15,8 +15,9 @@ public class PluginConstant {
      * 插件名称
      */
     // 评论生成器插件
-    public static final String AI_COMMENT_GENERATE_PLUGIN = "aiComment";  // AI自动评论
-    public static final String CUSTOM_COMMENT_GENERATE_PLUGIN = "customComment";  // 定制评论
+    public static final String AI_CUSTOM_COMMENT_GENERATE = "aiCustomComment";  // AI自定义评论
+    public static final String AI_REPLY_COMMENT_GENERATE = "aiReplyComment";  // AI自动回复评论
+    public static final String CUSTOM_COMMENT_GENERATE = "customComment";  // 定制评论
 
     // 视频选择器插件
     public static final String HOT_VIDEO_PLUGIN = "hotVideo";  // 随机热门视频

@@ -13,9 +13,15 @@ import static io.github.geniusay.core.supertask.config.PluginConstant.COMMENT_GR
  */
 public interface CommentGenerate extends TaskPlugin {
 
-    String generateComment();
+    default String generateComment() {
+        return "";
+    }
 
     default String generateComment(RobotWorker robot) {
+        return generateComment();
+    }
+
+    default String generateComment(String content) {
         return generateComment();
     }
 }

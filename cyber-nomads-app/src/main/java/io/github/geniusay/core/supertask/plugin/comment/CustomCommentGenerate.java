@@ -11,10 +11,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.github.geniusay.constants.PluginConstant.CUSTOM_COMMENT_CONTENT;
-import static io.github.geniusay.core.supertask.config.PluginConstant.CUSTOM_COMMENT_GENERATE_PLUGIN;
+import static io.github.geniusay.core.supertask.config.PluginConstant.CUSTOM_COMMENT_GENERATE;
 
 @Scope("prototype")
-@Component(CUSTOM_COMMENT_GENERATE_PLUGIN)
+@Component(CUSTOM_COMMENT_GENERATE)
 public class CustomCommentGenerate extends AbstractCommentGenerate implements CommentGenerate {
 
     private final static String COMMENT_SEPARATOR = "###";

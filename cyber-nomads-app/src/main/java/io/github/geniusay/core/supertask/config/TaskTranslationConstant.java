@@ -19,6 +19,7 @@ public class TaskTranslationConstant {
     // 任务类型中英文对照表
     public static final Map<String, String> TASK_TYPE_TRANSLATION = Map.of(
             INFINITY_HOT_VIDEO_COMMENT, "无限评论热门视频",
+            INFINITY_HOT_COMMENT_REPLY, "无限回复热门评论",
             TEST_VIDEO_COMMENT, "测试视频评论",
             VIDEO_INTERACTION, "互动任务（点赞、投币、三连）",
             USER_INTERACTION, "互动任务（关注）",
@@ -40,8 +41,9 @@ public class TaskTranslationConstant {
 
         // 评论生成器
         pluginTranslation.put(COMMENT_GROUP_NAME, "评论生成器");
-        pluginTranslation.put(AI_COMMENT_GENERATE_PLUGIN, "AI自动评论");
-        pluginTranslation.put(CUSTOM_COMMENT_GENERATE_PLUGIN, "定制评论");
+        pluginTranslation.put(AI_CUSTOM_COMMENT_GENERATE, "AI自定义评论");
+        pluginTranslation.put(AI_REPLY_COMMENT_GENERATE, "AI自动回复评论");
+        pluginTranslation.put(CUSTOM_COMMENT_GENERATE, "定制评论");
 
         // 视频选择器
         pluginTranslation.put(GET_VIDEO_GROUP_NAME, "视频选择插件");
