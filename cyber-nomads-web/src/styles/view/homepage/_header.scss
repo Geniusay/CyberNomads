@@ -30,9 +30,13 @@
 }
 
 .logo {
-    color: var(--raisin-black-1);
+    color: #fff;
     font-size: 2.2rem;
     font-weight: var(--fw-700);
+}
+
+.logo.active{
+    color: var(--raisin-black-1) !important;
 }
 
 .nav-open-btn {

@@ -32,25 +32,25 @@ const navs = [
   {
     title: "Profile Details",
     key: "menu.profileDetails",
-    link: "/profile",
+    action: ()=>snackbarStore.showInfoMessage("正在施工中~"),
     icon: "mdi-account-box-outline",
   },
   {
     title: "Billing",
     key: "menu.plansAndBilling",
-    link: "/plans-and-billing",
+    action: ()=>snackbarStore.showInfoMessage("正在施工中~"),
     icon: "mdi-credit-card-outline",
   },
   {
     title: "API Dashboard",
     key: "menu.apiDashboard",
-    link: "/api-dashboard",
+    action: ()=>snackbarStore.showInfoMessage("正在施工中~"),
     icon: "mdi-monitor-dashboard",
   },
   {
     title: "Ask for Help",
     key: "menu.askCommunity",
-    link: "/ask-the-community",
+    action: ()=>router.push({path:"/utility/help"}),
     icon: "mdi-help-circle-outline",
   },
 ];
@@ -108,7 +108,7 @@ const navs = [
           color="primary"
           v-for="(nav, i) in navs"
           :key="i"
-          :to="nav.link"
+          @click="nav.action()"
           link
           density="compact"
         >

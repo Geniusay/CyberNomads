@@ -11,10 +11,20 @@ import ToolbarNotifications from "./ToolbarNotifications.vue";
 import ToolbarUser from "./ToolbarUser.vue";
 import { useTodoStore } from "@/views/app/todo/todoStore";
 import ThemeToggle from "./ThemeToggle.vue";
+import {useSnackbarStore} from "@/stores/snackbarStore";
 const { mdAndUp } = useDisplay();
 const todoStore = useTodoStore();
 const customizeTheme = useCustomizeThemeStore();
 const showMobileSearch = ref(false);
+
+var snackbarStore = useSnackbarStore();
+const todoEvent = ()=>{
+  snackbarStore.showInfoMessage("Todo清单正在开发中，敬请期待~")
+}
+
+const groupEvent = ()=>{
+  snackbarStore.showInfoMessage("好友系统正在开发中，敬请期待~")
+}
 </script>
 
 <template>
@@ -64,17 +74,14 @@ const showMobileSearch = ref(false);
           <v-icon>mdi-magnify</v-icon>
         </v-btn>
         <!-- search input desktop -->
-
-        <v-btn v-if="mdAndUp" icon>
+        <ToolbarNotifications />
+        <v-btn v-if="mdAndUp" @click="groupEvent()" icon>
           <v-badge dot color="success">
             <v-icon>mdi-account-multiple-outline</v-icon>
           </v-badge>
         </v-btn>
-        <ToolbarNotifications />
-        <v-btn v-if="mdAndUp" icon to="/apps/todo">
-          <v-badge :content="`${todoStore.getTodoList.length} +`" color="error">
-            <v-icon>mdi-calendar-check</v-icon>
-          </v-badge>
+        <v-btn v-if="mdAndUp" icon @click="todoEvent()">
+          <v-icon>mdi-calendar-check</v-icon>
         </v-btn>
         <v-divider vertical thickness="2" inset class="ml-5 mr-1"></v-divider>
         <ThemeToggle />

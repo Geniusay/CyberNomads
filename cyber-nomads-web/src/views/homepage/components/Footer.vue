@@ -22,12 +22,12 @@
   ];
 
   const instaPosts = [
-    { src: "./assets/images/homepage/insta-post-1.jpg", href: "#" },
-    { src: "./assets/images/homepage/insta-post-2.jpg", href: "#" },
-    { src: "./assets/images/homepage/insta-post-3.jpg", href: "#" },
-    { src: "./assets/images/homepage/insta-post-4.jpg", href: "#" },
-    { src: "./assets/images/homepage/insta-post-5.jpg", href: "#" },
-    { src: "./assets/images/homepage/insta-post-6.jpg", href: "#" }
+    { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task1.png", href: "#" },
+    { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task2.png", href: "#" },
+    { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task3.png", href: "#" },
+    { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task4.png", href: "#" },
+    { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task5.png", href: "#" },
+    { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task6.png", href: "#" },
   ];
 
 </script>
@@ -73,7 +73,7 @@
 
         <ul class="footer-list">
         <li>
-          <p class="footer-list-title">Instagram Post</p>
+          <p class="footer-list-title">Task Post</p>
         </li>
 
         <li>
@@ -97,14 +97,10 @@
       <div class="footer-bottom">
 
         <p class="copyright">
-          &copy; 2022 Pixology. All Rights Reserved by codewithsadee
+          &copy; 2024 CyberNomads. All Rights Reserved by TML
         </p>
 
         <ul class="footer-bottom-list">
-
-          <li>
-            <a href="#" class="footer-bottom-link">Terms and conditions</a>
-          </li>
 
           <li>
             <a href="#" class="footer-bottom-link">Privacy policy</a>

@@ -1,49 +1,17 @@
 <!--
 * @Component: ToolbarNotifications
 * @Maintainer: J.K. Yang
-* @Description: 
+* @Description:
 -->
 <script setup lang="ts">
 const messages = [
   {
-    title: "Brunch this weekend?",
+    title: "欢迎来到CyberNomads",
     color: "primary",
     icon: "mdi-account-circle",
     subtitle:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sint, repudiandae?",
-    time: "3 min",
-  },
-  {
-    title: "Summer BBQ",
-    color: "success",
-    icon: "mdi-email-outline",
-    subtitle:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sint, repudiandae?",
-    time: "3 min",
-  },
-  {
-    title: "Oui oui",
-    color: "teal lighten-1",
-    icon: "mdi-airplane-landing",
-    subtitle:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sint, repudiandae?",
-    time: "4 min",
-  },
-  {
-    title: "Disk capacity is at maximum",
-    color: "teal accent-3",
-    icon: "mdi-server",
-    subtitle:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sint, repudiandae?",
-    time: "3 hr",
-  },
-  {
-    title: "Recipe to try",
-    color: "blue-grey lighten-2",
-    icon: "mdi-noodles",
-    subtitle:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sint, repudiandae?",
-    time: "8 hr",
+      "快来打造自己的赛博游民吧！",
+    time: "2077年",
   },
 ];
 </script>
@@ -55,9 +23,10 @@ const messages = [
     <!-- ---------------------------------------------- -->
     <template v-slot:activator="{ props }">
       <v-btn icon v-bind="props" class="text-none">
-        <v-badge content="2" color="error">
-          <v-icon>mdi-bell-outline</v-icon>
-        </v-badge>
+<!--        <v-badge content="2" color="error">-->
+<!--         -->
+<!--        </v-badge>-->
+        <v-icon>mdi-bell-outline</v-icon>
       </v-btn>
     </template>
     <v-list elevation="1" lines="three" density="compact" max-width="400">

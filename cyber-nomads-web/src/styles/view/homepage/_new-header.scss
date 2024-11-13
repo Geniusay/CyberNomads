@@ -1,0 +1,137 @@
+.header-container{
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+
+.header-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2em;
+  z-index:10;
+  pointer-events: none;
+}
+
+.header-nav a{
+  color: #fff;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-family: "MOSKO MAPPA";
+  font-size: 28px;
+  pointer-events: all;
+}
+
+.header-nav button{
+  border: none;
+  outline: none;
+  color: #fff;
+  background-color: #000;
+  border-radius: 0.25em;
+  padding: 0.65em 1em 0.25em 1em;
+  text-transform: uppercase;
+  font-family: "MOSKO MAPPA";
+  pointer-events: all;
+  font-size: 24px;
+}
+
+.header-board{
+  width: 100vw;
+  height: 100vh;
+  padding: 0.25em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  perspective: 1000px;
+  background-color: #000;
+  position: relative;
+  z-index: 1;
+}
+
+.header-row{
+  flex:1;
+  display: flex;
+  gap: 0.25em;
+}
+
+.tile{
+  flex: 1;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.tile-face{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 0.5em;
+  overflow: hidden;
+}
+
+.tile-front{
+  background-color: #1e2626;
+}
+
+.tile-back{
+  background-color: darkslateblue;
+  transform: rotateX(180deg);
+}
+
+.tile-front::before,
+.tile-back::before{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: 600% 600%;
+  background-position: inherit;
+  clip-path: inset(0 round 0.25em);
+
+}
+.tile-back::before{
+  background-image: url("@/assets/images/homepage/banner2.png");
+}
+.tile-front::before{
+  background-image: url("@/assets/images/homepage/banner.png");
+}
+
+.blocks-container{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+}
+
+#blocks{
+  width: 105vw;
+  height: 100vh;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: flex-start;
+  overflow: hidden;
+}
+
+.header-block{
+  width: 50px;
+  height: 50px;
+  border: 0.5px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.highlight{
+  border-color: #fff;
+}

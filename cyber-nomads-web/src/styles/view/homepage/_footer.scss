@@ -18,12 +18,15 @@
 
 .footer-list-title {
     color: var(--white);
-    font-size: var(--fs-5);
+    font-size: var(--fs-9);
     font-weight: var(--fw-500);
     margin-block-end: 20px;
 }
 
-.footer-text { margin-block-end: 30px; }
+.footer-text {
+    margin-block-end: 30px;
+    font-size: 1.2rem;
+}
 
 .footer .social-list { gap: 12px; }
 
@@ -40,7 +43,7 @@
 }
 
 .footer-link {
-    font-size: var(--fs-8);
+    font-size: 1.2rem;
     margin-block-start: 15px;
     transition: var(--transition-1);
 }
@@ -80,12 +83,16 @@
     border-block-start: 1px solid var(--onyx);
 }
 
-.copyright { margin-block-end: 15px; }
+.copyright {
+    font-size: 1.1rem;
+    margin-block-end: 15px;
+}
 
 .footer-bottom-list {
     display: flex;
     flex-wrap: wrap;
     gap: 5px 15px;
+    font-size: 1.1rem;
 }
 
 .footer-bottom-link { transition: var(--transition-1); }

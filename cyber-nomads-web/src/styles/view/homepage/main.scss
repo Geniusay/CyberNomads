@@ -61,7 +61,10 @@ ion-icon { pointer-events: none; }
   #REUSED STYLE
 \*-----------------------------------*/
 
-.container { padding-inline: 15px; }
+.container {
+    font-family: "Monorama", sans-serif;
+    padding-inline: 15px;
+}
 
 .section { padding-block: var(--section-padding); }
 
@@ -192,7 +195,10 @@ ion-icon { pointer-events: none; }
 
 .text-center { text-align: center; }
 
-.section-title { margin-block: 30px 50px; }
+.section-title {
+    margin-block: 30px 50px;
+    font-size: 1.8rem;
+}
 
 .grid-list {
     display: grid;
