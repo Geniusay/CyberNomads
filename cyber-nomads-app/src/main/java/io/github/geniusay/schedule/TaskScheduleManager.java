@@ -1,27 +1,24 @@
 package io.github.geniusay.schedule;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.core.supertask.TaskFactory;
 import io.github.geniusay.core.supertask.config.TaskStatus;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
-import io.github.geniusay.mapper.RobotMapper;
-import io.github.geniusay.mapper.TaskMapper;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
-import io.github.geniusay.schedule.strategy.WorkerExecuteStrategy;
-import io.github.geniusay.service.RobotService;
 import io.github.geniusay.service.TaskService;
-import io.github.geniusay.utils.ConvertorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * @Description
@@ -39,7 +36,7 @@ public class TaskScheduleManager {
     @Resource
     TaskService taskService;
     @Resource
-    WorkerExecuteStrategy executeStrategy;
+    WorkerExecute workerExecute;
     private static final Map<String, Task> WORLD_TASK = new ConcurrentHashMap<>();
     private static final Map<Long, RobotWorker> WORLD_ROBOTS = new ConcurrentHashMap<>();
     private static final Map<Long, Map<String,Task>> WORLD_ROBOTS_TASK = new ConcurrentHashMap<>();
@@ -61,24 +58,28 @@ public class TaskScheduleManager {
                         });
             }
         }
-        EVENT_PUBLISHER.initRobot();
+//        EVENT_PUBLISHER.initRobot();
+        WORLD_ROBOTS.forEach((id,robot)->{
+            workerExecute.push(id);
+        });
     }
 
     public void registerTaskAndStart(TaskDO taskdo){
         TaskDO taskDO = taskService.populateRobotListForTasks(List.of(taskdo)).get(0);
-
         Task task = taskFactory.buildTask(taskDO, taskDO.getPlatform(), taskDO.getTaskType());
         WORLD_TASK.put(String.valueOf(taskDO.getId()), task);
-
-        for (RobotDO robot : taskDO.getRobotList()) {
+        if(task.getRobots().isEmpty()){
+            throw new ServeException("robot列表不能为空");
+        }
+        for (RobotDO robot : task.getRobots()) {
             WORLD_ROBOTS_TASK.computeIfAbsent(robot.getId(), id -> new ConcurrentHashMap<>())
                     .put(String.valueOf(taskDO.getId()), task);
             WORLD_ROBOTS.computeIfAbsent(robot.getId(), id -> {
-                EVENT_PUBLISHER.startWork(id);
+//                EVENT_PUBLISHER.startWork(id);
                 return new RobotWorker(robot);
             });
+            workerExecute.push(robot.getId());
         }
-
     }
 
     public void registerRobot(RobotDO robotDO){
@@ -101,7 +102,6 @@ public class TaskScheduleManager {
             task.getRobots().forEach((taskDO)->{
                 WORLD_ROBOTS_TASK.get(taskDO.getId()).remove(taskId);
             });
-            EVENT_PUBLISHER.removeTask(task);
         }
     }
 

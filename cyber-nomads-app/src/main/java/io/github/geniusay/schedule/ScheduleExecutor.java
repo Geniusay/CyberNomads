@@ -57,7 +57,6 @@ public class ScheduleExecutor implements TaskListener{
                         FREE_WORKER.add(robotId);
                         continue;
                     }
-                    log.info("选中任务:{}",selectedTask.getId());
                     robotWorker.setTask(selectedTask);
                     TASK_STATUS.putIfAbsent(selectedTask.getId(), TaskStatus.RUNNING.toString());
                     taskExecutor.execute(() -> {
@@ -73,20 +72,17 @@ public class ScheduleExecutor implements TaskListener{
 
                             String taskId = robotWorker.task().getId();
                             if(robotWorker.task().getTerminator().taskIsDone() && canChangeTaskStatus(taskId)){
-                                log.info("任务做完，删除任务");
                                 manager.removeWorldRobotTask(robotId,robotWorker.getCurrentTask().getId());
                                 if(manager.getRobotTaskById(robotId).isEmpty()){
                                     manager.removeWorldRobot(robotId);
                                 }
                                 taskStatusManager.modifyTask(Long.valueOf(taskId), TaskActionConstant.FINISH);
                             }else{
-                                log.info("robot任务没做完，继续做");
                                 FREE_WORKER.add(robotId);
                             }
                         }
                     });
                 } else{
-                    log.info("robot无任务可做");
                     manager.removeWorldRobot(robotId);
                 }
             } catch (Exception e) {
