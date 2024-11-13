@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static io.github.geniusay.constants.PluginConstant.CUSTOM_COMMENT;
+import static io.github.geniusay.constants.PluginConstant.CUSTOM_COMMENT_CONTENT;
 import static io.github.geniusay.core.supertask.config.PluginConstant.CUSTOM_COMMENT_GENERATE_PLUGIN;
 
 @Scope("prototype")
@@ -27,7 +27,7 @@ public class CustomCommentGenerate extends AbstractCommentGenerate implements Co
         super.init(task);
 
         // 获取前端传递的customComment，并使用分割符拆分为多个评论
-        String customComment = getValue(this.pluginParams, CUSTOM_COMMENT, String.class);
+        String customComment = getValue(this.pluginParams, CUSTOM_COMMENT_CONTENT, String.class);
         List<String> comments = Arrays.stream(customComment.split(COMMENT_SEPARATOR))
                 .map(String::trim)
                 .filter(comment -> !comment.isEmpty())
@@ -74,7 +74,7 @@ public class CustomCommentGenerate extends AbstractCommentGenerate implements Co
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
-                TaskNeedParams.ofK(CUSTOM_COMMENT, String.class, "请编写需要指定的评论，使用 '" + COMMENT_SEPARATOR + "' 分隔每条评论，最多填写机器人数量的评论条数")
+                TaskNeedParams.ofK(CUSTOM_COMMENT_CONTENT, String.class, "请编写需要指定的评论，使用 '" + COMMENT_SEPARATOR + "' 分隔每条评论，最多填写机器人数量的评论条数")
                         .setInputType(TaskNeedParams.InputTypeEnum.TEXTAREA)
         );
     }

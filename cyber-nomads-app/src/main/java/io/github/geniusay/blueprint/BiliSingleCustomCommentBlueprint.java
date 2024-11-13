@@ -24,8 +24,7 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.geniusay.constants.PluginConstant.LOGIC_NAME;
-import static io.github.geniusay.constants.PluginConstant.RECEIVER_NAME;
+import static io.github.geniusay.constants.PluginConstant.*;
 import static io.github.geniusay.core.supertask.config.PluginConstant.*;
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.SINGLE_VIDEO_CUSTOM_COMMENT;
 
@@ -47,7 +46,7 @@ public class BiliSingleCustomCommentBlueprint extends BiliAbstractInteractionBlu
         ActionLogic logic = taskPluginFactory.<AbstractLogicSelector>buildPluginWithGroup(LOGIC_SELECTOR_GROUP_NAME, task).getLogic(comment);
         Receiver receiver = taskPluginFactory.<AbstractReceiverSelector>buildPluginWithGroup(RECEIVER_SELECTOR_GROUP_NAME, task).getReceiver();
         ApiResponse<Boolean> response = new ActionFlow<>(new BiliUserActor(robot), logic, receiver).execute();
-        task.addLastWord(robot, response, Map.of(LOGIC_NAME, logic.getLogicName(), RECEIVER_NAME, receiver.getId()));
+        task.addLastWord(robot, response, Map.of(LOGIC_NAME, logic.getLogicName(), RECEIVER_NAME, receiver.getId(), LOGIC_CONTENT, comment));
     }
 
     @Override

@@ -20,8 +20,7 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.geniusay.constants.PluginConstant.LOGIC_NAME;
-import static io.github.geniusay.constants.PluginConstant.RECEIVER_NAME;
+import static io.github.geniusay.constants.PluginConstant.*;
 import static io.github.geniusay.core.supertask.config.PluginConstant.LOGIC_SELECTOR_GROUP_NAME;
 import static io.github.geniusay.core.supertask.config.PluginConstant.RECEIVER_SELECTOR_GROUP_NAME;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
@@ -50,11 +49,14 @@ public abstract class BiliAbstractInteractionBlueprint extends AbstractTaskBluep
         ApiResponse<Boolean> response = lastWord.getResponse();
         String logicName = (String) lastWord.getAdditionalInfo(LOGIC_NAME);
         String receiverName = (String) lastWord.getAdditionalInfo(RECEIVER_NAME);
+        String logicContent = (String) lastWord.getAdditionalInfo(LOGIC_CONTENT);
 
-        String actionDescription = String.format("%s robot 执行了 %s 行为，目标: %s",
+        String actionDescription = String.format("%s robot 执行了 %s 行为，目标: %s 执行内容: %s",
                 robot.getNickname(),
                 logicName,
-                receiverName);
+                receiverName,
+                logicContent
+        );
 
         if (response.isSuccess()) {
             return LastWordUtil.buildLastWord(actionDescription + "，操作成功", true);

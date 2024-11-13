@@ -10,7 +10,7 @@ public class PluginConstant {
     public static final String AI_PRE_TEXT = "aiPreText";
     public static final String AI_COUNT_NUM = "aiCountNum";
 
-    public static final String CUSTOM_COMMENT = "customComment";
+    public static final String CUSTOM_COMMENT_CONTENT = "customCommentContent";
 
     public static final String SLOGAN = "slogan";
 
@@ -29,4 +29,6 @@ public class PluginConstant {
     public static final String LOGIC_NAME = "logicName";
 
     public static final String RECEIVER_NAME = "receiverName";
+
+    public static final String LOGIC_CONTENT = "logicContent";
 }
