@@ -1,7 +1,5 @@
 package io.github.geniusay.core.supertask.task;
 
-
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.ArrayList;

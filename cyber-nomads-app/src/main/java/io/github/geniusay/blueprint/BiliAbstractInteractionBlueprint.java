@@ -39,13 +39,9 @@ public abstract class BiliAbstractInteractionBlueprint extends AbstractTaskBluep
 
     @Override
     protected void executeTask(RobotWorker robot, Task task) throws Exception {
-        // 获取 Logic 和 Receiver（针对视频）
         ActionLogic logic = taskPluginFactory.<AbstractLogicSelector>buildPluginWithGroup(LOGIC_SELECTOR_GROUP_NAME, task).getLogic();
         Receiver receiver = taskPluginFactory.<AbstractReceiverSelector>buildPluginWithGroup(RECEIVER_SELECTOR_GROUP_NAME, task).getReceiver();
-
-        // 执行任务
         ApiResponse<Boolean> response = new ActionFlow<>(new BiliUserActor(robot), logic, receiver).execute();
-        // 保存任务结果
         task.addLastWord(robot, response, Map.of(LOGIC_NAME, logic.getLogicName(), RECEIVER_NAME, receiver.getId()));
     }
 

@@ -8,10 +8,10 @@ import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 
 public class BiliCommentLogic extends ActionLogic<BiliUserActor, BiliCommentReceiver> {
 
-    private final String commentStr;
+    private String content;
 
-    public BiliCommentLogic(String commentStr) {
-        this.commentStr = commentStr;
+    public BiliCommentLogic(String content) {
+        this.content = content;
     }
 
     @Override
@@ -26,8 +26,12 @@ public class BiliCommentLogic extends ActionLogic<BiliUserActor, BiliCommentRece
         String rpid = receiver.getRpid();
         String parentRpid = receiver.getParentRpid();
 
-        logAction(actor, receiver, "发表评论/回复: " + commentStr);
+        logAction(actor, receiver, "发表评论/回复: " + content);
 
-        return BilibiliCommentApi.sendCommentOrReply(cookie, oid, commentStr, rpid, parentRpid);
+        return BilibiliCommentApi.sendCommentOrReply(cookie, oid, content, rpid, parentRpid);
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

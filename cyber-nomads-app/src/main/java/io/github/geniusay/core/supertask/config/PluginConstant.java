@@ -16,6 +16,7 @@ public class PluginConstant {
      */
     // 评论生成器插件
     public static final String AI_COMMENT_GENERATE_PLUGIN = "aiComment";  // AI自动评论
+    public static final String CUSTOM_COMMENT_GENERATE_PLUGIN = "customComment";  // 定制评论
 
     // 视频选择器插件
     public static final String HOT_VIDEO_PLUGIN = "hotVideo";  // 随机热门视频
@@ -25,6 +26,7 @@ public class PluginConstant {
     public static final String TRIPLET_LOGIC_SELECTOR = "tripletLogicSelector";  // 三连操作
     public static final String COIN_LOGIC_SELECTOR = "coinLogicSelector";  // 投币操作
     public static final String FOLLOW_LOGIC_SELECTOR = "followLogicSelector";  // 关注操作
+    public static final String COMMENT_LOGIC_SELECTOR = "commentLogicSelector";  // 评论操作
 
     // 目标选择器插件
     public static final String USER_RECEIVER_SELECTOR = "userReceiverSelector";  // 用户目标选择

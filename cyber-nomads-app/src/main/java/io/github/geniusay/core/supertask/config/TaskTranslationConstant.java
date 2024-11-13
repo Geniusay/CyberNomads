@@ -41,6 +41,7 @@ public class TaskTranslationConstant {
         // 评论生成器
         pluginTranslation.put(COMMENT_GROUP_NAME, "评论生成器");
         pluginTranslation.put(AI_COMMENT_GENERATE_PLUGIN, "AI自动评论");
+        pluginTranslation.put(CUSTOM_COMMENT_GENERATE_PLUGIN, "定制评论");
 
         // 视频选择器
         pluginTranslation.put(GET_VIDEO_GROUP_NAME, "视频选择插件");
@@ -52,6 +53,7 @@ public class TaskTranslationConstant {
         pluginTranslation.put(COIN_LOGIC_SELECTOR, "投币操作");
         pluginTranslation.put(TRIPLET_LOGIC_SELECTOR, "三连操作");
         pluginTranslation.put(FOLLOW_LOGIC_SELECTOR, "关注操作");
+        pluginTranslation.put(COMMENT_LOGIC_SELECTOR, "评论操作");
 
         // 接收者选择器
         pluginTranslation.put(RECEIVER_SELECTOR_GROUP_NAME, "目标选择器");

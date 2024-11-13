@@ -9,4 +9,8 @@ import io.github.geniusay.core.supertask.plugin.TaskPlugin;
 public interface LogicSelector extends TaskPlugin {
 
     ActionLogic getLogic();
+
+    default ActionLogic getLogic(String help) {
+        return getLogic();
+    }
 }
