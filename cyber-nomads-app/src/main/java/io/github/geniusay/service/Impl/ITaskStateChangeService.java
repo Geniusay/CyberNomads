@@ -1,12 +1,15 @@
 package io.github.geniusay.service.Impl;
 
+import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.core.supertask.config.TaskStatus;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.schedule.TaskScheduleManager;
 import io.github.geniusay.service.TaskStateChangeService;
+import io.netty.util.internal.StringUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class ITaskStateChangeService implements TaskStateChangeService {
@@ -26,6 +29,10 @@ public class ITaskStateChangeService implements TaskStateChangeService {
 
     @Override
     public void notifyTaskStarted(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus) {
+        // 判断任务是有可用机器人
+        if (StringUtil.isNullOrEmpty(task.getTaskName())) {
+            throw new ServeException("请先添加可用机器人");
+        }
         manager.registerTaskAndStart(task);
         System.out.println("任务已开始: " + task.getTaskName() + "，从 " + oldStatus + " 修改为 " + newStatus);
     }
