@@ -16,7 +16,7 @@ public class AsyncService {
 
     @Async("taskExecutor")
     public void sendCodeToEmail(String to, String code) {
-        log.info("向 email:{} 发送验证码:{}",to,code);
+        log.info("{}验证码已发送", to);
         emailUtil.sendCode(to, code);
     }
 }

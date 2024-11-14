@@ -62,13 +62,13 @@ public class GetHotCommentPlugin extends AbstractGetCommentPlugin implements Get
 
                     // 如果没有更多评论，则提前终止
                     if (comments.isEmpty()) {
-                        log.info("第 {} 页没有更多评论，提前终止获取", currentPage);
+//                        log.info("第 {} 页没有更多评论，提前终止获取", currentPage);
                         break;
                     }
 
                     hotComments.addAll(comments);
                     backupComments.addAll(comments);
-                    log.info("第 {} 页成功获取到 {} 条热评", currentPage, comments.size());
+//                    log.info("第 {} 页成功获取到 {} 条热评", currentPage, comments.size());
                     currentPage++;
                 } else {
                     log.warn("获取第 {} 页热评失败，状态码: {}, 错误信息: {}", currentPage, response.getCode(), response.getMsg());
@@ -83,7 +83,7 @@ public class GetHotCommentPlugin extends AbstractGetCommentPlugin implements Get
     @Override
     public CommentDetail getHandleComment() {
         if (hotComments.isEmpty()) {
-            log.info("热评列表为空，重新复用之前获取的评论");
+//            log.info("热评列表为空，重新复用之前获取的评论");
             hotComments.addAll(backupComments);
         }
 
@@ -97,7 +97,7 @@ public class GetHotCommentPlugin extends AbstractGetCommentPlugin implements Get
         selectedComment.setBvid(bvid);
         selectedComment.setOid(oid);
 
-        log.info("返回并移除评论: {}", selectedComment.getMessage());
+//        log.info("返回并移除评论: {}", selectedComment.getMessage());
         return selectedComment;
     }
 

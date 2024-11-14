@@ -42,7 +42,6 @@ public class ScheduleExecutor implements TaskListener{
             try {
                 Long robotId = FREE_WORKER.take();
                 Map<String, Task> taskMap = manager.getRobotTaskById(robotId);
-                log.info("robotId:{}",robotId);
                 if(!Objects.isNull(taskMap)&&!taskMap.isEmpty()){
                     List<Task> tasks = new ArrayList<>(taskMap.values());
                     RobotWorker robotWorker = manager.getRobotById(robotId);
@@ -53,7 +52,6 @@ public class ScheduleExecutor implements TaskListener{
                         }
                     }
                     if(selectedTask==null){
-                        log.info("无可用任务");
                         FREE_WORKER.add(robotId);
                         continue;
                     }

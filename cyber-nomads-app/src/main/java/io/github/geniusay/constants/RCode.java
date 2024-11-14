@@ -31,7 +31,8 @@ public enum RCode {
     VERIFICATION_FAILURE(30001, "验证失败"),
     FAILED_TO_CREATE_USER(30002, "创建用户失败"),
     MISSING_VERIFICATION_CODE(30003, "缺少验证码"),
-    USER_DOES_NOT_EXIST(30004, "用户不存在");
+    USER_DOES_NOT_EXIST(30004, "用户不存在"),
+    PROXY_ERROR(40001, "代理失效");
 
     /**
      * 自定义状态码

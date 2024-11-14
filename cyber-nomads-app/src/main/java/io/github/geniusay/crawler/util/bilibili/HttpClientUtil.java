@@ -2,12 +2,9 @@ package io.github.geniusay.crawler.util.bilibili;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import io.github.geniusay.utils.RequestUtil;
-import io.netty.util.internal.StringUtil;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.io.*;
 
@@ -20,13 +17,6 @@ public class HttpClientUtil {
 
     private static OkHttpClient defaultClient = new OkHttpClient();
     private static String defaultCookie = "defaultCookie";
-
-    private static RequestUtil requestUtil;
-
-    @Resource
-    public void set(RequestUtil requestUtil){
-        HttpClientUtil.requestUtil = requestUtil;
-    }
 
     /**
      * 获取 OkHttpClient 实例

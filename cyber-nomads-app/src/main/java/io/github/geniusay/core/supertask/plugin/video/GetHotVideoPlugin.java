@@ -51,7 +51,6 @@ public class GetHotVideoPlugin extends AbstractGetVideoPlugin implements GetHand
             if (video != null) {
                 markVideoInRedis(video, redisKey, VIDEO_MARK_EXPIRE_DAYS);
             }
-
             return video;
         } catch (Exception e) {
             log.error("获取视频时发生异常，任务: {}，Robot: {}，异常信息: {}", task.getId(), robot.getId(), e.getMessage(), e);
@@ -91,7 +90,6 @@ public class GetHotVideoPlugin extends AbstractGetVideoPlugin implements GetHand
         } catch (Exception e) {
             log.error("执行 Lua 脚本获取视频时发生异常，异常信息: {}", e.getMessage(), e);
         }
-
         log.warn("达到最大重试次数，但未获取到任何视频");
         return null;
     }
@@ -111,7 +109,6 @@ public class GetHotVideoPlugin extends AbstractGetVideoPlugin implements GetHand
                     List.of(redisKey),
                     video.getBvid(), String.valueOf(TimeUnit.DAYS.toSeconds(expireDays))
             );
-            log.info("已标记视频，bvid: {}，标记 key: {}", video.getBvid(), redisKey);
         } catch (Exception e) {
             log.error("执行 Lua 脚本标记视频时发生异常，bvid: {}，异常信息: {}", video.getBvid(), e.getMessage(), e);
         }

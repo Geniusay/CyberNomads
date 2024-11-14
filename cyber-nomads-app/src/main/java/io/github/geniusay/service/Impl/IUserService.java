@@ -105,7 +105,6 @@ public class IUserService implements UserService {
         String pid = UUID.randomUUID().toString();
         Map<String, String> code = imageUtil.generateCode();
         String seeCode = CyberStringUtils.toLower(code.get("code"));
-        log.info("验证码:{}", code);
         cacheUtil.putCaptcha(pid, seeCode);
         return Map.of("base64",code.get("base64"),"pid",pid);
     }
