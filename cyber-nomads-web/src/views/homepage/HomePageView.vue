@@ -71,8 +71,6 @@ onMounted(() => {
         <NewHeader />
         <Service />
         <Feature/>
-        <Project />
-        <NewSletter />
         <Footer />
       </article>
     </main>

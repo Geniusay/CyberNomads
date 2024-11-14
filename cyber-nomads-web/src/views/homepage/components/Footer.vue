@@ -1,34 +1,32 @@
 <script setup lang="ts">
-  const icons = [
-    "logo-youtube","logo-twitter","logo-facebook","logo-skype"
-  ]
+import {joinQQGroup} from "@/utils/toolUtils";
 
-  const usefulLinks = [
-    { title: "Usefull Links", type: "title" },
-    { label: "Contact us", href: "#" },
-    { label: "How it Works", href: "#" },
-    { label: "Create", href: "#" },
-    { label: "Explore", href: "#" },
-    { label: "Terms & Services", href: "#" }
-  ];
+const icons = [{
+  icon:"./assets/svg/qq.svg",
+  handle: ()=>joinQQGroup()
+}]
 
-  const communityLinks = [
-    { title: "Community", type: "title" },
-    { label: "Help Center", href: "#" },
-    { label: "Partners", href: "#" },
-    { label: "Suggestions", href: "#" },
-    { label: "Blog", href: "#" },
-    { label: "Newsletters", href: "#" }
-  ];
+const usefulLinks = [
+  { title: "Usefull Links", type: "title" },
+  { label: "关于TML", href: "#" },
+  { label: "联系我们", href: "#" },
+  { label: "怎么使用？", href: "#" },
+];
 
-  const instaPosts = [
-    { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task1.png", href: "#" },
-    { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task2.png", href: "#" },
-    { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task3.png", href: "#" },
-    { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task4.png", href: "#" },
-    { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task5.png", href: "#" },
-    { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task6.png", href: "#" },
-  ];
+const communityLinks = [
+  { title: "Community", type: "title" },
+  { label: "帮助中心", href: "#" },
+  { label: "博客", href: "#" },
+];
+
+const instaPosts = [
+  { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task1.png", href: "#" },
+  { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task2.png", href: "#" },
+  { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task3.png", href: "#" },
+  { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task4.png", href: "#" },
+  { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task5.png", href: "#" },
+  { src: "https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/taskImg/task6.png", href: "#" },
+];
 
 </script>
 
@@ -40,17 +38,17 @@
 
         <div class="footer-brand">
 
-          <p class="footer-list-title">About Pixology</p>
+          <p class="footer-list-title">About CyberNomads</p>
 
           <p class="footer-text">
-            A new way to make the payments easy, reliable and 100% secure. claritatem itamconse quat. Exerci tationulla
+            A cloud service for creating AI accounts, endowing accounts with soul and data with life.
           </p>
 
           <ul class="social-list">
 
             <li v-for="icon in icons">
-              <a href="#" class="social-link">
-                <ion-icon :name="icon"></ion-icon>
+              <a @click="icon.handle()" class="social-link">
+                <ion-icon :src="icon.icon"></ion-icon>
               </a>
             </li>
           </ul>
@@ -107,7 +105,10 @@
           </li>
 
           <li>
-            <a href="#" class="footer-bottom-link">Login / Signup</a>
+            <router-link to="/login">
+              <a class="footer-bottom-link">Login / Signup</a>
+            </router-link>
+
           </li>
 
         </ul>

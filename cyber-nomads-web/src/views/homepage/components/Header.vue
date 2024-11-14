@@ -9,6 +9,22 @@ const letsGo = () =>{
     return "/login"
   }
 }
+
+const navbarList = [
+  {
+    title:"Home",
+    href:"#"
+  },
+  {
+    title:"Service",
+    href:"#"
+  },
+  {
+    title:"Features",
+    href:"#"
+  },
+
+]
 </script>
 
 <template>
@@ -29,24 +45,8 @@ const letsGo = () =>{
 
         <ul class="navbar-list">
 
-          <li class="navbar-item">
-            <a href="#home" class="navbar-link" data-nav-link>Home</a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="#service" class="navbar-link" data-nav-link>Services</a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="#feature" class="navbar-link" data-nav-link>Features</a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="#project" class="navbar-link" data-nav-link>Portfolio</a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="#blog" class="navbar-link" data-nav-link>Blog</a>
+          <li class="navbar-item" v-for="navbar in navbarList">
+            <a :href="navbar.href" class="navbar-link" data-nav-link>{{navbar.title}}</a>
           </li>
         </ul>
       </nav>

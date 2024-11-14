@@ -10,7 +10,7 @@ export const status = {
     nextMsg:"启动任务"
   },
   running:{
-    icon:"mdi-arrow-right-drop-circle",
+    icon:"line-md:cog-loop",
     color:"green",
     content:"workplace.task.running",
     value:"running",
@@ -18,7 +18,7 @@ export const status = {
     nextMsg:"暂停任务"
   },
   exception:{
-    icon:"mdi-alert-circle",
+    icon:"line-md:alert-circle-twotone-loop",
     color:"orange",
     content:"workplace.task.exception",
     value:"exception",
@@ -26,23 +26,23 @@ export const status = {
     nextMsg:"暂停任务"
   },
   paused:{
-    icon:"mdi-pause-circle",
-    color:"yellow",
+    icon:"line-md:cog-off-loop",
+    color:"#d37c18",
     content:"workplace.task.pause",
     value:"paused",
     next:"running",
     nextMsg:"重启任务"
   },
   completed:{
-    icon:"mdi-check-circle",
-    color:"green",
+    icon:"line-md:confirm-circle-filled",
+    color:"#20b020",
     content:"workplace.task.finish",
     value:"completed",
     next:"pending",
     nextMsg:"重启任务"
   },
   error:{
-    icon: "mdi-application-variable",
+    icon: "line-md:close-circle-filled",
     color:"red",
     content:"workplace.task.error",
     value:"error",
@@ -50,7 +50,6 @@ export const status = {
     nextMsg:"重启任务"
   }
 }
-
 export const InputType = {
   selection:"selection",
   input:"input",
@@ -124,6 +123,14 @@ function validateParam(name: string, value: any, param: Parameter): string | nul
   return null;
 }
 
+function selectionFlatToMap(params: Parameter): Record<string, Parameter> {
+  return params.selection.reduce((acc, item) => {
+    acc[item.name] = item;
+    return acc;
+  }, {} as Record<string, Parameter>);
+}
+
+
 export function validateAndGetParams(
   paramMap: Record<string, any>,
   params: Parameter[]
@@ -131,20 +138,21 @@ export function validateAndGetParams(
   for (const needParam of params) {
     const name = needParam.name;
     const value = paramMap[name] !== undefined ? paramMap[name] : needParam.defaultValue;
+    let nextParams: Parameter[] = [];
 
     // 若为必填或存在值，则校验
     if (needParam.required || value !== null) {
       const errorMsg = validateParam(needParam.desc, value, needParam);
       if (errorMsg) return errorMsg;
     }
-
-    // 递归处理嵌套的参数
-    if (needParam.params.length > 0) {
-      const nestedErrorMsg = validateAndGetParams(paramMap, needParam.params);
-      if (nestedErrorMsg) return nestedErrorMsg;
-    } else if (needParam.selection.length > 0) {
-      const selectionErrorMsg = validateAndGetParams(paramMap, needParam.selection);
-      if (selectionErrorMsg) return selectionErrorMsg;
+    if (needParam.inputType === 'selection') {
+      nextParams.push(selectionFlatToMap(needParam)[value as string]);
+    } else {
+      nextParams = nextParams.concat(needParam.params);
+    }
+    if (nextParams.length > 0) {
+      const error = validateAndGetParams(paramMap, nextParams);
+      if (error) return error;
     }
   }
 
