@@ -12,6 +12,7 @@ import {
 } from "@/api/userApi"
 import { useRouter } from "vue-router";
 import {onMounted} from "vue";
+import coolDownTimer from "@/utils/emailCoolDownUtils";
 
 const router = useRouter()
 const snackbarStore = useSnackbarStore()
@@ -21,7 +22,7 @@ const sendLoading = ref(false)
 
 const loginForm = ref<LoginForm>({...defaultValue.defaultLoginForm})
 const registerForm = ref<RegisterForm>({...defaultValue.defaultRegisterForm})
-
+const needOpenPicCode = ref(false)
 
 const loginValidators: Validators<LoginForm> = {
   email: (value) => value && /^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/.test(value) ? null : '请输入正确的邮箱',
@@ -39,9 +40,24 @@ const registerValidators: Validators<RegisterForm> = {
 
 const picCode = ref<PicCode>({...defaultValue.defaultPicCode})
 
-onMounted(async ()=>{
-  await generatePicCode()
+onMounted( ()=>{
+  coolDownTimer.loadCoolDownTimer()
 })
+
+const otherLogin = [
+  {
+    logo:"./assets/svg/qq.svg",
+    handler:()=>{snackbarStore.showInfoMessage('QQ登录正在开发中...')}
+  },
+  {
+    logo:"./assets/svg/wechat.svg",
+    handler:()=>{snackbarStore.showInfoMessage('微信登录正在开发中...')}
+  },
+  {
+    logo:"./assets/svg/discord.svg",
+    handler:()=>{snackbarStore.showInfoMessage('Discord登录正在开发中...')}
+  },
+]
 
 const errorPicImg = "/assets/img/error1.png"
 const preImg = ref("data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAALQAAAAoCAIAAADYC0ddAAAE2UlEQVR4Xu2VzauVVRTGbaA0SSNoUHJARNCBiBkZQnS9cALp4w8QihxUBH04cBCUkyBvE0GE60AHanJHd3QbZFyLICGyyYXoA0n6BPEjsIGzBuGSHZvNetZae+193/Oe9+W+8EPuWet5nr3O4QHXjT56YGBAZB2OBhpn+91bBM4NZq7uInDeJr0sx9zhTwmcd5ahHO3Ri3L8t7JM4LxH9LIcvWAoRxt8vekogfO+MH7ibAS3Xaa9cqS/UdGPFcphe42VweKXp4kKYxFavjbXSPUVFtxmaaYcG17cSOA8hX03/8XoEr32VoSVAwWNoF2lzTVKv2CRWGTK5fDcjRbRaG+RUr2TUy8sEelEe0WbExf3vk5oYtESeHb7dwRaUOmhmXJkwe/mvBv1hsujKVWWwsphvGKsVl8OjzjLFMqBHw3Yl7RdHo1f1gjGQ8bKUFZYcJsyu/IOgfNRRTm+efQMgXMbdqvz9ApXU5osj+1/nsA5w3grXeFWVLK/NfzJo3bKMbf5JwLnAXar53T8hnWuUoGTvpQDt4aYuYrLoTHRcmgTEUOWrnDr1/iVhoDZ31j/CmEkiB9FjEdFDePD55YJ+qOxchDvvvkHET++dm0PMZJuZddgFG5xoqGFa3OnvUJWJGiqHNlHmQbpbjmOLVwicIsTDTFcHGpkxVkBynB7Z9czhCFIE4yJaNl54WUCt2mCkRNWTZZDQzxFHI6gHGG47cR9RL1IGo6gHjH0/jRDdvvX94lmy/Hb7M9E2GrlSE8SQ1I6Vw7x+gbLgWIRzaXNRZjyxud/EmEVymFHiStxGEjLkQoeOn+SYHYxgTHxcqTXpAeJQ22uhRgwi9+oJYgTAxSn5UCNkZAd2mmxHKlATGD8X47FpYcJXK8e7RpxLg6NuUFqyRo3XPuesBPEiUGUfXzuPQIFqQbTSud2mlPA6EQ54gon9txGfEJELAcmONOYN5Rj918LhKbBwPOzIwLnmt6IEjWGLNLqfyvaPKw0pb0yqHOlpAmlaUxfVA76OIlyMJmtHDVYjqPfXiZwbpzCDnUq8QmNOhcje5uGx6JpxGFcbf5qHyHqRYumzLomWw77eTxRVBorgzpX4KUHZ4jwt32bhtMiysRhul1NOZhYJCobK4eI+KS4dcpwq1HnCsRyeM4TcVpEGU5EC04MlwgzYkj/yvHkng8IlNmuCvA2f5TTIspwIlpwolmypAlpVLfKgRoMaacceFtRmlOPsqxL09suJyxqmuVgAo+GPh765RMCZbarCHYVA/WIU48y2/XDIyMi1WDCamBpEyyHdve2A48TtiYbYlPnQm+0i0ONaiX9O3/9VQKVgTVUjn8X/yHQ6AmxqXMxY+rV5iJR9uPlwwQKUBkyx7lyoMt5khMWOIVyRJzl2Du/QmghItmnRVIXGu2tqCwqhye52pUVBA0LnGY5PIzbKgf+NKUCUYlbTem0iC7UGBbcMkHU9KAcFSGlrlRvWCpkuI18duUu4cxMYRaPKyrfPribwAQxbVLlEB8rpS6k1JXqt761QKAGlVp43P698ziBgkhT5UCBobfLwYxrvRypeJwrB+oNQbYcmCYGIhUW0ZgNmVQ5GuGpOzcJnA+0w1COAZVOl2PNsuPp++C8ZYZydJEOlePq+AiBu4Hus+WL3wmcN8I91LvwJnHcw58AAAAASUVORK5CYII=")
@@ -67,17 +83,31 @@ const currentForm = () => {
 }
 
 const sendEmailCode = async () => {
-  if(picCode.value.code&&currentForm().value.email){
+  const validEmailHandler = (value) => value && /^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)? null : '请输入正确的邮箱'
+  let error = validEmailHandler(currentForm().value.email)
+  if(error){
+    snackbarStore.showErrorMessage(error)
+    return
+  }
+  if(!needOpenPicCode.value){
+    await generatePicCode()
+    snackbarStore.showInfoMessage("请输入验证码")
+    needOpenPicCode.value = true;
+  }else{
+    if(!picCode.value.code){
+      snackbarStore.showErrorMessage("图片验证码不能为空")
+      return
+    }
     sendLoading.value = true
     await sendCodeToEmail(currentForm().value.email, picCode.value.pid, picCode.value.code).then(res=>{
       snackbarStore.showSuccessMessage("已发送邮箱验证码，请检查邮箱")
+      needOpenPicCode.value = false;
+      coolDownTimer.startCoolDown(res.data.email, res.data.coolDown)
     }).catch((error)=>{
       snackbarStore.showErrorMessage("发送失败："+error.message)
       generatePicCode()
     })
     sendLoading.value = false
-  }else{
-    snackbarStore.showErrorMessage("图片验证码和邮箱不能为空")
   }
 }
 
@@ -119,8 +149,10 @@ const register = async()=>{
 
 const switchLogin = async () =>{
   isLogin.value = !isLogin.value
+  needOpenPicCode.value = false;
   await generatePicCode()
 }
+
 </script>
 
 <template>
@@ -139,22 +171,29 @@ const switchLogin = async () =>{
               <p>
                 <input v-model="loginForm.email" type="email" placeholder="邮箱" />
               </p>
-              <p class="code-container">
-                <input v-model="picCode.code" placeholder="图片验证码" class="pic-code-input"/>
-                <img v-if="!picLoading" @click="generatePicCode()" :src="picCode.img" alt="Base64 Image" class="pic-code" />
-                <v-img v-else
-                  class="mx-auto"
-                  :lazy-src="preImg"
-                >
-                  <template v-slot:placeholder>
-                    <CircleLoading/>
-                  </template>
-                </v-img>
-              </p>
+              <transition name="fade">
+                <p v-if="needOpenPicCode" class="code-container">
+                  <input v-model="picCode.code" placeholder="图片验证码" class="pic-code-input"/>
+                  <img v-if="!picLoading" @click="generatePicCode()" :src="picCode.img" alt="Base64 Image" class="pic-code" />
+                  <v-img v-else
+                         class="mx-auto"
+                         :lazy-src="preImg"
+                  >
+                    <template v-slot:placeholder>
+                      <CircleLoading/>
+                    </template>
+                  </v-img>
+                </p>
+              </transition>
               <p class="code-container">
                 <input v-model="loginForm.code" placeholder="验证码" class="input-code"/>
-                <v-btn :loading="sendLoading" @click="sendEmailCode()" color="#5865f2" min-height="60" class="send-code">
-                  发送验证码
+                <v-btn :loading="sendLoading" @click="sendEmailCode()" :disabled="coolDownTimer.getCoolDownTime(loginForm.email)>0" color="#5865f2" min-height="60" class="send-code fixed-width-btn">
+                  <template v-if="coolDownTimer.getCoolDownTime(loginForm.email)>0">
+                    {{ coolDownTimer.getCoolDownTime(loginForm.email) }}秒后重新发送
+                  </template>
+                  <template v-else>
+                    发送验证码
+                  </template>
                   <template v-slot:loader>
                     <v-progress-linear indeterminate></v-progress-linear>
                   </template>
@@ -175,14 +214,8 @@ const switchLogin = async () =>{
                 <p>使用其他方式登录</p>
               </div>
               <ul>
-                <li>
-                  <a href="#"><i class="ri-steam-fill ri-2x"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="ri-playstation-fill ri-2x"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="ri-xbox-fill ri-2x"></i></a>
+                <li v-for="login in otherLogin">
+                  <a @click="login.handler()"><ion-icon style="font-size: 2rem" :src="login.logo"></ion-icon></a>
                 </li>
               </ul>
             </div>
@@ -198,22 +231,29 @@ const switchLogin = async () =>{
               <p>
                 <input v-model="registerForm.confirmPassword" type="password" placeholder="确认密码" />
               </p>
+              <transition name="fade">
+                <p  v-if="needOpenPicCode" class="code-container">
+                  <input v-model="picCode.code" placeholder="图片验证码" class="pic-code-input"/>
+                  <img v-if="!picLoading" @click="generatePicCode()" :src="picCode.img" class="pic-code" />
+                  <v-img v-else
+                         class="mx-auto"
+                         :lazy-src="preImg"
+                  >
+                    <template v-slot:placeholder>
+                      <CircleLoading/>
+                    </template>
+                  </v-img>
+                </p>
+              </transition>
               <p class="code-container">
-                <input v-model="picCode.code" placeholder="图片验证码" class="pic-code-input"/>
-                <img v-if="!picLoading" @click="generatePicCode()" :src="picCode.img" class="pic-code" />
-                <v-img v-else
-                       class="mx-auto"
-                       :lazy-src="preImg"
-                >
-                  <template v-slot:placeholder>
-                    <CircleLoading/>
+                <input v-model="loginForm.code" placeholder="验证码" class="input-code"/>
+                <v-btn :loading="sendLoading" @click="sendEmailCode()" :disabled="coolDownTimer.getCoolDownTime(registerForm.email)>0" color="#5865f2" min-height="60" class="send-code fixed-width-btn">
+                  <template v-if="coolDownTimer.getCoolDownTime(registerForm.email)>0">
+                    {{ coolDownTimer.getCoolDownTime(registerForm.email) }}秒后重新发送
                   </template>
-                </v-img>
-              </p>
-              <p class="code-container">
-                <input v-model="registerForm.code" placeholder="验证码" class="input-code"/>
-                <v-btn :loading="sendLoading" @click="sendEmailCode()" color="#5865f2" min-height="60" class="send-code">
-                  发送验证码
+                  <template v-else>
+                    发送验证码
+                  </template>
                   <template v-slot:loader>
                     <v-progress-linear indeterminate></v-progress-linear>
                   </template>
@@ -240,4 +280,14 @@ const switchLogin = async () =>{
 
 <style scoped>
 @import url("@/styles/view/login/_login.scss");
+.fixed-width-btn {
+  width: 125px;
+  box-sizing: border-box;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.6s ease;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
 </style>
