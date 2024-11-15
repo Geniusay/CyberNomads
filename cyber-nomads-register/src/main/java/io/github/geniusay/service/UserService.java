@@ -1,5 +1,6 @@
 package io.github.geniusay.service;
 
+import io.github.geniusay.pojo.DTO.DriverPathDTO;
 import io.github.geniusay.pojo.DTO.LoginDTO;
 import io.github.geniusay.pojo.DTO.VerityDTO;
 import io.github.geniusay.pojo.VO.RobotVO;
@@ -21,4 +22,9 @@ public interface UserService {
     void saveKey(String scriptKey);
 
     void removeMachineCode();
+
+    Boolean verityCode(String code);
+
+    Boolean verityPath(DriverPathDTO pathDTO);
+    DriverPathDTO queryPathExist();
 }

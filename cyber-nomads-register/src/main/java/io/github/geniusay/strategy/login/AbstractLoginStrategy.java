@@ -6,6 +6,7 @@ import io.github.geniusay.pojo.DTO.LoginMachineDTO;
 import io.github.geniusay.util.CacheUtils;
 import io.github.geniusay.util.HTTPUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +28,8 @@ import static io.github.geniusay.common.Constant.*;
 public abstract class AbstractLoginStrategy implements LoginStrategy{
     @Resource
     ApplicationContext context;
-
+    @Value("${communication.url}")
+    private String url;
     Map<String,AbstractLoginStrategy> loginStrategyHashMap = new HashMap<>();
     @PostConstruct
     public void init(){
@@ -44,11 +46,10 @@ public abstract class AbstractLoginStrategy implements LoginStrategy{
             throw new RuntimeException("密钥不正确或为空");
         }
         try {
-            String cookie = loginStrategyHashMap.get(loginDTO.getPlatform()).execute(loginDTO.getDriverPath(), loginDTO.getBrowserPath());
+            String cookie = loginStrategyHashMap.get(loginDTO.getPlatform()).execute();
             if (!StringUtils.isBlank(cookie)) {
-                LoginMachineDTO robotDTO = LoginMachineDTO.builder().username(loginDTO.getUsername()).cookie(cookie).password(loginDTO.getPassword()).platform(loginDTO.getPlatform()).build();
-                HTTPUtils.postWithParams(HTTP + LOCAL_TARGET_PATH + INSERT_ROBOT, Map.of("machine-token", key), JSON.toJSONString(robotDTO));
-                return true;
+                LoginMachineDTO robotDTO = LoginMachineDTO.builder().username(loginDTO.getUsername()).cookie(cookie).platform(loginDTO.getPlatform()).build();
+                return HTTPUtils.postWithParams(url + INSERT_ROBOT, Map.of("machine-token", key), JSON.toJSONString(robotDTO))==Boolean.TRUE;
             }else{
                 return false;
             }
@@ -57,5 +58,5 @@ public abstract class AbstractLoginStrategy implements LoginStrategy{
         }
     }
 
-    public abstract String execute(String driverPath, String browserPath);
+    public abstract String execute();
 }

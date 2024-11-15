@@ -1,6 +1,7 @@
 package io.github.geniusay.strategy.login;
 
 import io.github.geniusay.pojo.Platform;
+import io.github.geniusay.service.UserService;
 import io.github.geniusay.util.HTTPUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -12,6 +13,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,10 +25,14 @@ import java.util.stream.Collectors;
  * @Author welsir
  * @Date 2024/11/11 20:41
  */
-@Component()
+@Component
 public class BILIBILIStrategy extends AbstractLoginStrategy{
 
     private static final String URL = "https://www.bilibili.com/";
+
+    @Resource
+    UserService userService;
+
 
     @Override
     public String platform() {
@@ -38,9 +44,9 @@ public class BILIBILIStrategy extends AbstractLoginStrategy{
     }
 
     @Override
-    public String execute(String driverPath, String browserPath) {
-        String target1 = changePath(driverPath);
-        String target2 = changePath(browserPath);
+    public String execute() {
+        String target1 = changePath(userService.queryPathExist().getDriverPath());
+        String target2 = changePath(userService.queryPathExist().getBrowserPath());
         System.setProperty("webdriver.chrome.driver", target1);
         ChromeOptions options = new ChromeOptions();
         options.setBinary(target2);

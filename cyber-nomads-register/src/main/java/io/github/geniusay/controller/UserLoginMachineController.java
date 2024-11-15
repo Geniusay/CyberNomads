@@ -1,15 +1,13 @@
 package io.github.geniusay.controller;
 
 import io.github.common.web.Result;
+import io.github.geniusay.pojo.DTO.DriverPathDTO;
 import io.github.geniusay.pojo.DTO.LoginDTO;
-import io.github.geniusay.pojo.DTO.VerityDTO;
 import io.github.geniusay.service.UserService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * @Description
@@ -34,14 +32,23 @@ public class UserLoginMachineController {
         return Result.success(userService.login(loginDTO));
     }
 
-    @PostMapping("/saveKey")
-    public Result<?> saveScriptKey(@RequestBody String scriptKey){
-        userService.saveKey(scriptKey);
-        return Result.success();
-    }
-
     @PostMapping("/exit")
     public void exit(){
         System.exit(0);
+    }
+
+    @PostMapping("/verityCode")
+    public Result<?> checkCodeValid(@RequestBody String code){
+        return Result.success(userService.verityCode(code));
+    }
+
+    @PostMapping("/addDriverPath")
+    public Result<?> pushPathToServer(@RequestBody @Validated DriverPathDTO driverPathDTO){
+        return Result.success(userService.verityPath(driverPathDTO));
+    }
+
+    @GetMapping("/getPath")
+    public Result<?> queryPathIfExist(){
+        return Result.success(userService.queryPathExist());
     }
 }

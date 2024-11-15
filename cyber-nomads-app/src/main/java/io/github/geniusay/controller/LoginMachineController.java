@@ -42,4 +42,18 @@ public class LoginMachineController {
         return Result.success(service.logout(scriptCode));
     }
 
+    @PostMapping("/verity")
+    @TokenRequire
+    @LoginMachineToken
+    public Result<?> verityCode(){
+        return Result.success(service.verity());
+    }
+
+    @PostMapping("/removeCode")
+    @TokenRequire
+    @LoginMachineToken
+    public Result<?> exitLoginMachine(){
+        return Result.success();
+    }
+
 }

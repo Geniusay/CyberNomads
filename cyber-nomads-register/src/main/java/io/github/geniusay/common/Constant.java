@@ -14,5 +14,6 @@ public class Constant {
     public static final String QUERY_USER_ROBOT = "/robot/search";
     public static final String INSERT_ROBOT = "/robot/insertOrUpdate";
     public static final String REMOVE_CODE = "/loginMachine/logout";
+    public static final String VERITY_CODE = "/loginMachine/verity";
 
 }

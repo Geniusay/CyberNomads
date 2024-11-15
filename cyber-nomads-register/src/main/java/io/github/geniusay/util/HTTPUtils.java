@@ -50,7 +50,7 @@ public class HTTPUtils {
             Response response = okHttpClient.newCall(request).execute();
 
             return convertRespToObj(response.body().string());
-        }catch (IOException e){
+        }catch (Exception e){
             throw new RuntimeException(e);
         }
     }

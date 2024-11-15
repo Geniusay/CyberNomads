@@ -5,6 +5,7 @@ import io.github.geniusay.core.anno.LoginMachineToken;
 import io.github.geniusay.core.anno.TokenRequire;
 import io.github.geniusay.utils.CacheUtil;
 import io.github.geniusay.utils.ThreadUtil;
+import org.apache.commons.lang.StringUtils;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -38,6 +39,10 @@ public class TokenInterceptor implements HandlerInterceptor, Ordered {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             if(handlerMethod.hasMethodAnnotation(LoginMachineToken.class)){
                 machineToken = request.getHeader("machine-token");
+                if(StringUtils.isBlank(machineToken)){
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid machine-token");
+                    return false;
+                }
                 String script = encryptor.decrypt(machineToken);
                 machineToken = cacheUtil.get(LOGIN_MACHINE_CAPTCHA+script);
             }

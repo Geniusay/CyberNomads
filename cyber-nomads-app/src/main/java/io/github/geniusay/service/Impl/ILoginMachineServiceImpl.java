@@ -57,6 +57,11 @@ public class ILoginMachineServiceImpl implements LoginMachineService {
     }
 
     @Override
+    public Boolean verity() {
+        return true;
+    }
+
+    @Override
     public RegisterMachineDO queryMachineInfo(int id) {
         return mapper.selectById(id);
     }
