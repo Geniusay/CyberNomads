@@ -3,6 +3,7 @@ package io.github.geniusay.service.Impl;
 import com.alibaba.fastjson.JSON;
 import io.github.geniusay.pojo.DTO.DriverPathDTO;
 import io.github.geniusay.pojo.DTO.LoginDTO;
+import io.github.geniusay.pojo.DTO.QueryPathDTO;
 import io.github.geniusay.pojo.DTO.VerityDTO;
 import io.github.geniusay.pojo.VO.RobotVO;
 import io.github.geniusay.service.UserService;
@@ -115,28 +116,37 @@ public class IUserServiceImpl implements UserService {
         return false;
     }
 
-    public DriverPathDTO queryPathExist(){
+    @Override
+    public QueryPathDTO queryPathExist(){
         String key = CacheUtils.key;
         if(StringUtils.isBlank(key)){
             throw new RuntimeException("令牌不合法，请检查");
         }
         String directory = System.getProperty("user.dir");
         String filePath = directory + File.separator + "path.txt";
+        DriverPathDTO pathDTO;
+        QueryPathDTO.QueryPathDTOBuilder builder = QueryPathDTO.builder();
         if(isPathExist(filePath)){
             StringBuilder content = new StringBuilder();
 
             try (BufferedReader reader = new BufferedReader(new FileReader(filePath, StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    content.append(line).append("\n");  // 拼接每一行
+                    content.append(line).append("\n");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            return JSON.parseObject(content.toString(),DriverPathDTO.class);
+            pathDTO = JSON.parseObject(content.toString(), DriverPathDTO.class);
+            if(!isPathExist(pathDTO.getBrowserPath())){
+                builder.errorMsg("错误的浏览器路径");
+            }else if(!isPathExist(pathDTO.getDriverPath())){
+                builder.errorMsg("错误的驱动路径");
+            }
+            builder.pathDTO(pathDTO);
+            return builder.build();
         }
-        return null;
+        return builder.build();
     }
 
     private static boolean isPathExist(String path) {
