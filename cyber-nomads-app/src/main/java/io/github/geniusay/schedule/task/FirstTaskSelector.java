@@ -31,4 +31,9 @@ public class FirstTaskSelector implements TaskSelector {
         }
         return null;
     }
+
+    @Override
+    public Boolean taskIsFinish(Long workerId) {
+        return manager.getRobotTaskNum(workerId)==0;
+    }
 }

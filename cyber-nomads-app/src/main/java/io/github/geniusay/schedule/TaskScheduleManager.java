@@ -1,6 +1,5 @@
 package io.github.geniusay.schedule;
 
-import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.core.supertask.TaskFactory;
 import io.github.geniusay.core.supertask.config.TaskStatus;
 import io.github.geniusay.core.supertask.task.RobotWorker;
@@ -59,7 +58,7 @@ public class TaskScheduleManager {
             }
         }
 //        EVENT_PUBLISHER.initRobot();
-        WORLD_ROBOTS.forEach((id,robot)->{
+        WORLD_ROBOTS_TASK.forEach((id,v)->{
             workerExecute.push(id);
         });
     }
@@ -68,17 +67,14 @@ public class TaskScheduleManager {
         TaskDO taskDO = taskService.populateRobotListForTasks(List.of(taskdo)).get(0);
         Task task = taskFactory.buildTask(taskDO, taskDO.getPlatform(), taskDO.getTaskType());
         WORLD_TASK.put(String.valueOf(taskDO.getId()), task);
-        if(task.getRobots().isEmpty()){
-            throw new ServeException("robot列表不能为空");
-        }
         for (RobotDO robot : task.getRobots()) {
             WORLD_ROBOTS_TASK.computeIfAbsent(robot.getId(), id -> new ConcurrentHashMap<>())
                     .put(String.valueOf(taskDO.getId()), task);
             WORLD_ROBOTS.computeIfAbsent(robot.getId(), id -> {
 //                EVENT_PUBLISHER.startWork(id);
+                workerExecute.push(robot.getId());
                 return new RobotWorker(robot);
             });
-            workerExecute.push(robot.getId());
         }
     }
 
@@ -136,5 +132,9 @@ public class TaskScheduleManager {
     }
     public void removeWorldRobotTask(Long robotId,String taskId){
         WORLD_ROBOTS_TASK.get(robotId).remove(taskId);
+    }
+
+    public int getRobotTaskNum(Long workerId){
+        return WORLD_ROBOTS_TASK.get(workerId).size();
     }
 }

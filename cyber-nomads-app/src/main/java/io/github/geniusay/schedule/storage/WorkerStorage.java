@@ -10,4 +10,5 @@ public interface WorkerStorage {
     void joinRobotWorker(Long workerId);
     void removeRobotWorker(Long workerId);
     void reJoinRobotWorker(Long workerId);
+    void afterTaskDone(Long workerId);
 }

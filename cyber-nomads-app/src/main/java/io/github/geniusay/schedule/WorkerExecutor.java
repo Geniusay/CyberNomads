@@ -28,17 +28,23 @@ public class WorkerExecutor implements WorkerExecute {
         workerStorage.joinRobotWorker(robotId);
     }
 
+    @Override
+    public void taskDoneCallBack(Long workerId,String taskId) {
+
+    }
+
     public void executeTask(RobotWorker worker){
         if(worker==null){
             return;
         }
         Task currentTask = taskSelector.select(worker.getId());
         if(currentTask==null){
-            workerStorage.reJoinRobotWorker(worker.getId());
+            if(!taskSelector.taskIsFinish(worker.getId())){
+                workerStorage.reJoinRobotWorker(worker.getId());
+            }
             return;
         }
         worker.setTask(currentTask);
         executeStrategy.execute(worker);
     }
-
 }

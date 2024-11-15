@@ -9,6 +9,6 @@ import io.github.geniusay.core.supertask.task.Task;
  */
 public interface TaskSelector {
 
-    Task select(Long robotId);
-
+    Task select(Long workerId);
+    Boolean taskIsFinish(Long workerId);
 }
