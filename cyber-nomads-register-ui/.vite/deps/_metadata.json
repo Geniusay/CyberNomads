@@ -1,0 +1,79 @@
+{
+  "hash": "801630c0",
+  "configHash": "fadee86d",
+  "lockfileHash": "5bfdc345",
+  "browserHash": "c098351c",
+  "optimized": {
+    "vue": {
+      "src": "../../node_modules/vue/dist/vue.runtime.esm-bundler.js",
+      "file": "vue.js",
+      "fileHash": "d6440126",
+      "needsInterop": false
+    },
+    "pinia-plugin-persist": {
+      "src": "../../node_modules/pinia-plugin-persist/dist/pinia-persist.es.js",
+      "file": "pinia-plugin-persist.js",
+      "fileHash": "760f5345",
+      "needsInterop": false
+    },
+    "vue3-lottie": {
+      "src": "../../node_modules/vue3-lottie/dist/vue3-lottie.es.js",
+      "file": "vue3-lottie.js",
+      "fileHash": "79615a24",
+      "needsInterop": false
+    },
+    "vuetify": {
+      "src": "../../node_modules/vuetify/lib/framework.mjs",
+      "file": "vuetify.js",
+      "fileHash": "2d557c66",
+      "needsInterop": false
+    },
+    "vuetify/components": {
+      "src": "../../node_modules/vuetify/lib/components/index.mjs",
+      "file": "vuetify_components.js",
+      "fileHash": "744d86d9",
+      "needsInterop": false
+    },
+    "vuetify/directives": {
+      "src": "../../node_modules/vuetify/lib/directives/index.mjs",
+      "file": "vuetify_directives.js",
+      "fileHash": "f1a79cfb",
+      "needsInterop": false
+    },
+    "vuetify/labs/components": {
+      "src": "../../node_modules/vuetify/lib/labs/components.mjs",
+      "file": "vuetify_labs_components.js",
+      "fileHash": "348c88a6",
+      "needsInterop": false
+    },
+    "vue-router": {
+      "src": "../../node_modules/vue-router/dist/vue-router.mjs",
+      "file": "vue-router.js",
+      "fileHash": "a8fcbcca",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-DBTYHSAV": {
+      "file": "chunk-DBTYHSAV.js"
+    },
+    "chunk-TWNB6K2Y": {
+      "file": "chunk-TWNB6K2Y.js"
+    },
+    "chunk-EFJNGLWU": {
+      "file": "chunk-EFJNGLWU.js"
+    },
+    "chunk-YXSZ2AEU": {
+      "file": "chunk-YXSZ2AEU.js"
+    },
+    "chunk-DVMD2NVO": {
+      "file": "chunk-DVMD2NVO.js"
+    },
+    "chunk-SJGJBLN5": {
+      "file": "chunk-SJGJBLN5.js"
+    },
+    "chunk-5WRI5ZAA": {
+      "file": "chunk-5WRI5ZAA.js"
+    }
+  }
+}
