@@ -60,6 +60,8 @@ import {useSnackbarStore} from "@/stores/snackbarStore";
 import {useRouter} from "vue-router";
 import {useStepStore} from "@/stores/stepStore";
 import {verifyCode} from "@/api/cloudApi"
+import localstorageUtil from "@/utils/localStorage"
+import {onMounted} from "vue";
 
 const stepStore = useStepStore();
 const router = useRouter()
@@ -68,22 +70,29 @@ const snackbarStore = useSnackbarStore();
 
 const loginToken = ref("")
 
+onMounted(async()=>{
+  const item = localstorageUtil.getWithExpiry("loginToken")
+  if(!item)return null
+  loginToken.value = item
+  await validate()
+})
+
 const validate = async () =>{
   await verifyCode(loginToken.value).then(res=>{
     if(res.code==='200'){
       snackbarStore.showSuccessMessage("令牌校验正确")
-      stepStore.changeValid(1)
-      stepStore.step+=1
+      localstorageUtil.setWithExpiry("loginToken",loginToken.value,600*1000)
+
+      setTimeout(()=>{
+        stepStore.changeValid(1)
+        stepStore.step+=1
+      }, 500)
     }else{
       snackbarStore.showErrorMessage("令牌校验失败")
     }
   })
 
 }
-
-const nameRules = [
-  v => !!v || '请输入登号器令牌，如果没有令牌请去 https://www.cybernomads.top/data/cyber-nomads 获取',
-]
 
 const openGetTokenLink = () =>{
   const url = "https://www.cybernomads.top/data/cyber-nomads";

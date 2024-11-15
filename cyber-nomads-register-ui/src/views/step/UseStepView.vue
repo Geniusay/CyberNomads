@@ -25,6 +25,7 @@
         >
           <LoginTokenValidStep v-if="n===1"></LoginTokenValidStep>
           <SetupBrowserStep v-if="n===2"></SetupBrowserStep>
+          <ChooseLoginMethodStep v-if="n===3"></ChooseLoginMethodStep>
         </v-stepper-window-item>
       </v-stepper-window>
 
@@ -43,6 +44,7 @@
 import LoginTokenValidStep from "@/views/step/compoments/LoginTokenValidStep.vue";
 import {useStepStore} from "@/stores/stepStore";
 import SetupBrowserStep from "@/views/step/compoments/SetupBrowserStep.vue";
+import ChooseLoginMethodStep from "@/views/step/compoments/ChooseLoginMethodStep.vue";
 
 const stepStore = useStepStore();
 

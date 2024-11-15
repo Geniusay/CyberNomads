@@ -33,14 +33,17 @@ const stepStore = useStepStore();
 onMounted(async ()=>{
   await getPath().then(res=>{
     if(res.data){
-      form.drivePath = res.data.driverPath
-      form.browserPath = res.data.browserPath
+      form.value.drivePath = res.data.driverPath
+      form.value.browserPath = res.data.browserPath
       if(res.data.errorMsg){
         snackbarStore.showErrorMessage(res.data.errorMsg)
         return;
       }else{
         snackbarStore.showSuccessMessage('本地配置校验正确')
-        next()
+        setTimeout(()=>{
+          next()
+        }, 500)
+
       }
     }
   })

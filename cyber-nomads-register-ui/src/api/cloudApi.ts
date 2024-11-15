@@ -19,6 +19,14 @@ export function getPath(){
 export function savePath(drivePath, browserPath){
     return request.post('/loginMachine/addDriverPath',{
         browserPath: browserPath,
-        drivePath: drivePath
+        driverPath: drivePath
+    })
+}
+
+
+export function login(username, platform){
+    return request.post('/loginMachine/login',{
+        username: username,
+        platform: platform
     })
 }

@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 export const useStepStore = defineStore({
     id: "stepStore",
     state: () => ({
-        stepValid: ref([true, 'next', 'prev']),
+        stepValid: ref([true, 'next', 'next']),
         step: ref(1),
         stepList: ['校验登号器令牌','本地浏览器配置','选择登录方式'],
         steps:3
@@ -20,9 +20,8 @@ export const useStepStore = defineStore({
           }else if(step<3){
               this.stepValid[step-1] = false
           }else{
-              this.stepValid[step-1] ='next'
+              this.stepValid[step-1] = false
           }
-
       },
     },
 });

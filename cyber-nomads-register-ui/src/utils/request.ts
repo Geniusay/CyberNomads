@@ -3,7 +3,7 @@ import { useSnackbarStore } from "@/stores/snackbarStore";
 
 const request = axios.create({
   baseURL: '/api',
-  timeout: 100000,
+  timeout: 500000,
 });
 
 request.interceptors.request.use(

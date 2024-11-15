@@ -246,7 +246,7 @@ const switchLogin = async () =>{
                 </p>
               </transition>
               <p class="code-container">
-                <input v-model="loginForm.code" placeholder="验证码" class="input-code"/>
+                <input v-model="registerForm.code" placeholder="验证码" class="input-code"/>
                 <v-btn :loading="sendLoading" @click="sendEmailCode()" :disabled="coolDownTimer.getCoolDownTime(registerForm.email)>0" color="#5865f2" min-height="60" class="send-code fixed-width-btn">
                   <template v-if="coolDownTimer.getCoolDownTime(registerForm.email)>0">
                     {{ coolDownTimer.getCoolDownTime(registerForm.email) }}秒后重新发送
