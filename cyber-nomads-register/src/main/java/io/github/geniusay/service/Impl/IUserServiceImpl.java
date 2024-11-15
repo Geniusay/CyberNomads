@@ -76,9 +76,8 @@ public class IUserServiceImpl implements UserService {
 
     @Override
     public Boolean verityCode(String code) {
-        String script = code.split(":")[1];
-        if (HTTPUtils.postWithParams(url+VERITY_CODE, Map.of("machine-token",script),"")==Boolean.TRUE) {
-            CacheUtils.key = script;
+        if (HTTPUtils.postWithParams(url+VERITY_CODE, Map.of("machine-token",code),"")==Boolean.TRUE) {
+            CacheUtils.key = code;
             return true;
         }
         return false;

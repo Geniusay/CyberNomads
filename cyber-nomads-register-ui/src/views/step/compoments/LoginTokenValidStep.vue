@@ -59,6 +59,7 @@
 import {useSnackbarStore} from "@/stores/snackbarStore";
 import {useRouter} from "vue-router";
 import {useStepStore} from "@/stores/stepStore";
+import {verifyCode} from "@/api/cloudApi"
 
 const stepStore = useStepStore();
 const router = useRouter()
@@ -67,8 +68,17 @@ const snackbarStore = useSnackbarStore();
 
 const loginToken = ref("")
 
-const validate =() =>{
-  stepStore.changeValid(1)
+const validate = async () =>{
+  await verifyCode(loginToken.value).then(res=>{
+    if(res.code==='200'){
+      snackbarStore.showSuccessMessage("令牌校验正确")
+      stepStore.changeValid(1)
+      stepStore.step+=1
+    }else{
+      snackbarStore.showErrorMessage("令牌校验失败")
+    }
+  })
+
 }
 
 const nameRules = [
