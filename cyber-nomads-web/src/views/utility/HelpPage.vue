@@ -13,23 +13,23 @@
     <v-row>
       <v-col cols="12" md="3" xl="2">
         <div class="text-subtitle-1 my-5 ml-2">Category</div>
-        <div v-for="faq in computedFaqs" :key="faq.id">
-          <v-btn variant="text" color="primary" @click="goTo(faq.id)">{{
-            faq.title
+        <div v-for="faq in questions" :key="faq.groupTitle">
+          <v-btn variant="text" color="primary" @click="goTo(faq.groupTitle)">{{
+            faq.groupTitle
           }}</v-btn>
         </div>
       </v-col>
       <v-col cols="12" md="9" xl="10">
-        <div v-for="faq in computedFaqs" :id="faq.id" :key="faq.id">
+        <div v-for="faq in questions" :id="faq.groupTitle" :key="faq.groupTitle">
           <div id="#general" class="text-subtitle-2 my-5 ml-2">
-            {{ faq.title }}
+            {{ faq.groupTitle }}
           </div>
           <v-expansion-panels>
             <v-expansion-panel
-              v-for="item in faq.items"
-              :key="item.id"
-              :title="item.title"
-              :text="item.content"
+              v-for="(item, index) in faq.questionList"
+              :key="index"
+              :title="item.question"
+              :text="item.answer"
             ></v-expansion-panel>
           </v-expansion-panels>
         </div>
@@ -40,6 +40,22 @@
 
 <script setup lang="ts">
 import { useRouter } from "vue-router";
+import { getQAList } from '@/api/utility'
+import { reactive, ref, onMounted } from 'vue'
+interface QuestionItem{
+  question: string;
+  answer: string;
+}
+
+interface Question {
+  groupTitle: string;
+  questionList: Array<QuestionItem>;
+  englishQuestion: string;
+  englishAnswer: string;
+}
+
+const questions = reactive<Array<Question>>([])
+
 const router = useRouter();
 const searchKey = ref("");
 const loaded = ref(false);
@@ -111,23 +127,6 @@ const faqs = ref([
   },
 ]);
 
-const computedFaqs = computed(() => {
-  let filteredFaqs = [];
-  faqs.value.forEach((faq) => {
-    let filteredItem = faq.items.filter((item) =>
-      item.title?.toLowerCase().includes(searchKey.value)
-    );
-    if (filteredItem) {
-      filteredFaqs.push({
-        id: faq.id,
-        title: faq.id,
-        items: filteredItem,
-      });
-    }
-  });
-  return filteredFaqs;
-});
-
 const search = () => {
   loading.value = true;
   setTimeout(() => {
@@ -139,6 +138,36 @@ const search = () => {
 const goTo = (id) => {
   document.getElementById(id).scrollIntoView({ behavior: "smooth" });
 };
+
+
+onMounted(async ()=>{
+  const data =   (await getQAList()).data
+  // 对groupTitle 进行分组
+  const groupedData = data.reduce((acc, item) => {
+    const groupTitle = item.groupTitle;
+    if( ! acc[groupTitle]) {
+      acc[groupTitle] = {
+        groupTitle: groupTitle,
+        questionList: []
+      };
+    }
+    acc[groupTitle].questionList.push({
+      question: item.question,
+      answer: item.answer,
+      englishQuestion: item.englishQuestion,
+      englishAnswer: item.englishAnswer,
+    });
+    return acc
+  }, {})
+  console.log(groupedData)
+  // 将分组结果转换为数组形式
+  const transformed = Object.values(groupedData);
+  questions.splice(0, transformed.length, ...transformed);
+
+  // 更新响应式数据
+  console.log(questions)
+})
+
 </script>
 
 <style scoped>

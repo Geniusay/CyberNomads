@@ -17,6 +17,8 @@ public class AnswerQuestion {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
 
+    private String groupTitle;
+
     private String question;
 
     private String answer;
