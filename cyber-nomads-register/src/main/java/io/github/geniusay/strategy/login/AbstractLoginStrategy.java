@@ -45,17 +45,21 @@ public abstract class AbstractLoginStrategy implements LoginStrategy{
         String key = CacheUtils.key;
         if(StringUtils.isBlank(key)){
             throw new RuntimeException("密钥不正确或为空");
-        }
-        String cookie = loginStrategyHashMap.get(loginDTO.getPlatform()).execute();
-        if (!StringUtils.isBlank(cookie)) {
-            LoginMachineDTO robotDTO = LoginMachineDTO.builder().username(loginDTO.getUsername()).cookie(cookie).platform(loginDTO.getPlatform()).build();
+        }else{
             try {
-                return "200".equals(HTTPUtils.convertRespToCode(HTTPUtils.postWithParams(url + INSERT_ROBOT, Map.of("machine-token", key), JSON.toJSONString(robotDTO))));
+                String cookie = loginStrategyHashMap.get(loginDTO.getPlatform()).execute();
+                System.out.println(cookie);
+                if (!StringUtils.isBlank(cookie)) {
+                    LoginMachineDTO robotDTO = LoginMachineDTO.builder().username(loginDTO.getUsername()).cookie(cookie).platform(loginDTO.getPlatform()).build();
+                    return "200".equals(HTTPUtils.convertRespToCode(HTTPUtils.postWithParams(url + INSERT_ROBOT, Map.of("machine-token", key), JSON.toJSONString(robotDTO))));
+                }else {
+                    throw new RuntimeException("cookie不能为空");
+                }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("登陆失败,不正确的驱动路径或调用错误");
             }
+
         }
-        throw new RuntimeException("cookie不能为空");
     }
 
     public abstract String execute();

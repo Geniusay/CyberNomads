@@ -36,16 +36,15 @@ public class ILoginMachineServiceImpl implements LoginMachineService {
     @Override
     public String generateCode() {
         String pid = ThreadUtil.getUid();
-        if(cacheUtil.checkCaptchaExpired(LOGIN_MACHINE_CAPTCHA+pid)){
-            throw new ServeException("请勿频繁请求,稍后再试");
+        if(!cacheUtil.checkCaptchaExpired(LOGIN_MACHINE_CAPTCHA+pid)){
+            return cacheUtil.get(LOGIN_MACHINE_CAPTCHA+pid);
         }
         Map<String, String> code = imageUtil.generateCode(6);
         String seeCode = CyberStringUtils.toUpper(code.get("code"));
-        System.out.println(seeCode);
         String script = encryptor.encrypt(seeCode);
         String token = TokenUtil.getToken(ThreadUtil.getUid(), ThreadUtil.getEmail(), ThreadUtil.getNickname());
         cacheUtil.put(LOGIN_MACHINE_CAPTCHA+seeCode, token,600);
-        cacheUtil.put(LOGIN_MACHINE_CAPTCHA+pid, token,600);
+        cacheUtil.put(LOGIN_MACHINE_CAPTCHA+pid, script,600);
         return script;
     }
 
