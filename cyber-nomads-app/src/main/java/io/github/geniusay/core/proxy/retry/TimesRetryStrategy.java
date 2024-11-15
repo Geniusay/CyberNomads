@@ -8,6 +8,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
 @Slf4j
@@ -30,7 +31,7 @@ public class TimesRetryStrategy extends AbstractRetryStrategy{
         for (int i = 0; i < times; i++) {
             try (Response res = proxyClient.getClient().newCall(request).execute()) {
                 return res;
-            } catch (SocketTimeoutException ignored) {
+            } catch (SocketTimeoutException | SocketException ignored) {
 
             } catch (IOException e) {
                 throw new RuntimeException(e);

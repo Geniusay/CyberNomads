@@ -6,11 +6,12 @@ import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.schedule.TaskScheduleManager;
 import io.github.geniusay.service.TaskStateChangeService;
 import io.netty.util.internal.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
 
+@Slf4j
 @Service
 public class ITaskStateChangeService implements TaskStateChangeService {
 
@@ -20,47 +21,50 @@ public class ITaskStateChangeService implements TaskStateChangeService {
     @Override
     public void notifyTaskDeleted(TaskDO task, TaskStatus oldStatus) {
         manager.removeWorkerTask(String.valueOf(task.getId()));
+        log.info("任务已删除: {}，旧状态: {}", task.getTaskName(), oldStatus);
     }
 
     @Override
     public void notifyTaskReset(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus) {
-        System.out.println("任务已重置: " + task.getTaskName() + "，从 " + oldStatus + " 修改为 " + newStatus);
+        log.info("任务已重置: {}，从 {} 修改为 {}", task.getTaskName(), oldStatus, newStatus);
     }
 
     @Override
     public void notifyTaskStarted(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus) {
-        // 判断任务是有可用机器人
+        // 判断任务是否有可用机器人
         if (StringUtil.isNullOrEmpty(task.getTaskName())) {
             throw new ServeException("请先添加可用机器人");
         }
         manager.registerTaskAndStart(task);
-        System.out.println("任务已开始: " + task.getTaskName() + "，从 " + oldStatus + " 修改为 " + newStatus);
+        log.info("任务已开始: {}，从 {} 修改为 {}", task.getTaskName(), oldStatus, newStatus);
     }
 
     @Override
     public void notifyTaskPaused(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus) {
-        // 这里可以实现暂停任务的逻辑
+        // 实现暂停任务的逻辑
         manager.removeWorkerTask(String.valueOf(task.getId()));
-        System.out.println("任务已暂停: " + task.getTaskName() + "，从 " + oldStatus + " 修改为 " + newStatus);
+        log.info("任务已暂停: {}，从 {} 修改为 {}", task.getTaskName(), oldStatus, newStatus);
     }
 
     @Override
     public void notifyTaskFinished(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus) {
-        // 这里可以实现完成任务的逻辑
-        System.out.println("任务已完成: " + task.getTaskName() + "，从 " + oldStatus + " 修改为 " + newStatus);
+        // 实现完成任务的逻辑
+        log.info("任务已完成: {}，从 {} 修改为 {}", task.getTaskName(), oldStatus, newStatus);
     }
 
     @Override
     public void notifyTaskRegister(TaskDO taskDO) {
+        // 可以在这里记录任务注册的日志
+        log.info("任务已注册: {}", taskDO.getTaskName());
     }
 
     @Override
     public void notifyTaskFailed(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus) {
-        System.out.println("任务已失败: " + task.getTaskName() + "，从 " + oldStatus + " 修改为 " + newStatus);
+        log.error("任务已失败: {}，从 {} 修改为 {}", task.getTaskName(), oldStatus, newStatus);
     }
 
     @Override
     public void notifyTaskException(TaskDO task, TaskStatus oldStatus, TaskStatus newStatus) {
-        System.out.println("任务已异常: " + task.getTaskName() + "，从 " + oldStatus + " 修改为 " + newStatus);
+        log.error("任务发生异常: {}，从 {} 修改为 {}", task.getTaskName(), oldStatus, newStatus);
     }
 }

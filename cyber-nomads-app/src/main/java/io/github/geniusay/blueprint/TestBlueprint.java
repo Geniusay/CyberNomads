@@ -53,7 +53,6 @@ public class TestBlueprint extends AbstractTaskBlueprint {
 
         String comment = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task).generateComment();
         BilibiliVideoDetail videoDetail = taskPluginFactory.<AbstractGetVideoPlugin>buildPluginWithGroup(GET_VIDEO_GROUP_NAME, task).getHandleVideo(robot, task);
-
         ApiResponse<Boolean> response = new ActionFlow<>(
                 new BiliUserActor(robot),
                 new BiliTestLogic(comment),
