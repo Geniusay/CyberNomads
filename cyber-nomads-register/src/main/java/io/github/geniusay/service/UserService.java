@@ -1,5 +1,6 @@
 package io.github.geniusay.service;
 
+import io.github.common.web.Result;
 import io.github.geniusay.pojo.DTO.DriverPathDTO;
 import io.github.geniusay.pojo.DTO.LoginDTO;
 import io.github.geniusay.pojo.DTO.QueryPathDTO;
@@ -18,7 +19,7 @@ public interface UserService {
     //登录账号
     Boolean login(LoginDTO loginDTO);
 
-    Object queryRobots();
+    Result queryRobots();
 
     void saveKey(String scriptKey);
 

@@ -19,6 +19,7 @@ const snackbarStore = useSnackbarStore()
 const userStore = useUserStore()
 const isLogin = ref(true);
 const sendLoading = ref(false)
+const submitLoading = ref(false)
 
 const loginForm = ref<LoginForm>({...defaultValue.defaultLoginForm})
 const registerForm = ref<RegisterForm>({...defaultValue.defaultRegisterForm})
@@ -114,6 +115,7 @@ const sendEmailCode = async () => {
 const login = async()=>{
   const errorsMsg = validateAndReturn(["email","code"], loginForm.value, loginValidators)
   if (!errorsMsg) {
+    submitLoading.value = true
     await emailLogin(loginForm.value).then(res=>{
       const userData: UserVO = res.data.userVO as UserVO
       userStore.setUserInfo(userData, res.data.token)
@@ -126,12 +128,14 @@ const login = async()=>{
   }else{
     snackbarStore.showErrorMessage(errorsMsg)
   }
+  submitLoading.value = false
   await generatePicCode()
 }
 
 const register = async()=>{
   const errorsMsg = validateAndReturn(["email","code","password","confirmPassword"], registerForm.value, registerValidators)
   if (!errorsMsg) {
+    submitLoading.value = true
     await emailRegister(registerForm.value).then(res=>{
       console.log(res.data)
       const userData: UserVO = res.data.userVO as UserVO
@@ -145,6 +149,7 @@ const register = async()=>{
   }else{
     snackbarStore.showErrorMessage(errorsMsg)
   }
+  submitLoading.value = false
 }
 
 const switchLogin = async () =>{
@@ -203,9 +208,13 @@ const switchLogin = async () =>{
                 <v-btn
                   color="#5865f2"
                   @click="login()"
+                  :loading="submitLoading"
                   class="submit"
                 >
                   登录
+                  <template v-slot:loader>
+                    <v-progress-linear indeterminate></v-progress-linear>
+                  </template>
                 </v-btn>
               </p>
             </form>
@@ -265,9 +274,13 @@ const switchLogin = async () =>{
                   size="small"
                   variant="flat"
                   @click="register()"
+                  :loading="submitLoading"
                   class="submit text-none text-subtitle-1"
                 >
                   注册
+                  <template v-slot:loader>
+                    <v-progress-linear indeterminate></v-progress-linear>
+                  </template>
                 </v-btn>
               </p>
             </form>
