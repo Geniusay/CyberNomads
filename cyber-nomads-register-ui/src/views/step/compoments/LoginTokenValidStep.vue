@@ -80,16 +80,18 @@ onMounted(async()=>{
 const validate = async () =>{
   await verifyCode(loginToken.value).then(res=>{
     if(res.code==='200'){
-      snackbarStore.showSuccessMessage("令牌校验正确")
-      localstorageUtil.setWithExpiry("loginToken",loginToken.value,600*1000)
+      if(res.data){
+        snackbarStore.showSuccessMessage("令牌校验正确")
+        localstorageUtil.setWithExpiry("loginToken",loginToken.value,600*1000)
 
-      setTimeout(()=>{
-        stepStore.changeValid(1)
-        stepStore.step+=1
-      }, 500)
-    }else{
-      snackbarStore.showErrorMessage("令牌校验失败")
+        setTimeout(()=>{
+          stepStore.changeValid(1)
+          stepStore.step+=1
+        }, 500)
+        return
+      }
     }
+    snackbarStore.showErrorMessage("令牌校验失败")
   })
 
 }

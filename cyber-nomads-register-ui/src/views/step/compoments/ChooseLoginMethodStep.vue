@@ -94,37 +94,145 @@
       </div>
     </v-card>
   </v-dialog>
+
+
+  <v-dialog
+      v-model="cloudDataDialog"
+      :max-width="cloudLoading?320:1400"
+      persistent
+  >
+    <v-list
+        v-if="cloudLoading"
+        class="py-2"
+        color="primary"
+        elevation="12"
+        rounded="lg"
+    >
+      <v-list-item
+          prepend-icon="mdi-cloud-download"
+          title="拉取云端数据中..."
+      >
+        <template v-slot:prepend>
+          <div class="pe-4">
+            <v-icon color="primary" size="x-large"></v-icon>
+          </div>
+        </template>
+
+        <template v-slot:append>
+          <v-progress-circular
+              color="primary"
+              indeterminate="disable-shrink"
+              size="16"
+              width="2"
+          ></v-progress-circular>
+        </template>
+      </v-list-item>
+    </v-list>
+    <v-card v-else  class="mt-2">
+      <v-card-text>
+        <v-table class="mt-5">
+          <thead>
+          <tr>
+            <th class="text-subtitle-1 font-weight-semibold">Id</th>
+            <th class="text-subtitle-1 font-weight-semibold">昵称</th>
+            <th class="text-subtitle-1 font-weight-semibold">平台</th>
+            <th class="text-subtitle-1 font-weight-semibold">账号</th>
+            <th class="text-subtitle-1 font-weight-semibold">创建时间</th>
+            <th class="text-subtitle-1 font-weight-semibold">是否同步</th>
+            <th class="text-subtitle-1 font-weight-semibold" style="padding-left: 6vh">登录</th>
+          </tr>
+          </thead>
+          <tbody class="text-body-1">
+          <tr v-for="item in robots" :key="item.id">
+            <td class="font-weight-bold">#{{ item.id }}</td>
+            <td class="font-weight-bold">{{ item.nickname }}</td>
+            <td>
+              {{ item.platformCnZh }}</td>
+            <td>{{ item.username }}</td>
+            <td>{{ item.createTime }}</td>
+            <v-chip
+                class="font-weight-bold"
+                :color="item.isAsync?'green':'red'"
+                size="large"
+                label
+            ><v-icon size="large">{{item.isAsync?'mdi-upload':'mdi-upload-off'}}</v-icon></v-chip>
+            <td>
+              <div class="d-flex">
+                <v-tooltip text="Login">
+                  <template v-slot:activator="{ props }">
+                    <v-btn
+                        icon
+                        variant="text"
+                        @click="robotLogin(item)"
+                        v-bind="props"
+                        color="green"
+                    >
+                      <v-icon>mdi-cloud-upload-outline</v-icon>
+                    </v-btn>
+                  </template>
+                </v-tooltip>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </v-table>
+      </v-card-text>
+
+      <v-divider></v-divider>
+      <v-card-actions class="pa-4">
+        <v-spacer></v-spacer>
+        <v-btn
+            color="red"
+            variant="flat"
+            @click="closeDialog()"
+        >关闭</v-btn
+        >
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
-import {login} from "@/api/cloudApi";
+import {login,getRobots} from "@/api/cloudApi";
 import {useSnackbarStore} from "@/stores/snackbarStore";
+import {AccountForm, RobotVO} from "@/types/AllTypes";
 
 const snackbarStore = useSnackbarStore();
 const platforms = ["bilibili"]
 
-interface AccountForm{
-  username: string,
-  platform: string
-}
+
 
 const defaultForm = <AccountForm>{
   username:"",
   platform:platforms[0]
 }
-
 const accountForm = ref<AccountForm>({...defaultForm})
-
 const accountDialog = ref(false)
-
 const cloudDataDialog = ref(false)
+const cloudLoading = ref(true)
+const robots = ref<RobotVO[]>([])
+
 
 const openAccount = () =>{
   accountDialog.value = true
 }
 
-const openCloudData = () =>{
+
+const openCloudData = async () =>{
+  cloudLoading.value = true
   cloudDataDialog.value = true
+  await getRobots().then(res=>{
+    if(res.code==="200"){
+      if(res.data){
+        robots.value = res.data as RobotVO[]
+        snackbarStore.showSuccessMessage("拉取云端数据成功")
+      }
+    }else{
+      snackbarStore.showErrorMessage("拉取云端数据失败："+res.msg)
+      closeDialog()
+    }
+  })
+  cloudLoading.value = false
 }
 
 const closeDialog = () =>{
@@ -137,18 +245,32 @@ const closeDialog = () =>{
   }
 }
 
-const doLogin = async()=>{
-  if(accountForm.value.username===""){
-    snackbarStore.showErrorMessage("请输入账号!")
-    return;
-  }
-  await login(accountForm.value.username, accountForm.value.platform).then(res=>{
+const autoLogin = async(username, platform)=>{
+  await login(username, platform).then(res=>{
     if (res.code==="200") {
       snackbarStore.showSuccessMessage("数据已同步至账号")
       closeDialog()
     }else{
       snackbarStore.showErrorMessage("登录失败："+res.msg)
+      throw new Error("error");
     }
   })
+}
+
+const robotLogin = async(robot: RobotVO)=>{
+  try {
+    await autoLogin(robot.username, robot.platform);
+    robot.isAsync = true
+  } catch(error){
+    robot.isAsync = false
+  }
+}
+
+const doLogin = async()=>{
+  if(accountForm.value.username===""){
+    snackbarStore.showErrorMessage("请输入账号!")
+    return;
+  }
+  await autoLogin(accountForm.value.username,accountForm.value.platform);
 }
 </script>

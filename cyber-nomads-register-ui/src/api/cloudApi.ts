@@ -30,3 +30,10 @@ export function login(username, platform){
         platform: platform
     })
 }
+
+export function getRobots(){
+    return request({
+        url: '/loginMachine/getRobots',
+        method:"get",
+    })
+}
