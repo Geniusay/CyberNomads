@@ -8,6 +8,8 @@ import io.github.geniusay.utils.TimeUtil;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Objects;
+
 /**
  * @Description
  * @Author welsir
@@ -25,6 +27,7 @@ public class RobotVO {
     private String nickname;
     private String username;
     private String createTime;
+    private boolean hasCookie;
 
     public static RobotVO convert(RobotDO r){
         return RobotVO.builder()
@@ -35,6 +38,7 @@ public class RobotVO {
                 .username(r.getUsername())
                 .nickname(r.getNickname())
                 .ban(r.isBan())
+                .hasCookie(Objects.nonNull(r.getCookie()))
                 .createTime(TimeUtil.getFormatTimeStr(r.getCreateTime()))
                 .build();
     }
