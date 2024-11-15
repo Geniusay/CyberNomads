@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Map;
+import java.util.UUID;
 
 import static io.github.geniusay.constants.RedisConstant.LOGIN_MACHINE_CAPTCHA;
 
@@ -36,15 +37,15 @@ public class ILoginMachineServiceImpl implements LoginMachineService {
     @Override
     public String generateCode() {
         String pid = ThreadUtil.getUid();
-        if(!cacheUtil.checkCaptchaExpired(LOGIN_MACHINE_CAPTCHA+pid)){
-            return cacheUtil.get(LOGIN_MACHINE_CAPTCHA+pid);
+        String code;
+        if((code = cacheUtil.get(LOGIN_MACHINE_CAPTCHA+pid))!=null){
+            return code;
         }
-        Map<String, String> code = imageUtil.generateCode(6);
-        String seeCode = CyberStringUtils.toUpper(code.get("code"));
-        String script = encryptor.encrypt(seeCode);
+        String codeToToken = UUID.randomUUID().toString();
+        String script = encryptor.encrypt(codeToToken);
         String token = TokenUtil.getToken(ThreadUtil.getUid(), ThreadUtil.getEmail(), ThreadUtil.getNickname());
-        cacheUtil.put(LOGIN_MACHINE_CAPTCHA+seeCode, token,600);
         cacheUtil.put(LOGIN_MACHINE_CAPTCHA+pid, script,600);
+        cacheUtil.put(LOGIN_MACHINE_CAPTCHA+codeToToken,token,600);
         return script;
     }
 
