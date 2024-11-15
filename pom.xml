@@ -9,6 +9,7 @@
 
   <modules>
     <module>cyber-nomads-app</module>
+    <module>cyber-nomads-register</module>
   </modules>
 
   <name>CyberNomads</name>
