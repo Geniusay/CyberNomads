@@ -181,11 +181,15 @@
       <v-card-actions class="pa-4">
         <v-spacer></v-spacer>
         <v-btn
+            color="green"
+            variant="flat"
+            @click="oneKeyLogin()"
+        >一键登录</v-btn>
+        <v-btn
             color="red"
             variant="flat"
             @click="closeDialog()"
-        >关闭</v-btn
-        >
+        >关闭</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -246,13 +250,20 @@ const autoLogin = async(username, platform)=>{
   await login(username, platform).then(res=>{
     if (res.code==="200") {
       if(res.data){
-        snackbarStore.showSuccessMessage("数据已同步至账号")
+        snackbarStore.showSuccessMessage("数据已同步至云端")
         return;
       }
     }
     snackbarStore.showErrorMessage("登录失败")
     throw new Error("error");
   })
+}
+
+const oneKeyLogin = async ()=>{
+  for (let i = 0; i <robots.value.length ; i++) {
+    let robot = robots.value[i]
+    await robotLogin(robot)
+  }
 }
 
 const robotLogin = async(robot)=>{
@@ -262,7 +273,6 @@ const robotLogin = async(robot)=>{
   }catch (error){
 
   }
-
 }
 
 const doLogin = async()=>{
