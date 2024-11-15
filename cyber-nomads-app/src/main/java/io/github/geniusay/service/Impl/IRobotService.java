@@ -19,6 +19,7 @@ import io.github.geniusay.pojo.VO.PlatformVO;
 import io.github.geniusay.pojo.VO.RobotVO;
 import io.github.geniusay.service.RobotService;
 import io.github.geniusay.utils.ConvertorUtil;
+import io.github.geniusay.utils.DateUtil;
 import io.github.geniusay.utils.PlatformUtil;
 import io.github.geniusay.utils.ThreadUtil;
 import org.springframework.stereotype.Service;
@@ -169,7 +170,14 @@ public class IRobotService implements RobotService {
     @Override
     public Boolean insertOrUpdateRobot(LoginMachineDTO loginMachineDTO) {
         int code = PlatformUtil.convertStringToCode(loginMachineDTO.getPlatform());
-        Integer res = robotMapper.insertOrUpdate(loginMachineDTO.getUsername(), code, loginMachineDTO.getCookie(),ThreadUtil.getUid());
-        return res==1||res==2;
+        String uid = ThreadUtil.getUid();
+        RobotDO robotDO = robotMapper.selectOne(new QueryWrapper<RobotDO>().eq("uid", uid).eq("username", loginMachineDTO.getUsername()));
+        if(robotDO==null){
+            AddRobotDTO robotdo = AddRobotDTO.builder().username(loginMachineDTO.getUsername()).platform(code).cookie(loginMachineDTO.getCookie()).nickname(loginMachineDTO.getUsername()).build();
+            this.addRobot(robotdo);
+        }else{
+            robotMapper.updateRobot(robotDO.getUsername(),loginMachineDTO.getCookie(),uid,DateUtil.formatTimestamp(System.currentTimeMillis() / 1000));
+        }
+        return true;
     }
 }
