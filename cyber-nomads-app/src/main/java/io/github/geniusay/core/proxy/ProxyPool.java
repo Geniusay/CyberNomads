@@ -70,8 +70,8 @@ public class ProxyPool {
                 throw new ServeException(RCode.PROXY_BALANCE_ERROR);
             }
             ProxyInfo proxyInfo = scores.poll();
+            proxyInfo.choose();
             synchronized (proxyInfo) {
-                proxyInfo.choose();
                 scores.remove(proxyInfo);
                 scores.add(proxyInfo);
             }
@@ -81,8 +81,8 @@ public class ProxyPool {
         @Override
         public void failCallback(Proxy proxy) {
             ProxyInfo proxyInfo = proxyMap.get(proxy);
+            proxyInfo.failCallback();
             synchronized (proxyInfo) {
-                proxyInfo.failCallback();
                 scores.remove(proxyInfo);
                 scores.add(proxyInfo);
             }
@@ -91,8 +91,8 @@ public class ProxyPool {
         @Override
         public void successCallback(Proxy proxy) {
             ProxyInfo proxyInfo = proxyMap.get(proxy);
+            proxyInfo.successCallback();
             synchronized (proxyInfo) {
-                proxyInfo.successCallback();
                 scores.remove(proxyInfo);
                 scores.add(proxyInfo);
             }
