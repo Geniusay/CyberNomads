@@ -58,7 +58,6 @@ public class BILIBILIStrategy extends AbstractLoginStrategy{
             WebElement userImg = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div[2]/div[1]/div[1]/ul[2]/li[1]/div[1]/a[1]/picture/img")));
             if(userImg!=null){
                 Set<Cookie> cookies = loginWebDriver.manage().getCookies();
-                System.out.println(cookies);
                 loginWebDriver.quit();
                 ChromeDriver confirmLogin = new ChromeDriver(options);
                 WebDriverWait confirmWait = new WebDriverWait(confirmLogin, Duration.ofSeconds(60));

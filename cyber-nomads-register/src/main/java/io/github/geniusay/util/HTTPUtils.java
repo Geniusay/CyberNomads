@@ -54,7 +54,6 @@ public class HTTPUtils {
 
     public static Object convertRespToData(Response response) throws IOException {
         Result result = JSON.parseObject(response.body().string(),Result.class);
-        System.out.println(result);
         return result.getData();
     }
     public static String convertRespToCode(Response response) throws IOException {
