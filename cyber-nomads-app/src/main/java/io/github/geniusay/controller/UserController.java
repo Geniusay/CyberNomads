@@ -76,8 +76,7 @@ public class UserController {
                                       @Valid
                                       @NotNull(message = "验证码不能为空")
                                       String code){
-        userService.generateEmailCode(email,pid,code);
-        return Result.success();
+        return userService.generateEmailCode(email,pid,code);
     }
 
     @TokenRequire

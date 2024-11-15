@@ -231,14 +231,13 @@ const openLogDialog = async()=>{
         location="right"
       >
         <template v-slot:activator="{ props }">
-          <v-icon
+          <Icon
             :color="status[task.taskStatus].color"
             :icon="status[task.taskStatus].icon"
-            size="default"
-            style="float: right"
+            style="float: right; font-size: 1.9rem"
             v-bind="props"
           >
-          </v-icon>
+          </Icon>
         </template>
         <span>{{$t(status[task.taskStatus].content)}}</span>
       </v-tooltip>

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 
+import static io.github.geniusay.constants.UserConstant.EMAIL_COOL_DOWN;
+
 /**
  * @Description
  * @Author welsir
@@ -43,7 +45,7 @@ public class CacheUtil {
     }
 
     public void putEmail(String key,String value){
-        stringRedisTemplate.opsForValue().set(RedisConstant.EMAIL_CAPTCHA + key, value, 60, TimeUnit.SECONDS);
+        stringRedisTemplate.opsForValue().set(RedisConstant.EMAIL_CAPTCHA + key, value, EMAIL_COOL_DOWN, TimeUnit.SECONDS);
     }
 
     public void removeEmail(String key){

@@ -3,7 +3,7 @@
     <div class="container">
 
       <figure class="feature-banner">
-        <img src="@/assets/images/homepage/feature-banner.png" width="582" height="585" loading="lazy" alt="feature banner"
+        <img src="@/assets/images/homepage/feature-banner2.jpg" width="582" height="585" loading="lazy" alt="feature banner"
              class="w-100">
       </figure>
 

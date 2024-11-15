@@ -1,39 +1,46 @@
 <script setup lang="ts">
 const images = [
   {
-    url: "./assets/images/homepage/service-icon-1.png",
+    url: "./assets/svg/mc-cube.png",
     title: "赛博异世界",
-    content:"Bilibili，Douyin，Weibo，Youtube，超多赛博异世界等你探索。"
+    content:"Bilibili，Douyin，Weibo，Youtube，超多赛博异世界等你探索。",
+    color:"174, 77%, 50%"
   },
   {
-    url: "./assets/images/homepage/service-icon-2.png",
+    url: "./assets/svg/mc-steve.png",
     title: "赛博游民",
-    content:"打造自己的AI账号。账号不再是冰冷的数据，他可以是猫娘，是史莱姆，是苦力怕，是一切你想要的模样。"
+    content:"打造自己的AI账号。账号不再是冰冷的数据，他可以是猫娘，是史莱姆，是苦力怕，是一切你想要的模样。",
+    color:"267, 76%, 57%"
   },
   {
-    url: "./assets/images/homepage/service-icon-3.png",
+    url: "./assets/svg/mc-table.png",
     title: "任务系统",
-    content:"评论，点赞，关注，发视频 超多任务供你选择。支持任务组装，构建你想要的任务。"
+    content:"评论，点赞，关注，发视频 超多任务供你选择。支持任务组装，构建你想要的任务。",
+    color:"17, 100%, 68%"
   },
   {
-    url: "./assets/images/homepage/service-icon-4.png",
+    url: "./assets/svg/level-up.png",
     title: "快速升级",
-    content:"一键点赞，一键关注，账号数据升级从未如此简单。"
+    content:"一键点赞，一键关注，账号数据升级从未如此简单。",
+    color:"343, 98%, 60%"
   },
   {
-    url: "./assets/images/homepage/service-icon-5.png",
+    url: "./assets/svg/mc-gold-apple.png",
     title: "兴趣系统",
-    content:"在庞大的赛博世界中不再盲目探索，为你的找到和你任务兴趣相匹配的内容，精准执行任务，效率UP！UP！。"
+    content:"在庞大的赛博世界中不再盲目探索，为你的找到和你任务兴趣相匹配的内容，精准执行任务，效率UP！UP！。",
+    color:"210, 100%, 53%"
   },
   {
-    url: "./assets/images/homepage/service-icon-6.png",
+    url: "./assets/svg/mc-pickaxe.png",
     title: "职业系统",
-    content:"账号也能分配“职业”，在赛博世界中各司其职。自动领取相关任务，打造专属账号方向。"
+    content:"账号也能分配“职业”，在赛博世界中各司其职。自动领取相关任务，打造专属账号方向。",
+    color:"157, 89%, 44%"
   },
   {
-    url: "./assets/images/homepage/service-icon-7.png",
+    url: "./assets/svg/ai-robot.png",
     title: "AI Agent",
-    content:"让账号拥有意识，能自主的在平台中生存，学习，沟通，发现，思考。"
+    content:"让账号拥有意识，能自主的在平台中生存，学习，沟通，发现，思考。",
+    color:"52, 98%, 50%"
   }
 ]
 </script>
@@ -49,10 +56,10 @@ const images = [
       <ul class="grid-list">
 
         <li v-for="image in images">
-          <div class="service-card" style="--color: 174, 77%, 50%">
+          <div class="service-card" :style="'--color:'+image.color">
 
             <div class="card-icon">
-              <img :src="image.url" width="30" height="30" loading="lazy"
+              <img :src="image.url" width="40" height="40" loading="lazy"
                    alt="service icon">
             </div>
 

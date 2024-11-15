@@ -61,7 +61,7 @@ const scrollToBottom = () => {
           alt=""
         /> -->
         <h2 class="logo-text h-full">
-          <Icon class="mr-2" width="40" icon="solar:plain-bold-duotone" />
+          <Icon class="mr-2" width="40" icon="solar:ghost-bold-duotone" />
           <span>CyberNomads</span>
         </h2>
       </v-card>
@@ -84,9 +84,9 @@ const scrollToBottom = () => {
         >
           <v-card-title>
             <v-btn class="mr-2" size="40" color="white" icon>
-              <Icon width="30" icon="line-md:github-loop" />
+              <Icon width="30" icon="line-md:emoji-smile-wink" />
             </v-btn>
-            CyberNomads
+            Welcome
           </v-card-title>
           <v-card-subtitle> </v-card-subtitle>
           <v-card-text>

@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.*;
 
+import static io.github.geniusay.constants.UserConstant.EMAIL_COOL_DOWN;
+
 /**
  * @Description
  * @Author welsir
@@ -110,7 +112,7 @@ public class IUserService implements UserService {
     }
 
     @Override
-    public void generateEmailCode(String email,String pid,String code) {
+    public Result<?> generateEmailCode(String email,String pid,String code) {
         if(cacheUtil.emailCodeIsExpired(email)){
             throw new ServeException("验证码冷却中");
         }
@@ -120,6 +122,9 @@ public class IUserService implements UserService {
         String emailCode = RandomUtil.generateRandomString(6);
         cacheUtil.putEmail(email, CyberStringUtils.toLower(emailCode));
         asyncService.sendCodeToEmail(email, emailCode);
+        return Result.success(
+                Map.of("email", email, "coolDown",EMAIL_COOL_DOWN)
+        );
     }
 
     @Override
