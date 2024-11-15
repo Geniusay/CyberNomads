@@ -61,7 +61,7 @@ public class HTTPUtils {
         Result result = JSON.parseObject(response.body().string(),Result.class);
         return result.getCode();
     }
-    public static Result convertRespToResult(Response response) throws IOException {
+    public static Result<?> convertRespToResult(Response response) throws IOException {
         Result result = JSON.parseObject(response.body().string(),Result.class);
         Result res = new Result();
         res.setCode(result.getCode());

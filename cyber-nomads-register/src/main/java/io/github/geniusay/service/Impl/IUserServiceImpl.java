@@ -1,6 +1,7 @@
 package io.github.geniusay.service.Impl;
 
 import com.alibaba.fastjson.JSON;
+import io.github.common.web.Result;
 import io.github.geniusay.pojo.DTO.DriverPathDTO;
 import io.github.geniusay.pojo.DTO.LoginDTO;
 import io.github.geniusay.pojo.DTO.QueryPathDTO;
@@ -45,7 +46,7 @@ public class IUserServiceImpl implements UserService {
     }
 
     @Override
-    public Object queryRobots() {
+    public Result queryRobots() {
         String key = CacheUtils.key;
         if(StringUtils.isBlank(key)){
             throw new RuntimeException("令牌不合法，请检查");
