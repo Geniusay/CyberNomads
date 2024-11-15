@@ -19,7 +19,6 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public Result<?> handleException(Exception ex) {
         return Result.error("500", ex.getMessage());

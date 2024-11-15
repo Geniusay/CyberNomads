@@ -222,13 +222,8 @@ const openCloudData = async () =>{
   cloudDataDialog.value = true
   await getRobots().then(res=>{
     if(res.code==="200"){
-      if(res.data){
-        const temp = JSON.parse(JSON.stringify(res.data))
-        console.log(temp)
-        console.log(typeof temp)
-        robots.value =
-        snackbarStore.showSuccessMessage("拉取云端数据成功")
-      }
+      robots.value = res.data?res.data:[]
+      snackbarStore.showSuccessMessage("拉取云端数据成功")
     }else{
       snackbarStore.showErrorMessage("拉取云端数据失败："+res.msg)
       closeDialog()
