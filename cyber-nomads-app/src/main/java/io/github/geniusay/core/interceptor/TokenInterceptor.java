@@ -44,6 +44,7 @@ public class TokenInterceptor implements HandlerInterceptor, Ordered {
                     machineToken = cacheUtil.get(LOGIN_MACHINE_CAPTCHA+script);
                 }
             }
+
             if(handlerMethod.hasMethodAnnotation(TokenRequire.class)){
                 String tokenObject = machineToken==null?(String) StpUtil.getLoginIdByToken(request.getHeader("Authorization")):(String) StpUtil.getLoginIdByToken(machineToken);
 //                String tokenObject = (String) StpUtil.getLoginIdByToken(request.getHeader("Authorization"));
