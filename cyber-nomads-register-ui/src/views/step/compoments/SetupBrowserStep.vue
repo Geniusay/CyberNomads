@@ -62,7 +62,7 @@ const validate =async () => {
       snackbarStore.showSuccessMessage('本地配置文件校验正确')
       next()
     }else{
-      snackbarStore.showErrorMessage('文件路径不正确')
+      snackbarStore.showErrorMessage('保存配置信息失败')
     }
   })
 }
