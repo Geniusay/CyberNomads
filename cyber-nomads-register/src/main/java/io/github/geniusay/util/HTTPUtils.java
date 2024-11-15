@@ -55,8 +55,7 @@ public class HTTPUtils {
         }
     }
 
-    private static Object convertRespToObj(String response) throws IOException {
-        System.out.println(response);
+    private static Object convertRespToObj(String response) {
         Result result = JSON.parseObject(response,Result.class);
         System.out.println(result);
         return result.getData();

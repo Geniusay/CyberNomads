@@ -39,12 +39,10 @@ public class TokenInterceptor implements HandlerInterceptor, Ordered {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             if(handlerMethod.hasMethodAnnotation(LoginMachineToken.class)){
                 machineToken = request.getHeader("machine-token");
-                if(StringUtils.isBlank(machineToken)){
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid machine-token");
-                    return false;
+                if(!StringUtils.isBlank(machineToken)){
+                    String script = encryptor.decrypt(machineToken);
+                    machineToken = cacheUtil.get(LOGIN_MACHINE_CAPTCHA+script);
                 }
-                String script = encryptor.decrypt(machineToken);
-                machineToken = cacheUtil.get(LOGIN_MACHINE_CAPTCHA+script);
             }
             if(handlerMethod.hasMethodAnnotation(TokenRequire.class)){
                 String tokenObject = machineToken==null?(String) StpUtil.getLoginIdByToken(request.getHeader("Authorization")):(String) StpUtil.getLoginIdByToken(machineToken);

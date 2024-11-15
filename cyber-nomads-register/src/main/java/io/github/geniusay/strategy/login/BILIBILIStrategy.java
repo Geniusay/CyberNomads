@@ -45,8 +45,8 @@ public class BILIBILIStrategy extends AbstractLoginStrategy{
 
     @Override
     public String execute() {
-        String target1 = changePath(userService.queryPathExist().getDriverPath());
-        String target2 = changePath(userService.queryPathExist().getBrowserPath());
+        String target1 = changePath(userService.queryPathExist().getPathDTO().getDriverPath());
+        String target2 = changePath(userService.queryPathExist().getPathDTO().getBrowserPath());
         System.setProperty("webdriver.chrome.driver", target1);
         ChromeOptions options = new ChromeOptions();
         options.setBinary(target2);
