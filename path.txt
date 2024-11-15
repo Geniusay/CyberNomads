@@ -1,0 +1,1 @@
+{"browserPath":"D:\\A-NewWorld!\\PS&Pr\\AI","driverPath":"D:\\A-NewWorld!\\PS&Pr\\AI"}
