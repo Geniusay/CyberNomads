@@ -51,17 +51,11 @@ public class IUserServiceImpl implements UserService {
             throw new RuntimeException("令牌不合法，请检查");
         }
         Map<String, String> map = Map.of("machine-token", key);
-        Object params = HTTPUtils.getWithNullParams(url + QUERY_USER_ROBOT, map);
-        if (params instanceof List<?>) {
-            List<?> paramList = (List<?>) params;
-            for (Object obj : paramList) {
-                if (obj instanceof RobotVO) {
-                    RobotVO robot = (RobotVO) obj;
-                    CacheUtils.robots.add(robot.getId());
-                }
-            }
+        try {
+            return HTTPUtils.convertRespToResult(HTTPUtils.getWithNullParams(url + QUERY_USER_ROBOT, map));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return params;
     }
 
     @Override
@@ -71,17 +65,25 @@ public class IUserServiceImpl implements UserService {
 
     @Override
     public void removeMachineCode() {
-        HTTPUtils.postWithParams(url+REMOVE_CODE,Map.of("machine-token",CacheUtils.key),CacheUtils.key);
-        CacheUtils.key = null;
+        try {
+            HTTPUtils.convertRespToCode(HTTPUtils.postWithParams(url+REMOVE_CODE,Map.of("machine-token",CacheUtils.key),CacheUtils.key));
+            CacheUtils.key = null;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public Boolean verityCode(String code) {
-        if (HTTPUtils.postWithParams(url+VERITY_CODE, Map.of("machine-token",code),"")==Boolean.TRUE) {
-            CacheUtils.key = code;
-            return true;
+        try {
+            if ("200".equals(HTTPUtils.convertRespToCode(HTTPUtils.postWithParams(url+VERITY_CODE, Map.of("machine-token",code),"")))) {
+                CacheUtils.key = code;
+                return true;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return false;
+        throw new RuntimeException("令牌验证错误，请校验令牌正确性");
     }
 
     @Override

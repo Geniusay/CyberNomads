@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -45,17 +46,16 @@ public abstract class AbstractLoginStrategy implements LoginStrategy{
         if(StringUtils.isBlank(key)){
             throw new RuntimeException("密钥不正确或为空");
         }
-        try {
-            String cookie = loginStrategyHashMap.get(loginDTO.getPlatform()).execute();
-            if (!StringUtils.isBlank(cookie)) {
-                LoginMachineDTO robotDTO = LoginMachineDTO.builder().username(loginDTO.getUsername()).cookie(cookie).platform(loginDTO.getPlatform()).build();
-                return HTTPUtils.postWithParams(url + INSERT_ROBOT, Map.of("machine-token", key), JSON.toJSONString(robotDTO))==Boolean.TRUE;
-            }else{
-                return false;
+        String cookie = loginStrategyHashMap.get(loginDTO.getPlatform()).execute();
+        if (!StringUtils.isBlank(cookie)) {
+            LoginMachineDTO robotDTO = LoginMachineDTO.builder().username(loginDTO.getUsername()).cookie(cookie).platform(loginDTO.getPlatform()).build();
+            try {
+                return "200".equals(HTTPUtils.convertRespToCode(HTTPUtils.postWithParams(url + INSERT_ROBOT, Map.of("machine-token", key), JSON.toJSONString(robotDTO))));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        }catch (Exception e){
-            return false;
         }
+        throw new RuntimeException("cookie不能为空");
     }
 
     public abstract String execute();

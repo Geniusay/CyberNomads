@@ -15,7 +15,7 @@ import java.util.Objects;
  */
 public class HTTPUtils {
 
-    public static Object getWithNullParams(String url, Map<String,String> headers){
+    public static Response getWithNullParams(String url, Map<String,String> headers){
         try {
             OkHttpClient okHttpClient = new OkHttpClient();
             Request.Builder requestbuilder = new Request.Builder()
@@ -25,16 +25,14 @@ public class HTTPUtils {
                 requestbuilder.addHeader(stringObjectEntry.getKey(), stringObjectEntry.getValue());
             }
             Request request = requestbuilder.build();
-            Response response = okHttpClient.newCall(request).execute();
-            String body = response.body().string();
-            return convertRespToObj(body);
+            return okHttpClient.newCall(request).execute();
         }catch (Exception e){
             throw new RuntimeException(e);
         }
     }
 
 
-    public static Object postWithParams(String url, Map<String,String> headers, String body) {
+    public static Response postWithParams(String url, Map<String,String> headers, String body) {
         try {
             MediaType mediaType = MediaType.parse("application/json");
             Request.Builder requestbuilder = new Request.Builder()
@@ -47,17 +45,29 @@ public class HTTPUtils {
 
             Request request = requestbuilder.build();
             OkHttpClient okHttpClient = new OkHttpClient();
-            Response response = okHttpClient.newCall(request).execute();
 
-            return convertRespToObj(response.body().string());
+            return okHttpClient.newCall(request).execute();
         }catch (Exception e){
             throw new RuntimeException(e);
         }
     }
 
-    private static Object convertRespToObj(String response) {
-        Result result = JSON.parseObject(response,Result.class);
+    public static Object convertRespToData(Response response) throws IOException {
+        Result result = JSON.parseObject(response.body().string(),Result.class);
         System.out.println(result);
         return result.getData();
+    }
+    public static String convertRespToCode(Response response) throws IOException {
+        Result result = JSON.parseObject(response.body().string(),Result.class);
+        return result.getCode();
+    }
+    public static Result convertRespToResult(Response response) throws IOException {
+        Result result = JSON.parseObject(response.body().string(),Result.class);
+        Result res = new Result();
+        res.setCode(result.getCode());
+        res.setData(result.getData());
+        res.setMsg(result.getMsg());
+        res.setTimestamp(result.getTimestamp());
+        return res;
     }
 }
