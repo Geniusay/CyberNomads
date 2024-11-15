@@ -41,6 +41,7 @@ public class ILoginMachineServiceImpl implements LoginMachineService {
         if((code = cacheUtil.get(LOGIN_MACHINE_CAPTCHA+pid))!=null){
             return code;
         }
+
         String codeToToken = UUID.randomUUID().toString();
         String script = encryptor.encrypt(codeToToken);
         String token = TokenUtil.getToken(ThreadUtil.getUid(), ThreadUtil.getEmail(), ThreadUtil.getNickname());
