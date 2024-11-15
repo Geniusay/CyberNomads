@@ -2,6 +2,7 @@ export default {
   workplace:{
     nomads:{
       addRobot:"ADD ROBOT",
+      generateToken:"Generate Token",
       editRobot:"EDIT ROBOT",
       nickname:"Nickname",
       username:"Account",

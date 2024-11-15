@@ -170,7 +170,6 @@ public class IRobotService implements RobotService {
     public Boolean insertOrUpdateRobot(LoginMachineDTO loginMachineDTO) {
         int code = PlatformUtil.convertStringToCode(loginMachineDTO.getPlatform());
         Integer res = robotMapper.insertOrUpdate(loginMachineDTO.getUsername(), code, loginMachineDTO.getCookie(),ThreadUtil.getUid());
-        System.out.println(res);
         return res==1||res==2;
     }
 }

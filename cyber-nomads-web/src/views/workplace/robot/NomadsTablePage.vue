@@ -2,13 +2,14 @@
 import {RobotVO, RobotForm, defaultValue} from "@/views/workplace/robot/robotTypes";
 import { PlatformVO } from "@/types/platformType";
 import { onMounted } from "vue";
-import { addRobot, changeRobot, getCookie, changeCookie, deleteRobot} from "@/api/robotApi";
+import {addRobot, changeRobot, getCookie, changeCookie, deleteRobot, generateLoginMachine} from "@/api/robotApi";
 import { useSnackbarStore } from "@/stores/snackbarStore";
 import {validateAndReturn, Validators} from "@/utils/validate";
 import { useCommonStore } from "@/stores/commonStore";
 import { useRobotStore } from  "@/views/workplace/robot/robotStore"
 import EmptyDataPage from "@/components/empty/EmptyDataPage.vue";
 import CircleLoading from "@/components/loading/CircleLoading.vue";
+import CopyLabel from "@/components/common/CopyLabel.vue";
 
 const robotStore = useRobotStore();
 const commonStore = useCommonStore();
@@ -182,6 +183,27 @@ const deleteRobotReq = async () => {
   deleteItem.value = {}
 
 }
+
+const loginMachineToken = ref("")
+
+// 生成令牌
+const generateToken = async () =>{
+  await generateLoginMachine().then(res=>{
+    loginMachineToken.value = res.data
+    snackbarStore.showSuccessMessage("登号器令牌生成成功，10分钟后过期，请妥善保管!")
+  }).catch(error=>{
+    snackbarStore.showErrorMessage("登号器令牌生成失败："+error.message)
+    loginMachineDialog.value = false
+  })
+}
+
+const loginMachineDialog = ref(false)
+
+const openLoginMachineDialog = async () =>{
+  await generateToken()
+  loginMachineDialog.value = true
+}
+
 </script>
 <template>
   <v-container>
@@ -263,6 +285,30 @@ const deleteRobotReq = async () => {
             ></v-text-field>
           </v-col>
           <v-col cols="12" lg="8" md="6" class="text-right">
+            <v-dialog v-model="loginMachineDialog" max-width="700">
+              <template v-slot:activator="{ props }">
+                <v-btn @click="openLoginMachineDialog()" style="margin-right:15px" color="warning" v-bind="props" flat class="ml-auto">
+                  <v-icon color="white" class="mr-2">mdi-cloud-key</v-icon>
+                  {{ $t("workplace.nomads.generateToken") }}
+                </v-btn>
+              </template>
+              <v-card
+                class="pa-4 bg-orange"
+                prepend-icon="mdi-cloud-key"
+                subtitle="登号器令牌将在10分钟后过期，请妥善保管!"
+              >
+                <template v-slot:title>
+                  <span class="font-weight-black">
+                    登号器令牌
+                  </span>
+                </template>
+                <v-card-text class="bg-surface-light pt-4">
+                  <td class="font-weight-bold text-body-2">
+                    <CopyLabel :text="loginMachineToken" />
+                  </td>
+                </v-card-text>
+              </v-card>
+            </v-dialog>
             <v-dialog v-model="dialog" max-width="700">
               <template v-slot:activator="{ props }">
                 <v-btn color="primary" v-bind="props" flat class="ml-auto">
@@ -283,7 +329,7 @@ const deleteRobotReq = async () => {
                     lazy-validation
                   >
                     <v-row>
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="12">
                         <v-text-field
                           v-if="isEdit"
                           variant="outlined"
@@ -292,17 +338,6 @@ const deleteRobotReq = async () => {
                           disabled
                           v-model="robotForm.id"
                           label="Id"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" :sm="isEdit?6:12">
-                        <v-text-field
-                          variant="outlined"
-                          color="primary"
-                          density="compact"
-                          :rules="rules['username']"
-                          required
-                          v-model="robotForm.username"
-                          :label="$t('workplace.nomads.username')"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -352,6 +387,17 @@ const deleteRobotReq = async () => {
                           </template>
                         </v-select>
                       </v-col>
+                      <v-col cols="12" sm="12">
+                        <v-text-field
+                          variant="outlined"
+                          color="primary"
+                          density="compact"
+                          :rules="rules['username']"
+                          required
+                          v-model="robotForm.username"
+                          :label="$t('workplace.nomads.username')"
+                        ></v-text-field>
+                      </v-col>
                     </v-row>
                   </v-form>
                 </v-card-text>
@@ -366,7 +412,7 @@ const deleteRobotReq = async () => {
                     "
                     variant="flat"
                     @click="save"
-                    >Save</v-btn
+                  >Save</v-btn
                   >
                 </v-card-actions>
               </v-card>

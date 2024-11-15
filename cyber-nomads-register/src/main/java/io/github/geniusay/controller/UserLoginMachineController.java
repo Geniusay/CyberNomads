@@ -37,8 +37,8 @@ public class UserLoginMachineController {
         System.exit(0);
     }
 
-    @PostMapping("/verityCode")
-    public Result<?> checkCodeValid(@RequestBody String code){
+    @GetMapping("/verityCode")
+    public Result<?> checkCodeValid(@RequestParam String code){
         return Result.success(userService.verityCode(code));
     }
 

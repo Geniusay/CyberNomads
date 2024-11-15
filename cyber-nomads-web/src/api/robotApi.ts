@@ -50,3 +50,7 @@ export function changeCookie(id:string, cookie:string){
     cookie:cookie
   })
 }
+
+export function generateLoginMachine(){
+  return request.post('/loginMachine/code')
+}

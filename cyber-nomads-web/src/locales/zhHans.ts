@@ -2,6 +2,7 @@ export default {
   workplace:{
     nomads:{
       addRobot:"添加赛博游民",
+      generateToken:"生成令牌",
       editRobot:"编辑赛博游民",
       nickname:"游民昵称",
       username:"游民账号",

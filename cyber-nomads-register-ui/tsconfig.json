@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",    // 将编译输出放入 dist 文件夹
+    "rootDir": "./src",    // 将源码文件设置为 src 目录，确保结构一致
+    "removeComments": true,
+    "sourceMap": false,
+    "strict": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}
