@@ -2,6 +2,7 @@ package io.github.geniusay.util;
 
 import com.alibaba.fastjson.JSON;
 import io.github.common.web.Result;
+import io.github.geniusay.pojo.VO.RobotVO;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -64,7 +65,8 @@ public class HTTPUtils {
         Result result = JSON.parseObject(response.body().string(),Result.class);
         Result res = new Result();
         res.setCode(result.getCode());
-        res.setData(result.getData());
+        Object data = result.getData();
+        res.setData(Objects.isNull(data)?null:JSON.parseArray(JSON.toJSONString(data), RobotVO.class));
         res.setMsg(result.getMsg());
         res.setTimestamp(result.getTimestamp());
         return res;

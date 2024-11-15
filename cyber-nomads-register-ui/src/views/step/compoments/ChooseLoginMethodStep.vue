@@ -99,7 +99,6 @@
   <v-dialog
       v-model="cloudDataDialog"
       :max-width="cloudLoading?320:1400"
-      persistent
   >
     <v-list
         v-if="cloudLoading"
@@ -210,7 +209,7 @@ const accountForm = ref<AccountForm>({...defaultForm})
 const accountDialog = ref(false)
 const cloudDataDialog = ref(false)
 const cloudLoading = ref(true)
-const robots = ref<RobotVO[]>([])
+const robots = ref<[]>([])
 
 
 const openAccount = () =>{
@@ -224,7 +223,10 @@ const openCloudData = async () =>{
   await getRobots().then(res=>{
     if(res.code==="200"){
       if(res.data){
-        robots.value = res.data as RobotVO[]
+        const temp = JSON.parse(JSON.stringify(res.data))
+        console.log(temp)
+        console.log(typeof temp)
+        robots.value =
         snackbarStore.showSuccessMessage("拉取云端数据成功")
       }
     }else{
@@ -248,22 +250,24 @@ const closeDialog = () =>{
 const autoLogin = async(username, platform)=>{
   await login(username, platform).then(res=>{
     if (res.code==="200") {
-      snackbarStore.showSuccessMessage("数据已同步至账号")
-      closeDialog()
-    }else{
-      snackbarStore.showErrorMessage("登录失败："+res.msg)
-      throw new Error("error");
+      if(res.data){
+        snackbarStore.showSuccessMessage("数据已同步至账号")
+        return;
+      }
     }
+    snackbarStore.showErrorMessage("登录失败")
+    throw new Error("error");
   })
 }
 
-const robotLogin = async(robot: RobotVO)=>{
+const robotLogin = async(robot)=>{
   try {
     await autoLogin(robot.username, robot.platform);
     robot.isAsync = true
-  } catch(error){
-    robot.isAsync = false
+  }catch (error){
+
   }
+
 }
 
 const doLogin = async()=>{
@@ -272,5 +276,6 @@ const doLogin = async()=>{
     return;
   }
   await autoLogin(accountForm.value.username,accountForm.value.platform);
+  closeDialog()
 }
 </script>
