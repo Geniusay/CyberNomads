@@ -26,10 +26,10 @@ public class ProxyClientFactory {
     public ProxyClient createClient(@NotNull String key, @NotNull AbstractRetryStrategy retryStrategy){
         return proxyClients.computeIfAbsent(key, k -> {
             try {
-                return new ProxyClient(retryStrategy, proxyPool.getProxy());
+                return new ProxyClient(retryStrategy, proxyPool.getProxy(), proxyPool);
             } catch (Exception e) {
                 log.error("代理获取异常");
-                return new ProxyClient(retryStrategy);
+                return new ProxyClient(retryStrategy, proxyPool);
             }
         });
     }
@@ -37,10 +37,10 @@ public class ProxyClientFactory {
     public ProxyClient createClient(@NotNull String key, @NotNull AbstractRetryStrategy retryStrategy, Integer timeout){
         return proxyClients.computeIfAbsent(key, k -> {
             try {
-                return new ProxyClient(retryStrategy, proxyPool.getProxy(), timeout);
+                return new ProxyClient(retryStrategy, proxyPool.getProxy(), timeout, proxyPool);
             } catch (Exception e) {
                 log.error("代理获取异常");
-                return new ProxyClient(retryStrategy, timeout);
+                return new ProxyClient(retryStrategy, timeout, proxyPool);
             }
         });
     }
