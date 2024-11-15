@@ -30,7 +30,11 @@
               :key="index"
               :title="item.question"
               :text="item.answer"
-            ></v-expansion-panel>
+            >
+              <template v-slot:text>
+                <p v-html="item.answer"></p>
+              </template>
+            </v-expansion-panel>
           </v-expansion-panels>
         </div>
       </v-col>
