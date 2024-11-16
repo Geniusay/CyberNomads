@@ -2,10 +2,7 @@ package io.github.geniusay.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import io.github.geniusay.pojo.DO.RobotDO;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -30,12 +27,6 @@ public interface RobotMapper extends BaseMapper<RobotDO> {
             "</script>")
     Boolean queryRobotValid(List<Long> robotDOList,String uid,Integer platform);
 
-    @Insert("INSERT INTO robot (username, nickname, platform, cookie, uid, ban, has_delete, create_time, update_time) " +
-            "VALUES (#{username}, #{username}, #{platform}, #{cookie}, #{uid}, 0, 0, NOW(), NOW()) " +
-            "ON DUPLICATE KEY UPDATE cookie = #{cookie}, update_time = NOW()")
-    int insertOrUpdate(@Param("username") String username,
-                       @Param("platform") Integer platform,
-                       @Param("cookie") String cookie,
-                       @Param("uid") String uid);
-
+    @Update("update robot set cookie = #{cookie}, update_time= #{updateTime} WHERE uid = #{uid} AND username = #{username} AND ban = 0 AND has_delete=0")
+    Integer updateRobot(String username,String cookie,String uid,String updateTime);
 }

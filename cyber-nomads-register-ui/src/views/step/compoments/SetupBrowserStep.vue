@@ -33,8 +33,8 @@ const stepStore = useStepStore();
 onMounted(async ()=>{
   await getPath().then(res=>{
     if(res.data){
-      form.value.drivePath = res.data.driverPath
-      form.value.browserPath = res.data.browserPath
+      form.value.drivePath = res.data.pathDTO.driverPath
+      form.value.browserPath = res.data.pathDTO.browserPath
       if(res.data.errorMsg){
         snackbarStore.showErrorMessage(res.data.errorMsg)
         return;

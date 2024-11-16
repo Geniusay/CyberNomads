@@ -1,5 +1,6 @@
 package io.github.geniusay.config;
 
+import io.github.common.web.Result;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,13 +19,9 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    public Map<String, Object> handleException(Exception ex) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", "error");
-        response.put("message", ex.getMessage());
-        return response;
+    public Result<?> handleException(Exception ex) {
+        return Result.error("500", ex.getMessage());
     }
 
 }

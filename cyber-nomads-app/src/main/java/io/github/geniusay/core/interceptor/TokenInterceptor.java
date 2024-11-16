@@ -28,26 +28,15 @@ import static io.github.geniusay.constants.RedisConstant.LOGIN_MACHINE_CAPTCHA;
  */
 @Component
 public class TokenInterceptor implements HandlerInterceptor, Ordered {
-    @Resource
-    CacheUtil cacheUtil;
-    @Resource
-    StringEncryptor encryptor;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String machineToken = null;
         if(handler instanceof HandlerMethod){
             HandlerMethod handlerMethod = (HandlerMethod) handler;
-            if(handlerMethod.hasMethodAnnotation(LoginMachineToken.class)){
-                machineToken = request.getHeader("machine-token");
-                if(!StringUtils.isBlank(machineToken)){
-                    String script = encryptor.decrypt(machineToken);
-                    machineToken = cacheUtil.get(LOGIN_MACHINE_CAPTCHA+script);
-                }
-            }
-
             if(handlerMethod.hasMethodAnnotation(TokenRequire.class)){
-                String tokenObject = machineToken==null?(String) StpUtil.getLoginIdByToken(request.getHeader("Authorization")):(String) StpUtil.getLoginIdByToken(machineToken);
-//                String tokenObject = (String) StpUtil.getLoginIdByToken(request.getHeader("Authorization"));
+                String token = request.getHeader("Authorization");
+                token = token==null? (String) request.getAttribute("Authorization") :token;
+                String tokenObject = (String) StpUtil.getLoginIdByToken(token);
                 if(tokenObject == null){
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
                     return false;

@@ -12,5 +12,5 @@ export interface RobotVO{
     username: string;
     ban: boolean;
     createTime: string;
-    isAsync: boolean;
+    hasCookie: boolean;
 }

@@ -1,5 +1,6 @@
 package io.github.geniusay.core.config;
 
+import io.github.geniusay.core.interceptor.LoginMachineTokenInterceptor;
 import io.github.geniusay.core.interceptor.TestInterceptor;
 import io.github.geniusay.core.interceptor.TokenInterceptor;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,8 @@ public class WebConfig implements WebMvcConfigurer {
     private TokenInterceptor tokenInterceptor;
     @Resource
     private TestInterceptor testInterceptor;
+    @Resource
+    private LoginMachineTokenInterceptor loginMachineTokenInterceptor;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -26,6 +29,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(loginMachineTokenInterceptor)
+                .addPathPatterns("/**");
         registry.addInterceptor(tokenInterceptor)
                 .addPathPatterns("/**");
         registry.addInterceptor(testInterceptor)

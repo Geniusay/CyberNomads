@@ -14,9 +14,9 @@ public class ApiPrefixInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String requestURI = request.getRequestURI();
-        if (requestURI.startsWith("/appApi")) {
+        if (requestURI.startsWith("/api")) {
             // 去除请求前缀 "/api"
-            String newRequestURI = requestURI.replace("/appApi","");
+            String newRequestURI = requestURI.replace("/api","");
             request.getRequestDispatcher(newRequestURI).forward(request, response);
             return false; // 不继续处理原始请求
         }

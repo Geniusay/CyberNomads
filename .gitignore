@@ -45,3 +45,4 @@ typed-router.d.ts
 /cypress/videos/
 /cypress/screenshots/
 DeployUtil.*
+cyber-nomads-register/src/main/resources/static/*

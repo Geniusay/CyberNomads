@@ -84,6 +84,6 @@ public class CacheUtil {
         stringRedisTemplate.delete(key);
     }
     public Boolean checkCaptchaExpired(String key){
-        return Boolean.TRUE.equals(stringRedisTemplate.hasKey(key));
+        return !Boolean.TRUE.equals(stringRedisTemplate.hasKey(key));
     }
 }
