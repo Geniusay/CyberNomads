@@ -42,13 +42,17 @@ public class BilibiliVideoHandler {
      * 获取视频的AI总结内容
      *
      */
-    public static ApiResponse<String> getVideoAiSummary(String bvid, long cid, long upMid, String imgKey, String subKey) {
+    public static ApiResponse<String> getVideoAiSummary(String bvid, String imgKey, String subKey) {
+        VideoDetail.Data data = getVideoDetailById(null, bvid).getData().getData();
+        VideoDetail.Data.Page page = data.getPages().get(0);
+        long cid = page.getCid();
+        long upMid = data.getStat().getAid();
+
         // 准备请求参数
         Map<String, Object> params = new HashMap<>();
         params.put("bvid", bvid);
         params.put("cid", cid);
         params.put("up_mid", upMid);
-        params.put("web_location", 333.788D);
 
         WbiSignatureResult signature = WbiSignatureUtil.generateSignature(params, imgKey, subKey);
 

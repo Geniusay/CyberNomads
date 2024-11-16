@@ -25,8 +25,8 @@ public class BilibiliVideoApi {
     /**
      * 获取视频的AI总结内容
      */
-    public static ApiResponse<String> getVideoAiSummary(String bvid, long cid, long upMid, String imgKey, String subKey) {
-        return BilibiliVideoHandler.getVideoAiSummary(bvid, cid, upMid, imgKey, subKey);
+    public static ApiResponse<String> getVideoAiSummary(String bvid, String imgKey, String subKey) {
+        return BilibiliVideoHandler.getVideoAiSummary(bvid, imgKey, subKey);
     }
 
     /**

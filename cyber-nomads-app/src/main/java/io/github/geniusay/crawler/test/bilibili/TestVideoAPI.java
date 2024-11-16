@@ -14,7 +14,7 @@ public class TestVideoAPI {
     @Test
     public void getVideoInfo() throws Exception {
         // 通过bvid获取视频详细信息
-        ApiResponse<VideoDetail> response = BilibiliVideoApi.getVideoDetailById(cookie, "BV1dGmeYUE4G");
+        ApiResponse<VideoDetail> response = BilibiliVideoApi.getVideoDetailById(cookie, "BV1k2DpYqEyR");
 
         if (response.isSuccess()) {
             VideoDetail videoDetailByBvid = response.getData();
@@ -32,10 +32,12 @@ public class TestVideoAPI {
 
     @Test
     public void getVideoAiSummary() throws Exception {
-        String imgKey = "5a6f002d0bb14fc9848fc64157648ad4";
-        String subKey = "0503a77b29d7409d9548fb44fe9daa1a";
+        String bvid = "BV1A3DBYmEJE";
 
-        ApiResponse<String> response = BilibiliVideoApi.getVideoAiSummary("BV1o2ULYqE2c", 26754485394L, 3546382956759627L, imgKey, subKey);
+        String imgKey = "7cd084941338484aae1ad9425b84077c";
+        String subKey = "4932caff0ff746eab6f01bf08b70ac45";
+
+        ApiResponse<String> response = BilibiliVideoApi.getVideoAiSummary(bvid, imgKey, subKey);
         if (response.isSuccess()) {
             String data = response.getData();
             System.out.println(data);
