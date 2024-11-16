@@ -1,6 +1,7 @@
 package io.github.geniusay.service.Impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import io.github.common.web.Result;
 import io.github.geniusay.pojo.DTO.DriverPathDTO;
 import io.github.geniusay.pojo.DTO.LoginDTO;
@@ -101,7 +102,8 @@ public class IUserServiceImpl implements UserService {
         if(!isPathExist(browserPath)||!isPathExist(driverPath)){
             throw new RuntimeException("无法找到对应文件，请检查对应文件是否存在或路径是否正确");
         }
-        String jsonString = JSON.toJSONString(pathDTO);
+        String jsonString = JSON.toJSONString(pathDTO, SerializerFeature.DisableCheckSpecialChar);
+
         String directory = System.getProperty("user.dir");
         String filePath = directory + File.separator + "path.txt";
         File file = new File(filePath);
@@ -110,6 +112,7 @@ public class IUserServiceImpl implements UserService {
                 file.createNewFile();
             }
             fileWriter.write(jsonString);
+            System.out.println(jsonString);
             System.out.println("JSON 数据已写入文件: " + filePath);
             return true;
         } catch (IOException e) {

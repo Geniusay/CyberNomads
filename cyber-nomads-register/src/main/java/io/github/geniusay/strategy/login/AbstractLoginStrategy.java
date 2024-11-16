@@ -45,22 +45,23 @@ public abstract class AbstractLoginStrategy implements LoginStrategy{
         String key = CacheUtils.key;
         if(StringUtils.isBlank(key)){
             throw new RuntimeException("密钥不正确或为空");
-        }else{
-            try {
-                String cookie = loginStrategyHashMap.get(loginDTO.getPlatform()).execute();
-                System.out.println(cookie);
-                if (!StringUtils.isBlank(cookie)) {
-                    LoginMachineDTO robotDTO = LoginMachineDTO.builder().username(loginDTO.getUsername()).cookie(cookie).platform(loginDTO.getPlatform()).build();
-                    return "200".equals(HTTPUtils.convertRespToCode(HTTPUtils.postWithParams(url + INSERT_ROBOT, Map.of("machine-token", key), JSON.toJSONString(robotDTO))));
-                }else {
-                    throw new RuntimeException("cookie不能为空");
-                }
-            } catch (IOException e) {
-                throw new RuntimeException("登陆失败,不正确的驱动路径或调用错误");
+        }
+        try {
+            String cookie = loginStrategyHashMap.get(loginDTO.getPlatform()).execute(loginDTO.getUsername());
+            if(StringUtils.isBlank(cookie)){
+                throw new RuntimeException("cookie获取失败，请重新登录!");
             }
-
+            System.out.println(cookie);
+            LoginMachineDTO robotDTO = LoginMachineDTO.builder().username(loginDTO.getUsername()).cookie(cookie).platform(loginDTO.getPlatform()).build();
+            if ("200".equals(HTTPUtils.convertRespToCode(HTTPUtils.postWithParams(url + INSERT_ROBOT, Map.of("machine-token", key), JSON.toJSONString(robotDTO))))) {
+                return true;
+            }else{
+                throw new RuntimeException("登陆失败，请检查令牌是否过期或存在相同用户名的robot");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("登陆失败,不正确的驱动路径或调用错误");
         }
     }
 
-    public abstract String execute();
+    public abstract String execute(String username);
 }
