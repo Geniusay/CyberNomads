@@ -13,7 +13,9 @@
       <v-divider class="mb-4"></v-divider>
 
       <v-card-text>
-        <div class="mb-2">当前浏览器信息</div>
+        <div class="mb-2">
+          {{!loading?"当前浏览器信息":"获取本地浏览器信息中...."}}
+        </div>
         <v-skeleton-loader v-if="loading" type="card"></v-skeleton-loader>
         <v-card
             v-else
@@ -49,7 +51,7 @@
 
         <div class="d-flex flex-column" style="margin: 10px">
           <v-btn
-              :loading="downloadStatusInfo.isDownload"
+              :loading="downloadStatusInfo.isDownload||loading"
               color="blue"
               height="60"
               style="border-radius: 8px"
@@ -58,10 +60,22 @@
           >
             下载驱动
             <template v-slot:loader>
-              {{downloadStatusInfo.msg}}
               <v-progress-linear indeterminate></v-progress-linear>
             </template>
           </v-btn>
+          <v-progress-linear
+              rounded
+              striped
+              style="margin-top: 10px"
+              v-if="downloadStatusInfo.process!=0"
+              v-model="downloadStatusInfo.process"
+              color="deep-orange"
+              height="25"
+          >
+            <template v-slot:default="{ value }">
+              <strong>{{ downloadStatusInfo.msg }}%</strong>
+            </template>
+          </v-progress-linear>
         </div>
         <div class="text-overline mb-2">❓ 这一步是干嘛的</div>
 
@@ -104,6 +118,7 @@ const loading = ref(false)
 const downloadStatusInfo = ref({
   isDownload: false,
   msg: "下载中",
+  process: 0,
 })
 const systemInfo = ref({
   path:"",
@@ -118,11 +133,9 @@ onMounted(async()=>{
 const getSystemInfoReq  = async (browser) =>{
   loading.value = true
   await getSystemInfo(browser).then(res=>{
-    console.log(res.data)
     systemInfo.value.path = res.data.path
     systemInfo.value.name = res.data.name
     systemInfo.value.version = res.data.version
-    console.log(systemInfo.value)
     snackbarStore.showSuccessMessage("获取浏览器信息")
   })
   loading.value = false
@@ -130,6 +143,7 @@ const getSystemInfoReq  = async (browser) =>{
 
 const downloadDriver = async () =>{
   await download()
+  downloadStatusInfo.value.process = 0
   watchDownloadStatus()
 }
 
@@ -140,7 +154,6 @@ const watchDownloadStatus = ()=>{
   let interval = setInterval(async ()=>{
     await downloadStatus().then(res=>{
       downloadStatusInfo.value = res.data
-      console.log(downloadStatusInfo.value)
       if(!downloadStatusInfo.value.isDownload){
         clearInterval(interval);
       }

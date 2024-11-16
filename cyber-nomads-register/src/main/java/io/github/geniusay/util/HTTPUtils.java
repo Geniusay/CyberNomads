@@ -26,9 +26,11 @@ public class HTTPUtils {
 
     public static String downloadMsg = "";
 
+    public static int process = 0;
+
     @Async
     public void downloadFile(String fileUrl, String savePath) throws IOException {
-        isDownload = true;
+        process = 50;
         try {
             downloadMsg = "正在下载中....";
             Request request = new Request.Builder()
@@ -49,6 +51,7 @@ public class HTTPUtils {
                 }
             }
             downloadMsg = "正在解压中.....";
+            process = 80;
             String target = unzipFile(savePath);
             downloadMsg = "下载成功!";
             DriverPathDTO build = DriverPathDTO.builder().driverPath(target).browserPath(CacheUtils.path).build();
@@ -56,6 +59,7 @@ public class HTTPUtils {
         }catch(Exception e){
             downloadMsg="下载失败："+e.getMessage();
         } finally{
+            process = 100;
             isDownload = false;
         }
     }

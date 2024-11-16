@@ -68,7 +68,8 @@ public class UserLoginMachineController {
     public Result<?> downloadStatus(){
         return Result.success(Map.of(
                 "isDownload", HTTPUtils.isDownload,
-                "msg",HTTPUtils.downloadMsg
+                "msg",HTTPUtils.downloadMsg,
+                "process",HTTPUtils.process
         ));
     }
 
