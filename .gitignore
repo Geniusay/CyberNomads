@@ -46,3 +46,4 @@ typed-router.d.ts
 /cypress/screenshots/
 DeployUtil.*
 cyber-nomads-register/src/main/resources/static/*
+登号器/*

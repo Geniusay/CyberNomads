@@ -285,7 +285,7 @@ const openLoginMachineDialog = async () =>{
             ></v-text-field>
           </v-col>
           <v-col cols="12" lg="8" md="6" class="text-right">
-            <v-dialog v-model="loginMachineDialog" max-width="700">
+            <v-dialog v-model="loginMachineDialog" max-width="800">
               <template v-slot:activator="{ props }">
                 <v-btn @click="openLoginMachineDialog()" style="margin-right:15px" color="warning" v-bind="props" flat class="ml-auto">
                   <v-icon color="white" class="mr-2">mdi-cloud-key</v-icon>

@@ -117,7 +117,8 @@ export const useTaskStore = defineStore({
     async queryTaskLog(task: TaskVO, autoRefresh: boolean) {
       if (!Array.isArray(task.taskLogs) || task.taskLogs.length == 0) {
         await getRecentLogs(task.id, 20).then(res => {
-          task.taskLogs = res.data as TaskLog[]
+          task.taskLogs = res.data.taskLogs as TaskLog[]
+          task.taskStatus = res.data.taskStatus
         }).catch(error => {
           snackbarStore.showErrorMessage("获取任务日志失败:" + error.message)
         })
@@ -125,7 +126,8 @@ export const useTaskStore = defineStore({
       }
       if (autoRefresh) {
         await getRecentLogs(task.id, 20).then(res => {
-          task.taskLogs = res.data as TaskLog[]
+          task.taskLogs = res.data.taskLogs as TaskLog[]
+          task.taskStatus = res.data.taskStatus
         }).catch(error => {
           snackbarStore.showErrorMessage("获取任务日志失败:" + error.message)
         })

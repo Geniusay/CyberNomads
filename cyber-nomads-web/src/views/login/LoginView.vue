@@ -168,7 +168,7 @@ const switchLogin = async () =>{
           <div class="hero">
             <h1>你好 世界<br />Cyber Nomads</h1>
             <v-fade-transition leave-absolute>
-              <p>如果你{{isLogin?'没':'已'}}有账号<br />可以<a @click="switchLogin()">点击这里</a>{{isLogin?'进行注册':'进行登录'}}.</p>
+              <p style="font-weight: 600;font-size:1.2rem">如果你{{isLogin?'没':'已'}}有账号<br />可以<a style="font-weight: 600" @click="switchLogin()">👉点击这里</a> {{isLogin?'进行注册':'进行登录'}}.</p>
             </v-fade-transition>
           </div>
           <div v-if="isLogin" class="main">
