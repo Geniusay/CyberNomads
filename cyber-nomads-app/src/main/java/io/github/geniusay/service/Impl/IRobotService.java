@@ -21,6 +21,7 @@ import io.github.geniusay.service.RobotService;
 import io.github.geniusay.utils.ConvertorUtil;
 import io.github.geniusay.utils.PlatformUtil;
 import io.github.geniusay.utils.ThreadUtil;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -142,15 +143,28 @@ public class IRobotService implements RobotService {
     public Boolean addRobot(AddRobotDTO robotDTO) {
         PlatformUtil.checkPlatform(robotDTO.getPlatform());
 
-        return robotMapper.insert(
-                RobotDO.builder()
-                    .username(robotDTO.getUsername())
-                    .cookie(robotDTO.getCookie())
-                    .platform(robotDTO.getPlatform())
-                    .nickname(robotDTO.getNickname())
-                    .uid(ThreadUtil.getUid())
-                    .build()
-        ) == 1;
+        try {
+            return robotMapper.insert(
+                    RobotDO.builder()
+                            .username(robotDTO.getUsername())
+                            .cookie(robotDTO.getCookie())
+                            .platform(robotDTO.getPlatform())
+                            .nickname(robotDTO.getNickname())
+                            .uid(ThreadUtil.getUid())
+                            .build()
+            ) == 1;
+        } catch (DuplicateKeyException e){
+            // 已有robot
+            LambdaUpdateWrapper<RobotDO> update = new LambdaUpdateWrapper<>();
+            update.eq(RobotDO::getUid, ThreadUtil.getUid())
+                    .eq(RobotDO::getUsername, robotDTO.getUsername())
+                    .eq(RobotDO::isHasDelete, true)
+                    .set(RobotDO::getNickname, robotDTO.getNickname())
+                    .set(RobotDO::getPlatform, robotDTO.getPlatform())
+                    .set(RobotDO::getCookie, robotDTO.getCookie())
+                    .set(RobotDO::isHasDelete, false);
+            return robotMapper.update(null, update) == 1;
+        }
     }
 
     @Override
