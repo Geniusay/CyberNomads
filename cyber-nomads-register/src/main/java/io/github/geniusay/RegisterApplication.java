@@ -4,6 +4,7 @@ import io.github.geniusay.util.HTTPUtils;
 import okhttp3.Response;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SpringBootApplication
+@EnableAsync
 public class RegisterApplication {
 
     public static void main(String[] args) throws IOException {

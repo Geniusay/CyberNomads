@@ -40,33 +40,41 @@ public class HTTPUtils {
                 }
             }
         }
+        String[] parts = fileUrl.split("/");
+        String url = parts[parts.length - 1];
+        String path = extractBrowserName(url);
+        unzipFile("driver",path);
     }
-
-    public void unzipFile(String zipFilePath) throws IOException {
-        String dirName = zipFilePath.substring(0, zipFilePath.lastIndexOf('.'));
-        File destDir = new File(System.getProperty("user.dir"), dirName);
-        if (!destDir.exists()) {
-            destDir.mkdir();
+    private String extractBrowserName(String driverName) {
+        if (driverName.startsWith("chrome")) {
+            return "chrome";
+        } else if (driverName.startsWith("edge")) {
+            return "edge";
+        } else {
+            return "unknown";
         }
-        System.out.println(destDir.getPath());
+    }
+    public void unzipFile(String zipFilePath,String target) {
+        File destDir = new File(System.getProperty("user.dir"), zipFilePath);
+        if (destDir.exists()) {
+            deleteDirectory(destDir);
+        }
+        destDir.mkdir();
         try (ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFilePath))) {
             ZipEntry entry;
             while ((entry = zipInputStream.getNextEntry()) != null) {
-                // 处理条目名中的路径问题
                 File outputFile = new File(destDir, entry.getName());
                 File parentDir = outputFile.getParentFile();
 
-                // 如果父目录不存在，则创建它
                 if (parentDir != null && !parentDir.exists()) {
                     parentDir.mkdirs();
                 }
-
-                // 如果是目录条目，则跳过文件创建过程
                 if (entry.isDirectory()) {
-                    continue; // 直接处理下一个条目
+                    continue;
                 }
-
-                // 创建并写入目标文件
+                if (entry.getName().endsWith(".exe")) {
+                    outputFile = new File(destDir, target);
+                }
                 try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile))) {
                     byte[] buffer = new byte[1024];
                     int bytesRead;
@@ -77,7 +85,6 @@ public class HTTPUtils {
                 zipInputStream.closeEntry(); // 关闭当前条目
             }
         } catch (IOException e) {
-            // 捕获异常并打印详细信息
             System.err.println("Error while extracting the zip file: " + e.getMessage());
             e.printStackTrace();
         }
@@ -136,5 +143,17 @@ public class HTTPUtils {
         res.setMsg(result.getMsg());
         res.setTimestamp(result.getTimestamp());
         return res;
+    }
+
+    public static void deleteDirectory(File dir) {
+        if (dir.isDirectory()) {
+            String[] files = dir.list();
+            if (files != null) {
+                for (String file : files) {
+                    deleteDirectory(new File(dir, file));
+                }
+            }
+        }
+        dir.delete();
     }
 }

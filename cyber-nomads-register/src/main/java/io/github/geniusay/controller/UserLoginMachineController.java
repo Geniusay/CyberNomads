@@ -57,15 +57,9 @@ public class UserLoginMachineController {
         return Result.success(userService.queryBrowser(browser));
     }
 
-
     @GetMapping("/download")
     public Result<?> downloadDriver(){
         return Result.success(userService.download());
-    }
-
-    @GetMapping("/unzip")
-    public Result<?> unzip(){
-        return Result.success(userService.unzipDriver());
     }
 
 }

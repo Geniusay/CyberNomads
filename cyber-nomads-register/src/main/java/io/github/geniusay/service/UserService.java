@@ -28,5 +28,4 @@ public interface UserService {
     QueryPathDTO queryPathExist();
     String download();
     BrowserInfoDTO queryBrowser(String browser);
-    Boolean unzipDriver();
 }

@@ -180,6 +180,7 @@ public class IUserServiceImpl implements UserService {
         String filePath = directory + File.separator + "path.txt";
         DriverPathDTO pathDTO;
         QueryPathDTO.QueryPathDTOBuilder builder = QueryPathDTO.builder();
+        File driver = new File(directory+File.separator+"driver");
         if(isPathExist(filePath)){
             StringBuilder content = new StringBuilder();
 
@@ -199,6 +200,25 @@ public class IUserServiceImpl implements UserService {
             }
             builder.pathDTO(pathDTO);
             return builder.build();
+        }else if(driver.exists()&&driver.isDirectory()){
+            File[] files = driver.listFiles((dir, name) -> name.endsWith(".exe"));
+            String browser = null;
+            DriverPathDTO.DriverPathDTOBuilder driverPathDTOBuilder = DriverPathDTO.builder();
+            if (files != null && files.length > 0) {
+                for (File file : files) {
+                    System.out.println("Found exe: " + file.getAbsolutePath());
+                    driverPathDTOBuilder.driverPath(file.getAbsolutePath());
+                    browser = file.getName();
+                }
+            } else {
+                throw new RuntimeException("找不到对应驱动文件，请重新下载");
+            }
+            if("edge".equals(browser)){
+                driverPathDTOBuilder.browserPath(CacheUtils.path);
+            }else if("chrome".equals(browser)){
+                driverPathDTOBuilder.browserPath(CacheUtils.path);
+            }
+            builder.pathDTO(driverPathDTOBuilder.build());
         }
         return builder.build();
     }
@@ -276,22 +296,6 @@ public class IUserServiceImpl implements UserService {
             }
         }
 
-    }
-
-    @Override
-    public Boolean unzipDriver() {
-        String name = CacheUtils.browserName;
-        String arch = getOsArch();
-        try {
-            if("msedge".equals(name)){
-                httpUtils.unzipFile("edgedriver_win"+arch+".zip");
-            }else if("chrome".equals(name)){
-                httpUtils.unzipFile("chromedriver_win32"+".zip");
-            }
-            return true;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private static boolean isPathExist(String path) {
