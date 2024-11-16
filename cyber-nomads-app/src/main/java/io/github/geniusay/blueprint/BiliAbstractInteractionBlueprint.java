@@ -50,6 +50,7 @@ public abstract class BiliAbstractInteractionBlueprint extends AbstractTaskBluep
         String logicName = (String) lastWord.getAdditionalInfo(LOGIC_NAME);
         String receiverName = (String) lastWord.getAdditionalInfo(RECEIVER_NAME);
         String logicContent = (String) lastWord.getAdditionalInfo(LOGIC_CONTENT);
+        logicContent = logicContent == null ? "无" : logicContent;
 
         String actionDescription = String.format("%s robot 执行了 %s 行为，目标: %s 执行内容: %s",
                 robot.getNickname(),

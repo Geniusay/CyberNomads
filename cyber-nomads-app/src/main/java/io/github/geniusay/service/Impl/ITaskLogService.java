@@ -1,10 +1,12 @@
 package io.github.geniusay.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.github.geniusay.core.supertask.config.TaskStatus;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.mapper.TaskLogMapper;
 import io.github.geniusay.pojo.DO.TaskLogDO;
 import io.github.geniusay.core.supertask.task.RobotWorker;
+import io.github.geniusay.pojo.VO.TaskLogResponse;
 import io.github.geniusay.pojo.VO.TaskLogVO;
 import io.github.geniusay.schedule.TaskScheduleManager;
 import io.github.geniusay.service.TaskLogService;
@@ -55,25 +57,30 @@ public class ITaskLogService implements TaskLogService {
      * 根据任务ID查询最近X条日志记录
      */
     @Override
-    public List<TaskLogVO> getRecentLogsByTaskId(Long taskId, int limit) {
+    public TaskLogResponse getRecentLogsByTaskId(Long taskId, int limit) {
         if (limit > 20) {
-            limit = 20;
+            limit = 20;  // 限制最多返回20条日志
         }
 
-        // 1. 首先尝试从 TaskScheduleManager 中获取任务
+        // 1. 从 TaskScheduleManager 中获取任务
         Task task = taskScheduleManager.getTaskById(String.valueOf(taskId));
 
         // 2. 如果任务存在并且 loglist 不为空，从内存中获取日志
+        List<TaskLogVO> taskLogVOList = null;
         if (task != null && task.getLoglist() != null && !task.getLoglist().isEmpty()) {
             List<TaskLogDO> logList = task.getLoglist();
 
-            return logList.stream()
-                    .sorted((log1, log2) -> log2.getCreateTime().compareTo(log1.getCreateTime()))
+            taskLogVOList = logList.stream()
+                    .sorted((log1, log2) -> log2.getCreateTime().compareTo(log1.getCreateTime()))  // 按创建时间倒序排列
                     .limit(limit)
                     .map(TaskLogVO::convertToTaskLogVO)
                     .collect(Collectors.toList());
+
+            // 3. 返回 TaskLogResponse，包含任务状态和日志列表
+            return new TaskLogResponse(task.getTaskStatus(), taskLogVOList);
         }
 
+        // 4. 如果任务不存在或没有日志，从数据库中查询
         QueryWrapper<TaskLogDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("task_id", taskId)
                 .orderByDesc("create_time")  // 按创建时间倒序排列
@@ -81,9 +88,11 @@ public class ITaskLogService implements TaskLogService {
 
         List<TaskLogDO> taskLogs = taskLogMapper.selectList(queryWrapper);
 
-        return taskLogs.stream()
+        taskLogVOList = taskLogs.stream()
                 .map(TaskLogVO::convertToTaskLogVO)
                 .collect(Collectors.toList());
+        TaskStatus taskStatus = task != null ? task.getTaskStatus() : TaskStatus.PENDING;
+        return new TaskLogResponse(taskStatus, taskLogVOList);
     }
 
     /**
