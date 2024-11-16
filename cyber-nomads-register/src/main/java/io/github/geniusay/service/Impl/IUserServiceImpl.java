@@ -192,6 +192,7 @@ public class IUserServiceImpl implements UserService {
             throw new RuntimeException("浏览器名称或版本不能为空");
         }
         try {
+            HTTPUtils.isDownload = true;
             String arch = getOsArch();
             String download;
             if("msedge".equals(name)){
