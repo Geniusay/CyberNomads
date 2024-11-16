@@ -47,7 +47,6 @@ public class GetHotVideoPlugin extends AbstractGetVideoPlugin implements GetHand
             // 随机获取未被标记的视频，并加入重试机制
             BilibiliVideoDetail video = getRandomUnmarkedVideo(redisKey);
 
-            // 如果找到了未标记的视频，则打标记
             if (video != null) {
                 markVideoInRedis(video, redisKey, VIDEO_MARK_EXPIRE_DAYS);
             }
@@ -61,6 +60,7 @@ public class GetHotVideoPlugin extends AbstractGetVideoPlugin implements GetHand
     /**
      * 使用 Lua 脚本随机获取一个视频，加入重试机制。
      * 如果达到最大重试次数后，返回最后一次获取的视频（无论是否已标记）。
+     * 若未获取到任何视频，则清除 Redis 中标记的所有视频。
      */
     private BilibiliVideoDetail getRandomUnmarkedVideo(String redisKey) {
         String luaScript =
@@ -77,7 +77,7 @@ public class GetHotVideoPlugin extends AbstractGetVideoPlugin implements GetHand
                         "return nil";
 
         try {
-            // 执行 Lua 脚本
+            // 执行 Lua 脚本获取随机视频
             String videoJson = stringRedisTemplate.execute(
                     (RedisScript<String>) RedisScript.of(luaScript, String.class),
                     List.of(POPULAR_VIDEOS_SET_KEY, redisKey, POPULAR_VIDEOS_DETAILS_KEY),
@@ -87,10 +87,11 @@ public class GetHotVideoPlugin extends AbstractGetVideoPlugin implements GetHand
             if (videoJson != null) {
                 return BilibiliVideoDetail.fromJson(videoJson);
             }
+            log.warn("达到最大重试次数，未获取到任何视频，清除 Redis 标记: {}", redisKey);
+            clearMarkedVideos(redisKey);
         } catch (Exception e) {
             log.error("执行 Lua 脚本获取视频时发生异常，异常信息: {}", e.getMessage(), e);
         }
-        log.warn("达到最大重试次数，但未获取到任何视频");
         return null;
     }
 
@@ -103,7 +104,7 @@ public class GetHotVideoPlugin extends AbstractGetVideoPlugin implements GetHand
                         "redis.call('EXPIRE', KEYS[1], ARGV[2])";
 
         try {
-            // 执行 Lua 脚本
+            // 执行 Lua 脚本标记视频
             stringRedisTemplate.execute(
                     (RedisScript<Void>) RedisScript.of(luaScript, Void.class),
                     List.of(redisKey),
@@ -111,6 +112,18 @@ public class GetHotVideoPlugin extends AbstractGetVideoPlugin implements GetHand
             );
         } catch (Exception e) {
             log.error("执行 Lua 脚本标记视频时发生异常，bvid: {}，异常信息: {}", video.getBvid(), e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 清除 Redis 中标记的所有视频
+     */
+    private void clearMarkedVideos(String redisKey) {
+        try {
+            stringRedisTemplate.delete(redisKey);
+            log.info("成功清除 Redis 中的标记: {}", redisKey);
+        } catch (Exception e) {
+            log.error("清除 Redis 中标记时发生异常，Redis Key: {}，异常信息: {}", redisKey, e.getMessage(), e);
         }
     }
 
