@@ -2,7 +2,6 @@ package io.github.geniusay.core.supertask.task;
 
 import io.github.geniusay.core.supertask.config.TaskStatus;
 import io.github.geniusay.core.supertask.plugin.terminator.AbstractTerminator;
-import io.github.geniusay.core.supertask.plugin.terminator.Terminator;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import io.github.geniusay.pojo.DO.LastWord;
 import io.github.geniusay.pojo.DO.RobotDO;
