@@ -7,10 +7,14 @@ import { useSnackbarStore } from "@/stores/snackbarStore";
 import {validateAndReturn, Validators} from "@/utils/validate";
 import { useCommonStore } from "@/stores/commonStore";
 import { useRobotStore } from  "@/views/workplace/robot/robotStore"
+import {useDialogStore} from "@/stores/dialogStore";
+
 import EmptyDataPage from "@/components/empty/EmptyDataPage.vue";
 import CircleLoading from "@/components/loading/CircleLoading.vue";
 import CopyLabel from "@/components/common/CopyLabel.vue";
+import LoginMachineDownloadDialog from "@/components/login-machine/LoginMachineDownloadDialog.vue";
 
+const dialogStore = useDialogStore()
 const robotStore = useRobotStore();
 const commonStore = useCommonStore();
 const snackbarStore = useSnackbarStore();
@@ -285,6 +289,16 @@ const openLoginMachineDialog = async () =>{
             ></v-text-field>
           </v-col>
           <v-col cols="12" lg="8" md="6" class="text-right">
+            <v-dialog v-model="dialogStore.dialogMap['loginMachine']" max-width="800">
+              <template v-slot:activator="{ props }">
+                <v-btn @click="dialogStore.openDialog('loginMachine')" style="margin-right:15px" color="blue" v-bind="props" flat class="ml-auto">
+                  <v-icon color="white" class="mr-2">mdi-download-box</v-icon>
+                  {{ $t("workplace.nomads.downloadLoginMachine") }}
+                </v-btn>
+              </template>
+              <LoginMachineDownloadDialog />
+            </v-dialog>
+
             <v-dialog v-model="loginMachineDialog" max-width="800">
               <template v-slot:activator="{ props }">
                 <v-btn @click="openLoginMachineDialog()" style="margin-right:15px" color="warning" v-bind="props" flat class="ml-auto">

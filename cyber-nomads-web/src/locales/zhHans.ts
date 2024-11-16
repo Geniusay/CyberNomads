@@ -11,7 +11,8 @@ export default {
       isBan:"是否禁用",
       action:"操作",
       emptyTitle:"目前还没有任何赛博游民哦~",
-      emptyContent:"点击-添加赛博游民-按钮，来创建一个新任务吧"
+      emptyContent:"点击-添加赛博游民-按钮，来创建一个新任务吧",
+      downloadLoginMachine:"下载登号器"
     },
     task:{
       error:"失败",

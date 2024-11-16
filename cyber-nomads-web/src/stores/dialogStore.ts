@@ -9,6 +9,10 @@ export const useDialogStore = defineStore({
     })
   }),
 
+  getters: {
+
+  },
+
   actions:{
     openDialog(dialogName){
       this.dialogMap[dialogName] = true

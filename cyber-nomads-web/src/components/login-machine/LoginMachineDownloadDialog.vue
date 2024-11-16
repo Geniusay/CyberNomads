@@ -12,27 +12,19 @@
         <template v-slot:prepend>
           <v-card-title>
             <v-icon
-              icon="mdi-calendar"
+              icon="mdi-download-box"
               start
             ></v-icon>
 
-            1 Event
+            登号器下载
           </v-card-title>
         </template>
 
         <v-divider class="mx-2" vertical></v-divider>
 
-        <v-btn
-          class="text-none text-subtitle-1"
-          color="#5865f2"
-          size="small"
-          variant="flat"
-        >
-          Create Event
-        </v-btn>
-
         <template v-slot:append>
           <v-btn
+            @click="dialogStore.closeDialog('loginMachine')"
             icon="$close"
             size="large"
             variant="text"
@@ -55,30 +47,30 @@
             start
           ></v-icon>
 
-          <span class="text-medium-emphasis font-weight-bold">1 Fri Dec 16th - 9:00 PM</span>
+          <span class="text-medium-emphasis font-weight-bold">{{ formatDate(loginMachineInfo.updateTime) }}</span>
 
           <v-spacer></v-spacer>
 
           <v-avatar
-            image="https://cdn.vuetifyjs.com/images/john-smirk.png"
+            image="/assets/svg/baidu.svg"
             size="x-small"
           ></v-avatar>
 
           <v-chip
             class="ms-2 text-medium-emphasis"
             color="grey-darken-4"
-            prepend-icon="mdi-account-multiple"
+            prepend-icon="mdi-file-cloud"
             size="small"
-            text="81"
+            text="百度网盘"
             variant="flat"
           ></v-chip>
         </v-card-title>
 
         <div class="py-2">
-          <div class="text-h6">Live Q&A</div>
+          <div class="text-h6">密码：{{loginMachineInfo.code}}</div>
 
           <div class="font-weight-light text-medium-emphasis">
-            Join the Vuetify team for a live Question and Answer session.
+            <CopyLabel :text="loginMachineInfo.url" />
           </div>
         </div>
       </v-card-item>
@@ -92,14 +84,16 @@
           start
         ></v-icon>
 
-        <v-icon
-          color="#949cf7"
-          icon="mdi-video-vintage"
-          size="x-small"
-        ></v-icon>
-
         <span class="text-caption text-medium-emphasis ms-1 font-weight-light">
-          streaming
+
+           <v-chip
+             class="ma-2"
+             color="blue"
+             label
+           >
+        <v-icon icon="mdi-label" start></v-icon>
+           latest {{loginMachineInfo.version}}
+          </v-chip>
         </span>
 
         <v-spacer></v-spacer>
@@ -110,23 +104,49 @@
         ></v-btn>
 
         <v-btn
-          class="me-2 text-none"
-          color="#4f545c"
-          prepend-icon="mdi-export-variant"
-          variant="flat"
-        >
-          Share
-        </v-btn>
-
-        <v-btn
           class="text-none"
           prepend-icon="mdi-check"
           variant="text"
           border
+          @click="goToDownload()"
         >
-          Interested
+          下载
         </v-btn>
       </div>
     </v-card>
   </v-card>
+
 </template>
+
+<script setup lang="ts">
+import {queryLoginMachineInfo} from "@/api/commonApi";
+import {useSnackbarStore} from "@/stores/snackbarStore";
+import {useDialogStore} from "@/stores/dialogStore";
+import {formatDate} from "@/utils/toolUtils";
+import CopyLabel from "@/components/common/CopyLabel.vue";
+
+const snackbarStore = useSnackbarStore();
+const dialogStore = useDialogStore()
+
+interface LoginMachineInfo{
+  url:string,
+  code:string,
+  version:string,
+  createTime:string,
+  updateTime:string
+}
+const loginMachineInfo = ref<LoginMachineInfo>({})
+
+onMounted(async ()=>{
+  await queryLoginMachineInfo(1).then(res=>{
+      loginMachineInfo.value = res.data as LoginMachineInfo
+  }).catch(error=>{
+    snackbarStore.showErrorMessage("获取下载器失败"+error.message)
+  })
+})
+
+const goToDownload =()=>{
+  window.open(loginMachineInfo.value.url+"?pwd="+loginMachineInfo.value.code, "_blank");
+}
+
+</script>

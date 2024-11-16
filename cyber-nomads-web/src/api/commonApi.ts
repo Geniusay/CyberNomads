@@ -6,3 +6,13 @@ export function getPlatforms(){
     method:"get",
   })
 }
+
+export function queryLoginMachineInfo(id){
+  return request({
+      url: '/loginMachine/queryMachineInfo',
+      method:"get",
+      params:{
+        id: id
+      }
+    })
+}

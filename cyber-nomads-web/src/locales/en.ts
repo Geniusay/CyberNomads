@@ -3,6 +3,7 @@ export default {
     nomads:{
       addRobot:"ADD ROBOT",
       generateToken:"Generate Token",
+      downloadLoginMachine:"Download LoginMachine",
       editRobot:"EDIT ROBOT",
       nickname:"Nickname",
       username:"Account",
