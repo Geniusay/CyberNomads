@@ -3,9 +3,14 @@ package io.github.geniusay.crawler.handler.bilibili;
 import io.github.geniusay.crawler.po.bilibili.VideoDetail;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import io.github.geniusay.crawler.util.bilibili.HttpClientUtil;
+import io.github.geniusay.pojo.DTO.WbiSignatureResult;
+import io.github.geniusay.utils.WbiSignatureUtil;
 import okhttp3.FormBody;
+import okhttp3.HttpUrl;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.github.geniusay.crawler.util.bilibili.BilibiliUtil.extractCsrfFromCookie;
 import static io.github.geniusay.crawler.util.bilibili.BilibiliUtil.getBooleanApiResponse;
@@ -29,6 +34,43 @@ public class BilibiliVideoHandler {
     private static final String FAV_VIDEO_URL = "https://api.bilibili.com/x/v3/fav/resource/deal";
     // 一键三连URL
     private static final String TRIPLE_ACTION_URL = "https://api.bilibili.com/x/web-interface/archive/like/triple";
+
+    // AI 总结接口的URL
+    private static final String AI_SUMMARY_URL = "https://api.bilibili.com/x/web-interface/view/conclusion/get";
+
+    /**
+     * 获取视频的AI总结内容
+     *
+     */
+    public static ApiResponse<String> getVideoAiSummary(String bvid, long cid, long upMid, String imgKey, String subKey) {
+        // 准备请求参数
+        Map<String, Object> params = new HashMap<>();
+        params.put("bvid", bvid);
+        params.put("cid", cid);
+        params.put("up_mid", upMid);
+        params.put("web_location", 333.788D);
+
+        WbiSignatureResult signature = WbiSignatureUtil.generateSignature(params, imgKey, subKey);
+
+        params.put("w_rid", signature.getW_rid());
+        params.put("wts", signature.getWts());
+
+        // 构造GET请求的URL
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(AI_SUMMARY_URL).newBuilder();
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            urlBuilder.addQueryParameter(entry.getKey(), entry.getValue().toString());
+        }
+
+        String url = urlBuilder.build().toString();
+
+        try {
+            // 发送GET请求并获取响应
+            ApiResponse<String> response = HttpClientUtil.sendGetRequest(url, null);
+            return response;
+        } catch (IOException e) {
+            return ApiResponse.errorResponse(e);
+        }
+    }
 
     /**
      * 通过bvid或aid获取视频详细信息

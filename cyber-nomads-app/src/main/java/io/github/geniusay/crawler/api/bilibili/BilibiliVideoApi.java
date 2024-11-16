@@ -23,6 +23,13 @@ public class BilibiliVideoApi {
     }
 
     /**
+     * 获取视频的AI总结内容
+     */
+    public static ApiResponse<String> getVideoAiSummary(String bvid, long cid, long upMid, String imgKey, String subKey) {
+        return BilibiliVideoHandler.getVideoAiSummary(bvid, cid, upMid, imgKey, subKey);
+    }
+
+    /**
      * 点赞或取消点赞视频
      *
      * @param cookie 用户的Cookie
