@@ -54,7 +54,7 @@ public class UserLoginMachineController {
 
     @GetMapping("/getSystemBrowser")
     public Result<?> getBrowser(String browser){
-        return Result.success(Result.success(userService.queryBrowser(browser)));
+        return Result.success(userService.queryBrowser(browser));
     }
 
 

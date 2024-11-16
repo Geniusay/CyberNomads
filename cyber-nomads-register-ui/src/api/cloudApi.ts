@@ -37,3 +37,20 @@ export function getRobots(){
         method:"get",
     })
 }
+
+export function getSystemInfo(browser){
+    return request({
+        url: '/loginMachine/getSystemBrowser',
+        method:"get",
+        params:{
+            browser: browser
+        }
+    })
+}
+
+export function download(){
+    return request({
+        url: '/loginMachine/download',
+        method:"get",
+    })
+}

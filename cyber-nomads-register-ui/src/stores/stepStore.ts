@@ -2,10 +2,10 @@ import { defineStore } from "pinia";
 export const useStepStore = defineStore({
     id: "stepStore",
     state: () => ({
-        stepValid: ref([true, 'next', 'next']),
+        stepValid: ref([true, false, 'next', 'next']),
         step: ref(1),
-        stepList: ['校验登号器令牌','本地浏览器配置','选择登录方式'],
-        steps:3
+        stepList: ['校验登号器令牌','自动获取配置信息','本地浏览器配置','选择登录方式'],
+        steps:4
     }),
 
     getters: {
