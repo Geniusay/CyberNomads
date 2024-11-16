@@ -52,6 +52,7 @@ public class HTTPUtils {
             String path = extractBrowserName(url);
             downloadMsg = "正在解压中.....";
             unzipFile("driver",path);
+            downloadMsg = "下载成功!";
         }catch(Exception e){
             downloadMsg="下载失败："+e.getMessage();
         } finally{
@@ -98,6 +99,7 @@ public class HTTPUtils {
                 zipInputStream.closeEntry(); // 关闭当前条目
             }
         } catch (IOException e) {
+            downloadMsg = "解压失败："+e.getMessage();
             System.err.println("Error while extracting the zip file: " + e.getMessage());
             e.printStackTrace();
         }
