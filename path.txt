@@ -1,1 +1,1 @@
-{"browserPath":"C:\\\\Program Files (x86)\\\\Chromebrowser\\\\Chrome.exe","driverPath":"D:\\\\downLoad\\\\chromedriver_win32\\\\chromedriver.exe"}
+{"browserPath":"E:\\Project\\CyberNomads","driverPath":"E:\\Project\\CyberNomads"}
