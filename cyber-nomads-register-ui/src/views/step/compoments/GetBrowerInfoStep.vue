@@ -166,4 +166,5 @@ watch(
       await getSystemInfoReq(newVal)
     },
 );
+
 </script>

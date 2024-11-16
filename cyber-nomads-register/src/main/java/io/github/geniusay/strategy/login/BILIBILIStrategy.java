@@ -2,6 +2,7 @@ package io.github.geniusay.strategy.login;
 
 import io.github.geniusay.pojo.Platform;
 import io.github.geniusay.service.UserService;
+import io.github.geniusay.strategy.dirver.DriverFactory;
 import io.github.geniusay.util.HTTPUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -9,6 +10,9 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.chromium.ChromiumDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -47,12 +51,10 @@ public class BILIBILIStrategy extends AbstractLoginStrategy{
 
     @Override
     public String execute(String username) {
-        String target1 = changePath(userService.queryPathExist().getPathDTO().getDriverPath());
-        String target2 = changePath(userService.queryPathExist().getPathDTO().getBrowserPath());
-        System.setProperty("webdriver.chrome.driver", target1);
-        ChromeOptions options = new ChromeOptions();
-        options.setBinary(target2);
-        ChromeDriver loginWebDriver = new ChromeDriver(options);
+        String driverPath = changePath(userService.queryPathExist().getPathDTO().getDriverPath());
+        String browserPath = changePath(userService.queryPathExist().getPathDTO().getBrowserPath());
+        DriverFactory.DriverType driverType = DriverFactory.driverType(driverPath);
+        ChromiumDriver loginWebDriver = DriverFactory.getDriver(driverPath, browserPath, driverType);
         loginWebDriver.get(URL);
         loginWebDriver.manage().deleteAllCookies();
         WebDriverWait wait = new WebDriverWait(loginWebDriver, Duration.ofSeconds(120));
@@ -68,7 +70,7 @@ public class BILIBILIStrategy extends AbstractLoginStrategy{
             if(userImg!=null){
                 Set<Cookie> cookies = loginWebDriver.manage().getCookies();
                 loginWebDriver.quit();
-                ChromeDriver confirmLogin = new ChromeDriver(options);
+                ChromiumDriver confirmLogin = DriverFactory.getDriver(driverPath, browserPath, driverType);
                 WebDriverWait confirmWait = new WebDriverWait(confirmLogin, Duration.ofSeconds(60));
                 confirmLogin.get(URL);
                 Set<Cookie> set = new HashSet<>();
