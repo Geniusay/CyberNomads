@@ -2,6 +2,7 @@ package io.github.geniusay.util;
 
 import com.alibaba.fastjson.JSON;
 import io.github.common.web.Result;
+import io.github.geniusay.pojo.DTO.DriverPathDTO;
 import io.github.geniusay.pojo.VO.RobotVO;
 import okhttp3.*;
 import org.springframework.scheduling.annotation.Async;
@@ -47,33 +48,26 @@ public class HTTPUtils {
                     }
                 }
             }
-            String[] parts = fileUrl.split("/");
-            String url = parts[parts.length - 1];
-            String path = extractBrowserName(url);
             downloadMsg = "正在解压中.....";
-            unzipFile("driver",path);
+            String target = unzipFile(savePath);
             downloadMsg = "下载成功!";
+            DriverPathDTO build = DriverPathDTO.builder().driverPath(target).browserPath(CacheUtils.path).build();
+            saveFileToCurrentPath("path.txt",JSON.toJSONString(build));
         }catch(Exception e){
             downloadMsg="下载失败："+e.getMessage();
         } finally{
             isDownload = false;
         }
     }
-    private String extractBrowserName(String driverName) {
-        if (driverName.startsWith("chrome")) {
-            return "chrome";
-        } else if (driverName.startsWith("edge")) {
-            return "edge";
-        } else {
-            return "unknown";
+    public String unzipFile(String zipFilePath) {
+        String dirName = zipFilePath.substring(0, zipFilePath.lastIndexOf('.'));
+        File destDir = new File(System.getProperty("user.dir"), dirName);
+
+        if (!destDir.exists()) {
+            destDir.mkdir();
         }
-    }
-    public void unzipFile(String zipFilePath,String target) {
-        File destDir = new File(System.getProperty("user.dir"), zipFilePath);
-        if (destDir.exists()) {
-            deleteDirectory(destDir);
-        }
-        destDir.mkdir();
+        String exeFilePath = null;
+
         try (ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFilePath))) {
             ZipEntry entry;
             while ((entry = zipInputStream.getNextEntry()) != null) {
@@ -86,9 +80,7 @@ public class HTTPUtils {
                 if (entry.isDirectory()) {
                     continue;
                 }
-                if (entry.getName().endsWith(".exe")) {
-                    outputFile = new File(destDir, target);
-                }
+
                 try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile))) {
                     byte[] buffer = new byte[1024];
                     int bytesRead;
@@ -96,14 +88,21 @@ public class HTTPUtils {
                         outputStream.write(buffer, 0, bytesRead);
                     }
                 }
-                zipInputStream.closeEntry(); // 关闭当前条目
+                if (entry.getName().endsWith(".exe")) {
+                    exeFilePath = outputFile.getAbsolutePath();
+                }
+
+                zipInputStream.closeEntry();
             }
         } catch (IOException e) {
-            downloadMsg = "解压失败："+e.getMessage();
+            downloadMsg="解压失败";
             System.err.println("Error while extracting the zip file: " + e.getMessage());
             e.printStackTrace();
         }
+
+        return exeFilePath;
     }
+
     public Response getWithNullParams(String url, Map<String,String> headers){
         try {
             OkHttpClient okHttpClient = new OkHttpClient();
@@ -170,5 +169,18 @@ public class HTTPUtils {
             }
         }
         dir.delete();
+    }
+    public void saveFileToCurrentPath(String name,String data){
+        String directory = System.getProperty("user.dir");
+        String filePath = directory + File.separator + name;
+        File file = new File(filePath);
+        try (FileWriter fileWriter = new FileWriter(file)) {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            fileWriter.write(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

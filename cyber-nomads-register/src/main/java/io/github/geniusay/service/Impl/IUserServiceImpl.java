@@ -152,38 +152,18 @@ public class IUserServiceImpl implements UserService {
             throw new RuntimeException("无法找到对应文件，请检查对应文件是否存在或路径是否正确");
         }
         String jsonString = JSON.toJSONString(pathDTO, SerializerFeature.DisableCheckSpecialChar);
-
-        String directory = System.getProperty("user.dir");
-        String filePath = directory + File.separator + "path.txt";
-        File file = new File(filePath);
-        try (FileWriter fileWriter = new FileWriter(file)) {
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            fileWriter.write(jsonString);
-            System.out.println(jsonString);
-            System.out.println("JSON 数据已写入文件: " + filePath);
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        httpUtils.saveFileToCurrentPath("path.txt",jsonString);
+        return true;
     }
 
     @Override
     public QueryPathDTO queryPathExist(){
-        String key = CacheUtils.key;
-        if(StringUtils.isBlank(key)){
-            throw new RuntimeException("令牌不合法，请检查");
-        }
         String directory = System.getProperty("user.dir");
         String filePath = directory + File.separator + "path.txt";
         DriverPathDTO pathDTO;
         QueryPathDTO.QueryPathDTOBuilder builder = QueryPathDTO.builder();
-        File driver = new File(directory+File.separator+"driver");
         if(isPathExist(filePath)){
             StringBuilder content = new StringBuilder();
-
             try (BufferedReader reader = new BufferedReader(new FileReader(filePath, StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -200,25 +180,6 @@ public class IUserServiceImpl implements UserService {
             }
             builder.pathDTO(pathDTO);
             return builder.build();
-        }else if(driver.exists()&&driver.isDirectory()){
-            File[] files = driver.listFiles((dir, name) -> name.endsWith(".exe"));
-            String browser = null;
-            DriverPathDTO.DriverPathDTOBuilder driverPathDTOBuilder = DriverPathDTO.builder();
-            if (files != null && files.length > 0) {
-                for (File file : files) {
-                    System.out.println("Found exe: " + file.getAbsolutePath());
-                    driverPathDTOBuilder.driverPath(file.getAbsolutePath());
-                    browser = file.getName();
-                }
-            } else {
-                throw new RuntimeException("找不到对应驱动文件，请重新下载");
-            }
-            if("edge".equals(browser)){
-                driverPathDTOBuilder.browserPath(CacheUtils.path);
-            }else if("chrome".equals(browser)){
-                driverPathDTOBuilder.browserPath(CacheUtils.path);
-            }
-            builder.pathDTO(driverPathDTOBuilder.build());
         }
         return builder.build();
     }
