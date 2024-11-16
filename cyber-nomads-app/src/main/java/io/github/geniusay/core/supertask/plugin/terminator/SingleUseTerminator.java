@@ -20,6 +20,9 @@ import static io.github.geniusay.constants.TerminatorConstants.*;
 @Component(SINGLE_USE)
 public class SingleUseTerminator extends AbstractTerminator {
 
+    // 默认冷却时间
+    private static final long DEFAULT_COOLDOWN_TIME_SECONDS = 30L;
+
     // 存储任务的冷却时间（单位：毫秒）
     private long cooldownTime;
 
@@ -33,10 +36,8 @@ public class SingleUseTerminator extends AbstractTerminator {
     @Override
     public void init(Task task) {
         super.init(task);
-
         this.targetCount = task.getRobots().size();
-        this.cooldownTime = getParam(PARAM_COOLDOWN_TIME, Long.class) * 1000L;
-
+        this.cooldownTime = Math.max(getParam(PARAM_COOLDOWN_TIME, Long.class), DEFAULT_COOLDOWN_TIME_SECONDS) * 1000L;
         log.info("初始化单次终结器，机器人数量: {}，冷却时间: {} 秒", this.targetCount, this.cooldownTime / 1000);
     }
 
@@ -70,9 +71,9 @@ public class SingleUseTerminator extends AbstractTerminator {
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
-        // 只保留冷却时间的配置
+        // 冷却时间至少为30秒
         return List.of(
-                TaskNeedParams.ofKV(PARAM_COOLDOWN_TIME, 10L, "任务冷却时间（秒）")
+                TaskNeedParams.ofKV(PARAM_COOLDOWN_TIME, DEFAULT_COOLDOWN_TIME_SECONDS, "任务冷却时间（秒），不得少于" + DEFAULT_COOLDOWN_TIME_SECONDS + "秒")
         );
     }
 }
