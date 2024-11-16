@@ -23,7 +23,7 @@ public class UserLoginMachineController {
     UserService userService;
 
     @GetMapping("/getRobots")
-    public Object getRobots(){
+    public Result<?> getRobots(){
         return userService.queryRobots();
     }
 
