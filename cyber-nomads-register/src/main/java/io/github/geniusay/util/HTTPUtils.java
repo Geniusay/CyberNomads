@@ -21,29 +21,42 @@ import java.util.zip.ZipInputStream;
 @Component
 public class HTTPUtils {
 
+    public static boolean isDownload = false;
+
+    public static String downloadMsg = "";
+
     @Async
     public void downloadFile(String fileUrl, String savePath) throws IOException {
-        Request request = new Request.Builder()
-                .url(fileUrl)
-                .build();
-        OkHttpClient client = new OkHttpClient();
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                throw new IOException("Failed to download file: " + response);
-            }
-            InputStream inputStream = response.body().byteStream();
-            try (OutputStream outputStream = new FileOutputStream(savePath)) {
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
+        isDownload = true;
+        try {
+            downloadMsg = "正在下载中....";
+            Request request = new Request.Builder()
+                    .url(fileUrl)
+                    .build();
+            OkHttpClient client = new OkHttpClient();
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new IOException("Failed to download file: " + response);
+                }
+                InputStream inputStream = response.body().byteStream();
+                try (OutputStream outputStream = new FileOutputStream(savePath)) {
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
                 }
             }
+            String[] parts = fileUrl.split("/");
+            String url = parts[parts.length - 1];
+            String path = extractBrowserName(url);
+            downloadMsg = "正在解压中.....";
+            unzipFile("driver",path);
+        }catch(Exception e){
+            downloadMsg="下载失败："+e.getMessage();
+        } finally{
+            isDownload = false;
         }
-        String[] parts = fileUrl.split("/");
-        String url = parts[parts.length - 1];
-        String path = extractBrowserName(url);
-        unzipFile("driver",path);
     }
     private String extractBrowserName(String driverName) {
         if (driverName.startsWith("chrome")) {

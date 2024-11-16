@@ -54,3 +54,10 @@ export function download(){
         method:"get",
     })
 }
+
+export function downloadStatus(){
+    return request({
+        url: '/loginMachine/downloadStatus',
+        method:"get",
+    })
+}

@@ -49,6 +49,7 @@
 
         <div class="d-flex flex-column" style="margin: 10px">
           <v-btn
+              :loading="downloadStatusInfo.isDownload"
               color="blue"
               height="60"
               style="border-radius: 8px"
@@ -56,6 +57,10 @@
               block
           >
             下载驱动
+            <template v-slot:loader>
+              {{downloadStatusInfo.msg}}
+              <v-progress-linear indeterminate></v-progress-linear>
+            </template>
           </v-btn>
         </div>
         <div class="text-overline mb-2">❓ 这一步是干嘛的</div>
@@ -73,12 +78,11 @@
 <script setup lang="ts">
 import {useSnackbarStore} from "@/stores/snackbarStore";
 import {useRouter} from "vue-router";
-import {download, getSystemInfo} from "@/api/cloudApi"
+import {download, getSystemInfo, downloadStatus} from "@/api/cloudApi"
 import {onMounted} from "vue";
 
 const router = useRouter()
 const snackbarStore = useSnackbarStore();
-
 const map = {
   msedge:"Edge",
   chrome:"Chrome"
@@ -97,6 +101,10 @@ const browserList = [
 
 const currentBrowser = ref("msedge")
 const loading = ref(false)
+const downloadStatusInfo = ref({
+  isDownload: false,
+  msg: "下载中",
+})
 const systemInfo = ref({
   path:"",
   name:"",
@@ -122,8 +130,23 @@ const getSystemInfoReq  = async (browser) =>{
 
 const downloadDriver = async () =>{
   await download()
+  watchDownloadStatus()
 }
 
+
+const watchDownloadStatus = ()=>{
+  downloadStatusInfo.value.isDownload = true
+  downloadStatusInfo.value.msg = "下载中"
+  let interval = setInterval(async ()=>{
+    await downloadStatus().then(res=>{
+      downloadStatusInfo.value = res.data
+      console.log(downloadStatusInfo.value)
+      if(!downloadStatusInfo.value.isDownload){
+        clearInterval(interval);
+      }
+    },1000)
+  })
+}
 watch(
     () =>  currentBrowser.value, // 或 `taskStore.taskForm.params[param.name]`
     async (newVal, oldVal) => {

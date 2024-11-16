@@ -41,7 +41,7 @@ onMounted(async ()=>{
       }else{
         snackbarStore.showSuccessMessage('本地配置校验正确')
         setTimeout(()=>{
-          next()
+          validate()
         }, 500)
 
       }
