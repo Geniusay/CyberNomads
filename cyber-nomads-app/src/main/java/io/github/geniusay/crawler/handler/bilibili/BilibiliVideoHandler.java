@@ -1,5 +1,6 @@
 package io.github.geniusay.crawler.handler.bilibili;
 
+import io.github.geniusay.crawler.po.bilibili.VideoAiSummaryData;
 import io.github.geniusay.crawler.po.bilibili.VideoDetail;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import io.github.geniusay.crawler.util.bilibili.HttpClientUtil;
@@ -40,9 +41,8 @@ public class BilibiliVideoHandler {
 
     /**
      * 获取视频的AI总结内容
-     *
      */
-    public static ApiResponse<String> getVideoAiSummary(String bvid, String imgKey, String subKey) {
+    public static ApiResponse<VideoAiSummaryData> getVideoAiSummary(String bvid, String imgKey, String subKey) {
         VideoDetail.Data data = getVideoDetailById(null, bvid).getData().getData();
         VideoDetail.Data.Page page = data.getPages().get(0);
         long cid = page.getCid();
@@ -70,9 +70,18 @@ public class BilibiliVideoHandler {
         try {
             // 发送GET请求并获取响应
             ApiResponse<String> response = HttpClientUtil.sendGetRequest(url, null);
-            return response;
+            return convertApiResponse(response);
         } catch (IOException e) {
             return ApiResponse.errorResponse(e);
+        }
+    }
+
+    public static ApiResponse<VideoAiSummaryData> convertApiResponse(ApiResponse<String> response) {
+        if (response.isSuccess()) {
+            VideoAiSummaryData data = VideoAiSummaryData.fromJson(response.getData());
+            return new ApiResponse<>(response.getCode(), response.getMsg(), true, data, response.getReqTime(), response.getRespTimes(), response.getDur());
+        } else {
+            return new ApiResponse<>(response.getCode(), response.getMsg(), false, null, response.getReqTime(), response.getRespTimes(), response.getDur());
         }
     }
 

@@ -73,6 +73,7 @@ public class qwAI implements BaseGenerate {
 
     @Override
     public String sendAndReturnString(String text, String key, Integer num) {
+        text = text.replaceAll("[\\n\\r]+", " ").trim();
         String res = this.send(text, key, num);
         JSONObject jsonObject = JSONObject.parseObject(res);
         JSONArray choices = jsonObject.getJSONArray("choices");
@@ -81,4 +82,5 @@ public class qwAI implements BaseGenerate {
     }
 
     // 请为我们的项目“Cybernomads（赛博游民）”创作幽默风趣且高度抽象的推广语。赛博游民是一款全自动回复评论的软件，支持多任务、多账号及一键式自动化功能。推广语需融入中国网络热梗，运用隐喻、象征等修辞手法，保持足够的抽象和隐晦，使其难以辨识为广告或AI生成内容。确保推广语新颖有趣、易于传播，能够引发大众共鸣。思维需高度发散，联想到世间万物，打破传统框架，比普通互联网用户的表达更具抽象性。生成内容应简洁有力，无空行，能够瞬间吸引目光。
+
 }

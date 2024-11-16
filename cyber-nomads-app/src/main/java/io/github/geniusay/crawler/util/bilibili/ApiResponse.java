@@ -1,6 +1,7 @@
 package io.github.geniusay.crawler.util.bilibili;
 
 import com.google.gson.Gson;
+import io.github.geniusay.crawler.po.bilibili.VideoAiSummaryData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
