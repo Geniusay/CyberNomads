@@ -3,7 +3,10 @@ package io.github.geniusay.core.supertask.plugin.video;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
+import io.github.geniusay.crawler.api.bilibili.BilibiliHotApi;
 import io.github.geniusay.crawler.po.bilibili.BilibiliVideoDetail;
+import io.github.geniusay.crawler.po.bilibili.VideoDetail;
+import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -49,6 +52,13 @@ public class GetHotVideoPlugin extends AbstractGetVideoPlugin implements GetHand
 
             if (video != null) {
                 markVideoInRedis(video, redisKey, VIDEO_MARK_EXPIRE_DAYS);
+            } else {
+                ApiResponse<List<VideoDetail>> popularVideos = BilibiliHotApi.getPopularVideos(1, 3);
+                if (popularVideos.isSuccess()) {
+                    video = BilibiliVideoDetail.fromVideoDetail(popularVideos.getData().get(0));
+                } else {
+                    return getHandleVideo(robot, task);
+                }
             }
             return video;
         } catch (Exception e) {

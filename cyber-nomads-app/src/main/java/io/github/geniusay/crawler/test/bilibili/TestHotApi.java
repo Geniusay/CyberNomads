@@ -26,7 +26,7 @@ public class TestHotApi {
 
     @Test
     public void getHot() {
-        ApiResponse<List<VideoDetail>> hotRankingVideos = BilibiliHotApi.getPopularVideos(26, 20);
+        ApiResponse<List<VideoDetail>> hotRankingVideos = BilibiliHotApi.getPopularVideos(1, 3);
         if (hotRankingVideos.isSuccess()) {
             List<VideoDetail> hotRankingVideoList = hotRankingVideos.getData();
             for (VideoDetail videoDetail : hotRankingVideoList) {
