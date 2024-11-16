@@ -27,7 +27,6 @@ public class HTTPUtils {
 
     @Async
     public void downloadFile(String fileUrl, String savePath) throws IOException {
-        isDownload = true;
         try {
             downloadMsg = "正在下载中....";
             Request request = new Request.Builder()
@@ -99,9 +98,8 @@ public class HTTPUtils {
                 zipInputStream.closeEntry(); // 关闭当前条目
             }
         } catch (IOException e) {
-            downloadMsg = "解压失败："+e.getMessage();
             System.err.println("Error while extracting the zip file: " + e.getMessage());
-            e.printStackTrace();
+            throw new RuntimeException("解压失败");
         }
     }
     public Response getWithNullParams(String url, Map<String,String> headers){

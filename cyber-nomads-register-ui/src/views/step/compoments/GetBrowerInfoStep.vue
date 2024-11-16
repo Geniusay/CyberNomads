@@ -144,8 +144,8 @@ const watchDownloadStatus = ()=>{
       if(!downloadStatusInfo.value.isDownload){
         clearInterval(interval);
       }
-    },1000)
-  })
+    })
+  },1000)
 }
 watch(
     () =>  currentBrowser.value, // 或 `taskStore.taskForm.params[param.name]`
