@@ -14,4 +14,7 @@ import java.util.Set;
 public class CacheUtils {
     public static final Set<String> robots = new HashSet<>();
     public static String key = "";
+    public static String version = "";
+    public static String browserName = "";
+    public static String path = "";
 }

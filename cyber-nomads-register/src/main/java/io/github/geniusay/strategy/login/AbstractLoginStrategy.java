@@ -31,6 +31,8 @@ public abstract class AbstractLoginStrategy implements LoginStrategy{
     ApplicationContext context;
     @Value("${communication.url}")
     private String url;
+    @Resource
+    HTTPUtils httpUtils;
     Map<String,AbstractLoginStrategy> loginStrategyHashMap = new HashMap<>();
     @PostConstruct
     public void init(){
@@ -53,7 +55,7 @@ public abstract class AbstractLoginStrategy implements LoginStrategy{
             }
             System.out.println(cookie);
             LoginMachineDTO robotDTO = LoginMachineDTO.builder().username(loginDTO.getUsername()).cookie(cookie).platform(loginDTO.getPlatform()).build();
-            if ("200".equals(HTTPUtils.convertRespToCode(HTTPUtils.postWithParams(url + INSERT_ROBOT, Map.of("machine-token", key), JSON.toJSONString(robotDTO))))) {
+            if ("200".equals(httpUtils.convertRespToCode(httpUtils.postWithParams(url + INSERT_ROBOT, Map.of("machine-token", key), JSON.toJSONString(robotDTO))))) {
                 return true;
             }else{
                 throw new RuntimeException("登陆失败，请检查令牌是否过期或存在相同用户名的robot");

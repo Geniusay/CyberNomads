@@ -51,4 +51,21 @@ public class UserLoginMachineController {
     public Result<?> queryPathIfExist(){
         return Result.success(userService.queryPathExist());
     }
+
+    @GetMapping("/getSystemBrowser")
+    public Result<?> getBrowser(String browser){
+        return Result.success(Result.success(userService.queryBrowser(browser)));
+    }
+
+
+    @GetMapping("/download")
+    public Result<?> downloadDriver(){
+        return Result.success(userService.download());
+    }
+
+    @GetMapping("/unzip")
+    public Result<?> unzip(){
+        return Result.success(userService.unzipDriver());
+    }
+
 }

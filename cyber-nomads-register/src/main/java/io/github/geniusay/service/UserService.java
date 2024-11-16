@@ -1,10 +1,7 @@
 package io.github.geniusay.service;
 
 import io.github.common.web.Result;
-import io.github.geniusay.pojo.DTO.DriverPathDTO;
-import io.github.geniusay.pojo.DTO.LoginDTO;
-import io.github.geniusay.pojo.DTO.QueryPathDTO;
-import io.github.geniusay.pojo.DTO.VerityDTO;
+import io.github.geniusay.pojo.DTO.*;
 import io.github.geniusay.pojo.VO.RobotVO;
 
 import java.util.List;
@@ -29,4 +26,7 @@ public interface UserService {
 
     Boolean verityPath(DriverPathDTO pathDTO);
     QueryPathDTO queryPathExist();
+    String download();
+    BrowserInfoDTO queryBrowser(String browser);
+    Boolean unzipDriver();
 }
