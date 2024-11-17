@@ -5,7 +5,7 @@ import io.github.geniusay.core.actionflow.frame.ActionFlow;
 import io.github.geniusay.core.actionflow.logic.BiliCommentLogic;
 import io.github.geniusay.core.actionflow.receiver.BiliCommentReceiver;
 import io.github.geniusay.core.supertask.plugin.TaskPluginFactory;
-import io.github.geniusay.core.supertask.plugin.comment.AICustomCommentGenerate;
+import io.github.geniusay.core.supertask.plugin.comment.AICommentGenerate;
 import io.github.geniusay.core.supertask.plugin.comment.AbstractCommentGenerate;
 import io.github.geniusay.core.supertask.plugin.terminator.CooldownTerminator;
 import io.github.geniusay.core.supertask.plugin.video.AbstractGetVideoPlugin;
@@ -26,6 +26,7 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
+import static io.github.geniusay.constants.PluginConstant.BASED_ON_CONTENT;
 import static io.github.geniusay.core.supertask.config.PluginConstant.COMMENT_GROUP_NAME;
 import static io.github.geniusay.core.supertask.config.PluginConstant.GET_VIDEO_GROUP_NAME;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
@@ -52,12 +53,15 @@ public class BiliInfinityHotCommentBlueprint extends AbstractTaskBlueprint {
 
     @Override
     protected void executeTask(RobotWorker robot, Task task) throws Exception {
+        boolean basedOnContent = getValue(task.getParams(), BASED_ON_CONTENT, Boolean.class);
         BilibiliVideoDetail videoDetail = taskPluginFactory.<AbstractGetVideoPlugin>buildPluginWithGroup(GET_VIDEO_GROUP_NAME, task).getHandleVideo(robot, task);
 
-        ApiResponse<VideoAiSummaryData> videoAiSummary = BilibiliVideoApi.getVideoAiSummary(videoDetail.getBvid(), imgKey, subKey);
-        String summary = videoAiSummary.getData().generateFullSummary();
-
-        String comment = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task).generateComment(summary);
+        String content = null;
+        if (basedOnContent) {
+            ApiResponse<VideoAiSummaryData> videoAiSummary = BilibiliVideoApi.getVideoAiSummary(videoDetail.getBvid(), imgKey, subKey);
+            content = videoAiSummary.getData().generateFullSummary();
+        }
+        String comment = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task).generateComment(content);
 
         ApiResponse<Boolean> response = new ActionFlow<>(
                 new BiliUserActor(robot),
@@ -83,7 +87,7 @@ public class BiliInfinityHotCommentBlueprint extends AbstractTaskBlueprint {
     public List<TaskNeedParams> supplierNeedParams() {
         return ParamsUtil.packageListParams(taskPluginFactory.pluginGroupParams(
                 CooldownTerminator.class,
-                AICustomCommentGenerate.class,
+                AICommentGenerate.class,
                 GetHotVideoPlugin.class
         ));
     }

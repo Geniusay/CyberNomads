@@ -5,7 +5,7 @@ import io.github.geniusay.core.actionflow.frame.ActionFlow;
 import io.github.geniusay.core.actionflow.logic.BiliTestLogic;
 import io.github.geniusay.core.actionflow.receiver.BiliCommentReceiver;
 import io.github.geniusay.core.supertask.plugin.TaskPluginFactory;
-import io.github.geniusay.core.supertask.plugin.comment.AICustomCommentGenerate;
+import io.github.geniusay.core.supertask.plugin.comment.AICommentGenerate;
 import io.github.geniusay.core.supertask.plugin.comment.AbstractCommentGenerate;
 import io.github.geniusay.core.supertask.plugin.terminator.CooldownTerminator;
 import io.github.geniusay.core.supertask.plugin.video.AbstractGetVideoPlugin;
@@ -75,6 +75,6 @@ public class TestBlueprint extends AbstractTaskBlueprint {
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
-        return ParamsUtil.packageListParams(taskPluginFactory.pluginGroupParams(CooldownTerminator.class, AICustomCommentGenerate.class, GetHotVideoPlugin.class));
+        return ParamsUtil.packageListParams(taskPluginFactory.pluginGroupParams(CooldownTerminator.class, AICommentGenerate.class, GetHotVideoPlugin.class));
     }
 }

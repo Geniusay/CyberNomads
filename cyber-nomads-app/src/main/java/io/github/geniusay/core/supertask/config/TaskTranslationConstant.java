@@ -42,7 +42,6 @@ public class TaskTranslationConstant {
         // 评论生成器
         pluginTranslation.put(COMMENT_GROUP_NAME, "评论生成器：生成评论内容的插件");
         pluginTranslation.put(AI_CUSTOM_COMMENT_GENERATE, "AI自定义评论：根据提示词生成评论");
-        pluginTranslation.put(AI_REPLY_COMMENT_GENERATE, "AI自动回复评论：根据身份和风格生成回复");
         pluginTranslation.put(CUSTOM_COMMENT_GENERATE, "定制评论：发布固定的自定义评论");
 
         // 视频选择器

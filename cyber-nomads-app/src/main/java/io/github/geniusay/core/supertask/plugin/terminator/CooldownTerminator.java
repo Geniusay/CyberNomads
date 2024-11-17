@@ -3,7 +3,6 @@ package io.github.geniusay.core.supertask.plugin.terminator;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
-import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DO.TaskLogDO;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -34,7 +33,6 @@ public class CooldownTerminator extends AbstractTerminator {
     @Override
     public void init(Task task) {
         super.init(task);
-        // 冷却时间不得少于30秒
         this.cooldownTime = Math.max(getParam(PARAM_COOLDOWN_TIME, Long.class), DEFAULT_COOLDOWN_TIME_SECONDS) * 1000L;
     }
 
