@@ -12,7 +12,9 @@ import io.github.geniusay.core.supertask.plugin.video.AbstractGetVideoPlugin;
 import io.github.geniusay.core.supertask.plugin.video.GetHotVideoPlugin;
 import io.github.geniusay.core.supertask.task.*;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
+import io.github.geniusay.crawler.api.bilibili.BilibiliVideoApi;
 import io.github.geniusay.crawler.po.bilibili.BilibiliVideoDetail;
+import io.github.geniusay.crawler.po.bilibili.VideoAiSummaryData;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import io.github.geniusay.pojo.DO.LastWord;
 import io.github.geniusay.utils.LastWordUtil;
@@ -28,6 +30,8 @@ import static io.github.geniusay.core.supertask.config.PluginConstant.COMMENT_GR
 import static io.github.geniusay.core.supertask.config.PluginConstant.GET_VIDEO_GROUP_NAME;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.INFINITY_HOT_VIDEO_COMMENT;
+import static io.github.geniusay.crawler.test.bilibili.TestVideoAPI.imgKey;
+import static io.github.geniusay.crawler.test.bilibili.TestVideoAPI.subKey;
 
 @Slf4j
 @Component
@@ -48,8 +52,13 @@ public class BiliInfinityHotCommentBlueprint extends AbstractTaskBlueprint {
 
     @Override
     protected void executeTask(RobotWorker robot, Task task) throws Exception {
-        String comment = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task).generateComment();
         BilibiliVideoDetail videoDetail = taskPluginFactory.<AbstractGetVideoPlugin>buildPluginWithGroup(GET_VIDEO_GROUP_NAME, task).getHandleVideo(robot, task);
+
+        ApiResponse<VideoAiSummaryData> videoAiSummary = BilibiliVideoApi.getVideoAiSummary(videoDetail.getBvid(), imgKey, subKey);
+        String summary = videoAiSummary.getData().generateFullSummary();
+
+        String comment = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task).generateComment(summary);
+
         ApiResponse<Boolean> response = new ActionFlow<>(
                 new BiliUserActor(robot),
                 new BiliCommentLogic(comment),

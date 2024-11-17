@@ -22,7 +22,7 @@ public class AIGenerateUtil {
     @Value("${AIGenerate.API_KEY}")
     private String apiKey;
 
-    private final Integer defaultMaxNum = 50;
+    private final Integer defaultMaxNum = 100;
 
     public String textGenerateAndReturnContent(String resource,Integer num,String slogan){
         String content = AIGenerate.sendAndReturnString(resource, apiKey, num>defaultMaxNum?defaultMaxNum:num);

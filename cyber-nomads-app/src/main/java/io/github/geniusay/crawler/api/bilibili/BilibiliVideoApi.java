@@ -1,6 +1,7 @@
 package io.github.geniusay.crawler.api.bilibili;
 
 import io.github.geniusay.crawler.handler.bilibili.BilibiliVideoHandler;
+import io.github.geniusay.crawler.po.bilibili.VideoAiSummaryData;
 import io.github.geniusay.crawler.po.bilibili.VideoDetail;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 
@@ -25,7 +26,7 @@ public class BilibiliVideoApi {
     /**
      * 获取视频的AI总结内容
      */
-    public static ApiResponse<String> getVideoAiSummary(String bvid, String imgKey, String subKey) {
+    public static ApiResponse<VideoAiSummaryData> getVideoAiSummary(String bvid, String imgKey, String subKey) {
         return BilibiliVideoHandler.getVideoAiSummary(bvid, imgKey, subKey);
     }
 

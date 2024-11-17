@@ -36,6 +36,12 @@ public class AICustomCommentGenerate extends AbstractCommentGenerate implements 
     }
 
     @Override
+    public String generateComment(String content) {
+        String temp = preText + content;
+        return generateUtil.textGenerateAndReturnContent(temp, textCount, slogan);
+    }
+
+    @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
             TaskNeedParams.ofK(AI_PRE_TEXT, String.class, "文本提示词前缀").setInputType(TaskNeedParams.InputTypeEnum.TEXTAREA),
