@@ -15,6 +15,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Data
@@ -59,6 +60,7 @@ public class ProxyClient {
                 .proxy(new Proxy(
                         Proxy.Type.HTTP,
                         new InetSocketAddress(proxy.getIp(), proxy.getPort())))
+                .connectTimeout(3, TimeUnit.SECONDS)
                 .build();
         this.timeout = 4;
         this.proxyPool = proxyPool;
@@ -67,6 +69,7 @@ public class ProxyClient {
     public ProxyClient(AbstractRetryStrategy retryStrategy, ProxyPool proxyPool) {
         this.retryStrategy = retryStrategy;
         this.client = new OkHttpClient.Builder()
+                .connectTimeout(3, TimeUnit.SECONDS)
                 .build();
         this.timeout = 3;
         this.proxyPool = proxyPool;
@@ -78,10 +81,12 @@ public class ProxyClient {
             proxyPool.successCallback(this.proxy);
             return res;
         } catch (SocketTimeoutException | SocketException e) {
-            // 2、超时失败重试
-            Response res = retryStrategy.execute(request, this);
-            if (res != null){
-                return res;
+            if (!Objects.equals(retryStrategy, null)){
+                // 2、超时失败重试
+                Response res = retryStrategy.execute(request, this);
+                if (res != null){
+                    return res;
+                }
             }
             // 3、发现重试后代理依然不可用，于是告诉代理池自己的不满
             proxyPool.failCallback(this.proxy);

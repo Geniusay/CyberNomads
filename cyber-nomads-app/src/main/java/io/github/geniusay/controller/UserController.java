@@ -8,7 +8,6 @@ import io.github.geniusay.service.UserService;
 import io.github.geniusay.utils.UserPointUtil;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -84,5 +83,4 @@ public class UserController {
     public Result<?> getPoint(){
         return Result.success(userPointUtil.get());
     }
-
 }

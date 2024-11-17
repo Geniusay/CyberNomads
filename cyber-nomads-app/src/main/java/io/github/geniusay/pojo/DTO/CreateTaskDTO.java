@@ -1,5 +1,6 @@
 package io.github.geniusay.pojo.DTO;
 
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @Data
+@Builder
 public class CreateTaskDTO {
 
     @NotBlank(message = "任务名称不能为空")
