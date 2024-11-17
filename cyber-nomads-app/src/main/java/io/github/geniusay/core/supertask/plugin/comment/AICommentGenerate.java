@@ -51,7 +51,7 @@ public class AICommentGenerate extends AbstractCommentGenerate implements Commen
         baseText.append("\n额外信息：").append(preText);
 
         if (basedOnContent && content != null && !content.isEmpty()) {
-            baseText.append("\n请用以上描述的身份回复以下评论：").append(content);
+            baseText.append("\n请用以上描述的身份加上以下的概述输出内容：").append(content);
         }
 
         return generateUtil.textGenerateAndReturnContent(baseText.toString(), textCount, slogan);
