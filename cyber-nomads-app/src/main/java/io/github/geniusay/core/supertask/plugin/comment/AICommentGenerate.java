@@ -24,7 +24,6 @@ public class AICommentGenerate extends AbstractCommentGenerate implements Commen
     private String combinedTemplate;  // 合并后的身份模板和提示词
     private Integer textCount;        // 生成字数上限
     private String slogan;            // Slogan 标语
-    private Boolean basedOnContent;   // 是否根据内容生成
 
     // 猫娘模板
     public static final String CATGIRL_TEMPLATE =
@@ -40,14 +39,13 @@ public class AICommentGenerate extends AbstractCommentGenerate implements Commen
         combinedTemplate = getValue(this.pluginParams, AI_PRE_TEXT, String.class);
         textCount = getValue(this.pluginParams, AI_COUNT_NUM, Integer.class);
         slogan = getValue(this.pluginParams, SLOGAN, String.class);
-        basedOnContent = getValue(this.pluginParams, BASED_ON_CONTENT, Boolean.class);
     }
 
     @Override
     public String generateComment(String content) {
         StringBuilder baseText = new StringBuilder(combinedTemplate).append("\n");
 
-        if (basedOnContent && content != null && !content.isEmpty()) {
+        if (content != null && !content.isEmpty()) {
             baseText.append("\n请根据上面的描述和以下的内容生成评论：").append(content);
         }
 
