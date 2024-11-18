@@ -17,19 +17,20 @@ public class TaskNeedParams {
     private String inputType;
     private Class<?> type;
     private String desc;
+    private String extendDesc;
     private boolean required;
     private Object defaultValue;
     private List<TaskNeedParams> params = new ArrayList<>();
     private List<TaskNeedParams> selection = new ArrayList<>();
-
 
     // 构造方法（不带默认值、可选项、子参数）
     public TaskNeedParams(String name, Class<?> type, String desc) {
         this.name = name;
         this.type = type;
         this.desc = desc;
+        this.extendDesc = null;
         this.required = true;
-        this.inputType = InputTypeEnum.INPUT.getValue();
+        this.inputType = type == Boolean.class ? InputTypeEnum.BOOLEAN.getValue() : InputTypeEnum.INPUT.getValue();
         this.defaultValue = null;
     }
 
@@ -39,20 +40,21 @@ public class TaskNeedParams {
         this.type = type;
         this.desc = desc;
         this.required = required;
-        this.inputType = InputTypeEnum.INPUT.getValue();
+        this.inputType = type == Boolean.class ? InputTypeEnum.BOOLEAN.getValue() : InputTypeEnum.INPUT.getValue();
         this.defaultValue = defaultValue;
     }
 
     // 构造方法（带可选项和子参数）
-    public TaskNeedParams(String name, Class<?> type, String desc, boolean required, Object defaultValue, List<TaskNeedParams> selection, List<TaskNeedParams> params) {
+    public TaskNeedParams(String name, Class<?> type, String desc, boolean required, Object defaultValue, List<TaskNeedParams> selection, List<TaskNeedParams> params, String extendDesc) {
         this.name = name;
         this.type = type;
         this.desc = desc;
         this.required = required;
         this.defaultValue = defaultValue;
-        this.inputType = InputTypeEnum.INPUT.getValue();
+        this.inputType = type == Boolean.class ? InputTypeEnum.BOOLEAN.getValue() : InputTypeEnum.INPUT.getValue();
         this.selection = selection == null ? new ArrayList<>() : selection;
         this.params = params == null ? new ArrayList<>() : params;
+        this.extendDesc = extendDesc;
     }
 
     // 构造方法（不带类型，用于表示复杂参数结构）
@@ -80,24 +82,24 @@ public class TaskNeedParams {
 
     /**
      * 必填项
-     * @param name
-     * @param defaultValue
-     * @param desc
-     * @return
      */
     public static TaskNeedParams ofKV(String name, Object defaultValue, String desc){
-        return new TaskNeedParams(name, defaultValue.getClass(), desc, true, defaultValue, null, null);
+        return new TaskNeedParams(name, defaultValue.getClass(), desc, true, defaultValue, null, null, "");
+    }
+
+    public static TaskNeedParams ofKV(String name, Object defaultValue, String desc, String extendDesc){
+        return new TaskNeedParams(name, defaultValue.getClass(), desc, true, defaultValue, null, null, extendDesc);
     }
 
     /**
      * 非必填项
-     * @param name
-     * @param type
-     * @param desc
-     * @return
      */
     public static TaskNeedParams ofK(String name, Class<?> type, String desc){
-        return new TaskNeedParams(name, type, desc, false, null, null, null);
+        return new TaskNeedParams(name, type, desc, false, null, null, null, "");
+    }
+
+    public static TaskNeedParams ofK(String name, Class<?> type, String desc, String extendDesc){
+        return new TaskNeedParams(name, type, desc, false, null, null, null, extendDesc);
     }
 
     public static TaskNeedParams ofSelection(String name, String defaultValue, String desc, List<TaskNeedParams> selections){
@@ -105,7 +107,7 @@ public class TaskNeedParams {
     }
 
     public static TaskNeedParams ofParams(String name, String desc, List<TaskNeedParams> params){
-        return new TaskNeedParams(name, TaskNeedParams.class, desc, false, null, null, params);
+        return new TaskNeedParams(name, TaskNeedParams.class, desc, false, null, null, params, "");
     }
 
     public TaskNeedParams setInputType(InputTypeEnum inputType){
@@ -116,7 +118,8 @@ public class TaskNeedParams {
     public enum InputTypeEnum{
         SELECT("selection"),
         INPUT("input"),
-        TEXTAREA("textarea");
+        TEXTAREA("textarea"),
+        BOOLEAN("Boolean");
 
         private String value;
         InputTypeEnum(String value) {

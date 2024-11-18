@@ -36,7 +36,7 @@ import static io.github.geniusay.crawler.test.bilibili.TestVideoAPI.subKey;
 
 @Slf4j
 @Component
-public class BiliInfinityHotCommentBlueprint extends AbstractTaskBlueprint {
+public class BiliAiCommentBlueprint extends AbstractTaskBlueprint {
 
     @Resource
     TaskPluginFactory taskPluginFactory;
@@ -53,21 +53,10 @@ public class BiliInfinityHotCommentBlueprint extends AbstractTaskBlueprint {
 
     @Override
     protected void executeTask(RobotWorker robot, Task task) throws Exception {
-        boolean basedOnContent = getValue(task.getParams(), BASED_ON_CONTENT, Boolean.class);
         BilibiliVideoDetail videoDetail = taskPluginFactory.<AbstractGetVideoPlugin>buildPluginWithGroup(GET_VIDEO_GROUP_NAME, task).getHandleVideo(robot, task);
+        String comment = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task).generateComment();
 
-        String content = null;
-        if (basedOnContent) {
-            ApiResponse<VideoAiSummaryData> videoAiSummary = BilibiliVideoApi.getVideoAiSummary(videoDetail.getBvid(), imgKey, subKey);
-            content = videoAiSummary.getData().generateFullSummary();
-        }
-        String comment = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task).generateComment(content);
-
-        ApiResponse<Boolean> response = new ActionFlow<>(
-                new BiliUserActor(robot),
-                new BiliCommentLogic(comment),
-                new BiliCommentReceiver(videoDetail)
-        ).execute();
+        ApiResponse<Boolean> response = new ActionFlow<>(new BiliUserActor(robot), new BiliCommentLogic(comment), new BiliCommentReceiver(videoDetail)).execute();
         task.addLastWord(robot, response, Map.of("bvid", videoDetail.getBvid(), "comment", comment));
     }
 

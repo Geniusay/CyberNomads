@@ -15,7 +15,7 @@ public class TestBarrageAPI {
 
     @Test
     public void getBarrage() throws Exception {
-        String cid = "1429061988";
+        String cid = "1460315086";
         String filePath = "D:\\" + cid + ".txt";
 
         // 获取弹幕列表
@@ -43,14 +43,14 @@ public class TestBarrageAPI {
 
     @Test
     public void barrage() throws Exception {
-        String cid = "1429061988";
+        String cid = "1460315086";
         String filePath = "D:\\" + cid + ".txt";
         // 逐行读取：从文件中加载弹幕列表
         List<Barrage> loadedBarrageList = loadBarrageList(filePath);
         // 打印读取后的弹幕列表
         if (loadedBarrageList != null) {
             for (Barrage barrage : loadedBarrageList) {
-                float time = barrage.getTime();
+                float time = barrage.getTime() + 10;
                 int p = (int) (time / 60);
                 int b = (int) (time - p * 60);
                 System.out.print(p + ":" + b + "  | (");

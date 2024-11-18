@@ -99,7 +99,7 @@ public class CooldownTerminator extends AbstractTerminator {
     public List<TaskNeedParams> supplierNeedParams() {
         // 冷却时间至少为30秒
         return List.of(
-                TaskNeedParams.ofKV(PARAM_COOLDOWN_TIME, DEFAULT_COOLDOWN_TIME_SECONDS, "工作者冷却时间（秒），不得少于" + DEFAULT_COOLDOWN_TIME_SECONDS + "秒")
+                TaskNeedParams.ofKV(PARAM_COOLDOWN_TIME, DEFAULT_COOLDOWN_TIME_SECONDS, "冷却时间（秒），不得少于" + DEFAULT_COOLDOWN_TIME_SECONDS + "秒")
         );
     }
 }
