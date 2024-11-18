@@ -43,12 +43,17 @@ public class AICommentGenerate extends AbstractCommentGenerate implements Commen
 
     @Override
     public String generateComment(String content) {
-        StringBuilder baseText = new StringBuilder(combinedTemplate).append("\n");
+        StringBuilder baseText = new StringBuilder();
 
-        if (content != null && !content.isEmpty()) {
-            baseText.append("\n请根据上面的描述和以下的内容生成评论：").append(content);
+        if ( content != null && !content.isEmpty()) {
+            baseText.append("你刚刚看了下面这个视频的内容总结\n");
+            baseText.append(content).append("\n\n");
         }
 
+        baseText.append("你作为一个").append(combinedTemplate).append("\n");
+        baseText.append("请你对这个视频进行评论");
+
+        // 生成最终评论
         return generateUtil.textGenerateAndReturnContent(baseText.toString(), textCount, slogan);
     }
 
