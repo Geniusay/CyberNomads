@@ -26,13 +26,10 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.geniusay.constants.PluginConstant.BASED_ON_CONTENT;
 import static io.github.geniusay.core.supertask.config.PluginConstant.COMMENT_GROUP_NAME;
 import static io.github.geniusay.core.supertask.config.PluginConstant.GET_VIDEO_GROUP_NAME;
 import static io.github.geniusay.core.supertask.config.TaskPlatformConstant.BILIBILI;
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.INFINITY_HOT_VIDEO_COMMENT;
-import static io.github.geniusay.crawler.test.bilibili.TestVideoAPI.imgKey;
-import static io.github.geniusay.crawler.test.bilibili.TestVideoAPI.subKey;
 
 @Slf4j
 @Component

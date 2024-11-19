@@ -71,7 +71,7 @@ public class TaskNeedParams {
     }
 
     // 构造方法（带可选项和子参数）
-    public TaskNeedParams(String name, Class<?> type, String desc, boolean required, Object defaultValue, List<TaskNeedParams> selection, List<TaskNeedParams> params, InputTypeEnum inputType) {
+    public TaskNeedParams(String name, Class<?> type, String desc, boolean required, Object defaultValue, List<TaskNeedParams> selection, List<TaskNeedParams> params, InputTypeEnum inputType, String extendDesc, boolean hidden) {
         this.name = name;
         this.type = type;
         this.desc = desc;
@@ -113,9 +113,14 @@ public class TaskNeedParams {
         return new TaskNeedParams(name, type, desc, false, null, null, null, extendDesc, hidden);
     }
 
-    public static TaskNeedParams ofSelection(String name, String defaultValue, String desc, List<TaskNeedParams> selections) {
-        return new TaskNeedParams(name, String.class, desc, true, defaultValue, selections, null, InputTypeEnum.SELECT);
+    public static TaskNeedParams ofSelection(String name, String defaultValue, String desc, List<TaskNeedParams> selections, String extendDesc, boolean hidden) {
+        return new TaskNeedParams(name, String.class, desc, true, defaultValue, selections, null, InputTypeEnum.SELECT, extendDesc, hidden);
     }
+
+    public static TaskNeedParams ofSelection(String name, String defaultValue, String desc, List<TaskNeedParams> selections) {
+        return new TaskNeedParams(name, String.class, desc, true, defaultValue, selections, null, InputTypeEnum.SELECT, "", false);
+    }
+
 
     public static TaskNeedParams ofParams(String name, String desc, List<TaskNeedParams> params) {
         return new TaskNeedParams(name, TaskNeedParams.class, desc, false, null, null, params, "", false);

@@ -44,12 +44,12 @@ public class BiliFollowLogicSelector extends AbstractLogicSelector implements Lo
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
-                TaskNeedParams.ofSelection(RE_SRC, "空间", "选择关注来源", List.of(
+                TaskNeedParams.ofSelection(RE_SRC, "空间", "关注来源", List.of(
                         TaskNeedParams.ofK("空间", String.class, "空间"),
                         TaskNeedParams.ofK("视频", String.class, "视频"),
                         TaskNeedParams.ofK("文章", String.class, "文章"),
                         TaskNeedParams.ofK("活动页面", String.class, "活动页面")
-                ))
+                ), "代表是从什么渠道来找到此用户的", true)
         );
     }
 }
