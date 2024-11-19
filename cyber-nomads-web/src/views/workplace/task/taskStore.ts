@@ -98,8 +98,7 @@ export const useTaskStore = defineStore({
       await updateTask(taskForm).then(res=>{
         snackbarStore.showSuccessMessage("更新成功")
         const index = this.taskList.findIndex(item => item.id === taskForm.taskId)
-        this.taskList.splice(index, 1)
-        this.taskList.splice(index, 0, { ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() })
+        this.taskList[index]= { ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() }
       }).catch(error=>{
         snackbarStore.showErrorMessage("更新失败："+error.message)
       })
