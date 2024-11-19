@@ -18,7 +18,7 @@ public class TestBarrageAPI {
 
     // 输入视频的bvid
     private static final String SOURCE_BVID = "BV11w41177WY";  // 源视频的bvid
-    private static final String TARGET_BVID = "BV1xx41177WY";  // 目标视频的bvid
+    private static final String TARGET_BVID = "BV1H7UZYtEH3";  // 目标视频的bvid
 
     // 保存弹幕列表的文件路径
     private static final String BARRAGE_FILE_PATH = "D:\\" + SOURCE_BVID + ".txt";
@@ -30,7 +30,7 @@ public class TestBarrageAPI {
     private static final int BASE_SEND_INTERVAL = 30;
 
     // 时间偏移量，单位秒，表示弹幕发送时间向后偏移的时间
-    private static final int TIME_OFFSET = 10;
+    private static final int TIME_OFFSET = 12;
 
     /**
      * 从源视频爬取弹幕并保存到文件中
@@ -93,6 +93,12 @@ public class TestBarrageAPI {
             String message = barrage.getContent();
             // 加上偏移时间（单位：毫秒）
             int progress = (int) ((barrage.getTime() + TIME_OFFSET) * 1000);
+
+            // 将弹幕时间转换为分钟和秒
+            int totalSeconds = (int) (barrage.getTime() + TIME_OFFSET);
+            int minutes = totalSeconds / 60;
+            int seconds = totalSeconds % 60;
+
             int color = 16777215;  // 弹幕颜色，白色
             int fontsize = 25;  // 弹幕字体大小，标准
             int mode = barrage.getType();  // 弹幕类型
@@ -101,12 +107,12 @@ public class TestBarrageAPI {
             ApiResponse<Boolean> sendResponse = BilibiliBarrageApi.sendBarrage(cookie, String.valueOf(targetAid), String.valueOf(targetCid), message, progress, color, fontsize, mode, imgKey, subKey);
 
             if (sendResponse.isSuccess()) {
-                System.out.println("弹幕发送成功: " + message);
+                System.out.printf("弹幕发送成功: [%02d:%02d] %s%n", minutes, seconds, message);
                 // 将已发送的弹幕dmid记录到文件
                 sentDmids.add(barrage.getDmid());
                 saveProgress(PROGRESS_FILE, sentDmids);
             } else {
-                System.out.println("弹幕发送失败: " + message + "，原因：" + sendResponse.getMsg());
+                System.out.printf("弹幕发送失败: [%02d:%02d] %s，原因：%s%n", minutes, seconds, message, sendResponse.getMsg());
             }
 
             // 延时一段时间，避免触发风控
