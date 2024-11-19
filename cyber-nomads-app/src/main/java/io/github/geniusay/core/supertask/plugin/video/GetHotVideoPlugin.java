@@ -160,7 +160,7 @@ public class GetHotVideoPlugin extends AbstractGetVideoPlugin implements GetHand
                 TaskNeedParams.ofSelection(SCOPE, "任务级别", "避免规则", List.of(
                         TaskNeedParams.ofK("任务级别", String.class, "任务级别"),
                         TaskNeedParams.ofK("机器人级别", String.class, "机器人级别")
-                ), "任务级别：任务下所有的机器人都不会去挑选到重复的视频；机器人级别：单个机器人不会挑选到重复的视频", true)
+                ), SCOPE_DESC, true)
         );
     }
 }

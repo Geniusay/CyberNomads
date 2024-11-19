@@ -23,7 +23,7 @@ public class TaskTranslationConstant {
             INFINITY_HOT_COMMENT_REPLY, "自动怼人",
             TEST_VIDEO_COMMENT, "测试",
             VIDEO_INTERACTION, "点赞，投币，三连",
-            USER_INTERACTION, "涨涨粉尸",
+            USER_INTERACTION, "涨粉丝",
             SINGLE_VIDEO_CUSTOM_COMMENT, "打波广告"
     );
 

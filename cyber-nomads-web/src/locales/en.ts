@@ -12,7 +12,7 @@ export default {
       isBan:"Ban",
       action:"Actions",
       emptyTitle:"There are currently no cyber nomads",
-      emptyContent:"Click on the 'ADD ROBOT' button to create a new task"
+      emptyContent:"Click on the 'ADD ROBOT' button to create a new task",
     },
     task:{
       error:"error",
@@ -27,7 +27,8 @@ export default {
       log:"Robot Log",
       addTask:"Add Task",
       emptyTaskTitle:"No tasks have been created yet.",
-      emptyTaskContent:"Click on the 'Add Task' button to create a new task"
+      emptyTaskContent:"Click on the 'Add Task' button to create a new task",
+      viewMoreParams:"view more parameters"
     }
   },
   common: {

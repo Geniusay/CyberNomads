@@ -66,8 +66,8 @@ public class AICommentGenerate extends AbstractCommentGenerate implements Commen
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
                 TaskNeedParams.ofKV(AI_PRE_TEXT, CATGIRL_TEMPLATE, "AI会将下面内容作为参考 (您可以自行修改)").setInputType(TEXTAREA),
-                TaskNeedParams.ofKV(AI_COUNT_NUM, 100, "生成多少字"),
-                TaskNeedParams.ofK(SLOGAN, String.class, "在末尾加上固定内容")
+                TaskNeedParams.ofKV(AI_COUNT_NUM, 100, "生成多少字").setExtendDesc(AI_COUNT_NUM_EXT_DESC),
+                TaskNeedParams.ofK(SLOGAN, String.class, "Slogan").setExtendDesc(SLOGAN_EXT_DESC)
         );
     }
 }

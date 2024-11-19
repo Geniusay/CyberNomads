@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.github.geniusay.constants.PluginConstant.CUSTOM_COMMENT_CONTENT;
+import static io.github.geniusay.constants.PluginConstant.CUSTOM_COMMENT_CONTENT_EXT_DESC;
 import static io.github.geniusay.core.supertask.config.PluginConstant.CUSTOM_COMMENT_GENERATE;
 
 @Scope("prototype")
@@ -69,6 +70,7 @@ public class CustomCommentGenerate extends AbstractCommentGenerate implements Co
         return List.of(
                 TaskNeedParams.ofK(CUSTOM_COMMENT_CONTENT, String.class, "请编写需要指定的评论，使用 '" + COMMENT_SEPARATOR + "' 分隔每条评论")
                         .setInputType(TaskNeedParams.InputTypeEnum.TEXTAREA)
+                        .setExtendDesc(CUSTOM_COMMENT_CONTENT_EXT_DESC)
         );
     }
 }

@@ -10,7 +10,7 @@ import {
   getRecentLogs
 } from "@/api/taskApi";
 import {defaultValue, TaskForm, TaskLog, TaskType, TaskVO} from "@/views/workplace/task/taskTypes";
-import {status} from "@/views/workplace/task/taskListConfig"
+import {Parameter} from "@/views/workplace/task/taskTypes";
 
 export const snackbarStore = useSnackbarStore();
 export const useTaskStore = defineStore({
@@ -22,7 +22,8 @@ export const useTaskStore = defineStore({
     isEdit: ref(false),
     viewMode: ref(false),
     platformTaskTypeMap:ref<Record<string, TaskType[]>>({}),
-    taskForm: ref<TaskForm>({...defaultValue.defaultTaskForm})
+    taskForm: ref<TaskForm>({...defaultValue.defaultTaskForm}),
+    displayHiddenParam: ref(false)
   }),
   getters:{
     getTaskList(){
@@ -39,6 +40,14 @@ export const useTaskStore = defineStore({
     },
     getTaskForm(){
       return this.taskForm
+    },
+    isHiddenParams(){
+      return (param: Parameter, inputType: string)=>{
+        if(this.displayHiddenParam){
+          return param.inputType===inputType;
+        }
+        return param.inputType===inputType && !(param.selection.length === 1 || param.hidden)
+      }
     }
   },
 
@@ -80,7 +89,7 @@ export const useTaskStore = defineStore({
     async createTask(taskForm: TaskForm){
       await createTask(taskForm).then(res=>{
         snackbarStore.showSuccessMessage("添加成功")
-        this.taskList.value.push({ ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() });
+        this.taskList.push({ ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() });
       }).catch(error=>{
         snackbarStore.showErrorMessage("添加失败："+error.message)
       })
@@ -88,11 +97,9 @@ export const useTaskStore = defineStore({
     async updateTask(taskForm: TaskForm){
       await updateTask(taskForm).then(res=>{
         snackbarStore.showSuccessMessage("更新成功")
-        const index = this.taskList.value.findIndex(item => item.id === taskForm.taskId)
-        console.log(index)
-        this.taskList.value[index] = { ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() };
-        console.log(this.taskList.value[index])
-        console.log(this.taskList.value)
+        const index = this.taskList.findIndex(item => item.id === taskForm.taskId)
+        this.taskList.splice(index, 1)
+        this.taskList.splice(index, 0, { ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() })
       }).catch(error=>{
         snackbarStore.showErrorMessage("更新失败："+error.message)
       })
@@ -100,8 +107,8 @@ export const useTaskStore = defineStore({
     async deleteTask(item: TaskVO){
       await deleteTask(item.id).then(res=>{
         snackbarStore.showSuccessMessage(item.taskName+"已成功删除")
-        const index = this.taskList.value.findIndex(task => task.id === item.id);
-        this.taskList.value.splice(index, 1);
+        const index = this.taskList.findIndex(task => task.id === item.id);
+        this.taskList.splice(index, 1);
       }).catch(error=>{
         snackbarStore.showErrorMessage(item.taskName+"删除失败："+error.message)
       })
@@ -133,6 +140,9 @@ export const useTaskStore = defineStore({
         })
         return;
       }
+    },
+    switchDisplayHidden(hidden: boolean){
+      this.displayHiddenParam = hidden;
     }
   }
 })

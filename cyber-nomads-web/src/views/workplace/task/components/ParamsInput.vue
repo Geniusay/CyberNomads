@@ -6,26 +6,62 @@
     >
       <!-- 判断 childParams 是否为空 -->
       <v-text-field
-        v-if="param.inputType === InputType.input"
-        :label="param.desc"
-        v-model="taskStore.taskForm.params[param.name]"
-        :rules="[required(taskStore.taskForm.params[param.name], param.required)]"
-        variant="outlined"
-        :disabled="taskStore.viewMode"
-      ></v-text-field>
-
-      <v-textarea
-        v-if="param.inputType === InputType.textarea"
+        v-bind="props"
+        v-if="taskStore.isHiddenParams(param, InputType.input)"
         :label="param.desc"
         v-model="taskStore.taskForm.params[param.name]"
         :rules="[required(taskStore.taskForm.params[param.name], param.required)]"
         variant="outlined"
         :disabled="taskStore.viewMode"
       >
+        <!-- 使用 prepend-inner 插槽添加问号图标 -->
+        <template #append-inner v-if="param.extendDesc!==''">
+          <v-tooltip max-width="250">
+            <template #activator="{ props }">
+              <!-- 问号图标 -->
+              <v-icon
+                v-bind="props"
+                class="icon-hover"
+                size="20"
+              >
+                mdi-help-circle
+              </v-icon>
+            </template>
+            <!-- 提示框内容 -->
+            <span>{{param.extendDesc}}</span>
+          </v-tooltip>
+        </template>
+      </v-text-field>
+
+      <v-textarea
+        v-if="taskStore.isHiddenParams(param, InputType.textarea)"
+        :label="param.desc"
+        v-model="taskStore.taskForm.params[param.name]"
+        :rules="[required(taskStore.taskForm.params[param.name], param.required)]"
+        variant="outlined"
+        :disabled="taskStore.viewMode"
+      >
+        <!-- 使用 prepend-inner 插槽添加问号图标 -->
+        <template #append-inner v-if="param.extendDesc!==''">
+          <v-tooltip max-width="250">
+            <template #activator="{ props }">
+              <!-- 问号图标 -->
+              <v-icon
+                v-bind="props"
+                class="icon-hover"
+                size="20"
+              >
+                mdi-help-circle
+              </v-icon>
+            </template>
+            <!-- 提示框内容 -->
+            <span>{{param.extendDesc}}</span>
+          </v-tooltip>
+        </template>
       </v-textarea>
 
       <v-select
-        v-if="param.inputType === InputType.selection"
+        v-if="taskStore.isHiddenParams(param, InputType.selection)"
         color="primary"
         density="compact"
         :items="param.selection"
@@ -35,7 +71,25 @@
         item-value="name"
         variant="outlined"
         :disabled="taskStore.viewMode"
-      ></v-select>
+      >
+        <!-- 使用 prepend-inner 插槽添加问号图标 -->
+        <template #append-inner v-if="param.extendDesc!==''">
+          <v-tooltip max-width="250">
+            <template #activator="{ props }">
+              <!-- 问号图标 -->
+              <v-icon
+                v-bind="props"
+                class="icon-hover"
+                size="20"
+              >
+                mdi-help-circle
+              </v-icon>
+            </template>
+            <!-- 提示框内容 -->
+            <span>{{param.extendDesc}}</span>
+          </v-tooltip>
+        </template>
+      </v-select>
 
       <!-- 如果 childParams 不为空，递归调用 ParamInput 组件 -->
 

@@ -49,7 +49,7 @@ public class BiliFollowLogicSelector extends AbstractLogicSelector implements Lo
                         TaskNeedParams.ofK("视频", String.class, "视频"),
                         TaskNeedParams.ofK("文章", String.class, "文章"),
                         TaskNeedParams.ofK("活动页面", String.class, "活动页面")
-                ), "代表是从什么渠道来找到此用户的", true)
+                ), RE_SRC_EXT_DESC, true)
         );
     }
 }
