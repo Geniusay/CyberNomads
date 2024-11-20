@@ -66,7 +66,6 @@ import {useRobotStore} from "@/views/workplace/robot/robotStore";
 import {images} from "@/views/workplace/task/taskListConfig";
 import EmptyCardState from "@/components/empty/EmptyCardState.vue";
 import EmptyDataPage from "@/components/empty/EmptyDataPage.vue";
-import { watch } from "vue";
 
 const taskStore = useTaskStore()
 const commonStore = useCommonStore();
@@ -96,7 +95,8 @@ const openAddDialog = ()=>{
 watch(
   ()=>taskStore.taskList,
   (newList, oldList)=>{
-    taskList.value = taskStore.taskList
+    console.log(newList)
+    taskList.value = taskStore.taskList.value
     emptyState.value = taskList.value.length==0;
   },
   { deep: true }

@@ -89,7 +89,7 @@ export const useTaskStore = defineStore({
     async createTask(taskForm: TaskForm){
       await createTask(taskForm).then(res=>{
         snackbarStore.showSuccessMessage("添加成功")
-        this.taskList.push({ ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() });
+        this.taskList.value.push({ ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() });
       }).catch(error=>{
         snackbarStore.showErrorMessage("添加失败："+error.message)
       })
@@ -97,8 +97,8 @@ export const useTaskStore = defineStore({
     async updateTask(taskForm: TaskForm){
       await updateTask(taskForm).then(res=>{
         snackbarStore.showSuccessMessage("更新成功")
-        const index = this.taskList.findIndex(item => item.id === taskForm.taskId)
-        this.taskList[index]= { ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() }
+        const index = this.taskList.value.findIndex(item => item.id === taskForm.taskId)
+        this.taskList.value.splice(index, 1, { ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() });
       }).catch(error=>{
         snackbarStore.showErrorMessage("更新失败："+error.message)
       })
@@ -106,8 +106,8 @@ export const useTaskStore = defineStore({
     async deleteTask(item: TaskVO){
       await deleteTask(item.id).then(res=>{
         snackbarStore.showSuccessMessage(item.taskName+"已成功删除")
-        const index = this.taskList.findIndex(task => task.id === item.id);
-        this.taskList.splice(index, 1);
+        const index = this.taskList.value.findIndex(task => task.id === item.id);
+        this.taskList.value.splice(index, 1);
       }).catch(error=>{
         snackbarStore.showErrorMessage(item.taskName+"删除失败："+error.message)
       })
