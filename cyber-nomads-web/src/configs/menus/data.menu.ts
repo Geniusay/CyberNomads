@@ -10,5 +10,11 @@ export default [
     text: "Task List",
     link: "/data/task-list",
     key: "menu.data.task",
+  },
+  {
+    icon: "mdi-application-braces",
+    text: "Template Square",
+    link: "/data/task-square",
+    key: "menu.data.templateSquare",
   }
 ];

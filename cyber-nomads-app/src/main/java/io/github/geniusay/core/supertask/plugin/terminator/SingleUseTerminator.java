@@ -22,7 +22,7 @@ import static io.github.geniusay.constants.TerminatorConstants.*;
 public class SingleUseTerminator extends AbstractTerminator {
 
     // 默认冷却时间
-    private static final long DEFAULT_COOLDOWN_TIME_SECONDS = 30L;
+    private static final long DEFAULT_COOLDOWN_TIME_SECONDS = 5L;
 
     // 存储任务的冷却时间（单位：毫秒）
     private long cooldownTime;
@@ -72,7 +72,6 @@ public class SingleUseTerminator extends AbstractTerminator {
 
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
-        // 冷却时间至少为30秒
         return List.of(
                 TaskNeedParams.ofKV(PARAM_COOLDOWN_TIME, DEFAULT_COOLDOWN_TIME_SECONDS, "冷却时间（秒），不得少于" + DEFAULT_COOLDOWN_TIME_SECONDS + "秒")
                         .setExtendDesc(SINGLE_PARAM_COOLDOWN_TIME_EXT_DESC)

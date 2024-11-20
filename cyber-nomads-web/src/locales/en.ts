@@ -158,7 +158,8 @@ export default {
       richTextEditor: "Rich Text Editor",
       editTable: "Edit Table",
       cyberNomads: "Cyber Nomads",
-      task:"Task List"
+      task:"Task List",
+      templateSquare:"Template Square"
     },
     chatbot_v1: "ChatBot",
     chatbot_v2: "Q&A Bot",
