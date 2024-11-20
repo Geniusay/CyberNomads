@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static io.github.geniusay.constants.PluginConstant.SINGLE_PARAM_COOLDOWN_TIME_EXT_DESC;
 import static io.github.geniusay.constants.TerminatorConstants.*;
 
 @Slf4j
@@ -73,7 +74,8 @@ public class SingleUseTerminator extends AbstractTerminator {
     public List<TaskNeedParams> supplierNeedParams() {
         // 冷却时间至少为30秒
         return List.of(
-                TaskNeedParams.ofKV(PARAM_COOLDOWN_TIME, DEFAULT_COOLDOWN_TIME_SECONDS, "任务冷却时间（秒），不得少于" + DEFAULT_COOLDOWN_TIME_SECONDS + "秒")
+                TaskNeedParams.ofKV(PARAM_COOLDOWN_TIME, DEFAULT_COOLDOWN_TIME_SECONDS, "冷却时间（秒），不得少于" + DEFAULT_COOLDOWN_TIME_SECONDS + "秒")
+                        .setExtendDesc(SINGLE_PARAM_COOLDOWN_TIME_EXT_DESC)
         );
     }
 }

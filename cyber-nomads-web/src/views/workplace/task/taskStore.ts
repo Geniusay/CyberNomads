@@ -10,7 +10,7 @@ import {
   getRecentLogs
 } from "@/api/taskApi";
 import {defaultValue, TaskForm, TaskLog, TaskType, TaskVO} from "@/views/workplace/task/taskTypes";
-import {status} from "@/views/workplace/task/taskListConfig"
+import {Parameter} from "@/views/workplace/task/taskTypes";
 
 export const snackbarStore = useSnackbarStore();
 export const useTaskStore = defineStore({
@@ -22,7 +22,8 @@ export const useTaskStore = defineStore({
     isEdit: ref(false),
     viewMode: ref(false),
     platformTaskTypeMap:ref<Record<string, TaskType[]>>({}),
-    taskForm: ref<TaskForm>({...defaultValue.defaultTaskForm})
+    taskForm: ref<TaskForm>({...defaultValue.defaultTaskForm}),
+    displayHiddenParam: ref(false)
   }),
   getters:{
     getTaskList(){
@@ -39,6 +40,14 @@ export const useTaskStore = defineStore({
     },
     getTaskForm(){
       return this.taskForm
+    },
+    isHiddenParams(){
+      return (param: Parameter, inputType: string)=>{
+        if(this.displayHiddenParam){
+          return param.inputType===inputType;
+        }
+        return param.inputType===inputType && !(param.selection.length === 1 || param.hidden)
+      }
     }
   },
 
@@ -89,10 +98,7 @@ export const useTaskStore = defineStore({
       await updateTask(taskForm).then(res=>{
         snackbarStore.showSuccessMessage("更新成功")
         const index = this.taskList.value.findIndex(item => item.id === taskForm.taskId)
-        console.log(index)
-        this.taskList.value[index] = { ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() };
-        console.log(this.taskList.value[index])
-        console.log(this.taskList.value)
+        this.taskList.value.splice(index, 1, { ...res.data, taskStatus: (res.data as TaskVO).taskStatus.toLowerCase() });
       }).catch(error=>{
         snackbarStore.showErrorMessage("更新失败："+error.message)
       })
@@ -133,6 +139,9 @@ export const useTaskStore = defineStore({
         })
         return;
       }
+    },
+    switchDisplayHidden(hidden: boolean){
+      this.displayHiddenParam = hidden;
     }
   }
 })

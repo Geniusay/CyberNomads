@@ -3,7 +3,6 @@ package io.github.geniusay.core.supertask.plugin.terminator;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
-import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DO.TaskLogDO;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -12,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static io.github.geniusay.constants.PluginConstant.PARAM_COOLDOWN_TIME_EXT_DESC;
 import static io.github.geniusay.constants.TerminatorConstants.*;
 
 
@@ -34,7 +34,6 @@ public class CooldownTerminator extends AbstractTerminator {
     @Override
     public void init(Task task) {
         super.init(task);
-        // 冷却时间不得少于30秒
         this.cooldownTime = Math.max(getParam(PARAM_COOLDOWN_TIME, Long.class), DEFAULT_COOLDOWN_TIME_SECONDS) * 1000L;
     }
 
@@ -101,7 +100,7 @@ public class CooldownTerminator extends AbstractTerminator {
     public List<TaskNeedParams> supplierNeedParams() {
         // 冷却时间至少为30秒
         return List.of(
-                TaskNeedParams.ofKV(PARAM_COOLDOWN_TIME, DEFAULT_COOLDOWN_TIME_SECONDS, "工作者冷却时间（秒），不得少于" + DEFAULT_COOLDOWN_TIME_SECONDS + "秒")
+                TaskNeedParams.ofKV(PARAM_COOLDOWN_TIME, DEFAULT_COOLDOWN_TIME_SECONDS, "冷却时间（秒），不得少于" + DEFAULT_COOLDOWN_TIME_SECONDS + "秒").setExtendDesc(PARAM_COOLDOWN_TIME_EXT_DESC)
         );
     }
 }

@@ -48,6 +48,10 @@ public class ProxyPool {
         this.balance.successCallback(proxy);
     }
 
+    protected List<Proxy> getProxies(){
+        return this.proxies;
+    }
+
     static class WeightedBalance implements Balance {
 
         public WeightedBalance(List<Proxy> proxies) {

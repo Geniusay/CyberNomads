@@ -24,6 +24,7 @@ const robotForm = ref<RobotForm>({...defaultValue.defaultRobotForm})
 const isEdit = ref(false)
 const emptyState = ref(false)
 const pageLoading = ref(true)
+const loginMachineTokenLoading = ref(false)
 const robotFormValidator: Validators<RobotForm> = {
   id: (value)=>null,
   platform: (value) => platformList.value.some(platform=>platform.code === value) ? null : '请选择正确的平台',
@@ -204,8 +205,10 @@ const generateToken = async () =>{
 const loginMachineDialog = ref(false)
 
 const openLoginMachineDialog = async () =>{
+  loginMachineTokenLoading.value = true
   await generateToken()
   loginMachineDialog.value = true
+  loginMachineTokenLoading.value = false
 }
 
 </script>
@@ -317,12 +320,14 @@ const openLoginMachineDialog = async () =>{
                   </span>
                 </template>
                 <v-card-text class="bg-surface-light pt-4">
-                  <td class="font-weight-bold text-body-2">
+                  <CircleLoading v-if="loginMachineTokenLoading"/>
+                  <td v-else class="font-weight-bold text-body-2">
                     <CopyLabel :text="loginMachineToken" />
                   </td>
                 </v-card-text>
               </v-card>
             </v-dialog>
+
             <v-dialog v-model="dialog" max-width="700">
               <template v-slot:activator="{ props }">
                 <v-btn color="primary" v-bind="props" flat class="ml-auto">

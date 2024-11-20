@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static io.github.geniusay.constants.PluginConstant.*;
@@ -34,11 +35,16 @@ public class GetHotVideoPlugin extends AbstractGetVideoPlugin implements GetHand
     private static final int MAX_RETRY_COUNT = 2;  // 最大重试次数
     private String scope;
 
+    private static final Map<String, String> SCOPE_MAPPING = Map.of(
+            "空间", "task",
+            "视频", "robot"
+    );
+
     @Override
     public void init(Task task) {
         super.init(task);
-        // 从 task 参数中获取作用范围，默认为 "task"
-        scope = getValue(this.pluginParams, SCOPE, String.class);
+        String selectedSource = getValue(this.pluginParams, SCOPE, String.class);
+        scope = SCOPE_MAPPING.getOrDefault(selectedSource, "task");
     }
 
     @Override
@@ -151,7 +157,10 @@ public class GetHotVideoPlugin extends AbstractGetVideoPlugin implements GetHand
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
-                TaskNeedParams.ofKV(SCOPE, "task", "避免重复挑选视频规则，填：task/robot")
+                TaskNeedParams.ofSelection(SCOPE, "任务级别", "避免规则", List.of(
+                        TaskNeedParams.ofK("任务级别", String.class, "任务级别"),
+                        TaskNeedParams.ofK("机器人级别", String.class, "机器人级别")
+                ), SCOPE_DESC, true)
         );
     }
 }

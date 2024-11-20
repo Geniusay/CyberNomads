@@ -1,9 +1,25 @@
 <template>
   <v-card>
     <v-card-title :class="'pa-4 bg-'+cardHeadConfig.color">
-          <span class="title text-white">
+      <v-row justify="space-between">
+        <v-col cols="6">
+            <span class="title text-white">
             <v-icon class="mr-2">mdi-script-text</v-icon>
-           {{cardHeadConfig.title}}</span>
+            {{cardHeadConfig.title}}
+             </span>
+        </v-col>
+        <v-col cols="1" style="margin-right: 25px">
+          <v-btn color="transparent">
+            <Icon @click="taskStore.switchDisplayHidden(!taskStore.displayHiddenParam)"
+                  width="30"
+                  :icon="taskStore.displayHiddenParam?'line-md:watch-twotone-loop':'line-md:watch-off-twotone-loop'" />
+            <v-tooltip
+              activator="parent"
+              location="end"
+            >{{ $t('workplace.task.viewMoreParams') }}</v-tooltip>
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-card-title>
 
     <v-card-text>
@@ -156,6 +172,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from "@iconify/vue";
 import ParamsInput from "@/views/workplace/task/components/ParamsInput.vue"
 import { useTaskStore,snackbarStore } from "@/views/workplace/task/taskStore"
 import { useCommonStore } from "@/stores/commonStore";
@@ -192,6 +209,7 @@ const taskFormValidator: Validators<TaskForm> = {
 };
 
 onMounted(async ()=>{
+  taskStore.displayHiddenParam = false;
   const platform = taskStore.taskForm.platform
   if(!!platform){
     await taskStore.initPlatformTaskTypes(platform)

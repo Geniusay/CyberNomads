@@ -39,7 +39,7 @@
             v-for="(item,index) in taskList"
             :key="item.id"
           >
-            <TaskCard :item="item" :index="randomSeed+index"/>
+            <TaskCard :item="item" :index="randomSeed+index" :key="item"/>
           </v-col>
         </v-row>
       </v-container>
@@ -67,7 +67,6 @@ import {images} from "@/views/workplace/task/taskListConfig";
 import EmptyCardState from "@/components/empty/EmptyCardState.vue";
 import EmptyDataPage from "@/components/empty/EmptyDataPage.vue";
 
-
 const taskStore = useTaskStore()
 const commonStore = useCommonStore();
 const taskList = ref<TaskVO[]>([])
@@ -94,11 +93,13 @@ const openAddDialog = ()=>{
 }
 
 watch(
-  taskStore.taskList,
+  ()=>taskStore.taskList,
   (newList, oldList)=>{
     console.log(newList)
-    taskList.value = taskStore.taskList
-  }
+    taskList.value = taskStore.taskList.value
+    emptyState.value = taskList.value.length==0;
+  },
+  { deep: true }
 )
 </script>
 

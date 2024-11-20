@@ -32,6 +32,8 @@ export interface Parameter{
   defaultValue: string;
   params: Parameter[];
   selection: Parameter[];
+  hidden: boolean;
+  extendDesc: string;
 }
 
 export interface TaskType{

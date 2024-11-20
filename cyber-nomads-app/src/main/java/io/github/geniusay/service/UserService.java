@@ -1,6 +1,7 @@
 package io.github.geniusay.service;
 
 import io.github.common.web.Result;
+import io.github.geniusay.pojo.DO.UserDO;
 import io.github.geniusay.pojo.DTO.LoadRobotResponseDTO;
 import io.github.geniusay.pojo.DTO.LoginRequestDTO;
 import io.github.geniusay.pojo.VO.LoginVO;
@@ -34,4 +35,6 @@ public interface UserService {
     Result<?> generateEmailCode(String email,String pid,String code);
 
     UserVO queryUserByEmail(String email);
+
+    void newcomerPack(UserDO userDO);
 }

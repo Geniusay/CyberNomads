@@ -10,28 +10,28 @@ import io.github.geniusay.pojo.DO.UserDO;
 import io.github.geniusay.pojo.DTO.*;
 import io.github.geniusay.pojo.VO.LoginVO;
 import io.github.geniusay.pojo.VO.UserVO;
+import io.github.geniusay.service.TaskService;
 import io.github.geniusay.service.UserService;
 import io.github.geniusay.utils.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
 
 import static io.github.geniusay.constants.UserConstant.EMAIL_COOL_DOWN;
+import static io.github.geniusay.constants.UserConstant.newcomerPack;
 
 /**
  * @Description
  * @Author welsir
  * @Date 2024/10/27 21:39
  */
+@Slf4j
 @Service
 public class IUserService implements UserService {
-
-    private static final Logger log = LoggerFactory.getLogger(IUserService.class);
     @Resource
     private UserMapper userMapper;
     @Resource
@@ -40,6 +40,8 @@ public class IUserService implements UserService {
     private AsyncService asyncService;
     @Resource
     private CacheUtil cacheUtil;
+    @Resource
+    private TaskService taskService;
 
     @Override
     public UserVO queryUserById(String uid) {
@@ -99,6 +101,8 @@ public class IUserService implements UserService {
             throw new ServeException("用户已注册或注册失败");
         }
         String token = TokenUtil.getToken(user.getUid(), user.getEmail(), user.getNickname());
+        // 新人礼包
+        newcomerPack(user);
         return LoginVO.builder().userVO(UserVO.convert(user)).token(token).build();
     }
 
@@ -133,5 +137,14 @@ public class IUserService implements UserService {
         if(userDO==null)
             throw new ServeException("用户不存在");
         return UserVO.convert(userDO);
+    }
+
+    @Override
+    public void newcomerPack(UserDO userDO) {
+        ThreadUtil.set("uid",userDO.getUid());
+        ThreadUtil.set("email",userDO.getEmail());
+        ThreadUtil.set("nickname",userDO.getNickname());
+
+        taskService.createTask(UserConstant.newcomerPack);
     }
 }

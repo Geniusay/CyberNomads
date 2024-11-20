@@ -11,8 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static io.github.geniusay.constants.PluginConstant.LINK_OR_BV;
-import static io.github.geniusay.constants.PluginConstant.UID;
+import static io.github.geniusay.constants.PluginConstant.*;
 import static io.github.geniusay.core.supertask.config.PluginConstant.USER_RECEIVER_SELECTOR;
 import static io.github.geniusay.core.supertask.config.PluginConstant.VIDEO_RECEIVER_SELECTOR;
 
@@ -37,7 +36,7 @@ public class BiliUserReceiverSelector extends AbstractReceiverSelector implement
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
-                TaskNeedParams.ofKV(UID, "", "用户的uid")
+                TaskNeedParams.ofKV(UID, "", "用户的uid").setExtendDesc(UID_EXT_DESC)
         );
     }
 }

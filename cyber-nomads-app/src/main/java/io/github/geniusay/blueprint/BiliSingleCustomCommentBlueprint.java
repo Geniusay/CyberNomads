@@ -11,6 +11,7 @@ import io.github.geniusay.core.supertask.plugin.selector.logic.AbstractLogicSele
 import io.github.geniusay.core.supertask.plugin.selector.logic.BiliCommentLogicSelector;
 import io.github.geniusay.core.supertask.plugin.selector.receiver.AbstractReceiverSelector;
 import io.github.geniusay.core.supertask.plugin.selector.receiver.BiliCommentReceiverSelector;
+import io.github.geniusay.core.supertask.plugin.selector.receiver.BiliVideoReceiverSelector;
 import io.github.geniusay.core.supertask.plugin.terminator.SingleUseTerminator;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
@@ -55,7 +56,7 @@ public class BiliSingleCustomCommentBlueprint extends BiliAbstractInteractionBlu
                 SingleUseTerminator.class,
                 CustomCommentGenerate.class,
                 BiliCommentLogicSelector.class,
-                BiliCommentReceiverSelector.class
+                BiliVideoReceiverSelector.class
         ));
     }
 }
