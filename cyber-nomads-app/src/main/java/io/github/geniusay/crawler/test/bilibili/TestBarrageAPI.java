@@ -17,8 +17,8 @@ import static io.github.geniusay.crawler.test.bilibili.TestVideoAPI.subKey;
 public class TestBarrageAPI {
 
     // 输入视频的bvid
-    private static final String SOURCE_BVID = "BV11w41177WY";  // 源视频的bvid
-    private static final String TARGET_BVID = "BV1H7UZYtEH3";  // 目标视频的bvid
+    private static final String SOURCE_BVID = "BV1CK421s7ZD";  // 源视频的bvid
+    private static final String TARGET_BVID = "BV19USKYMECj";  // 目标视频的bvid
 
     // 保存弹幕列表的文件路径
     private static final String BARRAGE_FILE_PATH = "D:\\" + SOURCE_BVID + ".txt";

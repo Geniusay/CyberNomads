@@ -45,9 +45,7 @@ public class BiliCoinLogicSelector extends AbstractLogicSelector implements Logi
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
                 TaskNeedParams.ofKV(COIN_SUM, 1, "投币数量，填(1或2)"),
-                TaskNeedParams.ofKV(AND_LIKE, false, "投币+点赞")
-                        .setHidden(true)
-                        .setExtendDesc(AND_LIKE_EXT_DESC)
+                TaskNeedParams.ofKV(AND_LIKE, false, "投币+点赞").setHidden(true).setExtendDesc(AND_LIKE_EXT_DESC)
         );
     }
 }

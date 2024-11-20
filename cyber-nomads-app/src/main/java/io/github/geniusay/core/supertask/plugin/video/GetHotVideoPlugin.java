@@ -73,6 +73,7 @@ public class GetHotVideoPlugin extends AbstractGetVideoPlugin implements GetHand
         return null;
     }
 
+
     /**
      * 使用 Lua 脚本随机获取一个视频，加入重试机制。
      * 如果达到最大重试次数后，返回最后一次获取的视频（无论是否已标记）。
