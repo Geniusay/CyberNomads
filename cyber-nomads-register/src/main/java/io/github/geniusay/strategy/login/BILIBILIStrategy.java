@@ -3,20 +3,12 @@ package io.github.geniusay.strategy.login;
 import io.github.geniusay.pojo.Platform;
 import io.github.geniusay.service.UserService;
 import io.github.geniusay.strategy.dirver.DriverFactory;
-import io.github.geniusay.util.HTTPUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.chromium.ChromiumDriver;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -53,11 +45,11 @@ public class BILIBILIStrategy extends AbstractLoginStrategy{
     public String execute(String username) {
         String driverPath = changePath(userService.queryPathExist().getPathDTO().getDriverPath());
         String browserPath = changePath(userService.queryPathExist().getPathDTO().getBrowserPath());
-        DriverFactory.DriverType driverType = DriverFactory.driverType(driverPath);
+        DriverFactory.DriverType driverType = DriverFactory.driverType(browserPath);
         ChromiumDriver loginWebDriver = DriverFactory.getDriver(driverPath, browserPath, driverType);
         loginWebDriver.get(URL);
         loginWebDriver.manage().deleteAllCookies();
-        WebDriverWait wait = new WebDriverWait(loginWebDriver, Duration.ofSeconds(120));
+        WebDriverWait wait = new WebDriverWait(loginWebDriver, Duration.ofSeconds(300));
         try {
             WebElement login = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/div[2]/div[1]/div[1]/ul[2]/li[1]/li/div/div/span")));
             login.click();

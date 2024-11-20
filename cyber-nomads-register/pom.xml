@@ -130,24 +130,23 @@
                 </configuration>
             </plugin>
         </plugins>
-
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <excludes>
-                    <exclude>static/assets/*.woff</exclude>
-                    <exclude>static/assets/*.woff2</exclude>
-                    <exclude>static/assets/*.ttf</exclude>
+                    <exclude>static/**/*.woff</exclude>
+                    <exclude>static/**/*.woff2</exclude>
+                    <exclude>static/**/*.ttf</exclude>
                 </excludes>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
                 <includes>
-                    <include>static/assets/*.woff</include>
-                    <include>static/assets/*.woff2</include>
-                    <include>static/assets/*.ttf</include>
+                    <include>static/**/*.woff</include>
+                    <include>static/**/*.woff2</include>
+                    <include>static/**/*.ttf</include>
                 </includes>
             </resource>
         </resources>

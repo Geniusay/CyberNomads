@@ -1,13 +1,19 @@
 package io.github.geniusay.strategy.dirver;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import static io.github.geniusay.strategy.dirver.DriverFactory.DriverType.Chrome;
 
 public class DriverFactory {
-    public static enum DriverType{
+    public static  enum DriverType{
         Edge,
         Chrome
     }
@@ -36,11 +42,13 @@ public class DriverFactory {
     }
 
     public static DriverType driverType(String browserPath){
+        browserPath = browserPath.toLowerCase();
         if(browserPath.endsWith("msedge.exe")){
             return DriverType.Edge;
         } else if (browserPath.endsWith("chrome.exe")) {
-            return DriverType.Chrome;
+            return Chrome;
         }
         return DriverType.Edge;
     }
+
 }

@@ -7,7 +7,7 @@ package io.github.geniusay.schedule.storage;
  */
 public interface WorkerStorage {
 
-    void joinRobotWorker(Long workerId);
+    void joinWorkerQueue(Long workerId);
     void removeRobotWorker(Long workerId);
     void reJoinRobotWorker(Long workerId);
 }

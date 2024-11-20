@@ -135,7 +135,7 @@ public class ReverseLRUWorkerStorage extends AbstractWorkerStorage {
     }
 
     @Override
-    public void doHandle(Long workerId) {
+    public void joinWorkerQueue(Long workerId) {
         if(highSpeedQueue.containsKey(workerId)||midSpeedQueue.containsKey(workerId)){
             if(slowSpeedQueue.containsKey(workerId)){
                 slowSpeedLock.lock();

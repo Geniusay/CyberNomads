@@ -186,6 +186,9 @@ public class IUserServiceImpl implements UserService {
 
     @Override
     public String download() {
+        HTTPUtils.isDownload = false;
+        HTTPUtils.downloadMsg = "下载中";
+        HTTPUtils.process = 0;
         String name = CacheUtils.browserName;
         String version = CacheUtils.version;
         if(StringUtils.isBlank(name)||StringUtils.isBlank(version)){
@@ -195,8 +198,14 @@ public class IUserServiceImpl implements UserService {
             HTTPUtils.isDownload = true;
             String arch = getOsArch();
             String download;
+            String driverPath;
             if("msedge".equals(name)){
-                if (checkDriverExit("edgedriver_win"+arch,name+"driver.exe")) {
+                if ((driverPath= checkDriverExit("edgedriver_win"+arch,name+"driver.exe"))!=null) {
+                    HTTPUtils.downloadMsg = "下载成功!";
+                    HTTPUtils.process = 100;
+                    HTTPUtils.isDownload = false;
+                    DriverPathDTO build = DriverPathDTO.builder().driverPath(driverPath).browserPath(CacheUtils.path).build();
+                    httpUtils.saveFileToCurrentPath("path.txt",JSON.toJSONString(build));
                     return "true";
                 }
                 download = "https://msedgedriver.azureedge.net/"+version+"/edgedriver_win"+arch+".zip";
@@ -206,12 +215,17 @@ public class IUserServiceImpl implements UserService {
                 if(Integer.parseInt(version.split("\\.")[0])>114){
                     throw new RuntimeException("浏览器版本过高，请手动下载");
                 }
-                if (checkDriverExit("chromedriver_win32",name+"driver.exe")) {
+                if ((driverPath = checkDriverExit("chromedriver_win32",name+"driver.exe"))!=null) {
+                    HTTPUtils.downloadMsg = "下载成功!";
+                    HTTPUtils.process = 100;
+                    HTTPUtils.isDownload = false;
+                    DriverPathDTO build = DriverPathDTO.builder().driverPath(driverPath).browserPath(CacheUtils.path).build();
+                    httpUtils.saveFileToCurrentPath("path.txt",JSON.toJSONString(build));
                     return "true";
                 }
                 String nearVersion = findClosestVersionKey(keys, version);
                 download = "https://chromedriver.storage.googleapis.com/"+nearVersion;
-                httpUtils.downloadFile(download,"chromedriver_win32"+".zip");
+                httpUtils.downloadFile(download,"chromedriver_win32.zip");
                 return nearVersion.split("/")[0];
             }
         } catch (IOException e) {
@@ -252,6 +266,7 @@ public class IUserServiceImpl implements UserService {
                 CacheUtils.browserName = browser;
                 CacheUtils.version = version;
                 CacheUtils.path = browserPath;
+                System.out.println("当前cache信息:"+CacheUtils.browserName+" "+CacheUtils.path);
                 return builder.build();
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -273,15 +288,16 @@ public class IUserServiceImpl implements UserService {
             return "32";
         }
     }
-    private Boolean checkDriverExit(String path,String target){
+    private String checkDriverExit(String path,String target){
         String currentDir = System.getProperty("user.dir");
         File folder = new File(currentDir, path);
         if (folder.exists() && folder.isDirectory()) {
             File exeFile = new File(folder, target);
-
-            return exeFile.exists() && exeFile.isFile();
+            if(exeFile.exists() && exeFile.isFile()){
+                return exeFile.getPath();
+            }
         }
-        return false;
+        return null;
     }
     private String queryBrowserVersion(String path) throws IOException {
         String search = "powershell.exe -Command \"(Get-Item '" + path + "').VersionInfo\"";
