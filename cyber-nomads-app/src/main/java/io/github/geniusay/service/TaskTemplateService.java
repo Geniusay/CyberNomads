@@ -18,6 +18,5 @@ public interface TaskTemplateService {
     List<TaskTemplateVO> queryTemplateByPage(QueryTemplateDTO queryTemplateDTO);
     String generateTemplateScript(String templateId);
     TaskTemplateVO importTemplateScript(String script);
-    void updateTemplate(ExportTaskTemplateDTO task);
     void removeTemplate(String templateId);
 }
