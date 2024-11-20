@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 public class ITaskTemplateServiceImpl implements TaskTemplateService {
     final int DEFAULT_LIMIT = 10;
     final int DEFAULT_PAGE = 1;
+    final int DEFAULT_MAX_LIMIT = 100;
     @Resource
     TaskTemplateMapper templateMapper;
     @Resource
@@ -64,6 +65,9 @@ public class ITaskTemplateServiceImpl implements TaskTemplateService {
             wrapper.eq("uid", ThreadUtil.getUid());
         }
         int limit = Optional.ofNullable(queryTemplateDTO.getLimit()).orElse(DEFAULT_LIMIT);
+        if(limit>DEFAULT_MAX_LIMIT){
+            limit = DEFAULT_MAX_LIMIT;
+        }
         int page = Optional.ofNullable(queryTemplateDTO.getPage()).orElse(DEFAULT_PAGE);
         Page<TaskTemplateDO> selectedPage = templateMapper.selectPage(new Page<>(page-1, limit), wrapper);
         return selectedPage.getRecords().stream().map(TaskTemplateVO::convert).collect(Collectors.toList());
