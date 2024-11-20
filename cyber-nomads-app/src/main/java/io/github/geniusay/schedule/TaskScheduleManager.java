@@ -99,8 +99,9 @@ public class TaskScheduleManager {
     public void removeWorkerTask(String taskId){
         Task task = WORLD_TASK.remove(taskId);
         if(!Objects.isNull(task)){
-            task.getRobots().forEach((taskDO)->{
-                WORLD_ROBOTS_TASK.get(taskDO.getId()).remove(taskId);
+            task.getRobots().forEach((robotDO)->{
+                WORLD_ROBOTS_TASK.get(robotDO.getId()).remove(taskId);
+
             });
         }
     }

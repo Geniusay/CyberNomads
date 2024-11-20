@@ -25,7 +25,7 @@ public class WorkerExecutor implements WorkerExecute {
 
     @Override
     public void push(Long robotId){
-        workerStorage.joinRobotWorker(robotId);
+        workerStorage.joinWorkerQueue(robotId);
     }
 
     public void executeTask(RobotWorker worker){

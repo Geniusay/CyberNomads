@@ -22,21 +22,17 @@ public abstract class AbstractWorkerStorage implements WorkerStorage {
 
     @PostConstruct
     public void start(){
-        Map<String, AbstractWorkerStorage> beans = applicationContext.getBeansOfType(AbstractWorkerStorage.class);
-        beans.forEach((name,v)->{
+        applicationContext.getBeansOfType(AbstractWorkerStorage.class).forEach((k,v)->{
             v.init();
         });
     }
 
     @Override
-    public void joinRobotWorker (Long workerId) {
-        doHandle(workerId);
-    }
+    public abstract void joinWorkerQueue (Long workerId);
 
     @Override
     public void removeRobotWorker(Long workerId) {
 
     }
-    public abstract void doHandle(Long taskId);
     public abstract void init();
 }
