@@ -19,6 +19,16 @@ export default [
     },
   },
   {
+    path: "/data/task-square",
+    component: () => import("@/views/workplace/modulesquare/ModuleSquarePage.vue"),
+    meta: {
+      requiresAuth: true,
+      layout: "ui",
+      category: "UI",
+      title: "Task Square",
+    },
+  },
+  {
     path: "/utility/help",
     name: "utility-help",
     component: () =>

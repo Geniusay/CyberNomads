@@ -49,3 +49,4 @@ cyber-nomads-register/src/main/resources/static/*
 登号器/*
 edgedriver_win64*
 chromedriver_win64*
+/loginmachine/*
