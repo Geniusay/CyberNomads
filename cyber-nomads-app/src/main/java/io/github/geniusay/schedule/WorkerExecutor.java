@@ -5,6 +5,7 @@ import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.schedule.storage.WorkerStorage;
 import io.github.geniusay.schedule.strategy.TaskExecuteStrategy;
 import io.github.geniusay.schedule.task.TaskSelector;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -15,6 +16,7 @@ import javax.annotation.Resource;
  * @Date 2024/11/13 14:46
  */
 @Component
+@Slf4j
 public class WorkerExecutor implements WorkerExecute {
     @Resource
     WorkerStorage workerStorage;
@@ -25,12 +27,13 @@ public class WorkerExecutor implements WorkerExecute {
 
     @Override
     public void push(Long robotId){
-        workerStorage.joinRobotWorker(robotId);
+        workerStorage.joinWorkerQueue(robotId);
     }
 
-    @Override
-    public void taskDoneCallBack(Long workerId,String taskId) {
 
+    @Override
+    public void taskDoneCallBack(Long workerId, String taskId) {
+        workerStorage.taskDoneCallBack(workerId);
     }
 
     public void executeTask(RobotWorker worker){

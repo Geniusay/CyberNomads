@@ -42,15 +42,16 @@ public class AfterTaskExecuteEventListener implements EventListener {
 
             if(worker.task().getTerminator().taskIsDone()){
                 manager.removeWorldRobotTask(worker.getId(),worker.getCurrentTask().getId());
+                manager.removeWorkerTask(taskId);
                 if(manager.getRobotTaskById(worker.getId()).isEmpty()){
                     manager.removeWorldRobot(worker.getId());
                 }
                 eventManager.publishEvent(new TaskStatusEditEvent(taskId, TaskActionConstant.FINISH));
-            }
-            if(manager.getRobotTaskNum(worker.getId())>0){
+            }else{
                 workerExecute.push(worker.getId());
             }
-            workerExecute.taskDoneCallBack(worker.getId(), taskId);
+            workerExecute.taskDoneCallBack(worker.getId(),taskId);
         }
+
     }
 }

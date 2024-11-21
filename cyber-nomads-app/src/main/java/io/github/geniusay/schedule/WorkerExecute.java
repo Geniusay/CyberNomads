@@ -7,5 +7,6 @@ package io.github.geniusay.schedule;
  */
 public interface WorkerExecute {
     void push(Long workerId);
+
     void taskDoneCallBack(Long workerId,String taskId);
 }
