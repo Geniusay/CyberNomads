@@ -21,8 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.*;
 
-import static io.github.geniusay.constants.UserConstant.EMAIL_COOL_DOWN;
-import static io.github.geniusay.constants.UserConstant.newcomerPack;
+import static io.github.geniusay.constants.UserConstant.*;
 
 /**
  * @Description
@@ -69,8 +68,9 @@ public class IUserService implements UserService {
 
         UserDO user = userMapper.selectOne(new QueryWrapper<UserDO>()
                 .eq("email",req.getEmail()));
+        // 用户不存在则注册
         if(user == null){
-            throw new ServeException("用户未注册");
+            user = addNewUser(req.getEmail());
         }
         String token = TokenUtil.getToken(String.valueOf(user.getUid()), user.getEmail(), user.getNickname());
         return LoginVO.builder().userVO(UserVO.convert(user)).token(token).build();
@@ -88,22 +88,25 @@ public class IUserService implements UserService {
         if(!code.toLowerCase().equals(cacheCode)){
             throw new ServeException("验证码错误");
         }
+        UserDO user = addNewUser(req.getEmail());
+        String token = TokenUtil.getToken(user.getUid(), user.getEmail(), user.getNickname());
+        return LoginVO.builder().userVO(UserVO.convert(user)).token(token).build();
+    }
+
+    private UserDO addNewUser(String email) {
         UserDO user = UserDO.builder()
                 .nickname(UserConstant.CYBER_NOMADS + RandomUtil.generateRandomString(8))
                 .uid(UUID.randomUUID().toString())
                 .avatar("https://geniusserve.oss-cn-shanghai.aliyuncs.com/cybernomads/plant.ico")
-                .email(req.getEmail()).point(3)
-                .password(DigestUtils.md5Hex(req.getPassword()))
+                .email(email).point(3)
+                .password(DigestUtils.md5Hex(DEFAULT_PWD))
                 .build();
         try {
             userMapper.insert(user);
         }catch (Exception e){
-            throw new ServeException("用户已注册或注册失败");
+            throw new ServeException("请勿频繁操作!");
         }
-        String token = TokenUtil.getToken(user.getUid(), user.getEmail(), user.getNickname());
-        // 新人礼包
-        newcomerPack(user);
-        return LoginVO.builder().userVO(UserVO.convert(user)).token(token).build();
+        return user;
     }
 
     @Override

@@ -41,7 +41,7 @@ public class UserController {
         return Result.success(userService.login(req));
     }
 
-    @PostMapping("/register")
+//    @PostMapping("/register")
     public Result<?> register(@RequestBody
                                 @Valid
                               RegisterRequestDTO req){

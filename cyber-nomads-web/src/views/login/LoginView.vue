@@ -168,7 +168,8 @@ const switchLogin = async () =>{
           <div class="hero">
             <h1>你好 世界<br />Cyber Nomads</h1>
             <v-fade-transition leave-absolute>
-              <p style="font-weight: 600;font-size:1.2rem">如果你{{isLogin?'没':'已'}}有账号<br />可以<a style="font-weight: 600" @click="switchLogin()">👉点击这里</a> {{isLogin?'进行注册':'进行登录'}}.</p>
+<!--              <p style="font-weight: 600;font-size:1.2rem">如果你{{isLogin?'没':'已'}}有账号<br />可以<a style="font-weight: 600" @click="switchLogin()">👉点击这里</a> {{isLogin?'进行注册':'进行登录'}}.</p>-->
+              <p style="font-weight: 600;font-size:1.0rem">欢迎来到CyberNomads<br/>快来<a style="font-weight: 600">直接登录</a>体验吧</p>
             </v-fade-transition>
           </div>
           <div v-if="isLogin" class="main">
@@ -229,62 +230,62 @@ const switchLogin = async () =>{
               </ul>
             </div>
           </div>
-          <div v-if="!isLogin" class="main">
-            <form action="">
-              <p>
-                <input v-model="registerForm.email" type="email" placeholder="邮箱" />
-              </p>
-              <p>
-                <input v-model="registerForm.password" type="password" placeholder="密码" />
-              </p>
-              <p>
-                <input v-model="registerForm.confirmPassword" type="password" placeholder="确认密码" />
-              </p>
-              <transition name="fade">
-                <p  v-if="needOpenPicCode" class="code-container">
-                  <input v-model="picCode.code" placeholder="图片验证码" class="pic-code-input"/>
-                  <img v-if="!picLoading" @click="generatePicCode()" :src="picCode.img" class="pic-code" />
-                  <v-img v-else
-                         class="mx-auto"
-                         :lazy-src="preImg"
-                  >
-                    <template v-slot:placeholder>
-                      <CircleLoading/>
-                    </template>
-                  </v-img>
-                </p>
-              </transition>
-              <p class="code-container">
-                <input v-model="registerForm.code" placeholder="验证码" class="input-code"/>
-                <v-btn :loading="sendLoading" @click="sendEmailCode()" :disabled="coolDownTimer.getCoolDownTime(registerForm.email)>0" color="#5865f2" min-height="60" class="send-code fixed-width-btn">
-                  <template v-if="coolDownTimer.getCoolDownTime(registerForm.email)>0">
-                    {{ coolDownTimer.getCoolDownTime(registerForm.email) }}秒后重新发送
-                  </template>
-                  <template v-else>
-                    发送验证码
-                  </template>
-                  <template v-slot:loader>
-                    <v-progress-linear indeterminate></v-progress-linear>
-                  </template>
-                </v-btn>
-              </p>
-              <p>
-                <v-btn
-                  color="#5865f2"
-                  size="small"
-                  variant="flat"
-                  @click="register()"
-                  :loading="submitLoading"
-                  class="submit text-none text-subtitle-1"
-                >
-                  注册
-                  <template v-slot:loader>
-                    <v-progress-linear indeterminate></v-progress-linear>
-                  </template>
-                </v-btn>
-              </p>
-            </form>
-          </div>
+<!--          <div v-if="!isLogin" class="main">-->
+<!--            <form action="">-->
+<!--              <p>-->
+<!--                <input v-model="registerForm.email" type="email" placeholder="邮箱" />-->
+<!--              </p>-->
+<!--              <p>-->
+<!--                <input v-model="registerForm.password" type="password" placeholder="密码" />-->
+<!--              </p>-->
+<!--              <p>-->
+<!--                <input v-model="registerForm.confirmPassword" type="password" placeholder="确认密码" />-->
+<!--              </p>-->
+<!--              <transition name="fade">-->
+<!--                <p  v-if="needOpenPicCode" class="code-container">-->
+<!--                  <input v-model="picCode.code" placeholder="图片验证码" class="pic-code-input"/>-->
+<!--                  <img v-if="!picLoading" @click="generatePicCode()" :src="picCode.img" class="pic-code" />-->
+<!--                  <v-img v-else-->
+<!--                         class="mx-auto"-->
+<!--                         :lazy-src="preImg"-->
+<!--                  >-->
+<!--                    <template v-slot:placeholder>-->
+<!--                      <CircleLoading/>-->
+<!--                    </template>-->
+<!--                  </v-img>-->
+<!--                </p>-->
+<!--              </transition>-->
+<!--              <p class="code-container">-->
+<!--                <input v-model="registerForm.code" placeholder="验证码" class="input-code"/>-->
+<!--                <v-btn :loading="sendLoading" @click="sendEmailCode()" :disabled="coolDownTimer.getCoolDownTime(registerForm.email)>0" color="#5865f2" min-height="60" class="send-code fixed-width-btn">-->
+<!--                  <template v-if="coolDownTimer.getCoolDownTime(registerForm.email)>0">-->
+<!--                    {{ coolDownTimer.getCoolDownTime(registerForm.email) }}秒后重新发送-->
+<!--                  </template>-->
+<!--                  <template v-else>-->
+<!--                    发送验证码-->
+<!--                  </template>-->
+<!--                  <template v-slot:loader>-->
+<!--                    <v-progress-linear indeterminate></v-progress-linear>-->
+<!--                  </template>-->
+<!--                </v-btn>-->
+<!--              </p>-->
+<!--              <p>-->
+<!--                <v-btn-->
+<!--                  color="#5865f2"-->
+<!--                  size="small"-->
+<!--                  variant="flat"-->
+<!--                  @click="register()"-->
+<!--                  :loading="submitLoading"-->
+<!--                  class="submit text-none text-subtitle-1"-->
+<!--                >-->
+<!--                  注册-->
+<!--                  <template v-slot:loader>-->
+<!--                    <v-progress-linear indeterminate></v-progress-linear>-->
+<!--                  </template>-->
+<!--                </v-btn>-->
+<!--              </p>-->
+<!--            </form>-->
+<!--          </div>-->
         </div>
       </div>
     </div>
