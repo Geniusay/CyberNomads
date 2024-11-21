@@ -22,7 +22,7 @@ public class BiliCoinLogicSelector extends AbstractLogicSelector implements Logi
 
     private Integer coinSum;
 
-    private boolean andLike;
+    private boolean andLike = false;
 
     @Override
     public void init(Task task) {
@@ -33,7 +33,7 @@ public class BiliCoinLogicSelector extends AbstractLogicSelector implements Logi
         } else {
             coinSum = 1;
         }
-        this.andLike = getValue(this.pluginParams, AND_LIKE, Boolean.class);
+//        this.andLike = getValue(this.pluginParams, AND_LIKE, Boolean.class);
     }
 
     @Override
@@ -44,8 +44,8 @@ public class BiliCoinLogicSelector extends AbstractLogicSelector implements Logi
     @Override
     public List<TaskNeedParams> supplierNeedParams() {
         return List.of(
-                TaskNeedParams.ofKV(COIN_SUM, 1, "投币数量，填(1或2)"),
-                TaskNeedParams.ofKV(AND_LIKE, false, "投币+点赞").setHidden(true).setExtendDesc(AND_LIKE_EXT_DESC)
+                TaskNeedParams.ofKV(COIN_SUM, 1, "投币数量，填(1或2)")
+//                TaskNeedParams.ofKV(AND_LIKE, false, "投币+点赞").setHidden(true).setExtendDesc(AND_LIKE_EXT_DESC)
         );
     }
 }

@@ -17,8 +17,8 @@ import static io.github.geniusay.crawler.test.bilibili.TestVideoAPI.subKey;
 public class TestBarrageAPI {
 
     // 输入视频的bvid
-    private static final String SOURCE_BVID = "BV1CK421s7ZD";  // 源视频的bvid
-    private static final String TARGET_BVID = "BV19USKYMECj";  // 目标视频的bvid
+    private static final String SOURCE_BVID = "BV1pj421S7nR";  // 源视频的bvid
+    private static final String TARGET_BVID = "BV1ccUSYTEkD";  // 目标视频的bvid
 
     // 保存弹幕列表的文件路径
     private static final String BARRAGE_FILE_PATH = "D:\\" + SOURCE_BVID + ".txt";
@@ -30,7 +30,7 @@ public class TestBarrageAPI {
     private static final int BASE_SEND_INTERVAL = 30;
 
     // 时间偏移量，单位秒，表示弹幕发送时间向后偏移的时间
-    private static final int TIME_OFFSET = 12;
+    private static final int TIME_OFFSET = 0;
 
     /**
      * 从源视频爬取弹幕并保存到文件中
