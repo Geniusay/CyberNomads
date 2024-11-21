@@ -33,8 +33,8 @@
             cols="12"
             xs="12"
             md="12"
-            lg="3"
-            xl="3
+            :lg="cardWidth"
+            :xl="cardWidth
         "
             v-for="(item,index) in taskList"
             :key="item.id"
@@ -75,7 +75,7 @@ const robotStore = useRobotStore();
 const randomSeed = Math.floor(Math.random() * images.length);
 const emptyState = ref(false)
 const pageLoading = ref(true)
-
+const cardWidth = ref(3)
 onMounted(async()=>{
   await taskStore.initTaskList()
   await commonStore.initPlatformsVO()
@@ -84,6 +84,15 @@ onMounted(async()=>{
   taskList.value = taskStore.getTaskList.value as TaskVO[]
   emptyState.value = taskList.value.length==0;
   pageLoading.value = false
+  window.addEventListener("resize", () => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    if(width<1920){
+      cardWidth.value = 4
+    }else{
+      cardWidth.value = 3
+    }
+  });
 })
 
 const openAddDialog = ()=>{
