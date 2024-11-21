@@ -20,7 +20,7 @@ const getPhotoHeight = (index: number) => {
 };
 
 const initPhotos = () => {
-  photos.value = Array.from({ length: 15 }, (value, index) => ({
+  photos.value = Array.from({ length: 25 }, (value, index) => ({
     id: index + "",
     url: faker.image.animals(undefined, getPhotoHeight(index), true),
     title: faker.lorem.word(),
@@ -28,33 +28,33 @@ const initPhotos = () => {
   }));
 };
 
-// const loadMore = () => {
-//   photos.value = photos.value.concat(
-//     Array.from({ length: 5 }, (value, index) => ({
-//       id: photos.value.length + index + "",
-//       url: faker.image.animals(undefined, getPhotoHeight(index), true),
-//       title: faker.lorem.word(),
-//       description: faker.lorem.text(),
-//     }))
-//   );
-// };
+const loadMore = () => {
+  photos.value = photos.value.concat(
+    Array.from({ length: 15 }, (value, index) => ({
+      id: photos.value.length + index + "",
+      url: faker.image.animals(undefined, getPhotoHeight(index), true),
+      title: faker.lorem.word(),
+      description: faker.lorem.text(),
+    }))
+  );
+};
 
 const onScroll = (e) => {
   const target = e.target;
   const scrollBottom =
     target.scrollHeight - target.scrollTop - target.clientHeight;
-  console.log(scrollBottom);
+  console.log(e);
 
   if (scrollBottom < 1) {
     setTimeout(() => {
-      // loadMore();
+      loadMore();
     }, 1000);
   }
 };
 </script>
 
 <template>
-  <v-container class="h-full" v-scroll.self="onScroll">
+  <v-container style="height: 2vh" class="h-full" v-scroll.self="onScroll">
     <v-card>
       <masonry-wall :items="photos" :ssr-columns="1" :padding="30">
         <template #default="{ item }">
