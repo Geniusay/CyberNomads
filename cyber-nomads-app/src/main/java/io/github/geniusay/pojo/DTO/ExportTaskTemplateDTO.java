@@ -14,18 +14,10 @@ import javax.validation.constraints.NotBlank;
 @Data
 @Validated
 public class ExportTaskTemplateDTO {
-
-    private String id;
     @NotBlank(message = "模板名称不能为空")
     private String name;
     @NotBlank(message = "模板描述不能为空")
     private String description;
-    @NotBlank(message = "模板类型不能为空")
-    private String type;
-    @NotBlank(message = "模板平台不能为空")
-    private String platform;
-    private String params;
     private Boolean hasPrivate;
-
-
+    private String taskId;
 }

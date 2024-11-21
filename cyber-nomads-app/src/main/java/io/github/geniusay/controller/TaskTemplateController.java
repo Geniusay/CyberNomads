@@ -51,13 +51,6 @@ public class TaskTemplateController {
     }
 
     @TokenRequire
-    @PostMapping("/edit")
-    public Result<?> updateTemplate(@RequestBody @Validated ExportTaskTemplateDTO task){
-        templateService.updateTemplate(task);
-        return Result.success();
-    }
-
-    @TokenRequire
     @GetMapping("/delete")
     public Result<?> deleteTemplate(String templateId){
         templateService.removeTemplate(templateId);

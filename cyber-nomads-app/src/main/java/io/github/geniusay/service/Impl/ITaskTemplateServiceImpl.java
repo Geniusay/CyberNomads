@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.github.geniusay.constants.RedisConstant;
 import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.core.supertask.task.Task;
+import io.github.geniusay.mapper.TaskMapper;
 import io.github.geniusay.mapper.TaskTemplateMapper;
+import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DO.TaskTemplateDO;
 import io.github.geniusay.pojo.DTO.ExportTaskTemplateDTO;
 import io.github.geniusay.pojo.DTO.QueryTemplateDTO;
@@ -31,13 +33,26 @@ import java.util.stream.Collectors;
 public class ITaskTemplateServiceImpl implements TaskTemplateService {
     final int DEFAULT_LIMIT = 10;
     final int DEFAULT_PAGE = 1;
+    final int DEFAULT_MAX_LIMIT = 100;
     @Resource
     TaskTemplateMapper templateMapper;
+    @Resource
+    TaskMapper taskMapper;
     @Resource
     CacheUtil cacheUtil;
     @Override
     public void insertTemplate(ExportTaskTemplateDTO task) {
+        String uid = ThreadUtil.getUid();
+        TaskDO taskDO = taskMapper.selectOne(new QueryWrapper<TaskDO>()
+                .eq("uid", uid)
+                .eq("id", task.getTaskId()));
+        if(taskDO==null){
+            throw new ServeException("找不到该任务");
+        }
         TaskTemplateDO templateDO = TaskTemplateDO.convert(task);
+        templateDO.setParams(taskDO.getParams());
+        templateDO.setPlatform(taskDO.getPlatform());
+        templateDO.setType(taskDO.getTaskType());
         templateMapper.insert(templateDO);
     }
 
@@ -50,6 +65,9 @@ public class ITaskTemplateServiceImpl implements TaskTemplateService {
             wrapper.eq("uid", ThreadUtil.getUid());
         }
         int limit = Optional.ofNullable(queryTemplateDTO.getLimit()).orElse(DEFAULT_LIMIT);
+        if(limit>DEFAULT_MAX_LIMIT){
+            limit = DEFAULT_MAX_LIMIT;
+        }
         int page = Optional.ofNullable(queryTemplateDTO.getPage()).orElse(DEFAULT_PAGE);
         Page<TaskTemplateDO> selectedPage = templateMapper.selectPage(new Page<>(page-1, limit), wrapper);
         return selectedPage.getRecords().stream().map(TaskTemplateVO::convert).collect(Collectors.toList());
@@ -72,17 +90,6 @@ public class ITaskTemplateServiceImpl implements TaskTemplateService {
         String templateId = cacheUtil.get(RedisConstant.TASK_TEMPLATE_KEY + script);
         TaskTemplateDO templateDO = templateMapper.selectOne(new QueryWrapper<TaskTemplateDO>().eq("id", templateId));
         return TaskTemplateVO.convert(templateDO);
-    }
-
-    @Override
-    public void updateTemplate(ExportTaskTemplateDTO task) {
-        TaskTemplateDO taskTemplateDO = new TaskTemplateDO();
-        BeanUtils.copyProperties(task,taskTemplateDO);
-        taskTemplateDO.setId(Long.valueOf(task.getId()));
-        if(task.getHasPrivate()){
-            removeTemplate(task.getId());
-        }
-        templateMapper.updateById(taskTemplateDO);
     }
 
     @Override
