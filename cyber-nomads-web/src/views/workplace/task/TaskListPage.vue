@@ -77,6 +77,7 @@ const emptyState = ref(false)
 const pageLoading = ref(true)
 const cardWidth = ref(3)
 onMounted(async()=>{
+  checkWindowCardWidth()
   await taskStore.initTaskList()
   await commonStore.initPlatformsVO()
   await robotStore.initRobotList()
@@ -85,16 +86,18 @@ onMounted(async()=>{
   emptyState.value = taskList.value.length==0;
   pageLoading.value = false
   window.addEventListener("resize", () => {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    if(width<1920){
-      cardWidth.value = 4
-    }else{
-      cardWidth.value = 3
-    }
+    checkWindowCardWidth()
   });
 })
 
+const checkWindowCardWidth = ()=>{
+  const width = window.innerWidth;
+  if(width<1920){
+    cardWidth.value = 4
+  }else{
+    cardWidth.value = 3
+  }
+}
 const openAddDialog = ()=>{
   taskStore.taskForm.platform = platformList.value[0].platform
   taskStore.changeDialogMode(false)
