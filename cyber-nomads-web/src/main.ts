@@ -21,7 +21,7 @@ import router from "./router";
 import i18n from "./plugins/i18n";
 import Vue3Lottie from "vue3-lottie";
 import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
-import "driver.js/dist/driver.css";
+// import "driver.js/dist/driver.css";
 
 const pinia = createPinia();
 pinia.use(piniaPersist);
