@@ -33,6 +33,8 @@ public class AICommentGenerate extends AbstractCommentGenerate implements Commen
             "语言风格：带有猫咪的口癖，经常在句尾加上“喵~”\n" +
             "提示：请根据以上身份生成一条可爱、有趣且符合猫娘性格的评论，记得加上猫咪的口癖哦！";
 
+    public static final String SLOGAN_TEMPLATE = "我是来自CyberNomads的小伙伴，快来加入我们的大家庭：534807469";
+
     @Override
     public void init(Task task) {
         super.init(task);
@@ -67,7 +69,7 @@ public class AICommentGenerate extends AbstractCommentGenerate implements Commen
         return List.of(
                 TaskNeedParams.ofKV(AI_PRE_TEXT, CATGIRL_TEMPLATE, "AI会将下面内容作为参考 (您可以自行修改)").setInputType(TEXTAREA),
                 TaskNeedParams.ofKV(AI_COUNT_NUM, 100, "生成多少字").setExtendDesc(AI_COUNT_NUM_EXT_DESC),
-                TaskNeedParams.ofK(SLOGAN, String.class, "Slogan").setExtendDesc(SLOGAN_EXT_DESC)
+                TaskNeedParams.ofKV(SLOGAN, SLOGAN_TEMPLATE, "Slogan结尾语").setExtendDesc(SLOGAN_EXT_DESC)
         );
     }
 }
