@@ -154,13 +154,8 @@ public class HTTPUtils {
     }
     public Result<?> convertRespToResult(Response response) throws IOException {
         Result result = JSON.parseObject(response.body().string(),Result.class);
-        Result res = new Result();
-        res.setCode(result.getCode());
         Object data = result.getData();
-        res.setData(Objects.isNull(data)?null:JSON.parseArray(JSON.toJSONString(data), RobotVO.class));
-        res.setMsg(result.getMsg());
-        res.setTimestamp(result.getTimestamp());
-        return res;
+        return Result.success(Objects.isNull(data)?null:JSON.parseArray(JSON.toJSONString(data), RobotVO.class));
     }
 
     public static void deleteDirectory(File dir) {

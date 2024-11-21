@@ -155,6 +155,7 @@ const watchDownloadStatus = ()=>{
     await downloadStatus().then(res=>{
       downloadStatusInfo.value = res.data
       if(!downloadStatusInfo.value.isDownload){
+        snackbarStore.showInfoMessage("下载完毕,如果下载成功请点击【下一步】")
         clearInterval(interval);
       }
     })

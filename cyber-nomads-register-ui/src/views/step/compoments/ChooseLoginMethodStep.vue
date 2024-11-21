@@ -87,6 +87,7 @@
             class="mt-4"
             color="success"
             block
+            :loading="doLoginLoading"
             @click="doLogin()"
         >
           登录启动
@@ -202,7 +203,7 @@ import {AccountForm, RobotVO} from "@/types/AllTypes";
 
 const snackbarStore = useSnackbarStore();
 const platforms = ["bilibili"]
-
+const doLoginLoading = ref(false)
 
 
 const defaultForm = <AccountForm>{
@@ -275,11 +276,24 @@ const robotLogin = async(robot)=>{
   }
 }
 
+const waitTimeToLoading =(loading, time:number)=>{
+  setTimeout(()=>{
+    loading.value = false
+  }, time)
+}
+
+const browserStartTips = ()=>{
+  snackbarStore.showInfoMessage("正在打开浏览器模拟登录，请稍后....")
+}
+
 const doLogin = async()=>{
   if(accountForm.value.username===""){
     snackbarStore.showErrorMessage("请输入账号!")
     return;
   }
+  doLoginLoading.value = true
+  waitTimeToLoading(doLoginLoading, 5000)
+  browserStartTips()
   await autoLogin(accountForm.value.username,accountForm.value.platform);
   closeDialog()
 }
