@@ -1,13 +1,15 @@
 package io.github.geniusay.utils;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.mail.*;
 import javax.mail.internet.MimeMessage;
+import java.util.Properties;
 
 
 @Component
@@ -17,9 +19,22 @@ public class EmailUtil {
 	@Resource
 	private String htmlContent;  // HTML模板内容
 	@Resource
-	private JavaMailSender mailSender;
+	private JavaMailSenderImpl mailSender;
 
 	public EmailUtil() {
+	}
+
+	@PostConstruct
+	public void init(){
+		Properties properties = new Properties();
+		properties.setProperty("mail.smtp.auth", "true");//开启认证
+//		properties.setProperty("mail.debug", "true");//启用调试
+		properties.setProperty("mail.smtp.timeout", "200000");//设置链接超时
+		properties.setProperty("mail.smtp.port", Integer.toString(25));//设置端口
+		properties.setProperty("mail.smtp.socketFactory.port", Integer.toString(465));//设置ssl端口
+		properties.setProperty("mail.smtp.socketFactory.fallback", "false");
+		properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		mailSender.setJavaMailProperties(properties);
 	}
 
 	public void sendCode(String to, String Code) {
