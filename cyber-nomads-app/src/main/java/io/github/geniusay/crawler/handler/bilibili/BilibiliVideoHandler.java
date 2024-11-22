@@ -69,7 +69,7 @@ public class BilibiliVideoHandler {
 
         try {
             // 发送GET请求并获取响应
-            ApiResponse<String> response = HttpClientUtil.sendGetRequest(url, null);
+            ApiResponse<String> response = HttpClientUtil.sendGetRequest(url, "");
             return convertApiResponse(response);
         } catch (IOException e) {
             return ApiResponse.errorResponse(e);

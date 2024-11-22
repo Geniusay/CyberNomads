@@ -1,5 +1,6 @@
 package io.github.geniusay.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -28,21 +29,17 @@ public class BilibiliFormatUtil {
         throw new IllegalArgumentException("无效的视频链接或 BV 号: " + input);
     }
 
-    /**
-     * 解析关键词字符串，提取以 '#' 分隔的有效关键词
-     *
-     * @param keywordSearchText 用户输入的关键词字符串
-     * @return 解析后的关键词列表
-     */
     public static List<String> parseKeywords(String keywordSearchText) {
-        // 去除多余的空格，并按 '#' 分割
-        String[] rawKeywords = keywordSearchText.trim().split("#");
+        Pattern pattern = Pattern.compile("【(.*?)】");
+        Matcher matcher = pattern.matcher(keywordSearchText);
 
-        // 遍历分割后的关键词，过滤掉空值或无效字符
-        return Arrays.stream(rawKeywords)
-                .map(String::trim) // 去除每个关键词的前后空格
-                .filter(keyword -> !keyword.isEmpty()) // 过滤掉空字符串
-                .distinct() // 去重
-                .collect(Collectors.toList()); // 收集为列表
+        List<String> keywords = new ArrayList<>();
+        while (matcher.find()) {
+            String keyword = matcher.group(1).trim();
+            if (!keyword.isEmpty()) {
+                keywords.add(keyword);
+            }
+        }
+        return keywords.stream().distinct().collect(Collectors.toList());
     }
 }

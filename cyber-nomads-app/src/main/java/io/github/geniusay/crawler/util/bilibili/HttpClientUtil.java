@@ -94,6 +94,36 @@ public class HttpClientUtil {
     }
 
     /**
+     * 发送 GET 请求
+     *
+     * @param url 请求 URL
+     * @param headers 请求头 (可选)
+     * @return ApiResponse<String> 响应数据
+     * @throws IOException
+     */
+    public static ApiResponse<String> sendGetRequestHeader(String url, Headers headers) throws IOException {
+        Request.Builder requestBuilder = new Request.Builder().url(url).get();
+
+        // 添加请求头
+        if (headers != null) {
+            requestBuilder.headers(headers);
+        }
+        requestBuilder.addHeader("User-Agent", DEFAULT_USER_AGENT);
+
+        Request request = requestBuilder.build();
+
+        try (Response response = getClient(null).newCall(request).execute()) {
+            if (response.isSuccessful() && response.body() != null) {
+                String responseBody = response.body().string();
+                return new ApiResponse<>(200, "Success", true, responseBody, 1L, 1L, 1L);
+            } else {
+                return ApiResponse.errorResponse(new IOException("HTTP请求失败: " + response.code()));
+            }
+        }
+    }
+
+
+    /**
      * 发送POST请求
      *
      * @param url 请求的URL

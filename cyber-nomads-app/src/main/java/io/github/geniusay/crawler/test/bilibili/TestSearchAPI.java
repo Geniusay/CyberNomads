@@ -2,6 +2,7 @@ package io.github.geniusay.crawler.test.bilibili;
 
 import io.github.geniusay.crawler.api.bilibili.BilibiliSearchApi;
 import io.github.geniusay.crawler.api.bilibili.BilibiliVideoApi;
+import io.github.geniusay.crawler.po.bilibili.HotSearchResult;
 import io.github.geniusay.crawler.po.bilibili.VideoAiSummaryData;
 import io.github.geniusay.crawler.po.bilibili.VideoDetail;
 import io.github.geniusay.crawler.po.bilibili.VideoSearchResult;
@@ -41,4 +42,20 @@ public class TestSearchAPI {
         }
     }
 
+    @Test
+    public void getHotSearch() throws Exception {
+        var response = BilibiliSearchApi.getHotSearchList();
+
+        if (response.isSuccess()) {
+            HotSearchResult hotSearchResult = response.getData();
+
+            System.out.println("B站热搜列表：");
+            for (HotSearchResult.HotWord hotWord : hotSearchResult.getList()) {
+                System.out.printf("名次: %d, 关键词: %s, 完整关键词: %s, 图标: %s%n",
+                        hotWord.getPos(), hotWord.getKeyword(), hotWord.getShow_name(), hotWord.getIcon());
+            }
+        } else {
+            System.err.println("获取热搜列表失败：" + response.getMsg());
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package io.github.geniusay.crawler.handler.bilibili;
 
+import io.github.geniusay.crawler.po.bilibili.HotSearchResult;
+import io.github.geniusay.crawler.po.bilibili.VideoDetail;
 import io.github.geniusay.crawler.po.bilibili.VideoSearchResult;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import io.github.geniusay.crawler.util.bilibili.HttpClientUtil;
@@ -10,6 +12,7 @@ import okhttp3.HttpUrl;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 描述: B站搜索相关爬虫处理器
@@ -20,6 +23,29 @@ public class BilibiliSearchHandler {
 
     // B站搜索API的基础URL
     private static final String SEARCH_URL = "https://api.bilibili.com/x/web-interface/search/type";
+
+    // 热搜列表的基础 URL
+    private static final String HOT_SEARCH_URL = "https://s.search.bilibili.com/main/hotword";
+
+    /**
+     * 获取 B站热搜列表
+     *
+     * @return ApiResponse<HotSearchResult> 包含热搜列表的响应对象
+     */
+    public static ApiResponse<HotSearchResult> getHotSearchList() {
+        try {
+            // 构建 URL
+            HttpUrl url = HttpUrl.parse(HOT_SEARCH_URL).newBuilder().build();
+
+            // 发送 GET 请求
+            ApiResponse<String> response = HttpClientUtil.sendGetRequestHeader(url.toString(), null);
+            return ApiResponse.convertApiResponse(response, HotSearchResult.class);
+        } catch (IOException e) {
+            // 捕获异常并返回错误响应
+            return ApiResponse.errorResponse(e);
+        }
+    }
+
 
     /**
      * 按关键词搜索视频
@@ -57,7 +83,7 @@ public class BilibiliSearchHandler {
         }
         String url = urlBuilder.build().toString();
         try {
-            ApiResponse<String> response = HttpClientUtil.sendGetRequest(url, null);
+            ApiResponse<String> response = HttpClientUtil.sendGetRequest(url, "");
             return ApiResponse.convertApiResponse(response, VideoSearchResult.class);
         } catch (IOException e) {
             return ApiResponse.errorResponse(e);

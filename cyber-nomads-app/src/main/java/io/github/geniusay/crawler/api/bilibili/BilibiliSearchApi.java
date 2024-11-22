@@ -1,8 +1,14 @@
 package io.github.geniusay.crawler.api.bilibili;
 
 import io.github.geniusay.crawler.handler.bilibili.BilibiliSearchHandler;
+import io.github.geniusay.crawler.po.bilibili.HotSearchResult;
 import io.github.geniusay.crawler.po.bilibili.VideoSearchResult;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
+import io.github.geniusay.crawler.util.bilibili.HttpClientUtil;
+import okhttp3.HttpUrl;
+
+import java.io.IOException;
+import java.util.Objects;
 
 /**
  * 描述: B站搜索相关API
@@ -23,5 +29,15 @@ public class BilibiliSearchApi {
      */
     public static ApiResponse<VideoSearchResult> searchVideos(String keyword, String order, int duration, int tids, int page, int page_size, String imgKey, String subKey) {
         return BilibiliSearchHandler.searchVideos(keyword, order, duration, tids, page, page_size, imgKey, subKey);
+    }
+
+
+    /**
+     * 获取 B站热搜列表
+     *
+     * @return ApiResponse<HotSearchResult> 包含热搜列表的响应对象
+     */
+    public static ApiResponse<HotSearchResult> getHotSearchList() {
+        return BilibiliSearchHandler.getHotSearchList();
     }
 }

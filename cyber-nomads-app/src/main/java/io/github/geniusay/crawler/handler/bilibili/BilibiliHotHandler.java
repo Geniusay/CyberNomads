@@ -69,7 +69,7 @@ public class BilibiliHotHandler {
     public static ApiResponse<List<WeeklySeries>> getWeeklySeriesList() {
         try {
             // 发送GET请求，获取响应
-            ApiResponse<String> response = HttpClientUtil.sendGetRequest(WEEKLY_SERIES_URL, null);
+            ApiResponse<String> response = HttpClientUtil.sendGetRequest(WEEKLY_SERIES_URL, "");
             List<WeeklySeries> seriesList = parseWeeklySeriesResponse(response.getData());
             return new ApiResponse<>(response.getCode(), response.getMsg(), true, seriesList, response.getReqTime(), response.getRespTimes(), response.getDur());
         } catch (IOException e) {
@@ -146,7 +146,7 @@ public class BilibiliHotHandler {
     public static ApiResponse<List<VideoDetail>> getListApiResponse(String url) {
         try {
             // 发送GET请求，获取响应
-            ApiResponse<String> response = HttpClientUtil.sendGetRequest(url, null);
+            ApiResponse<String> response = HttpClientUtil.sendGetRequest(url, "");
             List<VideoDetail> videoDetails = parseVideoResponse(response.getData());
             return new ApiResponse<>(response.getCode(), response.getMsg(), true, videoDetails, response.getReqTime(), response.getRespTimes(), response.getDur());
         } catch (IOException e) {
