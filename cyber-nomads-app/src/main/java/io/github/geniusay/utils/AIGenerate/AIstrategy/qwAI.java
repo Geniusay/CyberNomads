@@ -53,7 +53,6 @@ public class qwAI implements BaseGenerate {
                 byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
-
             int responseCode = httpURLConnection.getResponseCode();
 
             StringBuilder response = new StringBuilder();
