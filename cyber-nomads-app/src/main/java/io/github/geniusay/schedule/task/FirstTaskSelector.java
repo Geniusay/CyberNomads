@@ -22,15 +22,11 @@ public class FirstTaskSelector implements TaskSelector {
     @Resource
     TaskScheduleManager manager;
     @Override
-    public Task select(Long robotId) {
-        Map<String, Task> taskMap = manager.getRobotTaskById(robotId);
-        RobotWorker worker = manager.getRobotById(robotId);
-        if(worker==null){
-            return null;
-        }
+    public Task select(RobotWorker worker) {
+        Map<String, Task> taskMap = manager.getRobotTaskById(worker.getId());
         List<Task> tasks = new ArrayList<>(taskMap.values());
         for (Task task : tasks) {
-            if (task.getTerminator().robotCanDo(worker)) {
+            if (task.getTerminator().robotCanDo(worker) && worker.task()==null) {
                 return task;
             }
         }

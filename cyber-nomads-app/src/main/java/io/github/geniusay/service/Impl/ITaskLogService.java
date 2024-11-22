@@ -51,6 +51,7 @@ public class ITaskLogService implements TaskLogService {
         task.getLoglist().add(taskLog);
         // 保存日志到数据库
         taskLogMapper.insert(taskLog);
+        robotWorker.setTask(null);
     }
 
     /**

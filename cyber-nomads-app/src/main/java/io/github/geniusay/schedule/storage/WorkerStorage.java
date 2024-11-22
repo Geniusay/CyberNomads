@@ -10,4 +10,5 @@ public interface WorkerStorage {
     void joinWorkerQueue(Long workerId);
     void removeRobotWorker(Long workerId);
     void reJoinRobotWorker(Long workerId);
+    void workerDoneCallBack(Long workerId);
 }

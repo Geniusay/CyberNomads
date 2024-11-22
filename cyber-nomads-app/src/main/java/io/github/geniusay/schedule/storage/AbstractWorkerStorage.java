@@ -28,9 +28,6 @@ public abstract class AbstractWorkerStorage implements WorkerStorage {
     }
 
     @Override
-    public abstract void joinWorkerQueue (Long workerId);
-
-    @Override
     public void removeRobotWorker(Long workerId) {
 
     }

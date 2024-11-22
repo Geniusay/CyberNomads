@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @Description
@@ -40,6 +41,7 @@ public class TaskScheduleManager {
     private static final Map<String, Task> WORLD_TASK = new ConcurrentHashMap<>();
     private static final Map<Long, RobotWorker> WORLD_ROBOTS = new ConcurrentHashMap<>();
     private static final Map<Long, Map<String,Task>> WORLD_ROBOTS_TASK = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Long, ReentrantLock> LOCK_MAP = new ConcurrentHashMap<>();
     //TODO final map
     @PostConstruct
     public void init(){
@@ -72,24 +74,25 @@ public class TaskScheduleManager {
             throw new ServeException("robot列表不能为空");
         }
         for (RobotDO robot : task.getRobots()) {
-            WORLD_ROBOTS_TASK.computeIfAbsent(robot.getId(), id -> new ConcurrentHashMap<>())
-                    .put(String.valueOf(taskDO.getId()), task);
-            WORLD_ROBOTS.computeIfAbsent(robot.getId(), id -> {
+            ReentrantLock lock = LOCK_MAP.computeIfAbsent(robot.getId(), id -> new ReentrantLock());
+            lock.lock();
+            try {
+                WORLD_ROBOTS_TASK.computeIfAbsent(robot.getId(), id -> new ConcurrentHashMap<>())
+                        .put(String.valueOf(taskDO.getId()), task);
+                WORLD_ROBOTS.computeIfAbsent(robot.getId(), id -> {
 //                EVENT_PUBLISHER.startWork(id);
-                return new RobotWorker(robot);
-            });
-            workerExecute.push(robot.getId());
+                    workerExecute.push(robot.getId());
+                    return new RobotWorker(robot);
+                });
+            }finally {
+                lock.unlock();
+            }
         }
     }
 
     public void registerRobot(RobotDO robotDO){
         WORLD_ROBOTS.put(robotDO.getId(),new RobotWorker(robotDO));
         EVENT_PUBLISHER.registerRobot(robotDO.getId());
-    }
-
-    public RobotWorker removeRobot(Long robotId){
-        EVENT_PUBLISHER.removeRobot(robotId);
-        return WORLD_ROBOTS.remove(robotId);
     }
 
     public Collection<Task> getWorkerAllTask(Long robotId){
@@ -101,7 +104,19 @@ public class TaskScheduleManager {
         if(!Objects.isNull(task)){
             task.getRobots().forEach((robotDO)->{
                 WORLD_ROBOTS_TASK.get(robotDO.getId()).remove(taskId);
-
+                ReentrantLock lock = LOCK_MAP.get(robotDO.getId());
+                if(lock!=null){
+                    lock.lock();
+                    try {
+                        if(WORLD_ROBOTS_TASK.get(robotDO.getId()).isEmpty()){
+                            WORLD_ROBOTS_TASK.remove(robotDO.getId());
+                            WORLD_ROBOTS.remove(robotDO.getId());
+                            LOCK_MAP.remove(robotDO.getId());
+                        }
+                    }finally {
+                        lock.unlock();
+                    }
+                }
             });
         }
     }
@@ -135,6 +150,7 @@ public class TaskScheduleManager {
         WORLD_ROBOTS.remove(robotId);
         WORLD_ROBOTS_TASK.remove(robotId);
     }
+
     public void removeWorldRobotTask(Long robotId,String taskId){
         WORLD_ROBOTS_TASK.get(robotId).remove(taskId);
     }

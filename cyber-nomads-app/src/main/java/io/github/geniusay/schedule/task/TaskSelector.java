@@ -1,5 +1,6 @@
 package io.github.geniusay.schedule.task;
 
+import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
 
 /**
@@ -9,6 +10,6 @@ import io.github.geniusay.core.supertask.task.Task;
  */
 public interface TaskSelector {
 
-    Task select(Long robotId);
+    Task select(RobotWorker worker);
 
 }
