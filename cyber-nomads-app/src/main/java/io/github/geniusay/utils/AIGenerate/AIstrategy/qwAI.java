@@ -31,7 +31,7 @@ public class qwAI implements BaseGenerate {
                     "qwen-plus",
                     new Message[]{
                             new Message("system", "You are a helpful assistant."),
-                            new Message("user", "你是谁？")
+                            new Message("user", text+"，字数控制在"+num+"以内，同时以纯文本形式发送")
                     }
             );
 
