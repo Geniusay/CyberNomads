@@ -10,6 +10,7 @@ import io.github.geniusay.core.supertask.plugin.comment.AbstractCommentGenerate;
 import io.github.geniusay.core.supertask.plugin.terminator.CooldownTerminator;
 import io.github.geniusay.core.supertask.plugin.video.AbstractGetVideoPlugin;
 import io.github.geniusay.core.supertask.plugin.video.GetHotVideoPlugin;
+import io.github.geniusay.core.supertask.plugin.video.KeywordSearchPlugin;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
@@ -22,6 +23,7 @@ import io.github.geniusay.pojo.DO.LastWord;
 import io.github.geniusay.utils.LastWordUtil;
 import io.github.geniusay.utils.ParamsUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -39,10 +41,14 @@ import static io.github.geniusay.crawler.test.bilibili.TestVideoAPI.subKey;
 
 @Slf4j
 @Component
+@Scope("prototype")
 public class BiliAiSummaryBlueprint extends AbstractTaskBlueprint {
 
     @Resource
     TaskPluginFactory taskPluginFactory;
+
+    private AbstractGetVideoPlugin getVideoPlugin;
+    private AbstractCommentGenerate commentGenerate;
 
     @Override
     public String platform() {
@@ -55,12 +61,18 @@ public class BiliAiSummaryBlueprint extends AbstractTaskBlueprint {
     }
 
     @Override
-    protected void executeTask(RobotWorker robot, Task task) throws Exception {
-        BilibiliVideoDetail videoDetail = taskPluginFactory.<AbstractGetVideoPlugin>buildPluginWithGroup(GET_VIDEO_GROUP_NAME, task).getHandleVideo(robot, task);
-        ApiResponse<VideoAiSummaryData> videoAiSummary = BilibiliVideoApi.getVideoAiSummary(videoDetail.getBvid(), imgKey, subKey);
-        String content = videoAiSummary.getData().generateFullSummary();
-        String comment = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task).generateComment(content);
+    public void initBlueprint(Task task) {
+        getVideoPlugin = taskPluginFactory.<AbstractGetVideoPlugin>buildPluginWithGroup(GET_VIDEO_GROUP_NAME, task);
+        commentGenerate = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task);
+    }
 
+    @Override
+    protected void executeTask(RobotWorker robot, Task task) throws Exception {
+        BilibiliVideoDetail videoDetail = getVideoPlugin.getHandleVideo(robot, task);
+        ApiResponse<VideoAiSummaryData> videoAiSummary = BilibiliVideoApi.getVideoAiSummary(videoDetail.getBvid(), imgKey, subKey);
+
+        String content = videoAiSummary.getData().generateFullSummary();
+        String comment = commentGenerate.generateComment(content);
         ApiResponse<Boolean> response = new ActionFlow<>(new BiliUserActor(robot), new BiliCommentLogic(comment), new BiliCommentReceiver(videoDetail)).execute();
         task.addLastWord(robot, response, Map.of("bvid", videoDetail.getBvid(), "comment", comment));
     }
@@ -82,7 +94,8 @@ public class BiliAiSummaryBlueprint extends AbstractTaskBlueprint {
         return ParamsUtil.packageListParams(taskPluginFactory.pluginGroupParams(
                 CooldownTerminator.class,
                 AICommentGenerate.class,
-                GetHotVideoPlugin.class
+                GetHotVideoPlugin.class,
+                KeywordSearchPlugin.class
         ));
     }
 }

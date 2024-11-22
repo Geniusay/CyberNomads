@@ -1,7 +1,7 @@
 package io.github.geniusay.core.supertask.plugin.selector.logic;
 
 import io.github.geniusay.core.actionflow.frame.ActionLogic;
-import io.github.geniusay.core.actionflow.logic.BiliLikeLogic;
+import io.github.geniusay.core.actionflow.logic.BiliTripletLogic;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -15,6 +15,6 @@ public class BiliTripletLogicSelector extends AbstractLogicSelector implements L
 
     @Override
     public ActionLogic getLogic() {
-        return new BiliLikeLogic();
+        return new BiliTripletLogic();
     }
 }

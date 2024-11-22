@@ -19,6 +19,7 @@ import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import io.github.geniusay.utils.ParamsUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -31,6 +32,7 @@ import static io.github.geniusay.core.supertask.config.TaskTypeConstant.SINGLE_V
 
 @Slf4j
 @Component
+@Scope("prototype")
 public class BiliSingleCustomCommentBlueprint extends BiliAbstractInteractionBlueprint {
 
     @Resource

@@ -45,6 +45,19 @@ public class BilibiliVideoDetail {
         return bilibiliVideoDetail;
     }
 
+    public static BilibiliVideoDetail convertToBilibiliVideoDetail(VideoSearchResult.Data.Result result) {
+        if (result == null) {
+            return null;
+        }
+        BilibiliVideoDetail videoDetail = new BilibiliVideoDetail();
+        videoDetail.setBvid(result.getBvid());
+        videoDetail.setAid(result.getAid());
+        videoDetail.setTitle(result.getTitle());
+        videoDetail.setName(result.getAuthor());
+        videoDetail.setMid(result.getMid());
+        return videoDetail;
+    }
+
     public String toJson() {
         return new com.google.gson.Gson().toJson(this);
     }

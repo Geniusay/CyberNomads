@@ -33,9 +33,12 @@ public class TaskFactory {
                 .taskDO(taskDO)
                 .build();
 
-
-        task.setTerminator(taskPluginFactory.<AbstractTerminator>buildPluginWithGroup(TERMINATOR_GROUP_NAME, task));
         // 创建任务并注入终结器
+        task.setTerminator(taskPluginFactory.<AbstractTerminator>buildPluginWithGroup(TERMINATOR_GROUP_NAME, task));
+
+        // 初始化蓝图
+        blueprint.initBlueprint(task);
+
         return task;
     }
 }

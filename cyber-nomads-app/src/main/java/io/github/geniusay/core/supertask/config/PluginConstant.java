@@ -21,6 +21,7 @@ public class PluginConstant {
 
     // 视频选择器插件
     public static final String HOT_VIDEO_PLUGIN = "hotVideo";  // 随机热门视频
+    public static final String KEYWORD_SEARCH_PLUGIN = "KeywordSearch";  // 随机热门视频
 
     // 评论选择器插件
     public static final String HOT_COMMENT_PLUGIN = "hotComment";  // 随机热门评论

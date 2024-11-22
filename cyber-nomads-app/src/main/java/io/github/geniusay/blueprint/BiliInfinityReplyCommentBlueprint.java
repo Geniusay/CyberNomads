@@ -22,6 +22,7 @@ import io.github.geniusay.pojo.DO.LastWord;
 import io.github.geniusay.utils.LastWordUtil;
 import io.github.geniusay.utils.ParamsUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -37,6 +38,7 @@ import static io.github.geniusay.crawler.test.bilibili.TestVideoAPI.subKey;
 
 @Slf4j
 @Component
+@Scope("prototype")
 public class BiliInfinityReplyCommentBlueprint extends AbstractTaskBlueprint {
 
     @Resource

@@ -6,6 +6,7 @@ import io.github.geniusay.core.supertask.plugin.terminator.SingleUseTerminator;
 import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import io.github.geniusay.utils.ParamsUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import static io.github.geniusay.core.supertask.config.TaskTypeConstant.USER_INTERACTION;
@@ -13,6 +14,7 @@ import static io.github.geniusay.core.supertask.config.TaskTypeConstant.USER_INT
 
 @Slf4j
 @Component
+@Scope("prototype")
 public class BiliUserInteractionBlueprint extends BiliAbstractInteractionBlueprint {
 
     @Override

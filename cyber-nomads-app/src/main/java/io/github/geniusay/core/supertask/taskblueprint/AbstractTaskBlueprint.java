@@ -14,6 +14,8 @@ public abstract class AbstractTaskBlueprint implements TaskBlueprint {
     public abstract String platform();
     public abstract String taskType();
 
+    public void initBlueprint(Task task) {}
+
     @Override
     public TaskExecute supplierExecute() {
         return (robot) -> {
@@ -26,7 +28,6 @@ public abstract class AbstractTaskBlueprint implements TaskBlueprint {
             return null;
         };
     }
-
 
     @Override
     public LastWordHandler supplierLastWordHandler() {

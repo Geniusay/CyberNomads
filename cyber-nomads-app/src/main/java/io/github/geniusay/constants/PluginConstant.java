@@ -15,6 +15,9 @@ public class PluginConstant {
 
     public static final String CUSTOM_COMMENT_CONTENT = "customCommentContent";
 
+    public static final String KEYWORD_SEARCH = "keywordSearch";
+    public static final String KEYWORD_SEARCH_ORDER = "keywordSearchOrder";
+
     public static final String SLOGAN = "slogan";
 
     public static final String SCOPE = "scope";
@@ -49,4 +52,9 @@ public class PluginConstant {
     public static final String CUSTOM_COMMENT_CONTENT_EXT_DESC = "参考用例：你好###你好吗###我很好，将被分割为三句评论【你好】【你好吗】【我很好】 赛博游民会轮流挑选这三条评论进行宣传";
     public static final String SCOPE_DESC = "这是一种避免 赛博游民 挑选到重复热门视频的一个规则。任务级别：单个任务下的某个机器人不会挑选到已访问过的视频，" +
             "机器人级别：在账号下进行的任务中，机器人不会挑选到已访问过视频";
+
+    public static final String KEYWORD_SEARCH_DESC = "参考用例：#性感猫娘#变态教父#嗨丝诱惑，将被分割为三个关键词" +
+            "【性感猫娘】【变态教父】【嗨丝诱惑】 赛博游民会找到找到这些关键词对应的视频；注意：(最多输入5个关键词，多输无效)";
+
+    public static final String KEYWORD_SEARCH_ORDER_DESC = "【综合排序】：根据b站默认规则选取；【最多播放】：选择播放量高的视频；【最新发布】：选取最近新发布的视频";
 }

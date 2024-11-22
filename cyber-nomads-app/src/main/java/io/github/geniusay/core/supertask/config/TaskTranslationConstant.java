@@ -46,6 +46,7 @@ public class TaskTranslationConstant {
         // 视频选择器
         pluginTranslation.put(GET_VIDEO_GROUP_NAME, "视频选择器");
         pluginTranslation.put(HOT_VIDEO_PLUGIN, "随机热门视频");
+        pluginTranslation.put(KEYWORD_SEARCH_PLUGIN, "关键词相关视频");
 
         // 评论选择器
         pluginTranslation.put(GET_COMMENT_GROUP_NAME, "评论对象");

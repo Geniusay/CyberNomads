@@ -10,6 +10,7 @@ import io.github.geniusay.core.supertask.plugin.comment.AbstractCommentGenerate;
 import io.github.geniusay.core.supertask.plugin.terminator.CooldownTerminator;
 import io.github.geniusay.core.supertask.plugin.video.AbstractGetVideoPlugin;
 import io.github.geniusay.core.supertask.plugin.video.GetHotVideoPlugin;
+import io.github.geniusay.core.supertask.plugin.video.KeywordSearchPlugin;
 import io.github.geniusay.core.supertask.task.*;
 import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
 import io.github.geniusay.crawler.api.bilibili.BilibiliVideoApi;
@@ -38,6 +39,9 @@ public class BiliAiCommentBlueprint extends AbstractTaskBlueprint {
     @Resource
     TaskPluginFactory taskPluginFactory;
 
+    private AbstractGetVideoPlugin getVideoPlugin;
+    private AbstractCommentGenerate commentGenerate;
+
     @Override
     public String platform() {
         return BILIBILI;
@@ -49,9 +53,15 @@ public class BiliAiCommentBlueprint extends AbstractTaskBlueprint {
     }
 
     @Override
+    public void initBlueprint(Task task) {
+        getVideoPlugin = taskPluginFactory.<AbstractGetVideoPlugin>buildPluginWithGroup(GET_VIDEO_GROUP_NAME, task);
+        commentGenerate = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task);
+    }
+
+    @Override
     protected void executeTask(RobotWorker robot, Task task) throws Exception {
-        BilibiliVideoDetail videoDetail = taskPluginFactory.<AbstractGetVideoPlugin>buildPluginWithGroup(GET_VIDEO_GROUP_NAME, task).getHandleVideo(robot, task);
-        String comment = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task).generateComment();
+        BilibiliVideoDetail videoDetail = getVideoPlugin.getHandleVideo(robot, task);
+        String comment = commentGenerate.generateComment();
 
         ApiResponse<Boolean> response = new ActionFlow<>(new BiliUserActor(robot), new BiliCommentLogic(comment), new BiliCommentReceiver(videoDetail)).execute();
         task.addLastWord(robot, response, Map.of("bvid", videoDetail.getBvid(), "comment", comment));
@@ -74,7 +84,8 @@ public class BiliAiCommentBlueprint extends AbstractTaskBlueprint {
         return ParamsUtil.packageListParams(taskPluginFactory.pluginGroupParams(
                 CooldownTerminator.class,
                 AICommentGenerate.class,
-                GetHotVideoPlugin.class
+                GetHotVideoPlugin.class,
+                KeywordSearchPlugin.class
         ));
     }
 }
