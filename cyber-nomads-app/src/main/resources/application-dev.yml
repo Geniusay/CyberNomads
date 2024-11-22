@@ -52,7 +52,7 @@ captcha:
     dot-size: 50
 
 AIGenerate:
-  API_KEY: ${"API_KEY":ENC(li21ByYLAg/rKbFgMaufT+7PbsTYmdJSDusGI2Y7483pQdpXHvBRPgt78dfGQgybBqQKZnR9Mfs=)}
+  API_KEY: ${"API_KEY":ENC(phw1kwvm2u+VYf3VLPHVdJ2Qd0/4+nXpR9pA2r9dvhuHwJ6jM2HbUFmwZ2IMmQPX/S7r+nnLXgE=)}
   STRATEGY: ${"DEFAULT_STRATEGY":qw}
 
 point:
