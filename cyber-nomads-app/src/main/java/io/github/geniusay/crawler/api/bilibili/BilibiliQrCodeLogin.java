@@ -17,6 +17,8 @@ import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
 
+import static io.github.geniusay.crawler.api.bilibili.BiliTicket.getBiliTicket;
+
 public class BilibiliQrCodeLogin {
 
     private static final String QR_CODE_GENERATE_URL = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-fe-header";
@@ -54,8 +56,22 @@ public class BilibiliQrCodeLogin {
                 String buvid4 = buvids.get("b_4").getAsString();
                 String bNut = fetchBNut(cookies);
 
+                // Step 4: 从 Cookie 中提取 bili_jct
+                String biliJct = extractBiliJct(cookies);
+                if (biliJct == null) {
+                    throw new RuntimeException("bili_jct 未找到，无法生成 bili_ticket！");
+                }
+
+                // Step 5: 调用 getBiliTicket 接口获取 bili_ticket
+                System.out.println("正在生成 bili_ticket...");
+                String biliTicketJson = getBiliTicket(biliJct);
+
+                // 从返回的 JSON 中解析出 bili_ticket
+                String biliTicket = parseBiliTicket(biliTicketJson);
+                System.out.println("bili_ticket 获取成功：" + biliTicket);
+
                 // 拼接完整 Cookie
-                cookies += " buvid3=" + buvid3 + "; buvid4=" + buvid4 + "; b_nut=" + bNut + ";";
+                cookies += " buvid3=" + buvid3 + "; buvid4=" + buvid4 + "; b_nut=" + bNut + "; bili_ticket=" + biliTicket + ";";
                 System.out.println("完整 Cookie 信息如下：");
                 System.out.println(cookies);
 
@@ -70,6 +86,31 @@ public class BilibiliQrCodeLogin {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 从 JSON 响应中解析出 bili_ticket
+     *
+     * @param biliTicketJson getBiliTicket 返回的 JSON 字符串
+     * @return bili_ticket
+     */
+    public static String parseBiliTicket(String biliTicketJson) {
+        JsonObject jsonObject = JsonParser.parseString(biliTicketJson).getAsJsonObject();
+        if (jsonObject.get("code").getAsInt() == 0) {
+            return jsonObject.getAsJsonObject("data").get("ticket").getAsString();
+        } else {
+            throw new RuntimeException("解析 bili_ticket 失败，服务器返回：" + jsonObject.get("message").getAsString());
+        }
+    }
+
+    public static String extractBiliJct(String cookies) {
+        for (String cookie : cookies.split(";")) {
+            if (cookie.trim().startsWith("bili_jct=")) {
+                return cookie.split("=")[1].trim();
+            }
+        }
+        return null;
+    }
+
 
     /**
      * 调用接口获取 buvid3 和 buvid4
