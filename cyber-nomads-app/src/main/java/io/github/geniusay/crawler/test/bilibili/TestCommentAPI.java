@@ -16,7 +16,7 @@ public class TestCommentAPI {
     public void sendComment() throws Exception {
         String oid = "113525699904858";
         // 发送一级评论
-        ApiResponse<Boolean> booleanApiResponse = BilibiliCommentApi.sendCommentOrReply(cookie, oid, "请问i吧v久啊识破金佛IQ陪娃", null, null);
+        ApiResponse<Boolean> booleanApiResponse = BilibiliCommentApi.sendCommentOrReply(cookie, oid, "请问而不可撒娇去玩儿全物品", null, null);
         System.out.println(booleanApiResponse);
     }
 

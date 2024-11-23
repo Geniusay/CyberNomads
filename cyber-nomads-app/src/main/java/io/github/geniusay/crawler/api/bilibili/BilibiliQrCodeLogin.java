@@ -16,34 +16,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class BilibiliQrCodeLogin {
 
     private static final String QR_CODE_GENERATE_URL = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-fe-header";
     private static final String QR_CODE_POLL_URL = "https://passport.bilibili.com/x/passport-login/web/qrcode/poll";
-    private static final String VERIFY_URL = "https://api.bilibili.com/x/web-interface/nav";
+    private static final String SPI_URL = "https://api.bilibili.com/x/frontend/finger/spi";
+    private static final String BILIBILI_URL = "https://www.bilibili.com/";
     private static final OkHttpClient CLIENT = new OkHttpClient();
     private static final String COOKIE_FILE = "bz-cookie.txt";
     private static String qrcodeKey;
 
-    private static final String IP = "180.159.89.214";
-
-    // 自定义请求头，伪造 IP 地址
+    // 自定义请求头
     private static final Headers HEADERS = new Headers.Builder()
-            .add("authority", "api.vc.bilibili.com")
             .add("accept", "application/json, text/plain, */*")
-            .add("accept-language", "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6")
-            .add("content-type", "application/x-www-form-urlencoded")
-            .add("origin", "https://message.bilibili.com")
-            .add("referer", "https://message.bilibili.com/")
-            .add("sec-ch-ua", "\"Chromium\";v=\"116\", \"Not)A;Brand\";v=\"24\", \"Microsoft Edge\";v=\"116\"")
-            .add("sec-ch-ua-mobile", "?0")
-            .add("sec-ch-ua-platform", "\"Windows\"")
-            .add("sec-fetch-dest", "empty")
-            .add("sec-fetch-mode", "cors")
-            .add("sec-fetch-site", "same-site")
+            .add("accept-language", "zh-CN,zh;q=0.9,en;q=0.8")
             .add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.81")
             .build();
 
@@ -51,7 +38,7 @@ public class BilibiliQrCodeLogin {
         try {
             // Step 1: 生成二维码并保存到本地
             System.out.println("正在生成二维码...");
-            String qrCodeBase64 = BilibiliQrCodeLogin.generateQrCode();
+            String qrCodeBase64 = generateQrCode();
             System.out.println("二维码生成成功，Base64 数据已生成！");
             System.out.println("二维码图片已保存为 qrcode.png，请在当前目录下查看并使用 B 站客户端扫码。");
 
@@ -59,11 +46,21 @@ public class BilibiliQrCodeLogin {
             System.out.println("开始轮询二维码状态...");
             String cookies = pollQrCodeStatus();
 
-            // Step 3: 打印并保存 Cookie
+            // Step 3: 登录成功后获取 buvid3 / buvid4 / b_nut
             if (!cookies.isEmpty()) {
-                System.out.println("登录成功，Cookie 已获取！");
-                // 保存 Cookie 到本地文件
-                BilibiliQrCodeLogin.saveCookies(cookies);
+                System.out.println("登录成功，正在获取 buvid3 / buvid4 / b_nut...");
+                JsonObject buvids = fetchBuvids(cookies);
+                String buvid3 = buvids.get("b_3").getAsString();
+                String buvid4 = buvids.get("b_4").getAsString();
+                String bNut = fetchBNut(cookies);
+
+                // 拼接完整 Cookie
+                cookies += " buvid3=" + buvid3 + "; buvid4=" + buvid4 + "; b_nut=" + bNut + ";";
+                System.out.println("完整 Cookie 信息如下：");
+                System.out.println(cookies);
+
+                // 保存完整 Cookie 到本地文件
+                saveCookies(cookies);
                 System.out.println("Cookie 已保存到本地文件！");
             } else {
                 System.out.println("登录失败或二维码已过期，请重新尝试！");
@@ -71,6 +68,66 @@ public class BilibiliQrCodeLogin {
         } catch (Exception e) {
             System.err.println("程序运行出错：" + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 调用接口获取 buvid3 和 buvid4
+     *
+     * @param cookies 登录成功后的 Cookie
+     * @return 包含 buvid3 和 buvid4 的 JSON 对象
+     * @throws IOException 网络请求异常
+     */
+    public static JsonObject fetchBuvids(String cookies) throws IOException {
+        Request request = new Request.Builder()
+                .url(SPI_URL)
+                .headers(HEADERS)
+                .addHeader("Cookie", cookies)
+                .get()
+                .build();
+
+        try (Response response = CLIENT.newCall(request).execute()) {
+            if (response.isSuccessful() && response.body() != null) {
+                String responseBody = response.body().string();
+                JsonObject jsonObject = JsonParser.parseString(responseBody).getAsJsonObject();
+                if (jsonObject.get("code").getAsInt() == 0) {
+                    return jsonObject.getAsJsonObject("data");
+                } else {
+                    throw new IOException("获取 buvid3 和 buvid4 失败，服务器返回：" + jsonObject.get("message").getAsString());
+                }
+            } else {
+                throw new IOException("获取 buvid3 和 buvid4 失败，HTTP 状态码：" + response.code());
+            }
+        }
+    }
+
+    /**
+     * 从响应头中获取 b_nut
+     *
+     * @param cookies 登录成功后的 Cookie
+     * @return b_nut
+     * @throws IOException 网络请求异常
+     */
+    public static String fetchBNut(String cookies) throws IOException {
+        Request request = new Request.Builder()
+                .url(BILIBILI_URL)
+                .headers(HEADERS)
+                .addHeader("Cookie", cookies)
+                .get()
+                .build();
+
+        try (Response response = CLIENT.newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                List<String> setCookies = response.headers("Set-Cookie");
+                for (String setCookie : setCookies) {
+                    if (setCookie.startsWith("b_nut=")) {
+                        return setCookie.split("=")[1].split(";")[0];
+                    }
+                }
+                throw new IOException("b_nut 未找到！");
+            } else {
+                throw new IOException("获取 b_nut 失败，HTTP 状态码：" + response.code());
+            }
         }
     }
 
@@ -109,69 +166,61 @@ public class BilibiliQrCodeLogin {
      * @return 登录成功后的 Cookie 信息
      */
     private static String pollQrCodeStatus() {
-        Timer timer = new Timer();
         final StringBuilder cookieResult = new StringBuilder();
+        boolean isPolling = true;
 
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    String pollUrl = QR_CODE_POLL_URL + "?qrcode_key=" + qrcodeKey + "&source=main-fe-header";
-                    Request request = new Request.Builder()
-                            .url(pollUrl)
-                            .headers(HEADERS)
-                            .get()
-                            .build();
+        while (isPolling) {
+            try {
+                String pollUrl = QR_CODE_POLL_URL + "?qrcode_key=" + qrcodeKey + "&source=main-fe-header";
+                Request request = new Request.Builder()
+                        .url(pollUrl)
+                        .headers(HEADERS)
+                        .get()
+                        .build();
 
-                    try (Response response = CLIENT.newCall(request).execute()) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            String responseBody = response.body().string();
-                            JsonObject jsonObject = JsonParser.parseString(responseBody).getAsJsonObject();
-                            JsonObject data = jsonObject.getAsJsonObject("data");
-                            int code = data.get("code").getAsInt();
+                try (Response response = CLIENT.newCall(request).execute()) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String responseBody = response.body().string();
+                        JsonObject jsonObject = JsonParser.parseString(responseBody).getAsJsonObject();
+                        JsonObject data = jsonObject.getAsJsonObject("data");
+                        int code = data.get("code").getAsInt();
 
-                            // 根据状态码处理
-                            switch (code) {
-                                case 86101: // 未扫码
-                                    System.out.println("等待扫码...");
-                                    break;
-                                case 86090: // 已扫码未确认
-                                    System.out.println("二维码已扫码，请在手机端确认登录...");
-                                    break;
-                                case 86038: // 二维码失效
-                                    System.out.println("二维码已失效，请重新生成！");
-                                    timer.cancel();
-                                    break;
-                                case 0: // 登录成功
-                                    System.out.println("登录成功！");
-                                    List<String> cookies = response.headers("Set-Cookie");
-                                    cookieResult.append(extractCookies(cookies));
-                                    timer.cancel();
-                                    break;
-                                default:
-                                    System.out.println("未知状态，状态码：" + code);
-                                    timer.cancel();
-                                    break;
-                            }
-                        } else {
-                            System.err.println("请求失败，HTTP 状态码：" + response.code());
+                        // 根据状态码处理
+                        switch (code) {
+                            case 86101: // 未扫码
+                                System.out.println("等待扫码...");
+                                break;
+                            case 86090: // 已扫码未确认
+                                System.out.println("二维码已扫码，请在手机端确认登录...");
+                                break;
+                            case 86038: // 二维码失效
+                                System.out.println("二维码已失效，请重新生成！");
+                                isPolling = false;
+                                break;
+                            case 0: // 登录成功
+                                System.out.println("登录成功！");
+                                List<String> cookies = response.headers("Set-Cookie");
+                                cookieResult.append(extractCookies(cookies));
+                                isPolling = false;
+                                break;
+                            default:
+                                System.out.println("未知状态，状态码：" + code);
+                                isPolling = false;
+                                break;
                         }
+                    } else {
+                        System.err.println("请求失败，HTTP 状态码：" + response.code());
+                        isPolling = false;
                     }
-                } catch (Exception e) {
-                    System.err.println("轮询失败：" + e.getMessage());
-                    timer.cancel();
                 }
+
+                // 每次轮询后等待 2 秒
+                Thread.sleep(2000);
+
+            } catch (Exception e) {
+                System.err.println("轮询失败：" + e.getMessage());
+                isPolling = false;
             }
-        };
-
-        // 每 2 秒轮询一次
-        timer.schedule(task, 0, 2000);
-
-        // 等待轮询完成
-        try {
-            Thread.sleep(180000); // 等待 3 分钟（二维码有效期）
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
         return cookieResult.toString();
