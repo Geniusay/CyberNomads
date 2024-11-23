@@ -20,7 +20,7 @@ public class TestVideoAPI {
     @Test
     public void getVideoInfo() throws Exception {
         // 通过bvid获取视频详细信息
-        ApiResponse<VideoDetail> response = BilibiliVideoApi.getVideoDetailById(cookie, "BV11w41177WY");
+        ApiResponse<VideoDetail> response = BilibiliVideoApi.getVideoDetailById(cookie, "BV1ccUSYTEkD");
 
         if (response.isSuccess()) {
             VideoDetail videoDetailByBvid = response.getData();
@@ -84,7 +84,7 @@ public class TestVideoAPI {
 
     @Test
     public void likeVideo() throws Exception {
-        String oid = "BV177D1YdEJa";
+        String oid = "BV17MDzYBEJ2";
         BilibiliVideoApi.likeVideo(cookie, oid, 1);
     }
 
@@ -96,8 +96,8 @@ public class TestVideoAPI {
 
     @Test
     public void coinVideo() throws Exception {
-        String bvid = "BV1TZ421E7Ci";
-        BilibiliVideoApi.coinVideo(cookie, bvid, 2, 1);
+        String bvid = "BV1ekBeYdETk";
+        BilibiliVideoApi.coinVideo("bili_jct=346f346afc40ba93a869a1c3fa70288c", bvid, 2, 1);
     }
 
     @Test

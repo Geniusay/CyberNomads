@@ -14,9 +14,9 @@ public class TestUserApi {
     @Test
     public void testFollowUser() {
         // 目标用户的mid
-        String fid = "33983241";
+        String fid = "3546382956759627";
         // 关注来源代码（例如：11表示空间，14表示视频，115表示文章）
-        int reSrc = 14;
+        int reSrc = 11;
         ApiResponse<Boolean> response = BilibiliUserApi.followUser(cookie, fid, reSrc);
         if (response.isSuccess()) {
             System.out.println("关注成功！");
