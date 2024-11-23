@@ -22,12 +22,9 @@ public class TestCommentAPI {
 
     @Test
     public void getVideoComment() throws Exception {
-
         String oid = "592055874";
-
         // 获取第一页的根评论，每页5条，按点赞数排序，不显示热评
         ApiResponse<CommentPage> response = BilibiliCommentApi.getComments(cookie, oid, 1, 20, 1, 1);
-
         if (response.isSuccess()) {
             CommentPage commentPage = response.getData();
             // 输出分页信息
@@ -36,7 +33,6 @@ public class TestCommentAPI {
                 System.out.println("每页项数: " + commentPage.getPageSize());
                 System.out.println("总评论数: " + commentPage.getTotalCount());
                 System.out.println("总页数: " + commentPage.getTotalPages());
-
                 // 输出根评论信息
                 List<CommentDetail> comments = commentPage.getComments();
                 for (CommentDetail comment : comments) {
@@ -48,7 +44,6 @@ public class TestCommentAPI {
                     System.out.println("评论时间: " + comment.getDate());
                     System.out.println("根评论rpid: " + comment.getRpid());
                     System.out.println("------------------------");
-
 //                    // 获取该根评论下的回复
 //                    ApiResponse<CommentPage> response1 = BilibiliCommentApi.getReplies(cookie, oid, comment.getRpid(), 1, 5);
 //
