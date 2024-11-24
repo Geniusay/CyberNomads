@@ -26,7 +26,7 @@ public class FirstTaskSelector implements TaskSelector {
         Map<String, Task> taskMap = manager.getRobotTaskById(worker.getId());
         List<Task> tasks = new ArrayList<>(taskMap.values());
         for (Task task : tasks) {
-            if (task.getTerminator().robotCanDo(worker) && worker.task()==null) {
+            if (task.getTerminator().robotCanDo(worker)) {
                 return task;
             }
         }
