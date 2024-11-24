@@ -12,6 +12,7 @@ import ToolbarUser from "./ToolbarUser.vue";
 import { useTodoStore } from "@/views/app/todo/todoStore";
 import ThemeToggle from "./ThemeToggle.vue";
 import {useSnackbarStore} from "@/stores/snackbarStore";
+import Tutorial from "@/components/toolbar/Tutorial.vue";
 const { mdAndUp } = useDisplay();
 const todoStore = useTodoStore();
 const customizeTheme = useCustomizeThemeStore();
@@ -74,6 +75,7 @@ const groupEvent = ()=>{
           <v-icon>mdi-magnify</v-icon>
         </v-btn>
         <!-- search input desktop -->
+        <Tutorial/>
         <ToolbarNotifications />
         <v-btn v-if="mdAndUp" @click="groupEvent()" icon>
           <v-badge dot color="success">
@@ -85,7 +87,7 @@ const groupEvent = ()=>{
         </v-btn>
         <v-divider vertical thickness="2" inset class="ml-5 mr-1"></v-divider>
         <ThemeToggle />
-        <LanguageSwitcher />
+        <LanguageSwitcher/>
         <ToolbarUser />
       </div>
     </div>

@@ -64,7 +64,7 @@ const getTagColor = (log: TaskLog) => {
   >
     <v-progress-circular indeterminate color="primary"></v-progress-circular>
   </div>
-  <div v-else>
+  <div id="logList" v-else>
     <h6 class="text-h6 pa-5 d-flex align-center">
       <span class="flex-fill font-weight-bold">Robot Log</span>
       <v-menu location="bottom end" transition="slide-x-transition">

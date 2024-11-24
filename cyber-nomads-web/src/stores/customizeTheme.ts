@@ -24,7 +24,7 @@ export const useCustomizeThemeStore = defineStore({
       colorName: "grey",
       colorValue: "#344767",
     },
-    localCode: "en",
+    localCode: "zhHans",
     mainSidebar: true,
     // mainSidebar: isMobile() ? false : true,
   }),

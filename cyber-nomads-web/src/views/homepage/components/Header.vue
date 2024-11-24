@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {validAuth} from "@/utils/authUtil"
 import {useRouter} from "vue-router";
+import {fetchQRCode} from "@/api/bilibiliApi";
 const router = useRouter();
 const letsGo = () =>{
   if (validAuth()) {
@@ -25,6 +26,7 @@ const navbarList = [
   },
 
 ]
+
 </script>
 
 <template>
@@ -58,9 +60,7 @@ const navbarList = [
         <a href="#" class="btn btn-primary has-before has-after">Let’s Go 👋</a>
       </router-link>
 
-
       <div class="overlay" data-nav-toggler data-overlay></div>
-
     </div>
   </header>
 </template>

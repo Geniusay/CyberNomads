@@ -10,10 +10,6 @@ export const routes = [
     meta: {},
   } as any,
   {
-    path: "/test",
-    component: () => import("@/views/homepage/components/NewHeader.vue"),
-  },
-  {
     path: "/home",
     component: () => import("@/views/homepage/HomePageView.vue"),
   },
