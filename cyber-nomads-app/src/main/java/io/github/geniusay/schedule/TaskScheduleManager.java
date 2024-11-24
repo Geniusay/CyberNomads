@@ -44,7 +44,7 @@ public class TaskScheduleManager {
     private static final ConcurrentHashMap<Long, ReentrantLock> LOCK_MAP = new ConcurrentHashMap<>();
     //TODO final map
     @PostConstruct
-    public void init(){
+    public void init() throws InterruptedException {
         List<TaskDO> taskDOS = taskService.getTaskByStatus(List.of(TaskStatus.RUNNING.name(),TaskStatus.EXCEPTION.name()));
         if(taskDOS!=null){
             List<TaskDO> readyTasks = taskService.populateRobotListForTasks(taskDOS);
@@ -52,18 +52,16 @@ public class TaskScheduleManager {
                 Task task = taskFactory.buildTask(taskDO, taskDO.getPlatform(), taskDO.getTaskType());
                 WORLD_TASK.put(String.valueOf(taskDO.getId()), task);
                 List<RobotDO> robots = task.getRobots();
-                robots.forEach((robotDO)->WORLD_ROBOTS.put(robotDO.getId(),new RobotWorker(robotDO)));
-                robots.forEach(robot -> {
-                            Map<String, Task> taskMap = WORLD_ROBOTS_TASK.getOrDefault(robot.getId(), new ConcurrentHashMap<>());
-                            taskMap.put(String.valueOf(taskDO.getId()), task);
-                            WORLD_ROBOTS_TASK.put(robot.getId(), taskMap);
-                        });
+                robots.forEach(robotDO -> {
+                    WORLD_ROBOTS.put(robotDO.getId(), new RobotWorker(robotDO));
+                    Map<String, Task> taskMap = WORLD_ROBOTS_TASK.getOrDefault(robotDO.getId(), new ConcurrentHashMap<>());
+                    taskMap.put(String.valueOf(taskDO.getId()), task);
+                    WORLD_ROBOTS_TASK.put(robotDO.getId(), taskMap);
+                    workerExecute.push(robotDO.getId());
+                });
             }
         }
 //        EVENT_PUBLISHER.initRobot();
-        WORLD_ROBOTS.forEach((id,robot)->{
-            workerExecute.push(id);
-        });
     }
 
     public void registerTaskAndStart(TaskDO taskdo){
