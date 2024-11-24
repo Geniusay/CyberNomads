@@ -2,8 +2,10 @@ package io.github.geniusay.controller;
 
 import io.github.common.web.Result;
 import io.github.geniusay.schedule.TaskScheduleManager;
+import io.github.geniusay.service.TaskManagerService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -15,17 +17,17 @@ import javax.annotation.Resource;
  */
 @RequestMapping("/control/scheduler")
 @RestController
-public class SchedulerController {
+public class TaskManagerController {
 
     @Resource
-    TaskScheduleManager manager;
-    @GetMapping("/queryWorker")
-    public Result<?> getAllRobot(){
-        return Result.success(manager.getAllRobot());
+    TaskManagerService service;
+    @GetMapping("/queryWorkerTask")
+    public Result<?> getRobot(@RequestParam(required = false,value = "id") String workerId){
+        return Result.success(service.queryWorkerTasks(workerId));
     }
 
     @GetMapping("/queryTask")
-    public Result<?> getAllTask(){
-        return Result.success(manager.getWorldTask());
+    public Result<?> getTask(@RequestParam(required = false,value = "id") String taskId){
+        return Result.success(service.queryTask(taskId));
     }
 }

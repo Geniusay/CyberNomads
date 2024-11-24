@@ -1,5 +1,7 @@
 package io.github.geniusay.pojo.VO;
 
+import io.github.geniusay.core.supertask.task.Task;
+import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.utils.ConvertorUtil;
 import io.github.geniusay.utils.TimeUtil;
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static io.github.geniusay.utils.TaskTranslationUtil.translatePlatform;
 import static io.github.geniusay.utils.TaskTranslationUtil.translateTaskType;
@@ -49,6 +52,11 @@ public class TaskVO {
                 translateTaskType(taskDO.getTaskType()),
                 TimeUtil.getFormatTimeStr(taskDO.getCreateTime())
         );
+    }
+
+    public static TaskVO convert(Task task){
+        List<String> collect = task.getRobots().stream().map(robot -> String.valueOf(robot.getId())).collect(Collectors.toList());
+        return new TaskVO(task.getId(),task.getUid(),task.getNickname(),task.getTaskName(),task.getPlatform(),task.getTaskType(),task.getTaskStatus().toString(),collect,task.getParams(),translatePlatform(task.getPlatform()),translatePlatform(task.getTaskType()),null);
     }
 }
 
