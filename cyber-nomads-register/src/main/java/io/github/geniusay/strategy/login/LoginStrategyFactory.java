@@ -1,5 +1,6 @@
 package io.github.geniusay.strategy.login;
 
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +24,7 @@ public class LoginStrategyFactory {
 
     @PostConstruct
     public void init(){
-        Map<String, LoginStrategy> beansOfType = context.getBeansOfType(LoginStrategy.class);
+        Map<String, AbstractLoginStrategy> beansOfType = context.getBeansOfType(AbstractLoginStrategy.class);
         beansOfType.forEach((k,v)->{
             String platform = v.platform();
             loginStrategyHashMap.put(platform,v);

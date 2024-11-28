@@ -3,10 +3,13 @@ package io.github.geniusay.service.Impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import io.github.common.web.Result;
-import io.github.geniusay.pojo.DTO.*;
-import io.github.geniusay.pojo.VO.RobotVO;
+import io.github.geniusay.pojo.DTO.BrowserInfoDTO;
+import io.github.geniusay.pojo.DTO.DriverPathDTO;
+import io.github.geniusay.pojo.DTO.LoginDTO;
+import io.github.geniusay.pojo.DTO.QueryPathDTO;
 import io.github.geniusay.service.UserService;
 import io.github.geniusay.strategy.login.AbstractLoginStrategy;
+import io.github.geniusay.strategy.login.LoginStrategy;
 import io.github.geniusay.strategy.login.LoginStrategyFactory;
 import io.github.geniusay.util.CacheUtils;
 import io.github.geniusay.util.HTTPUtils;
@@ -19,8 +22,10 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,7 +40,7 @@ import static io.github.geniusay.common.Constant.*;
 public class IUserServiceImpl implements UserService {
 
     @Resource
-    AbstractLoginStrategy loginStrategy;
+    LoginStrategyFactory factory;
     @Resource
     HTTPUtils httpUtils;
 
@@ -92,7 +97,7 @@ public class IUserServiceImpl implements UserService {
 
     @Override
     public Boolean login(LoginDTO loginDTO) {
-        return loginStrategy.login(loginDTO);
+        return factory.getLoginHandler(loginDTO.getPlatform()).login(loginDTO);
     }
 
     @Override
@@ -209,6 +214,7 @@ public class IUserServiceImpl implements UserService {
                     return "true";
                 }
                 download = "https://msedgedriver.azureedge.net/"+version+"/edgedriver_win"+arch+".zip";
+                System.out.println(download);
                 httpUtils.downloadFile(download,"edgedriver_win"+arch+".zip");
                 return version;
             }else if("chrome".equals(name)){
@@ -266,7 +272,6 @@ public class IUserServiceImpl implements UserService {
                 CacheUtils.browserName = browser;
                 CacheUtils.version = version;
                 CacheUtils.path = browserPath;
-                System.out.println("当前cache信息:"+CacheUtils.browserName+" "+CacheUtils.path);
                 return builder.build();
             } catch (IOException e) {
                 throw new RuntimeException(e);

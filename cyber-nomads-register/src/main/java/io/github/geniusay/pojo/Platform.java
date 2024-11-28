@@ -13,7 +13,7 @@ import lombok.Getter;
 public enum Platform {
 
     BILIBILI("bilibili",1),
-    DOUYIN("douying",2);
+    DOUYIN("douyin",2);
 
     private final String platform;
     private final Integer code;

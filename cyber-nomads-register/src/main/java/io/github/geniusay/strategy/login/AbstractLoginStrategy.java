@@ -62,8 +62,12 @@ public abstract class AbstractLoginStrategy implements LoginStrategy{
             }
         } catch (IOException e) {
             throw new RuntimeException("登陆失败,不正确的驱动路径或调用错误");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
-
-    public abstract String execute(String username);
+    String changePath(String str){
+        return str.replace("\\","/");
+    }
+    public abstract String execute(String username) throws InterruptedException;
 }

@@ -23,51 +23,36 @@ import java.util.stream.Collectors;
  * @Author welsir
  * @Date 2024/11/11 20:41
  */
-@Component
+@Component("bilibili")
 public class BILIBILIStrategy extends AbstractLoginStrategy{
 
     private static final String URL = "https://www.bilibili.com/";
 
     @Resource
     UserService userService;
-
-
     @Override
     public String platform() {
         return Platform.BILIBILI.getPlatform();
     }
 
-    private String changePath(String str){
-        return str.replace("\\","/");
-    }
-
     @Override
-    public String execute(String username) {
+    public String execute(String username) throws InterruptedException {
         String driverPath = changePath(userService.queryPathExist().getPathDTO().getDriverPath());
         String browserPath = changePath(userService.queryPathExist().getPathDTO().getBrowserPath());
         DriverFactory.DriverType driverType = DriverFactory.driverType(browserPath);
-        ChromiumDriver loginWebDriver = DriverFactory.getDriver(driverPath, browserPath, driverType);
+        ChromiumDriver loginWebDriver = DriverFactory.getDriver(driverPath, browserPath, driverType,false);
         loginWebDriver.get(URL);
         loginWebDriver.manage().deleteAllCookies();
+        loginWebDriver.navigate().refresh();
         WebDriverWait wait = new WebDriverWait(loginWebDriver, Duration.ofSeconds(300));
         try {
             WebElement login = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/div[2]/div[1]/div[1]/ul[2]/li[1]/li/div/div/span")));
             login.click();
-            WebElement usernameInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[5]/div/div[4]/div[2]/form/div[1]/input")));
-            usernameInput.sendKeys(username);
-            Thread.sleep(500);
-            WebElement passwordInput = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[5]/div/div[4]/div[2]/form/div[3]/input")));
-            passwordInput.click();
             WebElement userImg = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div[2]/div[1]/div[1]/ul[2]/li[1]/div[1]/a[1]/picture/img")));
             if(userImg!=null){
                 Set<Cookie> cookies = loginWebDriver.manage().getCookies();
-                loginWebDriver.quit();
-                ChromiumDriver confirmLogin = DriverFactory.getDriver(driverPath, browserPath, driverType);
-                WebDriverWait confirmWait = new WebDriverWait(confirmLogin, Duration.ofSeconds(60));
-                confirmLogin.get(URL);
+                loginWebDriver.manage().deleteAllCookies();
                 Set<Cookie> set = new HashSet<>();
-                confirmLogin.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-                confirmLogin.manage().deleteAllCookies();
                 for (Cookie cookie : cookies) {
                     if("".equals(cookie.getName())||cookie.getName()==null
                             ||cookie.getValue()==null|| "".equals(cookie.getValue())
@@ -76,12 +61,12 @@ public class BILIBILIStrategy extends AbstractLoginStrategy{
                     }
                     Cookie c = new Cookie(cookie.getName(),cookie.getValue());
                     set.add(c);
-                    confirmLogin.manage().addCookie(cookie);
+                    loginWebDriver.manage().addCookie(cookie);
                 }
-                confirmLogin.navigate().refresh();
-                WebElement img = confirmWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div[2]/div[1]/div[1]/ul[2]/li[1]/div[1]/a[1]/picture/img")));
+                loginWebDriver.navigate().refresh();
+                WebElement img = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div[2]/div[1]/div[1]/ul[2]/li[1]/div[1]/a[1]/picture/img")));
                 if(img!=null){
-                    confirmLogin.quit();
+                    loginWebDriver.quit();
                     return set.stream().map(cookie -> cookie.getName() + "=" + cookie.getValue()).collect(Collectors.joining(";"));
                 }
                 return null;
