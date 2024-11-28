@@ -24,7 +24,7 @@ const setLocale = (locale: string) => {
 <template>
   <v-menu>
     <template v-slot:activator="{ props }">
-      <v-btn icon v-bind="props">
+      <v-btn id="languageSwitcher" icon v-bind="props">
         <v-icon color="primary">mdi-translate</v-icon>
       </v-btn>
     </template>

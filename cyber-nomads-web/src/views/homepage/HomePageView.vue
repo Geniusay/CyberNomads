@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import Header from "@/views/homepage/components/Header.vue";
 import NewHeader from "@/views/homepage/components/NewHeader.vue";
-import Hero from "@/views/homepage/components/Hero.vue";
 import Service from "@/views/homepage/components/Service.vue";
-import Project from "@/views/homepage/components/Project.vue";
-import NewSletter from "@/views/homepage/components/NewSletter.vue";
 import Footer from "@/views/homepage/components/Footer.vue";
 import Feature from "@/views/homepage/components/Feature.vue";
 
@@ -61,6 +58,7 @@ onMounted(() => {
 
   addEventOnElem(window, "scroll", headerActive);
 });
+
 </script>
 
 <template>

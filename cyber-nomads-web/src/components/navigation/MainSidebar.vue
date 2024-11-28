@@ -71,7 +71,7 @@ const scrollToBottom = () => {
     <!---Nav List -->
     <!-- ---------------------------------------------- -->
     <div class="main-menu">
-      <main-menu :menu="navigation.menu"></main-menu>
+      <main-menu id="defaultMenu" :menu="navigation.menu"></main-menu>
     </div>
     <!-- ---------------------------------------------- -->
     <!---Bottom Area -->
