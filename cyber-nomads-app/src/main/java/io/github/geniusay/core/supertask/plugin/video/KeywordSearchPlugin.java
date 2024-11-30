@@ -161,6 +161,10 @@ public class KeywordSearchPlugin extends AbstractGetVideoPlugin implements GetHa
                 currentKeywordIndex = (currentKeywordIndex + 1) % keywords.size();
             } else {
                 log.warn("{}获取的关键词 [{}] 第 [{}] 页无数据！", fetchType, currentKeyword, currentPage);
+                if (cachePool.isEmpty()) {
+                    log.error("缓存池为空且无数据，暂停任务！");
+                    task.downTask();
+                }
             }
         } else {
             log.warn("{}获取的关键词 [{}] 第 [{}] 页获取失败: {}", fetchType, currentKeyword, currentPage, response.getMsg());

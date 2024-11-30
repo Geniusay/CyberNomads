@@ -10,10 +10,11 @@ import static io.github.geniusay.core.supertask.config.PluginConstant.TERMINATOR
 
 public abstract class AbstractTerminator extends BaseTaskPlugin implements Terminator {
 
+    boolean isDown = false;
+
     @Override
     public void init(Task task) {
         super.init(task);
-
     }
 
     @Override
@@ -24,6 +25,11 @@ public abstract class AbstractTerminator extends BaseTaskPlugin implements Termi
 
     @Override
     public abstract boolean taskIsDone();
+
+    @Override
+    public void downTask() {
+        isDown = true;
+    }
 
     @Override
     public String getPluginGroup() {

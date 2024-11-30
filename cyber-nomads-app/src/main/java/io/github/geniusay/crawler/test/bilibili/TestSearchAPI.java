@@ -20,12 +20,12 @@ public class TestSearchAPI {
 
     @Test
     public void getVideoInfo() throws Exception {
-        String keyword = "java"; // 搜索关键词
-        String order = "click"; // 排序方式
+        String keyword = "自媒体运营"; // 搜索关键词
+        String order = "pubdate"; // 排序方式
         int duration = 0; // 视频时长筛选
         int tids = 0; // 视频分区筛选
-        int page = 1; // 页码
-        int pageSize = 42; // 页码
+        int page = 101; // 页码
+        int pageSize = 10; // 页码
 
         ApiResponse<VideoSearchResult> response = BilibiliSearchApi.searchVideos(keyword, order, duration, tids, page, pageSize, imgKey, subKey);
 

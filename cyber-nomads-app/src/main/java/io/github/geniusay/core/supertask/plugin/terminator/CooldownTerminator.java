@@ -93,7 +93,7 @@ public class CooldownTerminator extends AbstractTerminator {
 
     @Override
     public boolean taskIsDone() {
-        return taskFailed;
+        return taskFailed || isDown;
     }
 
     @Override

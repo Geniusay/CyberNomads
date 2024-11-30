@@ -63,6 +63,10 @@ public class Task {
 
     private List<TaskLogDO> loglist;
 
+    public void downTask() {
+        terminator.downTask();
+    }
+
     public String getDataVal(String key) {
         return dataMap.get(key).toString();
     }

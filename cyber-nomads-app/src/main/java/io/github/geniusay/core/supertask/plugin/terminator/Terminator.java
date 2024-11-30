@@ -13,4 +13,5 @@ public interface Terminator extends TaskPlugin {
 
     boolean taskIsDone();
 
+    void downTask();
 }

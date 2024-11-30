@@ -16,8 +16,21 @@ public class TestCommentAPI {
     public void sendComment() throws Exception {
         String oid = "113525699904858";
         // 发送一级评论
-        ApiResponse<Boolean> booleanApiResponse = BilibiliCommentApi.sendCommentOrReply(cookie, oid, "去玩儿哦空间哦i学生成绩吧怕", null, null);
+        ApiResponse<Boolean> booleanApiResponse = BilibiliCommentApi.sendCommentOrReply(cookie, oid, "我是一个小逗比", null, null);
         System.out.println(booleanApiResponse);
+    }
+
+    @Test
+    public void test() {
+        int c = 243;
+        c -= 1;
+        c |= c >> 1;
+        c |= c >> 2;
+        c |= c >> 4;
+        c |= c >> 8;
+        c |= c >> 16;
+        c += 1;
+        System.out.println(c);
     }
 
     @Test
