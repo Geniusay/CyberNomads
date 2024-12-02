@@ -77,4 +77,10 @@ public class RobotController {
     public Result<?> insertOrUpdate(@RequestBody @Validated LoginMachineDTO loginMachineDTO){
         return Result.success(robotService.insertOrUpdateRobot(loginMachineDTO));
     }
+
+    @PostMapping("/share")
+    @TokenRequire
+    public Result<?> shareRobot(@RequestBody @Validated ShareRobotDTO shareRobotDTO){
+        return Result.success(robotService.shareRobot(shareRobotDTO));
+    }
 }

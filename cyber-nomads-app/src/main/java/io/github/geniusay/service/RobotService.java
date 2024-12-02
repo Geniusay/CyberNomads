@@ -3,7 +3,6 @@ package io.github.geniusay.service;
 import io.github.common.web.Result;
 import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DTO.*;
-import io.github.geniusay.pojo.VO.PlatformVO;
 import io.github.geniusay.pojo.VO.RobotVO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,4 +29,6 @@ public interface RobotService {
     Map<String, String> getCookie(GetCookieDTO getCookieDTO);
 
     Boolean insertOrUpdateRobot(LoginMachineDTO loginMachineDTO);
+
+    Boolean shareRobot(ShareRobotDTO shareRobotDTO);
 }

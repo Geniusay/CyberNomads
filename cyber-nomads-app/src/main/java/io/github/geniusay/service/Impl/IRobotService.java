@@ -7,15 +7,16 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.common.web.Result;
-import io.github.geniusay.core.exception.GlobalExceptionHandle;
+import io.github.geniusay.constants.RCode;
+import io.github.geniusay.core.cache.SharedRobotCache;
 import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.mapper.RobotMapper;
+import io.github.geniusay.mapper.SharedRobotMapper;
 import io.github.geniusay.mapper.TaskMapper;
 import io.github.geniusay.pojo.DO.RobotDO;
+import io.github.geniusay.pojo.DO.SharedRobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.*;
-import io.github.geniusay.pojo.Platform;
-import io.github.geniusay.pojo.VO.PlatformVO;
 import io.github.geniusay.pojo.VO.RobotVO;
 import io.github.geniusay.service.RobotService;
 import io.github.geniusay.utils.ConvertorUtil;
@@ -29,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.rmi.ServerException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -43,6 +43,12 @@ public class IRobotService implements RobotService {
 
     @Resource
     TaskMapper taskMapper;
+
+    @Resource
+    private SharedRobotMapper sharedRobotMapper;
+
+    @Resource
+    private SharedRobotCache sharedRobotCache;
 
     @Override
     public LoadRobotResponseDTO loadRobot(MultipartFile file) {
@@ -92,6 +98,10 @@ public class IRobotService implements RobotService {
     @Override
     @Transactional
     public Boolean removeRoobot(Long id) {
+        // 判断robot是否处于共享状态
+        if(isSharedRobot(id)){
+            throw new ServeException(RCode.ROBOT_IN_SHARED);
+        }
         String uid = ThreadUtil.getUid();
         List<TaskDO> taskList = taskMapper.selectList(new QueryWrapper<TaskDO>().eq("uid", uid));
         Set<Long> robotSet = new HashSet<>();
@@ -106,8 +116,17 @@ public class IRobotService implements RobotService {
 
     @Override
     public Boolean banRoobot(Long id) {
+        // 判断robot是否处于共享状态
+        if(isSharedRobot(id)){
+            throw new ServeException(RCode.ROBOT_IN_SHARED);
+        }
         String uid = ThreadUtil.getUid();
         return robotMapper.update(null,new UpdateWrapper<RobotDO>().eq("id",id).eq("uid", uid).set("ban",true))==1;
+    }
+
+    // 用于判断账号是否正在共享
+    private Boolean isSharedRobot(Long id) {
+        return sharedRobotCache.exist(id);
     }
 
     @Override
@@ -125,14 +144,17 @@ public class IRobotService implements RobotService {
 
     @Override
     public Result<?> changeRobotCookie(UpdateCookieDTO updateCookieDTO) {
-        LambdaUpdateWrapper<RobotDO> update = new LambdaUpdateWrapper<>();
-        update.eq(RobotDO::getId, updateCookieDTO.getId())
-                .eq(RobotDO::getUid, ThreadUtil.getUid())
-                .set(RobotDO::getCookie, updateCookieDTO.getCookie());
-        if (robotMapper.update(null, update) != 1) {
-            throw new ServeException(400,"更新cookie失败");
+        if(checkCookie(updateCookieDTO.getCookie())){
+            LambdaUpdateWrapper<RobotDO> update = new LambdaUpdateWrapper<>();
+            update.eq(RobotDO::getId, updateCookieDTO.getId())
+                    .eq(RobotDO::getUid, ThreadUtil.getUid())
+                    .set(RobotDO::getCookie, updateCookieDTO.getCookie());
+            if (robotMapper.update(null, update) != 1) {
+                throw new ServeException(400,"更新cookie失败");
+            }
+            return Result.success();
         }
-        return Result.success();
+        throw new ServeException(400,"更新cookie失败");
     }
 
     @Override
@@ -193,5 +215,59 @@ public class IRobotService implements RobotService {
             robotMapper.updateRobot(robotDO.getUsername(),loginMachineDTO.getCookie(),uid,DateUtil.formatTimestamp(System.currentTimeMillis() / 1000));
         }
         return true;
+    }
+
+    @Override
+    public Boolean shareRobot(ShareRobotDTO shareRobotDTO) {
+        /*
+        * 缓存更新策略选择
+        * 1、通过缓存更新，后续从缓存批量同步到数据库（可能出现情况，如果缓存未及时同步到数据库停止项目，可能会导致数据的丢失）
+        * 2、直接更新到数据库，并且更新缓存（可能出现缓存与数据库不一致的问题）
+        * */
+        String uid = ThreadUtil.getUid();
+        LambdaQueryWrapper<RobotDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(RobotDO::getUid, uid)
+                .eq(RobotDO::getId, shareRobotDTO.getRobotId())
+                .eq(RobotDO::isHasDelete, false)
+                .eq(RobotDO::isBan, false);
+        if(shareRobotDTO.getFlag()){
+            // 添加共享账号
+            try {
+                RobotDO robotDO = robotMapper.selectOne(wrapper);
+                SharedRobotDO sharedRobotDO = SharedRobotDO.builder()
+                        .nickname(robotDO.getNickname())
+                        .sharedTime(new Date())
+                        .robotId(robotDO.getId())
+                        .focusTask(listToString(shareRobotDTO.getFocusTask()))
+                        .qualificationRate(1.0f)
+                        .build();
+                return (sharedRobotMapper.insert(sharedRobotDO) == 1) && (sharedRobotCache.putSharedRobot(sharedRobotDO));
+            } catch (Exception e){
+                throw new ServeException(RCode.SHARE_FAILED);
+            }
+        } else {
+            // 取消共享
+            try {
+                // 看当前这个robot是不是自己的
+                if(robotMapper.selectCount(wrapper) >= 1){
+                    return (sharedRobotMapper.deleteById(shareRobotDTO.getRobotId()) == 1) && (sharedRobotCache.remove(shareRobotDTO.getRobotId()));
+                }
+                return false;
+            } catch (Exception e){
+                throw new ServeException(RCode.CANCEL_SHARE_FAILED);
+            }
+        }
+    }
+
+    private static String listToString(List<String> list) {
+        if (list == null || list.isEmpty()) {
+            return "";
+        }
+        return String.join(",", list);
+    }
+
+    //TODO 需要补充验证cookie是否可用
+    private Boolean checkCookie(String cookie){
+        return cookie!=null;
     }
 }

@@ -1,6 +1,8 @@
 package io.github.geniusay.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.github.geniusay.constants.RCode;
+import io.github.geniusay.core.cache.SharedRobotCache;
 import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.core.supertask.TaskParamValidator;
 import io.github.geniusay.core.supertask.TaskStrategyManager;
@@ -13,6 +15,7 @@ import io.github.geniusay.core.supertask.taskblueprint.AbstractTaskBlueprint;
 import io.github.geniusay.mapper.RobotMapper;
 import io.github.geniusay.mapper.TaskMapper;
 import io.github.geniusay.pojo.DO.RobotDO;
+import io.github.geniusay.pojo.DO.SharedRobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.*;
 import io.github.geniusay.pojo.Platform;
@@ -45,6 +48,9 @@ public class ITaskService implements TaskService {
 
     @Resource
     private TaskStatusManager taskStatusManager;
+
+    @Resource
+    private SharedRobotCache sharedRobotCache;
 
     @Override
     @Transactional
@@ -315,5 +321,17 @@ public class ITaskService implements TaskService {
     public List<TaskDO> getTaskByStatus(List<String> status) {
         return taskMapper.selectList(new QueryWrapper<TaskDO>().in("task_status", status));
     }
-
+    //TODO 实现检查共享robot对应信息
+    private List<Long> checkSharedRobot(List<Long> ids, String taskType){
+        // 检查robot是否废弃 使用pipeline去redis里面找可用的ids返回回来
+        List<Long> list = sharedRobotCache.getSharedIds(ids);
+        // 职业验证
+        List<SharedRobotDO> sharedRobots = sharedRobotCache.getSharedRobotsById(list);
+        for (SharedRobotDO sharedRobot : sharedRobots) {
+            if (!sharedRobot.getFocusTask().contains(taskType)){
+                throw new ServeException(RCode.ROBOT_TYPE_ERROR);
+            }
+        }
+        return list;
+    }
 }

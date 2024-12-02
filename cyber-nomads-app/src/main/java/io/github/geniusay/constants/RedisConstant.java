@@ -10,5 +10,6 @@ public class RedisConstant {
     public static final String POPULAR_VIDEOS_DETAILS_KEY = "bili:video:popular:details";  // 热门视频详情
     public static final String LOGIN_MACHINE_CAPTCHA = "cyber:nomads:login-machine:captcha:";
     public static final String TASK_TEMPLATE_KEY = "cyber:nomads:template";
-
+    public static final String SHARED_ROBOTS_HASH = "cyber:nomads:shared-robots:hash";
+    public static final String SHARED_ROBOTS_LIST = "cyber:nomads:shared-robots:list";
 }
