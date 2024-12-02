@@ -43,7 +43,7 @@ public class SharedRobotCache {
         );
     }
     // 分页获取
-    public Page<SharedRobotDO> getSharedRobotsPage(long page, long size) {
+    public Page<SharedRobotDO> getSharedRobotsPage(Integer page, Integer size) {
         return sharedRobotMapper.selectPage(new Page<>(page, size), new QueryWrapper<SharedRobotDO>().orderByDesc("robot_id"));
     }
 

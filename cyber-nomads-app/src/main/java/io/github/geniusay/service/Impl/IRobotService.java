@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.common.web.Result;
@@ -257,6 +258,11 @@ public class IRobotService implements RobotService {
                 throw new ServeException(RCode.CANCEL_SHARE_FAILED);
             }
         }
+    }
+
+    @Override
+    public Page<SharedRobotDO> getPage(Integer page, Integer size) {
+        return sharedRobotCache.getSharedRobotsPage(page, size);
     }
 
     private static String listToString(List<String> list) {

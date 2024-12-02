@@ -83,4 +83,10 @@ public class RobotController {
     public Result<?> shareRobot(@RequestBody @Validated ShareRobotDTO shareRobotDTO){
         return Result.success(robotService.shareRobot(shareRobotDTO));
     }
+
+    @GetMapping("/getPage")
+    @TokenRequire
+    public Result<?> getPage(@RequestParam Integer page, @RequestParam Integer size){
+        return Result.success(robotService.getPage(page, size));
+    }
 }
