@@ -19,6 +19,7 @@ import io.github.geniusay.pojo.DO.SharedRobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.*;
 import io.github.geniusay.pojo.VO.RobotVO;
+import io.github.geniusay.schedule.TaskScheduleManager;
 import io.github.geniusay.service.RobotService;
 import io.github.geniusay.utils.ConvertorUtil;
 import io.github.geniusay.utils.DateUtil;
@@ -50,6 +51,9 @@ public class IRobotService implements RobotService {
 
     @Resource
     private SharedRobotCache sharedRobotCache;
+
+    @Resource
+    private TaskScheduleManager taskScheduleManager;
 
     @Override
     public LoadRobotResponseDTO loadRobot(MultipartFile file) {
@@ -250,8 +254,9 @@ public class IRobotService implements RobotService {
             // 取消共享
             try {
                 // 看当前这个robot是不是自己的
-                if(robotMapper.selectCount(wrapper) >= 1){
-                    return (sharedRobotMapper.deleteById(shareRobotDTO.getRobotId()) == 1) && (sharedRobotCache.remove(shareRobotDTO.getRobotId()));
+                if(robotMapper.selectCount(wrapper) >= 1 && (sharedRobotMapper.deleteById(shareRobotDTO.getRobotId()) == 1) && (sharedRobotCache.remove(shareRobotDTO.getRobotId()))){
+                    taskScheduleManager.removeTaskExceptUid(shareRobotDTO.getRobotId(), uid);
+                    return true;
                 }
                 return false;
             } catch (Exception e){
