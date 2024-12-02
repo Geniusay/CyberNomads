@@ -42,7 +42,6 @@ public class TaskScheduleManager {
     private static final Map<Long, RobotWorker> WORLD_ROBOTS = new ConcurrentHashMap<>();
     private static final Map<Long, Map<String,Task>> WORLD_ROBOTS_TASK = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Long, ReentrantLock> LOCK_MAP = new ConcurrentHashMap<>();
-    //TODO final map
     @PostConstruct
     public void init() throws InterruptedException {
         List<TaskDO> taskDOS = taskService.getTaskByStatus(List.of(TaskStatus.RUNNING.name(),TaskStatus.EXCEPTION.name()));
@@ -119,6 +118,23 @@ public class TaskScheduleManager {
         }
     }
 
+    public void removeTaskExceptUid(Long robotId,String uid){
+        ReentrantLock lock = LOCK_MAP.get(robotId);
+        if(lock==null){
+            return;
+        }
+        lock.lock();
+        try {
+            Map<String, Task> taskMap = WORLD_ROBOTS_TASK.get(robotId);
+            taskMap.forEach((id,task)->{
+                if(!Objects.equals(task.getUid(), uid)){
+                    taskMap.remove(id);
+                }
+            });
+        }finally {
+            lock.unlock();
+        }
+    }
     public Map<Long,RobotWorker> getAllRobot(){
         return WORLD_ROBOTS;
     }
