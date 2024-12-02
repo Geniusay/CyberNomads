@@ -258,10 +258,10 @@ public class IRobotService implements RobotService {
                     taskScheduleManager.removeTaskExceptUid(shareRobotDTO.getRobotId(), uid);
                     return true;
                 }
-                return false;
             } catch (Exception e){
                 throw new ServeException(RCode.CANCEL_SHARE_FAILED);
             }
+            throw new ServeException(RCode.CANCEL_SHARE_FAILED);
         }
     }
 

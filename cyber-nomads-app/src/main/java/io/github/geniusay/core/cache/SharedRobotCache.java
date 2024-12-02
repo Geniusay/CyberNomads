@@ -35,10 +35,10 @@ public class SharedRobotCache {
     public void init() {
         // 清除老数据
         sharedRobotRedisTemplate.delete(RedisConstant.SHARED_ROBOTS_HASH);
-        List<SharedRobotDO> sharedRobotDOS =sharedRobotMapper.selectList(null);
+        List<SharedRobotDO> sharedRobotDOS = sharedRobotMapper.selectList(null);
         sharedRobotRedisTemplate.opsForHash().putAll(RedisConstant.SHARED_ROBOTS_HASH,
                 sharedRobotDOS.stream().collect(
-                        Collectors.toMap(SharedRobotDO::getRobotId, sharedRobotDO -> sharedRobotDO)
+                        Collectors.toMap(sharedRobotDO -> sharedRobotDO.getRobotId().toString(), sharedRobotDO -> sharedRobotDO)
                 )
         );
     }
