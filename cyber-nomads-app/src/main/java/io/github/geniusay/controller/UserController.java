@@ -49,6 +49,7 @@ public class UserController {
     }
 
     @PostMapping("/logout")
+    @TokenRequire
     public Result<?> logout(){
         userService.logout();
         return Result.success();
