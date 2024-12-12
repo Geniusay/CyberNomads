@@ -97,7 +97,7 @@ public class IRobotService implements RobotService {
         LambdaQueryWrapper<RobotDO> query = new LambdaQueryWrapper<>();
         query.eq(RobotDO::getUid, uid).eq(RobotDO::isHasDelete,false);
         List<RobotDO> robotDOs = robotMapper.selectList(query);
-        return robotDOs.stream().map(RobotVO::convert).collect(Collectors.toList());
+        return robotDOs.stream().map(robotDO -> RobotVO.convert(robotDO, sharedRobotCache.exist(robotDO.getId()))).collect(Collectors.toList());
     }
 
     @Override

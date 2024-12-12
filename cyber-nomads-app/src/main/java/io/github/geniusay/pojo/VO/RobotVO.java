@@ -27,9 +27,10 @@ public class RobotVO {
     private String nickname;
     private String username;
     private String createTime;
+    private boolean hasShared;
     private boolean hasCookie;
 
-    public static RobotVO convert(RobotDO r){
+    public static RobotVO convert(RobotDO r, boolean hasCookie){
         return RobotVO.builder()
                 .id(String.valueOf(r.getId()))
                 .platform(PlatformUtil.getPlatformByCode(r.getPlatform()))
@@ -40,6 +41,7 @@ public class RobotVO {
                 .ban(r.isBan())
                 .hasCookie(Objects.nonNull(r.getCookie()))
                 .createTime(TimeUtil.getFormatTimeStr(r.getCreateTime()))
+                .hasShared(hasCookie)
                 .build();
     }
 }
