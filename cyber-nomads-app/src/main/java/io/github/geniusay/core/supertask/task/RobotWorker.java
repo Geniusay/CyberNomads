@@ -15,6 +15,8 @@ import java.util.stream.Stream;
 public class RobotWorker {
 
     private Long id;
+
+    private String uid;
     private String nickname;
     private String username;
     private String cookie;
@@ -23,6 +25,7 @@ public class RobotWorker {
 
     public RobotWorker(RobotDO robotDO) {
         this.id = robotDO.getId();
+        this.uid = robotDO.getUid();
         this.nickname = robotDO.getNickname();
         this.username = robotDO.getUsername();
         this.cookie = robotDO.getCookie();
