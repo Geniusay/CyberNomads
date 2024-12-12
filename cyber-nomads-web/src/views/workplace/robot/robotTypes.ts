@@ -6,6 +6,8 @@ export interface RobotVO{
   nickname: string;
   username: string;
   ban: boolean;
+  hasCookie: boolean;
+  hasShared: boolean;
   createTime: string;
 }
 

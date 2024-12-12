@@ -2,12 +2,14 @@
 import {RobotVO, RobotForm, defaultValue} from "@/views/workplace/robot/robotTypes";
 import { PlatformVO } from "@/types/platformType";
 import { onMounted } from "vue";
-import {addRobot, changeRobot, getCookie, changeCookie, deleteRobot, generateLoginMachine} from "@/api/robotApi";
+import {addRobot, changeRobot, getCookie, changeCookie, deleteRobot, generateLoginMachine, shareRobot} from "@/api/robotApi";
 import { useSnackbarStore } from "@/stores/snackbarStore";
 import {validateAndReturn, Validators} from "@/utils/validate";
 import { useCommonStore } from "@/stores/commonStore";
 import { useRobotStore } from  "@/views/workplace/robot/robotStore"
 import {useDialogStore} from "@/stores/dialogStore";
+import { useTaskStore,snackbarStore } from "@/views/workplace/task/taskStore"
+import { Icon } from "@iconify/vue";
 
 import EmptyDataPage from "@/components/empty/EmptyDataPage.vue";
 import CircleLoading from "@/components/loading/CircleLoading.vue";
@@ -18,6 +20,8 @@ const dialogStore = useDialogStore()
 const robotStore = useRobotStore();
 const commonStore = useCommonStore();
 const snackbarStore = useSnackbarStore();
+const taskStore = useTaskStore();
+
 const robotList = ref<RobotVO[]>([])
 const platformList = ref<PlatformVO[]>([])
 const robotForm = ref<RobotForm>({...defaultValue.defaultRobotForm})
@@ -211,6 +215,39 @@ const openLoginMachineDialog = async () =>{
   loginMachineTokenLoading.value = false
 }
 
+const taskTypes = ref([])
+const shareDialog = ref(false)
+const sharedRobot = ref<RobotVO>({})
+const sharedReq = ref({
+  robotId:"",
+  flag:false,
+  focusTask:[]
+})
+
+const openSharedDialog = async (item: RobotVO) =>{
+  sharedReq.value = {
+    robotId: item.id,
+    flag: !item.hasShared,
+    focusTask: []
+  }
+  sharedRobot.value = item
+  shareDialog.value = true
+  await taskStore.initPlatformTaskTypes(item.platform)
+  taskTypes.value = taskStore.getPlatformTaskTypes(item.platform)
+}
+
+const shareRobotReq = async()=>{
+  const flag = sharedReq.value.flag
+  await shareRobot(sharedReq.value).then(res=>{
+    snackbarStore.showSuccessMessage(flag?"分享成功!":"收回成功!")
+    let index = robotList.value.findIndex(item => item.id === sharedReq.value.robotId)
+    robotList.value[index].hasShared = flag
+  }).catch(error=>{
+    snackbarStore.showErrorMessage((flag?"分享失败:":"收回失败:") + error.message)
+  })
+  shareDialog.value = false
+}
+
 </script>
 <template>
   <v-container>
@@ -328,7 +365,7 @@ const openLoginMachineDialog = async () =>{
               </v-card>
             </v-dialog>
 
-            <v-dialog v-model="dialog" max-width="700">
+            <v-dialog id="edit robot" v-model="dialog" max-width="700">
               <template v-slot:activator="{ props }">
                 <v-btn color="primary" v-bind="props" flat class="ml-auto">
                   <v-icon class="mr-2">mdi-robot-industrial</v-icon>
@@ -436,12 +473,128 @@ const openLoginMachineDialog = async () =>{
                 </v-card-actions>
               </v-card>
             </v-dialog>
+
+            <v-dialog id="share robot" v-model="shareDialog" max-width="700">
+              <v-card
+                class="mx-auto"
+                color="#36393f"
+                min-width="650"
+                max-height="350"
+                theme="dark"
+                variant="flat"
+              >
+                <v-sheet color="#202225">
+                  <v-card-item>
+                    <template v-slot:prepend>
+                      <v-card-title>
+                        <Icon style="box-sizing: border-box; display: inline-block; vertical-align: middle; margin-right: 8px;"  width="30"
+                              icon="line-md:external-link-rounded" />
+                        <span style="box-sizing: border-box;">{{sharedRobot.hasShared?'收回账号':'分享账号'}}</span>
+                      </v-card-title>
+                    </template>
+
+                    <v-divider class="mx-2" vertical></v-divider>
+
+                    <template v-slot:append>
+                      <v-btn
+                        icon="$close"
+                        size="large"
+                        variant="text"
+                        @click="shareDialog=false"
+                      ></v-btn>
+                    </template>
+                  </v-card-item>
+                </v-sheet>
+
+                <v-card
+                  class="ma-4"
+                  color="#2f3136"
+                  rounded="lg"
+                  variant="flat"
+                >
+                  <v-card-item>
+                    <v-card-title class="text-body-2 d-flex align-center">
+                      <v-icon
+                        color="#949cf7"
+                        icon="mdi-robot"
+                        start
+                      ></v-icon>
+
+                      <span class="text-medium-emphasis font-weight-bold">{{sharedRobot.nickname}}</span>
+
+                      <v-spacer></v-spacer>
+
+                      <v-chip
+                        class="ms-2 text-medium-emphasis"
+                        color="grey-darken-4"
+                        size="default"
+                        variant="flat"
+                      >
+                        <span>{{sharedRobot.platformCnZh}}</span>
+                        <v-icon >
+                          <img :src="commonStore.getPlatformImgUrl(sharedRobot.platform)" alt="My Icon" start />
+                        </v-icon>
+                      </v-chip>
+                    </v-card-title>
+
+                    <div class="py-2" v-if="!sharedRobot.hasShared">
+                      <v-col
+                        cols="12"
+                        sm="12"
+                      >
+                        <v-autocomplete
+                          color="primary"
+                          density="compact"
+                          :items="taskTypes"
+                          v-model="sharedReq.focusTask"
+                          label="关注任务类型"
+                          item-title="taskTypeValue"
+                          item-value="taskTypeKey"
+                          variant="outlined"
+                          chips
+                          closable-chips
+                          multiple
+                        ></v-autocomplete>
+                      </v-col>
+
+                      <div class="font-weight-light text-medium-emphasis">
+                        该账号在共享过程中只会做选择的任务类型 （❗不选则为接受任何任务类型）
+                      </div>
+                    </div>
+                  </v-card-item>
+
+                  <v-divider></v-divider>
+
+                  <div class="pa-4 d-flex align-center">
+                    <v-btn
+                      icon="mdi-help-circle-outline"
+                      class="text-none text-subtitle-1"
+                      size="small"
+                      variant="text"
+                    >
+                    </v-btn>
+
+                    <v-spacer></v-spacer>
+
+                    <v-btn
+                      class="me-2 text-none"
+                      :color="sharedRobot.hasShared?'red':'#4f545c'"
+                      :prepend-icon="sharedRobot.hasShared?'mdi-share-off-outline':'mdi-export-variant'"
+                      variant="flat"
+                      @click="shareRobotReq()"
+                    >
+                      {{sharedRobot.hasShared?'收回':'分享'}}
+                    </v-btn>
+                  </div>
+                </v-card>
+              </v-card>
+            </v-dialog>
           </v-col>
         </v-row>
       </v-card-text>
     </v-card>
 
-    <v-card class="mt-2">
+    <v-card class="mt-2" min-height="700">
       <CircleLoading v-if="pageLoading" style="margin-top: 20%; margin-bottom: 20%"/>
       <EmptyDataPage
         v-else-if="emptyState"
@@ -459,7 +612,7 @@ const openLoginMachineDialog = async () =>{
             <th class="text-subtitle-1 font-weight-semibold">{{ $t("workplace.nomads.platform") }}</th>
             <th class="text-subtitle-1 font-weight-semibold">{{ $t("workplace.nomads.username") }}</th>
             <th class="text-subtitle-1 font-weight-semibold">{{ $t("workplace.nomads.createDate") }}</th>
-            <th class="text-subtitle-1 font-weight-semibold">{{ $t("workplace.nomads.isBan") }}</th>
+            <th class="text-subtitle-1 font-weight-semibold">{{ $t("workplace.nomads.isShare") }}</th>
             <th class="text-subtitle-1 font-weight-semibold" style="padding-left: 6vh">{{ $t("workplace.nomads.action") }}</th>
           </tr>
         </thead>
@@ -475,13 +628,13 @@ const openLoginMachineDialog = async () =>{
             <td>{{ item.username }}</td>
             <td>{{ item.createTime }}</td>
             <td>
-              <v-chip
-                class="font-weight-bold"
-                :color="item.ban?'red':'green'"
-                size="large"
-                label
-                ><v-icon size="large">{{item.ban?'mdi-robot-off':'mdi-robot-happy'}}</v-icon></v-chip
+              <v-btn class="me-2 text-none"
+                     variant="tonal"
+                     :color="!item.hasShared?'red':'green'"
+                     @click="openSharedDialog(item)"
               >
+                <v-icon size="large">{{!item.hasShared?'mdi-robot-off':'mdi-robot-happy'}}</v-icon>
+              </v-btn>
             </td>
             <td >
               <div class="d-flex">
