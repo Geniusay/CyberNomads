@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 /**
  * @Description
  * @Author welsir
- * @Date 2024/11/13 17:41
+ * @Date 2024/11/21 23:05
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RobotSelecteEvent extends Event {
+public class RemoveWorkerIfNeedEvent extends Event {
 
-    private Long robotId;
+    private String workerId;
 
 }

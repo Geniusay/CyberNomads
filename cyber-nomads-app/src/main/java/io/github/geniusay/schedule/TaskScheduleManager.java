@@ -9,7 +9,6 @@ import io.github.geniusay.pojo.DO.RobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -28,7 +27,6 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @Component
 @Slf4j
-@DependsOn("ITaskService")
 public class TaskScheduleManager {
     @Resource
     TaskFactory taskFactory;
@@ -118,23 +116,14 @@ public class TaskScheduleManager {
         }
     }
 
-    public void removeTaskExceptUid(Long robotId,String uid){
-        ReentrantLock lock = LOCK_MAP.get(robotId);
-        if(lock==null){
+    //取消共享
+    public void unshared(Long robotId){
+        RobotWorker worker = WORLD_ROBOTS.get(robotId);
+        if(worker==null)
             return;
-        }
-        lock.lock();
-        try {
-            Map<String, Task> taskMap = WORLD_ROBOTS_TASK.get(robotId);
-            taskMap.forEach((id,task)->{
-                if(!Objects.equals(task.getUid(), uid)){
-                    taskMap.remove(id);
-                }
-            });
-        }finally {
-            lock.unlock();
-        }
+        worker.setHasShared(false);
     }
+
 
     public Map<Long,RobotWorker> getAllRobot(){
         return WORLD_ROBOTS;
@@ -145,19 +134,15 @@ public class TaskScheduleManager {
     public Map<String, Task> getWorldTask(){
         return WORLD_TASK;
     }
-
     public Task getTaskById(String taskId){
         return WORLD_TASK.get(taskId);
     }
-
     public RobotWorker getRobotById(Long robotId){
         return WORLD_ROBOTS.get(robotId);
     }
-
     public Map<String,Task> getRobotTaskById(Long robotId){
         return WORLD_ROBOTS_TASK.get(robotId);
     }
-
     public Task removeWorldTask(String taskId){
         return WORLD_TASK.remove(taskId);
     }
@@ -165,7 +150,6 @@ public class TaskScheduleManager {
         WORLD_ROBOTS.remove(robotId);
         WORLD_ROBOTS_TASK.remove(robotId);
     }
-
     public void removeWorldRobotTask(Long robotId,String taskId){
         WORLD_ROBOTS_TASK.get(robotId).remove(taskId);
     }

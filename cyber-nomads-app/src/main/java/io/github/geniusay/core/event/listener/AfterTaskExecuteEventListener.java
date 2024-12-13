@@ -28,9 +28,9 @@ public class AfterTaskExecuteEventListener implements EventListener {
     @Resource
     TaskScheduleManager manager;
     @Resource
-    EventManager eventManager;
-    @Resource
     WorkerExecute workerExecute;
+    @Resource
+    TaskStatusEditEventListener listener;
 
     @Override
     public void pushEvent(Event event) {
@@ -40,7 +40,7 @@ public class AfterTaskExecuteEventListener implements EventListener {
             String taskId = ((AfterTaskExecuteEvent) event).getTaskId();
             logService.logTaskResult(worker, lastTalk);
             if(worker.task().getTerminator().taskIsDone()){
-                eventManager.publishEvent(new TaskStatusEditEvent(taskId, TaskActionConstant.FINISH));
+                listener.pushEvent(new TaskStatusEditEvent(taskId, TaskActionConstant.FINISH));
                 manager.removeWorkerTask(taskId);
             }
             workerExecute.taskDoneCallBack(worker.getId(),taskId);

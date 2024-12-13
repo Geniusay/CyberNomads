@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -20,7 +21,8 @@ public class RobotWorker {
     private String nickname;
     private String username;
     private String cookie;
-//    private Boolean hasShared;
+    private Boolean hasShared;
+    private List<String> robotTaskTypes;
 
     private volatile Task currentTask;
 

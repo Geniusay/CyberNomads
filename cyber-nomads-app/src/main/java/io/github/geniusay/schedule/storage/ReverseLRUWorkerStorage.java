@@ -1,8 +1,8 @@
 package io.github.geniusay.schedule.storage;
 
 import io.github.geniusay.core.event.EventManager;
-import io.github.geniusay.core.event.commonEvent.RemoveWorkerEventIfNeed;
-import io.github.geniusay.core.event.commonEvent.RobotSelecteEvent;
+import io.github.geniusay.core.event.commonEvent.RemoveWorkerIfNeedEvent;
+import io.github.geniusay.core.event.commonEvent.SelectRobotEvent;
 import io.github.geniusay.schedule.TaskScheduleManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -31,6 +31,7 @@ public class ReverseLRUWorkerStorage extends AbstractWorkerStorage {
     private final int highInterval = 100;
     private final int midInterval = 1000;
     private final int slowInterval = 2000;
+
     @Override
     public void joinWorkerQueue(Long workerId) {
         choiceWorkerQueue(workerId);
@@ -55,7 +56,7 @@ public class ReverseLRUWorkerStorage extends AbstractWorkerStorage {
     @Override
     public void workerDoneCallBack(Long workerId) {
         retry.remove(workerId);
-        eventManager.publishEvent(new RemoveWorkerEventIfNeed(String.valueOf(workerId)));
+        eventManager.publishEvent(new RemoveWorkerIfNeedEvent(String.valueOf(workerId)));
     }
 
     private void choiceWorkerQueue(Long workerId){
@@ -103,6 +104,6 @@ public class ReverseLRUWorkerStorage extends AbstractWorkerStorage {
     }
 
     private void pushWorker(Long workerId){
-        eventManager.publishEvent(new RobotSelecteEvent(workerId));
+        eventManager.publishEvent(new SelectRobotEvent(workerId));
     }
 }
