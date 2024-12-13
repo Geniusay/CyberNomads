@@ -3,7 +3,6 @@ package io.github.geniusay.core.event.commonEvent;
 import io.github.geniusay.core.event.Event;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -14,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class robotSelecteEvent extends Event {
+public class RobotSelecteEvent extends Event {
 
     private Long robotId;
 

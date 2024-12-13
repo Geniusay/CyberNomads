@@ -21,6 +21,7 @@ public class TaskTranslationConstant {
             INFINITY_HOT_VIDEO_SUMMARY, "AI总结视频",
             INFINITY_HOT_VIDEO_COMMENT, "AI自动评论",
             INFINITY_HOT_COMMENT_REPLY, "自动怼人",
+            VIDEO_COMMENT, "视频评论",
             TEST_VIDEO_COMMENT, "测试",
             VIDEO_INTERACTION, "点赞，投币，三连",
             USER_INTERACTION, "涨粉丝",

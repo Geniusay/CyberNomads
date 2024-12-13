@@ -1,7 +1,6 @@
 package io.github.geniusay.controller;
 
 import io.github.common.web.Result;
-import io.github.geniusay.core.anno.Counters;
 import io.github.geniusay.core.anno.LoginMachineToken;
 import io.github.geniusay.core.anno.TokenRequire;
 import io.github.geniusay.pojo.DTO.*;
@@ -12,8 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-
-import static io.github.geniusay.constants.CountersConstant.TASK;
 
 @RestController
 @RequestMapping("/robot")
@@ -90,9 +87,22 @@ public class RobotController {
         return Result.success(robotService.shareRobot(shareRobotDTO));
     }
 
-    @GetMapping("/getPage")
+    @GetMapping("/sharedRobotPage")
     @TokenRequire
-    public Result<?> getPage(@RequestParam Integer page, @RequestParam Integer size){
-        return Result.success(robotService.getPage(page, size));
+    public Result<?> getPage(@RequestParam Integer page, @RequestParam String taskType){
+        return Result.success(robotService.sharedRobotPage(page, taskType));
+    }
+
+    @GetMapping("/sharedRobotInfo")
+    @TokenRequire
+    public Result<?> getSharedRobot(@RequestParam("id") Long id){
+        return Result.success(robotService.sharedRobotInfo(id));
+    }
+
+    // TODO: 推荐算法
+    @GetMapping("/recommend")
+    @TokenRequire
+    public Result<?> recommend(@RequestParam("page") Integer page){
+        return Result.success(robotService.recommend(page));
     }
 }

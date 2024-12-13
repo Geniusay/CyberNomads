@@ -135,6 +135,7 @@ public class TaskScheduleManager {
             lock.unlock();
         }
     }
+
     public Map<Long,RobotWorker> getAllRobot(){
         return WORLD_ROBOTS;
     }

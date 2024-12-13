@@ -1,6 +1,7 @@
 package io.github.geniusay.pojo.VO;
 
 import io.github.geniusay.pojo.DO.RobotDO;
+import io.github.geniusay.pojo.DO.SharedRobotDO;
 import io.github.geniusay.pojo.Platform;
 import io.github.geniusay.utils.PlatformUtil;
 import io.github.geniusay.utils.TaskTranslationUtil;
@@ -8,6 +9,7 @@ import io.github.geniusay.utils.TimeUtil;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Objects;
 
 /**

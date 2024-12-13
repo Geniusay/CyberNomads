@@ -2,7 +2,7 @@ package io.github.geniusay.schedule.storage;
 
 import io.github.geniusay.core.event.EventManager;
 import io.github.geniusay.core.event.commonEvent.RemoveWorkerEventIfNeed;
-import io.github.geniusay.core.event.commonEvent.robotSelecteEvent;
+import io.github.geniusay.core.event.commonEvent.RobotSelecteEvent;
 import io.github.geniusay.schedule.TaskScheduleManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -103,6 +103,6 @@ public class ReverseLRUWorkerStorage extends AbstractWorkerStorage {
     }
 
     private void pushWorker(Long workerId){
-        eventManager.publishEvent(new robotSelecteEvent(workerId));
+        eventManager.publishEvent(new RobotSelecteEvent(workerId));
     }
 }

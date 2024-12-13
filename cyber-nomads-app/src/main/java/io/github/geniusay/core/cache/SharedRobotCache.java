@@ -42,7 +42,7 @@ public class SharedRobotCache {
                 )
         );
     }
-    // 分页获取
+    // 推荐算法构建
     public Page<SharedRobotDO> getSharedRobotsPage(Integer page, Integer size) {
         return sharedRobotMapper.selectPage(new Page<>(page, size), new QueryWrapper<SharedRobotDO>().orderByDesc("robot_id"));
     }
@@ -59,6 +59,11 @@ public class SharedRobotCache {
     public Boolean exist(Long id){
         return sharedRobotRedisTemplate.opsForHash().hasKey(RedisConstant.SHARED_ROBOTS_HASH, id.toString());
     }
+
+    public SharedRobotDO getSharedRobot(Long id) {
+        return (SharedRobotDO) sharedRobotRedisTemplate.opsForHash().get(RedisConstant.SHARED_ROBOTS_HASH, id.toString());
+    }
+
     // 把共享账号分离出来
     public List<Long> getSharedIds(List<Long> ids){
         List<Object> sharedIds = sharedRobotRedisTemplate.executePipelined((RedisCallback<List<Long>>) redisConnection -> {
