@@ -13,6 +13,9 @@ import io.github.geniusay.core.cache.SharedRobotCache;
 import io.github.geniusay.core.event.EventManager;
 import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.core.supertask.config.TaskTypeConstant;
+import io.github.geniusay.crawler.api.bilibili.BilibiliUserApi;
+import io.github.geniusay.crawler.po.bilibili.UserInfo;
+import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import io.github.geniusay.mapper.RobotMapper;
 import io.github.geniusay.mapper.SharedRobotMapper;
 import io.github.geniusay.mapper.TaskMapper;
@@ -39,6 +42,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static io.github.geniusay.crawler.BCookie.cookie;
 import static io.github.geniusay.pojo.Platform.BILIBILI;
 import static io.github.geniusay.utils.ValidUtil.isValidConstant;
 
@@ -337,6 +341,11 @@ public class IRobotService implements RobotService {
 
     //TODO 需要补充验证cookie是否可用
     private Boolean checkCookie(String cookie){
-        return cookie!=null;
+        ApiResponse<UserInfo> userInfo = BilibiliUserApi.getUserInfo(cookie);
+        if (userInfo.isSuccess()) {
+            return userInfo.getData().getData().isLogin();
+        } else {
+            return false;
+        }
     }
 }

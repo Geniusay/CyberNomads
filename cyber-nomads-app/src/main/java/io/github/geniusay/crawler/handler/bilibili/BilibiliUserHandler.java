@@ -1,9 +1,9 @@
 package io.github.geniusay.crawler.handler.bilibili;
 
+import io.github.geniusay.crawler.po.bilibili.UserInfo;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import io.github.geniusay.crawler.util.bilibili.HttpClientUtil;
 import okhttp3.FormBody;
-import okhttp3.RequestBody;
 
 import java.io.IOException;
 
@@ -20,6 +20,27 @@ public class BilibiliUserHandler {
     private static final String MODIFY_USER_RELATION_URL = "https://api.bilibili.com/x/relation/modify";
     // 批量关注用户的URL
     private static final String BATCH_MODIFY_USER_RELATION_URL = "https://api.bilibili.com/x/relation/batch/modify";
+    // 用户信息接口URL
+    private static final String USER_INFO_URL = "https://api.bilibili.com/x/web-interface/nav";
+
+    /**
+     * 获取用户信息
+     *
+     * @param cookie 用户的Cookie，必须包含SESSDATA
+     * @return ApiResponse<UserInfo> 包含用户信息的响应
+     */
+    public static ApiResponse<UserInfo> getUserInfo(String cookie) {
+        String csrf = extractCsrfFromCookie(cookie);
+        if (csrf == null) {
+            return ApiResponse.errorResponse("无法从Cookie中提取csrf（bili_jct）。");
+        }
+        try {
+            ApiResponse<String> response = HttpClientUtil.sendGetRequest(USER_INFO_URL, cookie);
+            return ApiResponse.convertApiResponse(response, UserInfo.class);
+        } catch (IOException e) {
+            return ApiResponse.errorResponse(e);
+        }
+    }
 
     /**
      * 修改用户关系（关注/取关/拉黑等操作）
