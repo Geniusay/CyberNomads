@@ -10,9 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.common.web.Result;
 import io.github.geniusay.constants.RCode;
 import io.github.geniusay.core.cache.SharedRobotCache;
-import io.github.geniusay.core.event.Event;
 import io.github.geniusay.core.event.EventManager;
-import io.github.geniusay.core.event.commonEvent.CancelSharedTaskEvent;
 import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.core.supertask.config.TaskTypeConstant;
 import io.github.geniusay.mapper.RobotMapper;
@@ -24,14 +22,12 @@ import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.*;
 import io.github.geniusay.pojo.VO.RobotVO;
 import io.github.geniusay.pojo.VO.SharedRobotVO;
-import io.github.geniusay.schedule.TaskScheduleManager;
 import io.github.geniusay.service.QrCodeLogin;
 import io.github.geniusay.service.RobotService;
 import io.github.geniusay.utils.ConvertorUtil;
 import io.github.geniusay.utils.DateUtil;
 import io.github.geniusay.utils.PlatformUtil;
 import io.github.geniusay.utils.ThreadUtil;
-import io.netty.util.internal.StringUtil;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,8 +56,8 @@ public class IRobotService implements RobotService {
     @Resource
     private SharedRobotCache sharedRobotCache;
 
-//    @Resource
-//    private EventManager eventManager;
+    @Resource
+    private EventManager eventManager;
 
     @Resource
     private QrCodeLogin qrCodeLogin;
@@ -296,11 +292,11 @@ public class IRobotService implements RobotService {
     }
 
     @Override
-    public Page<SharedRobotVO> getPage(Integer page, String taskType) {
+    public Page<SharedRobotVO> sharedRobotPage(Integer page, String taskType) {
         Page<SharedRobotDO> p = new Page<>(page, 10);
         // 判断taskType条件是否存在
         return Objects.requireNonNull(taskType).isBlank() && checkTaskType(taskType)
-                ? sharedRobotMapper.selectSharedData(taskType, p) : sharedRobotMapper.selectSharedData(p);
+                ? sharedRobotMapper.selectSharedDataByTaskType(taskType, p) : sharedRobotMapper.selectSharedData(p);
     }
 
     @Override
@@ -314,7 +310,7 @@ public class IRobotService implements RobotService {
 
     @Override
     public List<String> recommend(Integer page) {
-
+//        return sharedRobotCache.;
         return List.of();
     }
 

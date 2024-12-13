@@ -42,10 +42,10 @@ public class SharedRobotCache {
                 )
         );
     }
-//    // 分页获取
-//    public Page<SharedRobotDO> getSharedRobotsPage(Integer page, Integer size) {
-//        return sharedRobotMapper.selectPage(new Page<>(page, size), new QueryWrapper<SharedRobotDO>().orderByDesc("robot_id"));
-//    }
+    // 推荐算法构建
+    public Page<SharedRobotDO> getSharedRobotsPage(Integer page, Integer size) {
+        return sharedRobotMapper.selectPage(new Page<>(page, size), new QueryWrapper<SharedRobotDO>().orderByDesc("robot_id"));
+    }
 
     //  添加sharedRobot
     public Boolean putSharedRobot(SharedRobotDO sharedRobotDO) {

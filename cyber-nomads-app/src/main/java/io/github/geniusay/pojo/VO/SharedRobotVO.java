@@ -7,6 +7,7 @@ import io.github.geniusay.utils.TaskTranslationUtil;
 import io.netty.util.internal.StringUtil;
 import lombok.Data;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -29,7 +30,13 @@ public class SharedRobotVO {
 
     private String uid;
 
+    private String createTime;
+
+    private String updateTime;
+
     private List<String> taskTypes;
+
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public SharedRobotVO(RobotDO robotDO, SharedRobotDO sharedRobotDO) {
         this.id = robotDO.getId();
@@ -42,7 +49,7 @@ public class SharedRobotVO {
         this.taskTypes = stringToList(sharedRobotDO.getFocusTask());
     }
 
-    public SharedRobotVO(Long id, Integer platform, String nickname, String username, boolean ban, boolean hasDelete, String uid, String focusTask) {
+    public SharedRobotVO(Long id, Integer platform, String nickname, String username, boolean ban, boolean hasDelete, String uid, Date createTime,Date updateTime, String focusTask) {
         this.id = id;
         this.platform = platform;
         this.nickname = nickname;
@@ -50,6 +57,8 @@ public class SharedRobotVO {
         this.ban = ban;
         this.hasDelete = hasDelete;
         this.uid = uid;
+        this.createTime = sdf.format(createTime);
+        this.updateTime = sdf.format(updateTime);
         this.taskTypes = stringToList(focusTask).stream().map(TaskTranslationUtil::translateTaskType).collect(Collectors.toList());
     }
 
@@ -57,6 +66,6 @@ public class SharedRobotVO {
         if (StringUtil.isNullOrEmpty(str)) {
             return new ArrayList<>();
         }
-        return Arrays.stream(str.split(",")).collect(Collectors.toList());
+        return Arrays.stream(str.split(",")).filter(s -> !"".equals(s)).collect(Collectors.toList());
     }
 }

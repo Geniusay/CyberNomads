@@ -12,8 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-import static io.github.geniusay.constants.CountersConstant.TASK;
-
 @RestController
 @RequestMapping("/robot")
 public class RobotController {
@@ -89,11 +87,10 @@ public class RobotController {
         return Result.success(robotService.shareRobot(shareRobotDTO));
     }
 
-    // TODO: task的时间转换, 条件查询
-    @GetMapping("/getPage")
+    @GetMapping("/sharedRobotPage")
     @TokenRequire
     public Result<?> getPage(@RequestParam Integer page, @RequestParam String taskType){
-        return Result.success(robotService.getPage(page, taskType));
+        return Result.success(robotService.sharedRobotPage(page, taskType));
     }
 
     @GetMapping("/sharedRobotInfo")
