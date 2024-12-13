@@ -1,6 +1,7 @@
 package io.github.geniusay.crawler.api.bilibili;
 
 import io.github.geniusay.crawler.handler.bilibili.BilibiliUserHandler;
+import io.github.geniusay.crawler.po.bilibili.UserInfo;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 
 /**
@@ -29,5 +30,13 @@ public class BilibiliUserApi {
      */
     public static ApiResponse<Boolean> batchFollowUsers(String cookie, String fids, int reSrc) {
         return BilibiliUserHandler.batchModifyUserRelation(cookie, fids, 1, reSrc);
+    }
+
+    /**
+     *  获取用户信息
+     * @param cookie 用户的Cookie
+     */
+    public static ApiResponse<UserInfo> getUserInfo(String cookie) {
+        return BilibiliUserHandler.getUserInfo(cookie);
     }
 }

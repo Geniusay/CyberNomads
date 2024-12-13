@@ -1,6 +1,7 @@
 package io.github.geniusay.crawler.test.bilibili;
 
 import io.github.geniusay.crawler.api.bilibili.BilibiliUserApi;
+import io.github.geniusay.crawler.po.bilibili.UserInfo;
 import io.github.geniusay.crawler.util.bilibili.ApiResponse;
 import org.junit.Test;
 
@@ -39,6 +40,15 @@ public class TestUserApi {
             System.out.println("批量关注成功！");
         } else {
             System.out.println("批量关注失败，错误信息: " + response.getMsg());
+        }
+    }
+
+    @Test
+    public void testGetUserInfo() {
+        ApiResponse<UserInfo> userInfo = BilibiliUserApi.getUserInfo(cookie);
+        if (userInfo.isSuccess()) {
+            UserInfo data = userInfo.getData();
+            System.out.println(data.getData());
         }
     }
 }

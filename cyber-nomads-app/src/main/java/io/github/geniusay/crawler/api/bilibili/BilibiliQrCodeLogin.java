@@ -8,6 +8,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import okhttp3.*;
+import org.junit.Test;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -37,6 +38,12 @@ public class BilibiliQrCodeLogin {
             .add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.81")
             .build();
 
+    @Test
+    public void test() throws IOException {
+        String s = checkQrCodeStatusOnce("58845fe72da80f66e3eebddd0407d103");
+        System.out.println(s);
+    }
+
     public static void main(String[] args) {
         try {
             // Step 1: 生成二维码并保存到本地
@@ -47,6 +54,8 @@ public class BilibiliQrCodeLogin {
 
             // Step 2: 开始轮询二维码状态
             System.out.println("开始轮询二维码状态...");
+
+            System.out.println(qrcodeKey);
             String cookies = pollQrCodeStatus();
 
             // Step 3: 登录成功后获取 buvid3 / buvid4 / b_nut
