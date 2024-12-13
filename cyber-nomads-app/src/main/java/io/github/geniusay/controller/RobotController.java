@@ -59,6 +59,12 @@ public class RobotController {
         return Result.success(robotService.addRobot(robotDTO));
     }
 
+    @PostMapping("/addQr")
+    @TokenRequire
+    public Result<?> addRobotQr(@RequestBody AddRobotDTO robotDTO){
+        return Result.success(robotService.addRobotQr(robotDTO));
+    }
+
     @PostMapping("/getCookie")
     @TokenRequire
     public Result<?> getCookie(@RequestBody @Valid GetCookieDTO getCookieDTO){

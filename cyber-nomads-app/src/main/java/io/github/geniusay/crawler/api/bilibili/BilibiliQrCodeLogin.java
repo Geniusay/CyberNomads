@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.rmi.ServerException;
 import java.util.Base64;
 import java.util.List;
 
@@ -197,6 +198,48 @@ public class BilibiliQrCodeLogin {
                 return generateQrCodeImageBase64(qrCodeUrl);
             } else {
                 throw new IOException("二维码生成失败，HTTP 状态码：" + response.code());
+            }
+        }
+    }
+
+    /**
+     * 单次调用二维码状态检查
+     *
+     * @param qrcodeKey 二维码的唯一标识符
+     * @return 登录成功后的 Cookie 信息
+     * @throws IOException 网络请求异常
+     */
+    public static String checkQrCodeStatusOnce(String qrcodeKey) throws IOException {
+        String pollUrl = QR_CODE_POLL_URL + "?qrcode_key=" + qrcodeKey + "&source=main-fe-header";
+        Request request = new Request.Builder()
+                .url(pollUrl)
+                .headers(HEADERS)
+                .get()
+                .build();
+
+        try (Response response = CLIENT.newCall(request).execute()) {
+            if (response.isSuccessful() && response.body() != null) {
+                String responseBody = response.body().string();
+                JsonObject jsonObject = JsonParser.parseString(responseBody).getAsJsonObject();
+                JsonObject data = jsonObject.getAsJsonObject("data");
+                int code = data.get("code").getAsInt();
+
+                // 根据状态码处理
+                switch (code) {
+                    case 86101: // 未扫码
+                        throw new ServerException("二维码未扫码，请稍后重试！");
+                    case 86090: // 已扫码未确认
+                        throw new ServerException("二维码已扫码，但未确认登录！");
+                    case 86038: // 二维码失效
+                        throw new ServerException("二维码已失效，请重新生成！");
+                    case 0: // 登录成功
+                        List<String> cookies = response.headers("Set-Cookie");
+                        return extractCookies(cookies);
+                    default:
+                        throw new ServerException("未知状态，状态码：" + code);
+                }
+            } else {
+                throw new ServerException("请求失败，HTTP 状态码：" + response.code());
             }
         }
     }

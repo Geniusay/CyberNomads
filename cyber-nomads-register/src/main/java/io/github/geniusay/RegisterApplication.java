@@ -1,7 +1,5 @@
 package io.github.geniusay;
 
-import io.github.geniusay.util.HTTPUtils;
-import okhttp3.Response;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -9,11 +7,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @SpringBootApplication
 @EnableAsync
