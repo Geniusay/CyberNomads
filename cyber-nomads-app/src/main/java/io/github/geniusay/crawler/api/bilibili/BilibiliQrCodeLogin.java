@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.rmi.ServerException;
 import java.util.Base64;
 import java.util.List;
 
@@ -21,16 +22,16 @@ import static io.github.geniusay.crawler.api.bilibili.BiliTicket.getBiliTicket;
 
 public class BilibiliQrCodeLogin {
 
-    private static final String QR_CODE_GENERATE_URL = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-fe-header";
-    private static final String QR_CODE_POLL_URL = "https://passport.bilibili.com/x/passport-login/web/qrcode/poll";
-    private static final String SPI_URL = "https://api.bilibili.com/x/frontend/finger/spi";
-    private static final String BILIBILI_URL = "https://www.bilibili.com/";
-    private static final OkHttpClient CLIENT = new OkHttpClient();
-    private static final String COOKIE_FILE = "bz-cookie.txt";
-    private static String qrcodeKey;
+    public static final String QR_CODE_GENERATE_URL = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-fe-header";
+    public static final String QR_CODE_POLL_URL = "https://passport.bilibili.com/x/passport-login/web/qrcode/poll";
+    public static final String SPI_URL = "https://api.bilibili.com/x/frontend/finger/spi";
+    public static final String BILIBILI_URL = "https://www.bilibili.com/";
+    public static final OkHttpClient CLIENT = new OkHttpClient();
+    public static final String COOKIE_FILE = "bz-cookie.txt";
+    public static String qrcodeKey;
 
     // 自定义请求头
-    private static final Headers HEADERS = new Headers.Builder()
+    public static final Headers HEADERS = new Headers.Builder()
             .add("accept", "application/json, text/plain, */*")
             .add("accept-language", "zh-CN,zh;q=0.9,en;q=0.8")
             .add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.81")
@@ -202,6 +203,47 @@ public class BilibiliQrCodeLogin {
     }
 
     /**
+     * 单次调用二维码状态检查
+     *
+     * @param qrcodeKey 二维码的唯一标识符
+     * @return 登录成功后的 Cookie 信息
+     */
+    public static String checkQrCodeStatusOnce(String qrcodeKey) throws IOException {
+        String pollUrl = QR_CODE_POLL_URL + "?qrcode_key=" + qrcodeKey + "&source=main-fe-header";
+        Request request = new Request.Builder()
+                .url(pollUrl)
+                .headers(HEADERS)
+                .get()
+                .build();
+
+        try (Response response = CLIENT.newCall(request).execute()) {
+            if (response.isSuccessful() && response.body() != null) {
+                String responseBody = response.body().string();
+                JsonObject jsonObject = JsonParser.parseString(responseBody).getAsJsonObject();
+                JsonObject data = jsonObject.getAsJsonObject("data");
+                int code = data.get("code").getAsInt();
+
+                // 根据状态码处理
+                switch (code) {
+                    case 86101: // 未扫码
+                        throw new ServerException("二维码未扫码，请稍后重试！");
+                    case 86090: // 已扫码未确认
+                        throw new ServerException("二维码已扫码，但未确认登录！");
+                    case 86038: // 二维码失效
+                        throw new ServerException("二维码已失效，请重新生成！");
+                    case 0: // 登录成功
+                        List<String> cookies = response.headers("Set-Cookie");
+                        return extractCookies(cookies);
+                    default:
+                        throw new ServerException("未知状态，状态码：" + code);
+                }
+            } else {
+                throw new ServerException("请求失败，HTTP 状态码：" + response.code());
+            }
+        }
+    }
+
+    /**
      * 轮询二维码状态
      *
      * @return 登录成功后的 Cookie 信息
@@ -273,7 +315,7 @@ public class BilibiliQrCodeLogin {
      * @param cookies 响应头中的 Set-Cookie 列表
      * @return 拼接后的完整 Cookie 字符串
      */
-    private static String extractCookies(List<String> cookies) {
+    public static String extractCookies(List<String> cookies) {
         StringBuilder cookieBuilder = new StringBuilder();
 
         for (String cookie : cookies) {

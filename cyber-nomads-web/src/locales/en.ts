@@ -10,6 +10,7 @@ export default {
       createDate:"Create Date",
       platform:"Platform",
       isBan:"Ban",
+      isShare:"Share",
       action:"Actions",
       emptyTitle:"There are currently no cyber nomads",
       emptyContent:"Click on the 'ADD ROBOT' button to create a new task",

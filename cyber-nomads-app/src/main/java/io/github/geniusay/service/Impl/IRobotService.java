@@ -25,6 +25,7 @@ import io.github.geniusay.pojo.DTO.*;
 import io.github.geniusay.pojo.VO.RobotVO;
 import io.github.geniusay.pojo.VO.SharedRobotVO;
 import io.github.geniusay.schedule.TaskScheduleManager;
+import io.github.geniusay.service.QrCodeLogin;
 import io.github.geniusay.service.RobotService;
 import io.github.geniusay.utils.ConvertorUtil;
 import io.github.geniusay.utils.DateUtil;
@@ -61,6 +62,9 @@ public class IRobotService implements RobotService {
 
 //    @Resource
 //    private EventManager eventManager;
+
+    @Resource
+    private QrCodeLogin qrCodeLogin;
 
     @Override
     public LoadRobotResponseDTO loadRobot(MultipartFile file) {
@@ -199,6 +203,23 @@ public class IRobotService implements RobotService {
                     .set(RobotDO::getCookie, robotDTO.getCookie())
                     .set(RobotDO::isHasDelete, false);
             return robotMapper.update(null, update) == 1;
+        }
+    }
+
+    /**
+     * 二维码扫码登录并且添加机器人
+     * @param robotDTO
+     * @return 是否添加
+     */
+    @Override
+    public Boolean addRobotQr(AddRobotDTO robotDTO) {
+        try {
+            // 用cookie字段代表的key去进行验证得到cookie并进行替换
+            robotDTO.setCookie(qrCodeLogin.getCookieByKey(robotDTO.getCookie()));
+            // 调用添加机器人接口
+            return addRobot(robotDTO);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

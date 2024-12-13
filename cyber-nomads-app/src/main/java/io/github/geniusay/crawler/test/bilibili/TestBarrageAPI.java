@@ -17,8 +17,8 @@ import static io.github.geniusay.crawler.test.bilibili.TestVideoAPI.subKey;
 public class TestBarrageAPI {
 
     // 输入视频的bvid
-    private static final String SOURCE_BVID = "BV1Nw4m1Z7Ao";  // 源视频的bvid
-    private static final String TARGET_BVID = "BV1WWBRY8EEd";  // 目标视频的bvid
+    private static final String SOURCE_BVID = "BV1hC411b71z";  // 源视频的bvid
+    private static final String TARGET_BVID = "BV1ajqCYrEGz";  // 目标视频的bvid
 
     // 保存弹幕列表的文件路径
     private static final String BARRAGE_FILE_PATH = "D:\\" + SOURCE_BVID + ".txt";
@@ -44,7 +44,6 @@ public class TestBarrageAPI {
             System.out.println("获取源视频信息失败：" + videoResponse.getMsg());
             return;
         }
-
         // 获取源视频的cid
         long sourceCid = videoDetail.getData().getPages().get(0).getCid();
 

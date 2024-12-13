@@ -54,3 +54,11 @@ export function changeCookie(id:string, cookie:string){
 export function generateLoginMachine(){
   return request.post('/loginMachine/code')
 }
+
+export function shareRobot(req){
+  return request.post('/robot/share', {
+    robotId: req.robotId,
+    flag: req.flag,
+    focusTask: req.focusTask
+  })
+}
