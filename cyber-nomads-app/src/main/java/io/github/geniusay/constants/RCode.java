@@ -36,6 +36,7 @@ public enum RCode {
     CANCEL_SHARE_FAILED(30006, "取消共享失败"),
     ROBOT_IN_SHARED(30007, "账号处于共享状态，不可操作"),
     ROBOT_TYPE_ERROR(30008, "账号职业错误，无法添加"),
+    ROBOT_NOT_IN_SHARED(30009, "账号未在共享中"),
     PROXY_ERROR(40001, "代理失效"),
     PROXY_BALANCE_ERROR(40002, "代理策略错误");
 

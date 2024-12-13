@@ -18,6 +18,7 @@ public class RobotWorker {
     private String nickname;
     private String username;
     private String cookie;
+//    private Boolean hasShared;
 
     private volatile Task currentTask;
 

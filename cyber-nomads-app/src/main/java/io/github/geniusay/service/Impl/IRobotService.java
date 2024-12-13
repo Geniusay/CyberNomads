@@ -10,7 +10,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.common.web.Result;
 import io.github.geniusay.constants.RCode;
 import io.github.geniusay.core.cache.SharedRobotCache;
+import io.github.geniusay.core.event.Event;
+import io.github.geniusay.core.event.EventManager;
+import io.github.geniusay.core.event.commonEvent.CancelSharedTaskEvent;
 import io.github.geniusay.core.exception.ServeException;
+import io.github.geniusay.core.supertask.config.TaskTypeConstant;
 import io.github.geniusay.mapper.RobotMapper;
 import io.github.geniusay.mapper.SharedRobotMapper;
 import io.github.geniusay.mapper.TaskMapper;
@@ -19,12 +23,14 @@ import io.github.geniusay.pojo.DO.SharedRobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.pojo.DTO.*;
 import io.github.geniusay.pojo.VO.RobotVO;
+import io.github.geniusay.pojo.VO.SharedRobotVO;
 import io.github.geniusay.schedule.TaskScheduleManager;
 import io.github.geniusay.service.RobotService;
 import io.github.geniusay.utils.ConvertorUtil;
 import io.github.geniusay.utils.DateUtil;
 import io.github.geniusay.utils.PlatformUtil;
 import io.github.geniusay.utils.ThreadUtil;
+import io.netty.util.internal.StringUtil;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +42,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.github.geniusay.pojo.Platform.BILIBILI;
+import static io.github.geniusay.utils.ValidUtil.isValidConstant;
 
 @Service
 public class IRobotService implements RobotService {
@@ -52,8 +59,8 @@ public class IRobotService implements RobotService {
     @Resource
     private SharedRobotCache sharedRobotCache;
 
-    @Resource
-    private TaskScheduleManager taskScheduleManager;
+//    @Resource
+//    private EventManager eventManager;
 
     @Override
     public LoadRobotResponseDTO loadRobot(MultipartFile file) {
@@ -229,6 +236,7 @@ public class IRobotService implements RobotService {
         * 1、通过缓存更新，后续从缓存批量同步到数据库（可能出现情况，如果缓存未及时同步到数据库停止项目，可能会导致数据的丢失）
         * 2、直接更新到数据库，并且更新缓存（可能出现缓存与数据库不一致的问题）
         * */
+        checkTaskTypes(shareRobotDTO.getFocusTask());
         String uid = ThreadUtil.getUid();
         LambdaQueryWrapper<RobotDO> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(RobotDO::getUid, uid)
@@ -255,7 +263,8 @@ public class IRobotService implements RobotService {
             try {
                 // 看当前这个robot是不是自己的
                 if(robotMapper.selectCount(wrapper) >= 1 && (sharedRobotMapper.deleteById(shareRobotDTO.getRobotId()) == 1) && (sharedRobotCache.remove(shareRobotDTO.getRobotId()))){
-                    taskScheduleManager.removeTaskExceptUid(shareRobotDTO.getRobotId(), uid);
+//                    Event event = new CancelSharedTaskEvent(shareRobotDTO.getRobotId(), uid);
+//                    eventManager.publishEvent(event);
                     return true;
                 }
             } catch (Exception e){
@@ -266,15 +275,44 @@ public class IRobotService implements RobotService {
     }
 
     @Override
-    public Page<SharedRobotDO> getPage(Integer page, Integer size) {
-        return sharedRobotCache.getSharedRobotsPage(page, size);
+    public Page<SharedRobotVO> getPage(Integer page, String taskType) {
+        Page<SharedRobotDO> p = new Page<>(page, 10);
+        // 判断taskType条件是否存在
+        return Objects.requireNonNull(taskType).isBlank() && checkTaskType(taskType)
+                ? sharedRobotMapper.selectSharedData(taskType, p) : sharedRobotMapper.selectSharedData(p);
+    }
+
+    @Override
+    public SharedRobotVO sharedRobotInfo(Long id) {
+        try {
+            return sharedRobotMapper.selectSharedDataById(id);
+        } catch (Exception e) {
+            throw new ServeException(RCode.ROBOT_NOT_IN_SHARED);
+        }
+    }
+
+    @Override
+    public List<String> recommend(Integer page) {
+
+        return List.of();
     }
 
     private static String listToString(List<String> list) {
         if (list == null || list.isEmpty()) {
             return "";
         }
-        return String.join(",", list);
+        return "," + String.join(",", list) + ",";
+    }
+
+    private Boolean checkTaskType(String taskType) {
+        if (!isValidConstant(TaskTypeConstant.class, taskType)) {
+            throw new ServeException("不支持的任务类型: " + taskType);
+        }
+        return true;
+    }
+
+    private void checkTaskTypes(List<String> taskTypes) {
+        taskTypes.stream().map(this::checkTaskType);
     }
 
     //TODO 需要补充验证cookie是否可用

@@ -3,9 +3,9 @@ package io.github.geniusay.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.github.common.web.Result;
 import io.github.geniusay.pojo.DO.RobotDO;
-import io.github.geniusay.pojo.DO.SharedRobotDO;
 import io.github.geniusay.pojo.DTO.*;
 import io.github.geniusay.pojo.VO.RobotVO;
+import io.github.geniusay.pojo.VO.SharedRobotVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -34,5 +34,9 @@ public interface RobotService {
 
     Boolean shareRobot(ShareRobotDTO shareRobotDTO);
 
-    Page<SharedRobotDO> getPage(Integer page, Integer size);
+    Page<SharedRobotVO> getPage(Integer page, String taskType);
+
+    SharedRobotVO sharedRobotInfo(Long id);
+
+    List<String> recommend(Integer page);
 }

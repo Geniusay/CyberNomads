@@ -1,5 +1,8 @@
 package io.github.geniusay.core.supertask.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class TaskTypeConstant {
     public static final String VIDEO_COMMENT = "video:comment:";  // 评论视频
     public static final String INFINITY_HOT_VIDEO_COMMENT = "infinity:hot:video:comment:";  // 无限评论热门视频
