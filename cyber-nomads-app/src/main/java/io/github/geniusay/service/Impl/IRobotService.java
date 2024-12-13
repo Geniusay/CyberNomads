@@ -28,6 +28,7 @@ import io.github.geniusay.utils.ConvertorUtil;
 import io.github.geniusay.utils.DateUtil;
 import io.github.geniusay.utils.PlatformUtil;
 import io.github.geniusay.utils.ThreadUtil;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +41,7 @@ import java.util.stream.Collectors;
 
 import static io.github.geniusay.pojo.Platform.BILIBILI;
 import static io.github.geniusay.utils.ValidUtil.isValidConstant;
+
 
 @Service
 public class IRobotService implements RobotService {
@@ -56,6 +58,7 @@ public class IRobotService implements RobotService {
     @Resource
     private SharedRobotCache sharedRobotCache;
 
+    @Lazy
     @Resource
     private EventManager eventManager;
 
