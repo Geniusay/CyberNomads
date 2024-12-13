@@ -22,16 +22,16 @@ import static io.github.geniusay.crawler.api.bilibili.BiliTicket.getBiliTicket;
 
 public class BilibiliQrCodeLogin {
 
-    private static final String QR_CODE_GENERATE_URL = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-fe-header";
-    private static final String QR_CODE_POLL_URL = "https://passport.bilibili.com/x/passport-login/web/qrcode/poll";
-    private static final String SPI_URL = "https://api.bilibili.com/x/frontend/finger/spi";
-    private static final String BILIBILI_URL = "https://www.bilibili.com/";
-    private static final OkHttpClient CLIENT = new OkHttpClient();
-    private static final String COOKIE_FILE = "bz-cookie.txt";
-    private static String qrcodeKey;
+    public static final String QR_CODE_GENERATE_URL = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-fe-header";
+    public static final String QR_CODE_POLL_URL = "https://passport.bilibili.com/x/passport-login/web/qrcode/poll";
+    public static final String SPI_URL = "https://api.bilibili.com/x/frontend/finger/spi";
+    public static final String BILIBILI_URL = "https://www.bilibili.com/";
+    public static final OkHttpClient CLIENT = new OkHttpClient();
+    public static final String COOKIE_FILE = "bz-cookie.txt";
+    public static String qrcodeKey;
 
     // 自定义请求头
-    private static final Headers HEADERS = new Headers.Builder()
+    public static final Headers HEADERS = new Headers.Builder()
             .add("accept", "application/json, text/plain, */*")
             .add("accept-language", "zh-CN,zh;q=0.9,en;q=0.8")
             .add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.81")
@@ -207,7 +207,6 @@ public class BilibiliQrCodeLogin {
      *
      * @param qrcodeKey 二维码的唯一标识符
      * @return 登录成功后的 Cookie 信息
-     * @throws IOException 网络请求异常
      */
     public static String checkQrCodeStatusOnce(String qrcodeKey) throws IOException {
         String pollUrl = QR_CODE_POLL_URL + "?qrcode_key=" + qrcodeKey + "&source=main-fe-header";
@@ -316,7 +315,7 @@ public class BilibiliQrCodeLogin {
      * @param cookies 响应头中的 Set-Cookie 列表
      * @return 拼接后的完整 Cookie 字符串
      */
-    private static String extractCookies(List<String> cookies) {
+    public static String extractCookies(List<String> cookies) {
         StringBuilder cookieBuilder = new StringBuilder();
 
         for (String cookie : cookies) {

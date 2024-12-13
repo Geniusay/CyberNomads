@@ -17,5 +17,6 @@ public class AddRobotDTO {
 
     private String username;
 
+    // 在qr模式下，代表验证的key
     private String cookie;
 }

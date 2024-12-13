@@ -200,14 +200,16 @@ public class IRobotService implements RobotService {
     }
 
     /**
-     * 二维码扫码登录
+     * 二维码扫码登录并且添加机器人
      * @param robotDTO
-     * @return
+     * @return 是否添加
      */
     @Override
     public Boolean addRobotQr(AddRobotDTO robotDTO) {
         try {
+            // 用cookie字段代表的key去进行验证得到cookie并进行替换
             robotDTO.setCookie(qrCodeLogin.getCookieByKey(robotDTO.getCookie()));
+            // 调用添加机器人接口
             return addRobot(robotDTO);
         } catch (IOException e) {
             throw new RuntimeException(e);
