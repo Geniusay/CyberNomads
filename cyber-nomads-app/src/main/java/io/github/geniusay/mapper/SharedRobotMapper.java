@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface SharedRobotMapper extends BaseMapper<SharedRobotDO> {
-    @Select("SELECT r.id, r.platform, r.nickname, r.username, r.ban, r.has_delete, r.uid, sr.focus_task\n" +
+    @Select("SELECT r.id, r.platform, r.nickname, r.username, r.ban, r.has_delete, r.uid, r.create_time, r.update_time, sr.focus_task\n" +
             "FROM robot r\n" +
             "JOIN (\n" +
             "    SELECT robot_id, focus_task\n" +
@@ -38,4 +38,23 @@ public interface SharedRobotMapper extends BaseMapper<SharedRobotDO> {
             "    ORDER BY robot_id\n" +
             ") AS sr ON r.id = sr.robot_id")
     Page<SharedRobotVO> selectSharedDataByTaskType(@Param("taskType")String taskType, Page<SharedRobotDO> page);
+
+    @Select("SELECT r.id, r.platform, r.nickname, r.username, r.ban, r.has_delete, r.uid, r.create_time, r.update_time, sr.focus_task\n" +
+            "FROM robot r\n" +
+            "JOIN (\n" +
+            "    SELECT robot_id, focus_task\n" +
+            "    FROM shared_robot\n" +
+            "    ORDER BY robot_id\n" +
+            ") AS sr ON r.id = sr.robot_id WHERE r.platform = #{platform}")
+    Page<SharedRobotVO> selectSharedDataByPlatform(@Param("platform")Integer platform, Page<SharedRobotDO> page);
+
+    @Select("SELECT r.id, r.platform, r.nickname, r.username, r.ban, r.has_delete, r.uid, r.create_time, r.update_time, sr.focus_task\n" +
+            "FROM robot r\n" +
+            "JOIN (\n" +
+            "    SELECT robot_id, focus_task\n" +
+            "    FROM shared_robot\n" +
+            "    WHERE focus_task LIKE CONCAT('%', ',' ,#{taskType}, ',', '%')\n" +
+            "    ORDER BY robot_id\n" +
+            ") AS sr ON r.id = sr.robot_id WHERE r.platform = #{platform}")
+    Page<SharedRobotVO> selectSharedDataByTaskTypeAndPlatform(@Param("taskType")String taskType, @Param("platform")Integer platform, Page<SharedRobotDO> page);
 }

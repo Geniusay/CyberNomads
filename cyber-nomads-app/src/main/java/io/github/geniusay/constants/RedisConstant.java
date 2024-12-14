@@ -11,5 +11,8 @@ public class RedisConstant {
     public static final String LOGIN_MACHINE_CAPTCHA = "cyber:nomads:login-machine:captcha:";
     public static final String TASK_TEMPLATE_KEY = "cyber:nomads:template";
     public static final String SHARED_ROBOTS_HASH = "cyber:nomads:shared-robots:hash";
-    public static final String SHARED_ROBOTS_LIST = "cyber:nomads:shared-robots:list";
+    public static final String SHARED_ROBOTS_RECOMMEND = "cyber:nomads:shared-robots:recommend";
+    public static String sharedRobotsRecommend(String taskType){
+        return SHARED_ROBOTS_RECOMMEND + ":" + taskType;
+    }
 }

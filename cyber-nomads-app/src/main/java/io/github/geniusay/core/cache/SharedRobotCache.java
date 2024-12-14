@@ -1,20 +1,15 @@
 package io.github.geniusay.core.cache;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.github.geniusay.constants.RCode;
 import io.github.geniusay.constants.RedisConstant;
 import io.github.geniusay.core.exception.ServeException;
-import io.github.geniusay.crawler.po.bilibili.VideoDetail;
+import io.github.geniusay.core.recommend.Recommend;
 import io.github.geniusay.mapper.SharedRobotMapper;
 import io.github.geniusay.pojo.DO.SharedRobotDO;
-import org.springframework.boot.autoconfigure.cache.CacheProperties;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -30,6 +25,9 @@ public class SharedRobotCache {
     @Resource
     private SharedRobotMapper sharedRobotMapper;
 
+    @Resource
+    private Recommend recommend;
+
     // 初始化 hash提供单条查询
     @PostConstruct
     public void init() {
@@ -41,10 +39,11 @@ public class SharedRobotCache {
                         Collectors.toMap(sharedRobotDO -> sharedRobotDO.getRobotId().toString(), sharedRobotDO -> sharedRobotDO)
                 )
         );
+        recommend.init(sharedRobotDOS);
     }
     // 推荐算法构建
-    public Page<SharedRobotDO> getSharedRobotsPage(Integer page, Integer size) {
-        return sharedRobotMapper.selectPage(new Page<>(page, size), new QueryWrapper<SharedRobotDO>().orderByDesc("robot_id"));
+    public List<String> recommend(String taskType, Integer page, Integer size) {
+        return recommend.recommend(taskType, page, size);
     }
 
     //  添加sharedRobot

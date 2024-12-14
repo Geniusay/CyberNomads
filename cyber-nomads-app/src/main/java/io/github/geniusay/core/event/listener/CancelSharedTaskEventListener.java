@@ -17,7 +17,7 @@ public class CancelSharedTaskEventListener implements EventListener {
             CancelSharedTaskEvent sharedTaskEvent = (CancelSharedTaskEvent) event;
             Long robotId = sharedTaskEvent.getRobotId();
             String uid = sharedTaskEvent.getUid();
-            scheduleManager.removeTaskExceptUid(robotId, uid);
+//            scheduleManager.removeTaskExceptUid(robotId, uid);
         }
     }
 }

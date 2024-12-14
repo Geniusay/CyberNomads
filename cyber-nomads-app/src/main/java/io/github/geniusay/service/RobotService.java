@@ -36,9 +36,9 @@ public interface RobotService {
 
     Boolean shareRobot(ShareRobotDTO shareRobotDTO);
 
-    Page<SharedRobotVO> sharedRobotPage(Integer page, String taskType);
+    Page<SharedRobotVO> sharedRobotPage(Integer page, String taskType, Integer platform);
 
     SharedRobotVO sharedRobotInfo(Long id);
 
-    List<String> recommend(Integer page);
+    List<SharedRobotVO> recommend(String taskType, Integer page,Integer platform);
 }

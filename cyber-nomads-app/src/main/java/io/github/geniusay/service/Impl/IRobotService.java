@@ -10,7 +10,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.common.web.Result;
 import io.github.geniusay.constants.RCode;
 import io.github.geniusay.core.cache.SharedRobotCache;
+import io.github.geniusay.core.event.Event;
 import io.github.geniusay.core.event.EventManager;
+import io.github.geniusay.core.event.commonEvent.CancelSharedTaskEvent;
+import io.github.geniusay.core.event.commonEvent.UnsharedRobotEvent;
 import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.core.supertask.config.TaskTypeConstant;
 import io.github.geniusay.crawler.api.bilibili.BilibiliUserApi;
@@ -31,7 +34,6 @@ import io.github.geniusay.utils.ConvertorUtil;
 import io.github.geniusay.utils.DateUtil;
 import io.github.geniusay.utils.PlatformUtil;
 import io.github.geniusay.utils.ThreadUtil;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +46,7 @@ import java.util.stream.Collectors;
 
 import static io.github.geniusay.crawler.BCookie.cookie;
 import static io.github.geniusay.pojo.Platform.BILIBILI;
+import static io.github.geniusay.utils.PlatformUtil.checkPlatform;
 import static io.github.geniusay.utils.ValidUtil.isValidConstant;
 
 
@@ -62,7 +65,6 @@ public class IRobotService implements RobotService {
     @Resource
     private SharedRobotCache sharedRobotCache;
 
-    @Lazy
     @Resource
     private EventManager eventManager;
 
@@ -150,7 +152,7 @@ public class IRobotService implements RobotService {
 
     @Override
     public Boolean changeRobot(ChangeRobotDTO robotDTO) {
-        PlatformUtil.checkPlatform(robotDTO.getPlatform());
+        checkPlatform(robotDTO.getPlatform());
 
         LambdaUpdateWrapper<RobotDO> update = new LambdaUpdateWrapper<>();
         update.eq(RobotDO::getId, robotDTO.getId())
@@ -183,7 +185,7 @@ public class IRobotService implements RobotService {
 
     @Override
     public Boolean addRobot(AddRobotDTO robotDTO) {
-        PlatformUtil.checkPlatform(robotDTO.getPlatform());
+        checkPlatform(robotDTO.getPlatform());
 
         try {
             return robotMapper.insert(
@@ -287,8 +289,8 @@ public class IRobotService implements RobotService {
             try {
                 // 看当前这个robot是不是自己的
                 if(robotMapper.selectCount(wrapper) >= 1 && (sharedRobotMapper.deleteById(shareRobotDTO.getRobotId()) == 1) && (sharedRobotCache.remove(shareRobotDTO.getRobotId()))){
-//                    Event event = new CancelSharedTaskEvent(shareRobotDTO.getRobotId(), uid);
-//                    eventManager.publishEvent(event);
+                    Event event = new UnsharedRobotEvent(shareRobotDTO.getRobotId());
+                    eventManager.publishEvent(event);
                     return true;
                 }
             } catch (Exception e){
@@ -299,11 +301,24 @@ public class IRobotService implements RobotService {
     }
 
     @Override
-    public Page<SharedRobotVO> sharedRobotPage(Integer page, String taskType) {
+    public Page<SharedRobotVO> sharedRobotPage(Integer page, String taskType, Integer platform) {
         Page<SharedRobotDO> p = new Page<>(page, 10);
         // 判断taskType条件是否存在
-        return Objects.requireNonNull(taskType).isBlank() && checkTaskType(taskType)
-                ? sharedRobotMapper.selectSharedDataByTaskType(taskType, p) : sharedRobotMapper.selectSharedData(p);
+        if(taskType != null && !taskType.isBlank() && checkTaskType(taskType)){
+            if(platform != null){
+                checkPlatform(platform);
+                return sharedRobotMapper.selectSharedDataByTaskTypeAndPlatform(taskType, platform, p);
+            } else {
+                return sharedRobotMapper.selectSharedDataByTaskType(taskType, p);
+            }
+        } else {
+            if(platform != null){
+                checkPlatform(platform);
+                return sharedRobotMapper.selectSharedDataByPlatform(platform, p);
+            } else {
+                return sharedRobotMapper.selectSharedData(p);
+            }
+        }
     }
 
     @Override
@@ -316,9 +331,8 @@ public class IRobotService implements RobotService {
     }
 
     @Override
-    public List<String> recommend(Integer page) {
-//        return sharedRobotCache.;
-        return List.of();
+    public List<SharedRobotVO> recommend(String taskType, Integer page, Integer platform) {
+        return sharedRobotPage(page, taskType, platform).getRecords();
     }
 
     private static String listToString(List<String> list) {

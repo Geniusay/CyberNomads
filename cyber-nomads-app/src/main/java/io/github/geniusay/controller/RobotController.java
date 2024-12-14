@@ -89,8 +89,10 @@ public class RobotController {
 
     @GetMapping("/sharedRobotPage")
     @TokenRequire
-    public Result<?> getPage(@RequestParam Integer page, @RequestParam String taskType){
-        return Result.success(robotService.sharedRobotPage(page, taskType));
+    public Result<?> getPage(@RequestParam Integer page,
+                             @RequestParam(required = false) String taskType,
+                             @RequestParam(required = false) Integer platform){
+        return Result.success(robotService.sharedRobotPage(page, taskType, platform));
     }
 
     @GetMapping("/sharedRobotInfo")
@@ -102,7 +104,9 @@ public class RobotController {
     // TODO: 推荐算法
     @GetMapping("/recommend")
     @TokenRequire
-    public Result<?> recommend(@RequestParam("page") Integer page){
-        return Result.success(robotService.recommend(page));
+    public Result<?> recommend(@RequestParam(required = false) String taskType,
+                               @RequestParam("page") Integer page,
+                               @RequestParam(required = false) Integer platform){
+        return Result.success(robotService.recommend(taskType, page, platform));
     }
 }
