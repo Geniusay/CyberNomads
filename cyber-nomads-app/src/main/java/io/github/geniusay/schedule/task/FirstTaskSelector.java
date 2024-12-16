@@ -37,7 +37,7 @@ public class FirstTaskSelector implements TaskSelector {
     }
 
     private Boolean taskCanDo(Task task,RobotWorker worker){
-        if(!worker.getRobotTaskTypes().contains(task.getTaskType())){
+        if(!worker.getRobotTaskTypes().contains(task.getTaskType()) ){
             return false;
         }else if(worker.getHasShared()) {
             return true;

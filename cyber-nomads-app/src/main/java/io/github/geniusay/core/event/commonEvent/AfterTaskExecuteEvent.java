@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AfterTaskExecuteEvent extends Event {
-
     private RobotWorker worker;
     private String taskId;
     private String lastTalk;
