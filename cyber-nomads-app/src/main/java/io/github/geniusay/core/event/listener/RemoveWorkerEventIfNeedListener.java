@@ -2,7 +2,7 @@ package io.github.geniusay.core.event.listener;
 
 import io.github.geniusay.core.event.Event;
 import io.github.geniusay.core.event.EventListener;
-import io.github.geniusay.core.event.commonEvent.RemoveWorkerEventIfNeed;
+import io.github.geniusay.core.event.commonEvent.RemoveWorkerIfNeedEvent;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.schedule.TaskScheduleManager;
 import io.github.geniusay.schedule.WorkerExecute;
@@ -25,8 +25,8 @@ public class RemoveWorkerEventIfNeedListener implements EventListener {
     WorkerExecute workerExecute;
     @Override
     public void pushEvent(Event event) {
-        if(event instanceof RemoveWorkerEventIfNeed){
-            String workerId = ((RemoveWorkerEventIfNeed) event).getWorkerId();
+        if(event instanceof RemoveWorkerIfNeedEvent){
+            String workerId = ((RemoveWorkerIfNeedEvent) event).getWorkerId();
             Map<String, Task> taskMap = manager.getRobotTaskById(Long.valueOf(workerId));
             if (Objects.nonNull(taskMap) && !taskMap.isEmpty()) {
                 workerExecute.push(Long.valueOf(workerId));
