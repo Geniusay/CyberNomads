@@ -16,5 +16,4 @@ import lombok.NoArgsConstructor;
 public class RemoveWorkerIfNeedEvent extends Event {
 
     private String workerId;
-
 }
