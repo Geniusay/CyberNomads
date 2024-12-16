@@ -20,7 +20,7 @@ import javax.annotation.Resource;
  * @Author welsir
  * @Date 2024/11/13 18:14
  */
-@Component
+//@Component
 @Slf4j
 public class AfterTaskExecuteEventListener implements EventListener {
     @Resource

@@ -38,6 +38,13 @@ public class SharedRobotVO {
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    public SharedRobotVO(Long id, Integer platform, String nickname, String focusTask) {
+        this.id = id;
+        this.platform = platform;
+        this.nickname = nickname;
+        taskTypes = stringToList(focusTask);
+    }
+
     public SharedRobotVO(RobotDO robotDO, SharedRobotDO sharedRobotDO) {
         this.id = robotDO.getId();
         this.platform = robotDO.getPlatform();
@@ -62,7 +69,7 @@ public class SharedRobotVO {
         this.taskTypes = stringToList(focusTask).stream().map(TaskTranslationUtil::translateTaskType).collect(Collectors.toList());
     }
 
-    private static List<String> stringToList(String str) {
+    public static List<String> stringToList(String str) {
         if (StringUtil.isNullOrEmpty(str)) {
             return new ArrayList<>();
         }
