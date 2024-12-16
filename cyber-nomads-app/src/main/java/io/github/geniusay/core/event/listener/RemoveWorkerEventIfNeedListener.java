@@ -23,6 +23,7 @@ public class RemoveWorkerEventIfNeedListener implements EventListener {
     TaskScheduleManager manager;
     @Resource
     WorkerExecute workerExecute;
+
     @Override
     public void pushEvent(Event event) {
         if(event instanceof RemoveWorkerIfNeedEvent){
