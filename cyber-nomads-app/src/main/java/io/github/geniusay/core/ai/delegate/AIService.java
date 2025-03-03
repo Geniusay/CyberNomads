@@ -4,8 +4,12 @@ import io.github.geniusay.core.ai.core.AIModel;
 import io.github.geniusay.core.ai.core.AIOperation;
 import io.github.geniusay.core.ai.core.ModelRegistry;
 import io.github.geniusay.core.ai.core.OperationRegistry;
+import io.github.geniusay.core.supertask.task.TaskNeedParams;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 描述: AI操作顶级接口
@@ -33,5 +37,16 @@ public class AIService {
         String response = model.generate(prompt);
         
         return operation.parseResponse(response);
+    }
+
+    // 包装模型参数
+    public List<TaskNeedParams> getTaskNeedParams(List<String> aiModels) {
+        List<TaskNeedParams> taskNeedParams = new ArrayList<>();
+        for (String aiModel : aiModels) {
+            AIModel model = modelRegistry.getModel(aiModel);
+            TaskNeedParams taskNeedParam = TaskNeedParams.ofK(model.getName(), String.class, model.description());
+            taskNeedParams.add(taskNeedParam);
+        }
+        return taskNeedParams;
     }
 }

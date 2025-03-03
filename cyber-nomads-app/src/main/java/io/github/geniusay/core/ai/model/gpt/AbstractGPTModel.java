@@ -1,11 +1,8 @@
-package io.github.geniusay.core.ai.model;
+package io.github.geniusay.core.ai.model.gpt;
 
 import io.github.geniusay.core.ai.config.GPTConfig;
 import io.github.geniusay.core.ai.core.AIModel;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
-import static io.github.geniusay.constants.AIConstant.GPT_MODEL;
 
 /**
  * 描述: GPT模型
@@ -13,20 +10,9 @@ import static io.github.geniusay.constants.AIConstant.GPT_MODEL;
  * 日期: 2025/3/3
  */
 @RequiredArgsConstructor
-@Component
-public class GPTModel implements AIModel {
+public abstract class AbstractGPTModel implements AIModel {
 
     private final GPTConfig config;
-
-    @Override
-    public String getName() {
-        return GPT_MODEL;
-    }
-
-    @Override
-    public String description() {
-        return "GPT";
-    }
 
     @Override
     public String generate(String prompt) {
@@ -37,4 +23,6 @@ public class GPTModel implements AIModel {
     public <T> T generate(String prompt, Class<T> responseType) {
         return null;
     }
+
+    protected abstract String getVersion();
 }

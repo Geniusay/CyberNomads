@@ -1,4 +1,4 @@
-package io.github.geniusay.core.ai.model;
+package io.github.geniusay.core.ai.model.qw;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -6,8 +6,6 @@ import com.google.gson.Gson;
 import io.github.geniusay.core.ai.config.QwConfig;
 import io.github.geniusay.core.ai.core.AIModel;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,28 +14,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-import static io.github.geniusay.constants.AIConstant.QW_MODEL;
-
 /**
  * 描述: 千问模型
  * @author suifeng
  * 日期: 2025/3/3
  */
 @RequiredArgsConstructor
-@Component
-public class QwModel implements AIModel {
+public abstract class AbstractQwModel implements AIModel {
 
     private final QwConfig config;
-
-    @Override
-    public String getName() {
-        return QW_MODEL;
-    }
-
-    @Override
-    public String description() {
-        return "通义千问";
-    }
 
     @Override
     public String generate(String prompt) {
@@ -69,9 +54,11 @@ public class QwModel implements AIModel {
         return null;
     }
 
+    protected abstract String getVersion();
+
     private HttpURLConnection createConnection(String content) throws IOException {
         RequestBody requestBody = new RequestBody(
-                config.getVersion(),
+                getVersion(),
                 new Message[]{
                         new Message("system", config.getSystemPrompt()),
                         new Message("user", content)
