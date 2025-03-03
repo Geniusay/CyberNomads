@@ -1,6 +1,4 @@
-package io.github.geniusay.core.ai.model;
-
-import io.github.geniusay.core.ai.config.ModelConfig;
+package io.github.geniusay.core.ai.core;
 
 /**
  * 描述: 模型通用接口

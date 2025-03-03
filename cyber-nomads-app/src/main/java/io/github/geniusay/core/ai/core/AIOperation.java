@@ -1,4 +1,4 @@
-package io.github.geniusay.core.ai.operate;
+package io.github.geniusay.core.ai.core;
 
 /**
  * 描述: AI操作接口
