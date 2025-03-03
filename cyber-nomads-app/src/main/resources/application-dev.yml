@@ -66,3 +66,13 @@ Schedule:
 bilibili:
   video:
     init-on-startup: false
+
+
+ai:
+  models:
+    qw:
+      apiKey: sk-your-api-key-here
+      baseUrl: https://dashscope.aliyuncs.com/compatible-mode/v1
+      version: qwen-plus
+      systemPrompt: You are an expert in java back-end programming
+

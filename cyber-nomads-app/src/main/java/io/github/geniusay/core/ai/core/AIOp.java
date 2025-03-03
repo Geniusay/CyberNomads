@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 描述: AI操作标识
+ * 描述: AI操作标识，示例：@AIOp("generate_entity")
  * @author suifeng
  * 日期: 2025/3/3
  */

@@ -9,5 +9,8 @@ import lombok.Data;
  */
 @Data
 public abstract class ModelConfig {
+
+    private String baseUrl;
+
     private String apiKey;
 }

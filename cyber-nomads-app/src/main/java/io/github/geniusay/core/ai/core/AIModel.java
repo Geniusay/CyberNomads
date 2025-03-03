@@ -9,6 +9,8 @@ public interface AIModel<C extends ModelConfig> {
 
     String getName();
 
+    String description();
+
     void init(C config);
 
     String generate(String prompt);

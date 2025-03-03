@@ -7,19 +7,16 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * 描述: 千问模型配置信息
+ * 描述: GPT模型配置信息
  * @author suifeng
  * 日期: 2025/3/3
  */
 @EqualsAndHashCode(callSuper = true)
-@ConfigurationProperties(prefix = "ai.models.qw")
+@ConfigurationProperties(prefix = "ai.models.gpt")
 @Component
 @Data
-public class QwConfig extends ModelConfig {
+public class GPTConfig extends ModelConfig {
 
     // 模型版本
-    private String version = "qwen-plus";
-
-    // 系统提示词
-    private String systemPrompt = "You are an expert in java back-end programming";
+    private String version = "gpt-4o";
 }

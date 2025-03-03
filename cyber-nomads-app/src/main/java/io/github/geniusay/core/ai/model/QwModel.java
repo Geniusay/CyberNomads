@@ -15,6 +15,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import static io.github.geniusay.constants.AIConstant.QW_MODEL;
+
 /**
  * 描述: 千问模型
  * @author suifeng
@@ -27,7 +29,12 @@ public class QwModel implements AIModel<QwConfig> {
 
     @Override
     public String getName() {
-        return "";
+        return QW_MODEL;
+    }
+
+    @Override
+    public String description() {
+        return "通义千问";
     }
 
     @Override
@@ -69,7 +76,7 @@ public class QwModel implements AIModel<QwConfig> {
         RequestBody requestBody = new RequestBody(
                 config.getVersion(),
                 new Message[]{
-                        new Message("system", config.getSystem()),
+                        new Message("system", config.getSystemPrompt()),
                         new Message("user", content)
                 }
         );
@@ -78,7 +85,7 @@ public class QwModel implements AIModel<QwConfig> {
         String jsonInputString = gson.toJson(requestBody);
 
         // 创建HTTP连接
-        URL url = new URL(config.getUrl());
+        URL url = new URL(config.getBaseUrl());
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json; utf-8");
