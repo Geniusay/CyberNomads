@@ -75,7 +75,7 @@ public class AICommentGenerate extends AbstractCommentGenerate implements Commen
                 TaskNeedParams.ofKV(SLOGAN, SLOGAN_TEMPLATE, "Slogan结尾语").setExtendDesc(SLOGAN_EXT_DESC),
                 TaskNeedParams.ofSelection(AI_MODEL, QW_PLUS, "请选择你的AI模型",
                         aiService.getTaskNeedParams(
-                                List.of(QW_PLUS, DEEP_SEEK_R1, DEEP_SEEK_V3, QW_72B_PREVIEW, QW_72B_INSTRUCT))
+                                List.of(QW_PLUS, DEEP_SEEK_R1, DEEP_SEEK_V3, QW_72B_PREVIEW, QW_72B_INSTRUCT, TELE_AI, THUDM))
                         , AI_MODEL_DESC, false)
         );
     }

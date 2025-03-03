@@ -64,9 +64,4 @@ public class AITest {
         String generateEntity = aiService.execute(ROLE_COMMENT, DEEP_SEEK_R1, map);
         System.out.println(generateEntity);
     }
-
-    @Test
-    public void execute(){
-        System.out.println(encryptor.encrypt("sk-qdahitijgevlgckknvypdmyvpveyhbrjqyylmhfkvuedmfsf"));
-    }
 }
