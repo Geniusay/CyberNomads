@@ -28,7 +28,7 @@ public class AIService {
             throw new IllegalArgumentException("操作["+operationType+"]不支持模型: " + modelType);
         }
         
-        AIModel<?> model = modelRegistry.getModel(modelType);
+        AIModel model = modelRegistry.getModel(modelType);
         String prompt = operation.buildPrompt(params);
         String response = model.generate(prompt);
         

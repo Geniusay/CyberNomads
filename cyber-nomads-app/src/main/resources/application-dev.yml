@@ -71,8 +71,8 @@ bilibili:
 ai:
   models:
     qw:
-      apiKey: sk-your-api-key-here
-      baseUrl: https://dashscope.aliyuncs.com/compatible-mode/v1
+      apiKey: ENC(phw1kwvm2u+VYf3VLPHVdJ2Qd0/4+nXpR9pA2r9dvhuHwJ6jM2HbUFmwZ2IMmQPX/S7r+nnLXgE=)
+      baseUrl: https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
       version: qwen-plus
-      systemPrompt: You are an expert in java back-end programming
+      systemPrompt: 你擅长扮演多种角色
 

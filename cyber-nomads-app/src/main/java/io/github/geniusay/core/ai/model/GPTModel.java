@@ -2,33 +2,30 @@ package io.github.geniusay.core.ai.model;
 
 import io.github.geniusay.core.ai.config.GPTConfig;
 import io.github.geniusay.core.ai.core.AIModel;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import static io.github.geniusay.constants.AIConstant.QW_MODEL;
+import static io.github.geniusay.constants.AIConstant.GPT_MODEL;
 
 /**
  * 描述: GPT模型
  * @author suifeng
  * 日期: 2025/3/3
  */
+@RequiredArgsConstructor
 @Component
-public class GPTModel implements AIModel<GPTConfig> {
+public class GPTModel implements AIModel {
 
-    private GPTConfig config;
+    private final GPTConfig config;
 
     @Override
     public String getName() {
-        return QW_MODEL;
+        return GPT_MODEL;
     }
 
     @Override
     public String description() {
         return "GPT";
-    }
-
-    @Override
-    public void init(GPTConfig config) {
-        this.config = config;
     }
 
     @Override

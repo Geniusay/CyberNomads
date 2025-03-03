@@ -1,18 +1,23 @@
 import io.github.geniusay.CyberNomadsApplication;
+import io.github.geniusay.core.ai.delegate.AIService;
 import io.github.geniusay.core.supertask.plugin.comment.CommentGenerate;
 import io.github.geniusay.utils.AIGenerate.AIGenerateUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+
+import static io.github.geniusay.constants.AIConstant.QW_MODEL;
 
 /**
  * @Description
@@ -24,26 +29,19 @@ import java.util.concurrent.ThreadPoolExecutor;
 @WebAppConfiguration
 public class AITest {
 
-    @Resource
-    AIGenerateUtil generateUtil;
+    @Autowired
+    AIService aiService;
+
     @Test
     public void t(){
-//        generateUtil.textGenerate("你好吗");
-        String s = generateUtil.textGenerateAndReturnContent("你好吗",50,"QQ号：xxx");
-        System.out.println(s);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("prompt", "你好，请问你是什么？");
+        Object generateEntity = aiService.execute("generate_entity", QW_MODEL, map);
+        System.out.println(generateEntity);
     }
 
     @Test
     public void execute(){
-        // 封装请求
-        // 读数据
-        // 查视频
-        // 生成对话内容
-        /**
-         *  【异步】调用bilibili评论功能接口，发评论 robotAsyncApi(WelsirRobot)
-         *  1，把自己异步做的事情登记到 异步处理器, 需要通知任务中心
-         */
-        // 返回
-        ExecutorService executorService = Executors.newCachedThreadPool();
+
     }
 }

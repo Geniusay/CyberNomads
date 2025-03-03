@@ -5,13 +5,11 @@ package io.github.geniusay.core.ai.core;
  * @author suifeng
  * 日期: 2025/3/3
  */
-public interface AIModel<C extends ModelConfig> {
+public interface AIModel {
 
     String getName();
 
     String description();
-
-    void init(C config);
 
     String generate(String prompt);
 

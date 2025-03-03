@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import io.github.geniusay.core.ai.config.QwConfig;
 import io.github.geniusay.core.ai.core.AIModel;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -22,10 +23,11 @@ import static io.github.geniusay.constants.AIConstant.QW_MODEL;
  * @author suifeng
  * 日期: 2025/3/3
  */
+@RequiredArgsConstructor
 @Component
-public class QwModel implements AIModel<QwConfig> {
+public class QwModel implements AIModel {
 
-    private QwConfig config;
+    private final QwConfig config;
 
     @Override
     public String getName() {
@@ -35,11 +37,6 @@ public class QwModel implements AIModel<QwConfig> {
     @Override
     public String description() {
         return "通义千问";
-    }
-
-    @Override
-    public void init(QwConfig config) {
-        this.config = config;
     }
 
     @Override

@@ -15,10 +15,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class ModelRegistry {
-    private final Map<String, AIModel<?>> models = new ConcurrentHashMap<>();
+    private final Map<String, AIModel> models = new ConcurrentHashMap<>();
 
     @Autowired
-    public ModelRegistry(List<AIModel<?>> modelList) {
+    public ModelRegistry(List<AIModel> modelList) {
         modelList.forEach(model -> {
             String modelName = model.getName();
             models.put(modelName, model);
@@ -26,7 +26,7 @@ public class ModelRegistry {
         });
     }
 
-    public AIModel<?> getModel(String modelType) {
+    public AIModel getModel(String modelType) {
         return Optional.ofNullable(models.get(modelType))
                 .orElseThrow(() -> new IllegalArgumentException("Unregistered model type: " + modelType));
     }
