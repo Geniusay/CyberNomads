@@ -62,3 +62,27 @@ export function shareRobot(req){
     focusTask: req.focusTask
   })
 }
+
+export function getShareRobotList(req){
+  return request({
+    url: '/robot/sharedRobotPage',
+    method:"get",
+    params:{
+      page: req.page,
+      taskType: req.taskType,
+      platform: req.platform
+    }
+  })
+}
+
+export function recommendRobot(req){
+  return request({
+    url: '/robot/recommend',
+    method:"get",
+    params:{
+      page: req.page,
+      taskType: req.taskType,
+      platform: req.platform
+    }
+  })
+}

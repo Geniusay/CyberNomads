@@ -81,7 +81,7 @@
 
         <v-col
           cols="12"
-          sm="12"
+          sm="9"
         >
           <v-autocomplete
             v-model="taskStore.getTaskForm.robotIds"
@@ -101,6 +101,7 @@
                 v-bind="props"
                 color="#d70e76"
                 :text="item.raw.nickname"
+                :prepend-icon="robotStore.isSharedRobot(item.raw.id)?'mdi-robot-excited':''"
               ></v-chip>
             </template>
 
@@ -117,6 +118,20 @@
               </v-list-item>
             </template>
           </v-autocomplete>
+        </v-col>
+
+        <v-col
+          cols="12"
+          sm="3"
+        >
+          <v-btn
+          color="success"
+          prepend-icon="mdi-robot-excited"
+          text="使用共享账号"
+          class="text-none"
+          :height="55"
+          variant="outlined"
+          flat></v-btn>
         </v-col>
 
         <v-col

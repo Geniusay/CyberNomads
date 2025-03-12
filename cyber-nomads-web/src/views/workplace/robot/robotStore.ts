@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { useSnackbarStore } from "@/stores/snackbarStore";
 import { getRobotList } from "@/api/robotApi";
-import { RobotVO, RobotForm, defaultValue } from "@/views/workplace/robot/robotTypes";
+import { RobotVO } from "@/views/workplace/robot/robotTypes";
 
 
 export const snackbarStore = useSnackbarStore();
@@ -17,6 +17,18 @@ export const useRobotStore = defineStore({
     },
     getPlatformRobotList(){
 
+    },
+    getSharedRobotList(){
+      return (robotList: RobotVO[])=>{
+        robotList.filter(item=>{
+          item.hasShared && this.robotList.some(robot => robot.id === item.id)
+        })
+      }
+    },
+    isSharedRobot(){
+      return (robotId: string)=>{
+        !this.robotList.some(robot => robot.id === robotId)
+      }
     }
   },
 
