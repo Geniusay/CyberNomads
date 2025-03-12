@@ -38,6 +38,8 @@ public class PluginConstant {
 
     public static final String LOGIC_CONTENT = "logicContent";
 
+    public static final String AI_MODEL = "aiModel";
+
 
     // extendDesc常量
     public static final String PARAM_COOLDOWN_TIME_EXT_DESC = "冷却时间：指的是每一个robot做一次该任务，需要等待的时间，每个robot单独计算冷却时间。";
@@ -56,4 +58,7 @@ public class PluginConstant {
     public static final String KEYWORD_SEARCH_DESC = "参考用例：【性感猫娘】【变态教父】【嗨丝诱惑】，将被分割为三个关键词，赛博游民会找到这些关键词对应的视频；注意：(最多输入10个关键词，多输无效)";
 
     public static final String KEYWORD_SEARCH_ORDER_DESC = "【综合排序】：根据b站默认规则选取；【最多播放】：选择播放量高的视频；【最新发布】：选取最近新发布的视频";
+
+
+    public static final String AI_MODEL_DESC = "AI将使用以下模型进行回答";
 }

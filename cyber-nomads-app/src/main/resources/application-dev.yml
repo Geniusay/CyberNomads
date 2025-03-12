@@ -65,4 +65,18 @@ Schedule:
 
 bilibili:
   video:
-    init-on-startup: false
+    init-on-startup: true
+
+
+ai:
+  models:
+    qw:
+      apiKey: ENC(phw1kwvm2u+VYf3VLPHVdJ2Qd0/4+nXpR9pA2r9dvhuHwJ6jM2HbUFmwZ2IMmQPX/S7r+nnLXgE=)
+      baseUrl: https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
+      systemPrompt: 你擅长扮演多种角色
+    siliconflow:
+      base-url: https://api.siliconflow.cn/v1/chat/completions
+      api-key: ENC(0ZUKyvMc06YmCQIMFtWJ4iN+/LSyzucfLT9YljTBgbArMJHUCgVTMCEO/XgS/b0j5wWgbkrO1IStBHeUkmG8sWyOxRWsxqqK)
+      max-tokens: 4096
+      temperature: 0.5
+
