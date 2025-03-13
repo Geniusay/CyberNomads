@@ -55,7 +55,7 @@ const defaultTaskForm: TaskForm = {
   platform: "bilibili",
   taskType: "",
   params: {},
-  robotIds: []
+  robotIds: [],
 }
 
 export function mapTaskVOToTaskForm(taskVO: TaskVO): TaskForm {
