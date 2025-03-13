@@ -1,11 +1,13 @@
 package io.github.geniusay.schedule;
 
+import io.github.geniusay.core.cache.SharedRobotCache;
 import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.core.supertask.TaskFactory;
 import io.github.geniusay.core.supertask.config.TaskStatus;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.pojo.DO.RobotDO;
+import io.github.geniusay.pojo.DO.SharedRobotDO;
 import io.github.geniusay.pojo.DO.TaskDO;
 import io.github.geniusay.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -13,10 +15,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -36,6 +35,8 @@ public class TaskScheduleManager {
     TaskService taskService;
     @Resource
     WorkerExecute workerExecute;
+    @Resource
+    SharedRobotCache robotCache;
     private static final Map<String, Task> WORLD_TASK = new ConcurrentHashMap<>();
     private static final Map<Long, RobotWorker> WORLD_ROBOTS = new ConcurrentHashMap<>();
     private static final Map<Long, Map<String,Task>> WORLD_ROBOTS_TASK = new ConcurrentHashMap<>();
@@ -50,7 +51,7 @@ public class TaskScheduleManager {
                 WORLD_TASK.put(String.valueOf(taskDO.getId()), task);
                 List<RobotDO> robots = task.getRobots();
                 robots.forEach(robotDO -> {
-                    WORLD_ROBOTS.put(robotDO.getId(), new RobotWorker(robotDO));
+                    WORLD_ROBOTS.put(robotDO.getId(), new RobotWorker(robotDO, robotCache.exist(robotDO.getId()), robotCache.getTaskType(robotDO.getId())));
                     Map<String, Task> taskMap = WORLD_ROBOTS_TASK.getOrDefault(robotDO.getId(), new ConcurrentHashMap<>());
                     taskMap.put(String.valueOf(taskDO.getId()), task);
                     WORLD_ROBOTS_TASK.put(robotDO.getId(), taskMap);
@@ -77,7 +78,7 @@ public class TaskScheduleManager {
                 WORLD_ROBOTS.computeIfAbsent(robot.getId(), id -> {
 //                EVENT_PUBLISHER.startWork(id);
                     workerExecute.push(robot.getId());
-                    return new RobotWorker(robot);
+                    return new RobotWorker(robot, robotCache.exist(robot.getId()), robotCache.getTaskType(robot.getId()));
                 });
             }finally {
                 lock.unlock();
@@ -86,7 +87,7 @@ public class TaskScheduleManager {
     }
 
     public void registerRobot(RobotDO robotDO){
-        WORLD_ROBOTS.put(robotDO.getId(),new RobotWorker(robotDO));
+        WORLD_ROBOTS.put(robotDO.getId(), new RobotWorker(robotDO, robotCache.exist(robotDO.getId()), robotCache.getTaskType(robotDO.getId())));
         EVENT_PUBLISHER.registerRobot(robotDO.getId());
     }
 
