@@ -34,12 +34,15 @@ public class SharedRobotCache {
         // 清除老数据
         sharedRobotRedisTemplate.delete(RedisConstant.SHARED_ROBOTS_HASH);
         List<SharedRobotDO> sharedRobotDOS = sharedRobotMapper.selectList(null);
+        if(sharedRobotDOS.isEmpty()){
+            return;
+        }
         sharedRobotRedisTemplate.opsForHash().putAll(RedisConstant.SHARED_ROBOTS_HASH,
                 sharedRobotDOS.stream().collect(
                         Collectors.toMap(sharedRobotDO -> sharedRobotDO.getRobotId().toString(), sharedRobotDO -> sharedRobotDO)
                 )
         );
-//        recommend.init(sharedRobotDOS);
+        recommend.init(sharedRobotDOS);
     }
     // 推荐算法构建
     public List<String> recommend(String taskType, Integer page, Integer size) {

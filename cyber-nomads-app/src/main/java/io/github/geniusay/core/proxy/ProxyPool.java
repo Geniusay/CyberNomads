@@ -55,7 +55,12 @@ public class ProxyPool {
     static class WeightedBalance implements Balance {
 
         public WeightedBalance(List<Proxy> proxies) {
-            this.scores = new PriorityBlockingQueue<>(proxies.size(), new CustomComparator());
+            if(proxies.isEmpty()){
+                this.scores = new PriorityBlockingQueue<>();
+            }else {
+                this.scores = new PriorityBlockingQueue<>(proxies.size(), new CustomComparator());
+            }
+
             this.proxyMap = new HashMap<>();
             for (Proxy proxy : proxies) {
                 ProxyInfo proxyInfo = new ProxyInfo(proxy);

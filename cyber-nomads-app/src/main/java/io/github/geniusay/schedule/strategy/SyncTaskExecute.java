@@ -37,9 +37,14 @@ public class SyncTaskExecute implements  TaskExecuteStrategy{
                         log.error("robot执行异常:{},robot信息:{}", e.getMessage()+":"+e.getStackTrace()[0],worker.getId());
                         eventManager.publishEvent(new TaskStatusEditEvent(worker.task().getId(),TaskActionConstant.EXCEPTION));
                     } finally {
-                        String lastTalk = worker.task().getLastWord().lastTalk(worker);
-                        String taskId = worker.task().getId();
-                        eventManager.publishEvent(new AfterTaskExecuteEvent(worker,taskId,lastTalk));
+                        log.info("robot执行完毕:{}",worker.getId());
+                        try {
+                            String lastTalk =  worker.task().getLastWord().lastTalk(worker);
+                            String taskId = worker.task().getId();
+                            eventManager.publishEvent(new AfterTaskExecuteEvent(worker,taskId,lastTalk));
+                        }catch (Exception e){
+                            log.error("robot执行完毕后获取lastWord异常:{},robot信息:{}", e.getMessage()+":"+e.getStackTrace()[0],worker.getId());
+                        }
                     }
                 }
         );

@@ -27,9 +27,10 @@ public class FirstTaskSelector implements TaskSelector {
         Map<String, Task> taskMap = manager.getRobotTaskById(worker.getId());
         List<Task> tasks = new ArrayList<>(taskMap.values());
         for (Task task : tasks) {
-            if(!worker.getHasShared() && taskTypeIsShared(task,worker)){
-                taskMap.remove(task.getId());
-            }else if(taskCanDo(task,worker)){
+//            if(!worker.getHasShared() && taskTypeIsShared(task,worker)){
+//                taskMap.remove(task.getId());
+//            }else
+           if(taskCanDo(task,worker)){
                 return task;
             }
         }
@@ -37,13 +38,12 @@ public class FirstTaskSelector implements TaskSelector {
     }
 
     private Boolean taskCanDo(Task task,RobotWorker worker){
-        if(!worker.getRobotTaskTypes().contains(task.getTaskType()) ){
-            return false;
-        }else if(worker.getHasShared()) {
-            return true;
-        }else{
-            return Objects.equals(task.getUid(), worker.getUid());
-        }
+//        if(!worker.getRobotTaskTypes().contains(task.getTaskType()) ){
+//            return false;
+//        }else{
+//
+//        }
+        return Objects.equals(task.getUid(), worker.getUid());
     }
 
     private Boolean taskTypeIsShared(Task task,RobotWorker worker){

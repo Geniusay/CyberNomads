@@ -11,6 +11,7 @@ import io.github.geniusay.schedule.TaskScheduleManager;
 import io.github.geniusay.schedule.WorkerExecute;
 import io.github.geniusay.service.TaskLogService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -20,17 +21,38 @@ import javax.annotation.Resource;
  * @Author welsir
  * @Date 2024/11/13 18:14
  */
-//@Component
+@Component
 @Slf4j
 public class AfterTaskExecuteEventListener implements EventListener {
+
+    private TaskLogService logService;
+    private TaskScheduleManager manager;
+    private WorkerExecute workerExecute;
+    private TaskStatusEditEventListener listener;
+
+    @Lazy
     @Resource
-    TaskLogService logService;
+    public void setLogService(TaskLogService logService) {
+        this.logService = logService;
+    }
+
+    @Lazy
     @Resource
-    TaskScheduleManager manager;
+    public void setManager(TaskScheduleManager manager) {
+        this.manager = manager;
+    }
+
+    @Lazy
     @Resource
-    WorkerExecute workerExecute;
+    public void setWorkerExecute(WorkerExecute workerExecute) {
+        this.workerExecute = workerExecute;
+    }
+
+    @Lazy
     @Resource
-    TaskStatusEditEventListener listener;
+    public void setListener(TaskStatusEditEventListener listener) {
+        this.listener = listener;
+    }
 
     @Override
     public void pushEvent(Event event) {

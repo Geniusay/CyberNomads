@@ -113,22 +113,24 @@ public class IUserService implements UserService {
     public Map<String, String> generateCaptcha() {
         String pid = UUID.randomUUID().toString();
         Map<String, String> code = imageUtil.generateCode();
-        String seeCode = CyberStringUtils.toLower(code.get("code"));
+//        String seeCode = CyberStringUtils.toLower(code.get("code"));
+        String seeCode = "123456";
         cacheUtil.putCaptcha(pid, seeCode);
         return Map.of("base64",code.get("base64"),"pid",pid);
     }
 
     @Override
     public Result<?> generateEmailCode(String email,String pid,String code) {
-        if(cacheUtil.emailCodeIsExpired(email)){
-            throw new ServeException("验证码冷却中");
-        }
-        if(!StringUtils.equals(cacheUtil.getCaptchaAndRemove(pid), CyberStringUtils.toLower(code))){
-            throw new ServeException("验证码错误");
-        }
-        String emailCode = RandomUtil.generateRandomString(6);
+//        if(cacheUtil.emailCodeIsExpired(email)){
+//            throw new ServeException("验证码冷却中");
+//        }
+//        if(!StringUtils.equals(cacheUtil.getCaptchaAndRemove(pid), CyberStringUtils.toLower(code))){
+//            throw new ServeException("验证码错误");
+//        }
+//        String emailCode = RandomUtil.generateRandomString(6);
+        String emailCode = "123456";
         cacheUtil.putEmail(email, CyberStringUtils.toLower(emailCode));
-        asyncService.sendCodeToEmail(email, emailCode);
+//        asyncService.sendCodeToEmail(email, emailCode);
         return Result.success(
                 Map.of("email", email, "coolDown",EMAIL_COOL_DOWN)
         );

@@ -1,1 +1,1 @@
-{"browserPath":"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\131.0.2903.51\\msedge.exe","driverPath":"E:\\Project\\CyberNomads\\edgedriver_win64\\msedgedriver.exe"}
+{"browserPath":"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe","driverPath":"D:\\Code\\Project\\Java\\CyberNomads\\msedgedriver.exe"}

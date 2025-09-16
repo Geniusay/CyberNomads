@@ -75,7 +75,7 @@ public class TaskScheduleManager {
                 WORLD_ROBOTS_TASK.computeIfAbsent(robot.getId(), id -> new ConcurrentHashMap<>())
                         .put(String.valueOf(taskDO.getId()), task);
                 WORLD_ROBOTS.computeIfAbsent(robot.getId(), id -> {
-//                EVENT_PUBLISHER.startWork(id);
+                    EVENT_PUBLISHER.startWork(id);
                     workerExecute.push(robot.getId());
                     return new RobotWorker(robot);
                 });

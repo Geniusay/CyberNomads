@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ENC(sBcCnetSBOU2DfmJ4aEpLGikB8VrKfjPt8JwrEeUZVk9poeYn2feOrg08vnr01dNanfgsORfaUY/Fu07KvivhutiWGkWHChSpI4KI1cTVR6HbjpQNCWfYvcF6roXa2Q1xgB1HDhdOPlhlwkHOS6WPdPog6GVYCq+og8DXbgFDlst40KT5dYj4Gcc10RsGhRR)
-    username: ENC(yXBx5wdwZUEE3wx0VS/dA22j7rb/w5GU)
-    password: ENC(mSe62IQWgHVAhgiPlCnL+z7HlBGfSUsvxDodPhpewxc=)
+    url: ENC(eIWk8LT/09kZkJBt9ffzpQwqgwZOJtPx551qDudya+Sz6qH80fXL8YKNKAjVfzlbh4MpahqTcKp+p+2XkLk4t1st1TkxksvMxXvLBFiswIm0zLWVNEDTZ0LudtsBtjqHFCjzDsDTlovOvq0QDZtQpgwe/jme3CK3rxQBX1r3BCrsePX6zZ5lqADq/NOwbsyJ)
+    username: ENC(kwCqh4NJB/GHhj8ujEHEA2z7bi33eiJ5)
+    password: ENC(4y+DP8TGA5RYUSQWk9QzWWL8jY6rcdUp4IRCyYmsxKE=)
     type: com.zaxxer.hikari.HikariDataSource # 使用 HikariCP 连接池
     hikari:
       minimum-idle: 10
@@ -21,10 +21,10 @@ spring:
     password: ${EMAIL_PASSWORD:ENC(IFKjNrj7WUsXTiTldZ8TDgHxBxgkYHXBD5RrrjZ2SlGFXMCaObgqgA==)}
     test-connection: false
   redis:
-    host: ${REDIS_HOST:ENC(PdqjmmqM9psXlLIs0m89p7RXZ3mVWQPQ1BYdoHlK1mc=)}
-    port: ${REDIS_PORT:ENC(rgpyHtYj/fQOniBDQYFY/V5spo5n01Nb)}
+    host: ${REDIS_HOST:ENC(ihqkERXHQPC78a4vRkhcQzO5M/OEM1C7c63/HsY0knk=)}
+    port: ${REDIS_PORT:ENC(wWO0eu+D3AMU5Lc8N0f9w6YkKlVahAOi)}
     database: 10
-    password: ${REDIS_PASSWORD:ENC(w3YMEo8SvokoWSpmfutV70AO7TBsYuChGTdmc1kzeLiq0+kTllBLdw==)}
+    password: ${REDIS_PASSWORD:ENC(BHR/Bl0sDcqkiZmNzKQQmFBPKpkLLTVezejyKGAwNeo=)}
     lettuce:
       pool:
         max-active: 8 # 最大连接数
@@ -52,21 +52,8 @@ captcha:
     dot-size: 50
 
 AIGenerate:
-  API_KEY: ${"API_KEY":ENC(phw1kwvm2u+VYf3VLPHVdJ2Qd0/4+nXpR9pA2r9dvhuHwJ6jM2HbUFmwZ2IMmQPX/S7r+nnLXgE=)}
+  API_KEY: ${"API_KEY":ENC(li21ByYLAg/rKbFgMaufT+7PbsTYmdJSDusGI2Y7483pQdpXHvBRPgt78dfGQgybBqQKZnR9Mfs=)}
   STRATEGY: ${"DEFAULT_STRATEGY":qw}
-
-point:
-  reset:
-    key: ${RESET_KEY:ENC(gTMJIBjg+TP1EZsMJzrjez8Lipi5aJL/dPvfOsR1FR3TcAIuRy6qMA==)}
-
-Schedule:
-  STRATEGY: ${DEFAULT_STRATEGY:freeRobot}
-
-
-bilibili:
-  video:
-    init-on-startup: true
-
 
 ai:
   models:
@@ -80,3 +67,14 @@ ai:
       max-tokens: 4096
       temperature: 0.5
 
+point:
+  reset:
+    key: ${RESET_KEY:ENC(gTMJIBjg+TP1EZsMJzrjez8Lipi5aJL/dPvfOsR1FR3TcAIuRy6qMA==)}
+
+Schedule:
+  STRATEGY: ${DEFAULT_STRATEGY:freeRobot}
+
+
+bilibili:
+  video:
+    init-on-startup: false

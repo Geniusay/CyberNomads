@@ -104,6 +104,7 @@ public class ReverseLRUWorkerStorage extends AbstractWorkerStorage {
     }
 
     private void pushWorker(Long workerId){
+        log.info("workId :{}", workerId);
         eventManager.publishEvent(new SelectRobotEvent(workerId));
     }
 }

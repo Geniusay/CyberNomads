@@ -6,9 +6,11 @@ import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.core.supertask.task.TaskExecute;
 import io.github.geniusay.pojo.DO.LastWord;
 import io.github.geniusay.utils.LastWordUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
+@Slf4j
 public abstract class AbstractTaskBlueprint implements TaskBlueprint {
 
     public abstract String platform();
@@ -23,6 +25,7 @@ public abstract class AbstractTaskBlueprint implements TaskBlueprint {
             try {
                 executeTask(robot, task);
             } catch (Exception e) {
+                log.error("robot执行异常:{},robot信息:{}", e.getMessage()+":"+e.getStackTrace()[0],robot.getId());
                 task.addLastWord(robot, null, Map.of("error", e.getMessage()));
             }
             return null;
