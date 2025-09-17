@@ -8,6 +8,8 @@ import io.github.geniusay.core.exception.ServeException;
 import io.github.geniusay.core.recommend.Recommend;
 import io.github.geniusay.mapper.SharedRobotMapper;
 import io.github.geniusay.pojo.DO.SharedRobotDO;
+import io.github.geniusay.pojo.VO.SharedRobotVO;
+import org.mockito.internal.util.collections.ListUtil;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -25,8 +27,8 @@ public class SharedRobotCache {
     @Resource
     private SharedRobotMapper sharedRobotMapper;
 
-    @Resource
-    private Recommend recommend;
+//    @Resource
+//    private Recommend recommend;
 
     // 初始化 hash提供单条查询
     @PostConstruct
@@ -46,7 +48,8 @@ public class SharedRobotCache {
     }
     // 推荐算法构建
     public List<String> recommend(String taskType, Integer page, Integer size) {
-        return recommend.recommend(taskType, page, size);
+//        return recommend.recommend(taskType, page, size);
+        return null;
     }
 
     //  添加sharedRobot
@@ -64,6 +67,15 @@ public class SharedRobotCache {
 
     public SharedRobotDO getSharedRobot(Long id) {
         return (SharedRobotDO) sharedRobotRedisTemplate.opsForHash().get(RedisConstant.SHARED_ROBOTS_HASH, id.toString());
+    }
+
+    public List<String> getTaskType(Long id){
+        SharedRobotDO sharedRobotDO = getSharedRobot(id);
+        List<String> taskType = new ArrayList<>();
+        if (sharedRobotDO != null) {
+            taskType = SharedRobotVO.stringToList(sharedRobotDO.getFocusTask());
+        }
+        return taskType;
     }
 
     // 把共享账号分离出来

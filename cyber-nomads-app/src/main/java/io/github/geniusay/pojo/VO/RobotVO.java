@@ -32,7 +32,7 @@ public class RobotVO {
     private boolean hasShared;
     private boolean hasCookie;
 
-    public static RobotVO convert(RobotDO r, boolean hasCookie){
+    public static RobotVO convert(RobotDO r, boolean hasShared){
         return RobotVO.builder()
                 .id(String.valueOf(r.getId()))
                 .platform(PlatformUtil.getPlatformByCode(r.getPlatform()))
@@ -43,7 +43,7 @@ public class RobotVO {
                 .ban(r.isBan())
                 .hasCookie(Objects.nonNull(r.getCookie()))
                 .createTime(TimeUtil.getFormatTimeStr(r.getCreateTime()))
-                .hasShared(hasCookie)
+                .hasShared(hasShared)
                 .build();
     }
 }

@@ -26,12 +26,14 @@ public class RobotWorker {
 
     private volatile Task currentTask;
 
-    public RobotWorker(RobotDO robotDO) {
+    public RobotWorker(RobotDO robotDO, Boolean hasShared, List<String> robotTaskTypes) {
         this.id = robotDO.getId();
         this.uid = robotDO.getUid();
         this.nickname = robotDO.getNickname();
         this.username = robotDO.getUsername();
         this.cookie = robotDO.getCookie();
+        this.hasShared = hasShared;
+        this.robotTaskTypes = robotTaskTypes;
     }
 
     public Task task() {

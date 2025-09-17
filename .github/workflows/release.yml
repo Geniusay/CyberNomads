@@ -118,6 +118,7 @@ jobs:
           echo "PWD=$pwd" >> $GITHUB_ENV
           echo "HOST=$host" >> $GITHUB_ENV
           echo "PORT=$port" >> $GITHUB_ENV
+          
 
       - name: Connect Server
         uses: appleboy/ssh-action@master

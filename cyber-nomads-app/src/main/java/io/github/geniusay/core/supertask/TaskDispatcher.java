@@ -1,16 +1,21 @@
 package io.github.geniusay.core.supertask;
 
+import io.github.geniusay.core.cache.SharedRobotCache;
 import io.github.geniusay.core.supertask.task.RobotWorker;
 import io.github.geniusay.core.supertask.task.Task;
 import io.github.geniusay.pojo.DO.RobotDO;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
 public class TaskDispatcher {
+
+    @Resource
+    private SharedRobotCache robotCache;
 
     /**
      * 将任务派发给所有 RobotDO，返回对应的 RobotWorker 列表
@@ -32,7 +37,7 @@ public class TaskDispatcher {
     }
 
     private RobotWorker createRobotWorker(RobotDO robotDO, Task task) {
-        RobotWorker robotWorker = new RobotWorker(robotDO);
+        RobotWorker robotWorker = new RobotWorker(robotDO, robotCache.exist(robotDO.getId()), robotCache.getTaskType(robotDO.getId()));
         robotWorker.setTask(task);
         return robotWorker;
     }
