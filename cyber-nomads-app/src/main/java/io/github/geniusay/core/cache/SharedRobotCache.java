@@ -44,7 +44,7 @@ public class SharedRobotCache {
                         Collectors.toMap(sharedRobotDO -> sharedRobotDO.getRobotId().toString(), sharedRobotDO -> sharedRobotDO)
                 )
         );
-        recommend.init(sharedRobotDOS);
+//        recommend.init(sharedRobotDOS);
     }
     // 推荐算法构建
     public List<String> recommend(String taskType, Integer page, Integer size) {
