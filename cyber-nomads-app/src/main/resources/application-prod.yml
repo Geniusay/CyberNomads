@@ -1,18 +1,19 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ENC(H5JV5q1qQ8yVlCXslDGYlX8pkt8mjlb16ch8IjAQVcRmfC4G8mESPGE/Rzci2U9LFxGQmycwEKmKTSQ+jAOvLkvZIahz3tsL+IR9AB6Uk/P00i1UeYoyDjElXuI/ZIch1lVN/PQQxao9LFCANLfJkOwTCq4IAxRwwXuZN4cJOy/oKao8CUilgA==)
-    username: ENC(yXBx5wdwZUEE3wx0VS/dA22j7rb/w5GU)
-    password: ENC(1H43h5CI+yrGgD1ndOjPi1EG+qs5NmNpIHKGrlWveoY=)
+    url: ENC(eIWk8LT/09kZkJBt9ffzpQwqgwZOJtPx551qDudya+Sz6qH80fXL8YKNKAjVfzlbh4MpahqTcKp+p+2XkLk4t1st1TkxksvMxXvLBFiswIm0zLWVNEDTZ0LudtsBtjqHFCjzDsDTlovOvq0QDZtQpgwe/jme3CK3rxQBX1r3BCrsePX6zZ5lqADq/NOwbsyJ)
+    username: ENC(kwCqh4NJB/GHhj8ujEHEA2z7bi33eiJ5)
+    password: ENC(4y+DP8TGA5RYUSQWk9QzWWL8jY6rcdUp4IRCyYmsxKE=)
     type: com.zaxxer.hikari.HikariDataSource # 使用 HikariCP 连接池
     hikari:
-      minimum-idle: 5
-      maximum-pool-size: 20
-      idle-timeout: 30000
+      minimum-idle: 10
+      maximum-pool-size: 100
+      idle-timeout: 600000
       pool-name: DatebookHikariCP
-      max-lifetime: 1800000
+      max-lifetime: 120000
       connection-timeout: 30000
-      connection-test-query: SELECT 1
+  #      connection-test-query: SELECT 1
+
   mail:
     host: ${EMIAL_HOST:ENC(qMKUwBybaAKewuGZCDYjQw6tCfRVAO5aIQUolS8L06U=)}
     port: ${EMAIL_PORT:ENC(7RRjEe4cBjcETAkyZ6TBh5zwIw6KrEaz)}
@@ -20,10 +21,17 @@ spring:
     password: ${EMAIL_PASSWORD:ENC(IFKjNrj7WUsXTiTldZ8TDgHxBxgkYHXBD5RrrjZ2SlGFXMCaObgqgA==)}
     test-connection: false
   redis:
-    host: ${REDIS_HOST:ENC(PdqjmmqM9psXlLIs0m89p7RXZ3mVWQPQ1BYdoHlK1mc=)}
-    port: ${REDIS_PORT:ENC(rgpyHtYj/fQOniBDQYFY/V5spo5n01Nb)}
+    host: ${REDIS_HOST:ENC(ihqkERXHQPC78a4vRkhcQzO5M/OEM1C7c63/HsY0knk=)}
+    port: ${REDIS_PORT:ENC(wWO0eu+D3AMU5Lc8N0f9w6YkKlVahAOi)}
     database: 10
-    password: ${REDIS_PASSWORD:ENC(w3YMEo8SvokoWSpmfutV70AO7TBsYuChGTdmc1kzeLiq0+kTllBLdw==)}
+    password: ${REDIS_PASSWORD:ENC(BHR/Bl0sDcqkiZmNzKQQmFBPKpkLLTVezejyKGAwNeo=)}
+    lettuce:
+      pool:
+        max-active: 8 # 最大连接数
+        max-wait: -1ms # 连接池最大阻塞等待时间（负数表示不限制）
+        max-idle: 8 # 最大空闲连接数
+        min-idle: 0 # 最小空闲连接数
+    connect-timeout: 10000
 
   application:
     name: genius-blog-main
@@ -34,6 +42,7 @@ assistant:
       handler:
         disables: springWebExceptionHandler
 
+
 captcha:
   mail:
     code-length: 4
@@ -43,8 +52,20 @@ captcha:
     dot-size: 50
 
 AIGenerate:
-  API_KEY: ${"API_KEY":ENC(phw1kwvm2u+VYf3VLPHVdJ2Qd0/4+nXpR9pA2r9dvhuHwJ6jM2HbUFmwZ2IMmQPX/S7r+nnLXgE=)}
+  API_KEY: ${"API_KEY":ENC(li21ByYLAg/rKbFgMaufT+7PbsTYmdJSDusGI2Y7483pQdpXHvBRPgt78dfGQgybBqQKZnR9Mfs=)}
   STRATEGY: ${"DEFAULT_STRATEGY":qw}
+
+ai:
+  models:
+    qw:
+      apiKey: ENC(phw1kwvm2u+VYf3VLPHVdJ2Qd0/4+nXpR9pA2r9dvhuHwJ6jM2HbUFmwZ2IMmQPX/S7r+nnLXgE=)
+      baseUrl: https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
+      systemPrompt: 你擅长扮演多种角色
+    siliconflow:
+      base-url: https://api.siliconflow.cn/v1/chat/completions
+      api-key: ENC(0ZUKyvMc06YmCQIMFtWJ4iN+/LSyzucfLT9YljTBgbArMJHUCgVTMCEO/XgS/b0j5wWgbkrO1IStBHeUkmG8sWyOxRWsxqqK)
+      max-tokens: 4096
+      temperature: 0.5
 
 point:
   reset:
@@ -53,6 +74,7 @@ point:
 Schedule:
   STRATEGY: ${DEFAULT_STRATEGY:freeRobot}
 
+
 bilibili:
   video:
-    init-on-startup: true
+    init-on-startup: false
