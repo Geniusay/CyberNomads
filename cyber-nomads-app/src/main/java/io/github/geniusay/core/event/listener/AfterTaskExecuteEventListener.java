@@ -57,6 +57,7 @@ public class AfterTaskExecuteEventListener implements EventListener {
     @Override
     public void pushEvent(Event event) {
         if(event instanceof AfterTaskExecuteEvent){
+            log.info("任务执行后事件发送.......");
             RobotWorker worker = ((AfterTaskExecuteEvent) event).getWorker();
             String lastTalk = ((AfterTaskExecuteEvent) event).getLastTalk();
             String taskId = ((AfterTaskExecuteEvent) event).getTaskId();

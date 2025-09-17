@@ -28,7 +28,7 @@ public abstract class AbstractTaskBlueprint implements TaskBlueprint {
                 log.error("robot执行异常:{},robot信息:{}", e.getMessage()+":"+e.getStackTrace()[0],robot.getId());
                 task.addLastWord(robot, null, Map.of("error", e.getMessage()));
             }
-            return null;
+            return task;
         };
     }
 

@@ -40,9 +40,11 @@ public class WorkerExecutor implements WorkerExecute {
         try {
             Task currentTask = taskSelector.select(worker);
             if(currentTask==null){
+                log.debug("当前没有任务,机器人等待中,robotName:{}",worker.getNickname());
                 workerStorage.reJoinRobotWorker(worker.getId());
                 return;
             }
+            log.info("当前任务 robotName:{}, taskName:{}",worker.getNickname(), currentTask.getTaskName());
             worker.setTask(currentTask);
             executeStrategy.execute(worker);
         }catch (RuntimeException e){

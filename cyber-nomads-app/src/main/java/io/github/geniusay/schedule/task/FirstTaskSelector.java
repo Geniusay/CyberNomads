@@ -27,10 +27,8 @@ public class FirstTaskSelector implements TaskSelector {
         Map<String, Task> taskMap = manager.getRobotTaskById(worker.getId());
         List<Task> tasks = new ArrayList<>(taskMap.values());
         for (Task task : tasks) {
-//            if(!worker.getHasShared() && taskTypeIsShared(task,worker)){
-//                taskMap.remove(task.getId());
-//            }else
            if(taskCanDo(task,worker)){
+               log.info("找到合适的任务,robotName:{},taskName:{}",worker.getNickname(), task.getTaskName());
                 return task;
             }
         }
@@ -38,12 +36,7 @@ public class FirstTaskSelector implements TaskSelector {
     }
 
     private Boolean taskCanDo(Task task,RobotWorker worker){
-//        if(!worker.getRobotTaskTypes().contains(task.getTaskType()) ){
-//            return false;
-//        }else{
-//
-//        }
-        return Objects.equals(task.getUid(), worker.getUid());
+        return task.getTerminator().robotCanDo(worker) && Objects.equals(task.getUid(), worker.getUid());
     }
 
     private Boolean taskTypeIsShared(Task task,RobotWorker worker){

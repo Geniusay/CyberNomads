@@ -110,13 +110,13 @@ public class KeywordSearchPlugin extends AbstractGetVideoPlugin implements GetHa
             if (!cachePool.isEmpty()) {
                 int randomIndex = random.nextInt(cachePool.size());
                 result = cachePool.remove(randomIndex);
-                log.info("从缓存池中随机取出视频数据，当前缓存池大小: {}", cachePool.size());
+//                log.info("从缓存池中随机取出视频数据，当前缓存池大小: {}", cachePool.size());
             } else {
                 log.warn("缓存池仍为空，无法提供视频数据！");
             }
 
             if (cachePool.size() < cachePoolLimit) {
-                log.info("缓存池未达到最大限制{}，启动后台渐进式获取任务...", cachePoolLimit);
+//                log.info("缓存池未达到最大限制{}，启动后台渐进式获取任务...", cachePoolLimit);
                 executorService.submit(() -> fetchDataForKeyword(false));
             }
 

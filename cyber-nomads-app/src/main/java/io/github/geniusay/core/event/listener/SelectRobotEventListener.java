@@ -29,8 +29,10 @@ public class SelectRobotEventListener implements EventListener {
             SelectRobotEvent selectEvent = (SelectRobotEvent) event;
             RobotWorker worker = manager.getRobotById(selectEvent.getRobotId());
             if(worker==null){
+                log.error("机器人不存在,robotId:{}",selectEvent.getRobotId());
                 return;
             }
+            log.debug("收到机器人选择事件,robotName:{}",worker.getNickname());
             workerExecutor.executeTask(worker);
         }
     }

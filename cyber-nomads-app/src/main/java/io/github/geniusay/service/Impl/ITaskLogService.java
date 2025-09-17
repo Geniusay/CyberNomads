@@ -11,6 +11,7 @@ import io.github.geniusay.pojo.VO.TaskLogVO;
 import io.github.geniusay.schedule.TaskScheduleManager;
 import io.github.geniusay.service.TaskLogService;
 import io.github.geniusay.utils.LastWordUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class ITaskLogService implements TaskLogService {
 
@@ -36,6 +38,7 @@ public class ITaskLogService implements TaskLogService {
     @Async
     @Override
     public void logTaskResult(RobotWorker robotWorker, String finalLastWord) {
+        log.info("开始记录日志, robotName:{}, finalLstWord:{}", robotWorker.getNickname(), finalLastWord);
         Task task = robotWorker.getCurrentTask();
         boolean success = LastWordUtil.isSuccess(finalLastWord);
         // 构建 TaskLogDO 对象
@@ -51,7 +54,7 @@ public class ITaskLogService implements TaskLogService {
         task.getLoglist().add(taskLog);
         // 保存日志到数据库
         taskLogMapper.insert(taskLog);
-        robotWorker.setTask(null);
+//        robotWorker.setTask(null);
     }
 
     /**

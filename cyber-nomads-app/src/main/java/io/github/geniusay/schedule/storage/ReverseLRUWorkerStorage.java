@@ -28,9 +28,9 @@ public class ReverseLRUWorkerStorage extends AbstractWorkerStorage {
     private final BlockingQueue<Long> midQueue = new LinkedBlockingQueue<>();
     private final BlockingQueue<Long> slowQueue = new LinkedBlockingQueue<>();
     private final Map<Long,Integer> retry = new ConcurrentHashMap<>();
-    private final int highInterval = 100;
-    private final int midInterval = 1000;
-    private final int slowInterval = 2000;
+    private final int highInterval = 500;
+    private final int midInterval = 3000;
+    private final int slowInterval = 5000;
 
     @Override
     public void joinWorkerQueue(Long workerId) {
@@ -96,7 +96,7 @@ public class ReverseLRUWorkerStorage extends AbstractWorkerStorage {
                     pushWorker(workerId);
                     lastSlow=current;
                 }
-                Thread.sleep(0);
+                Thread.sleep(1000);
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -104,7 +104,7 @@ public class ReverseLRUWorkerStorage extends AbstractWorkerStorage {
     }
 
     private void pushWorker(Long workerId){
-        log.info("workId :{}", workerId);
+        log.debug("已选择 RobotWorker,workId :{}", workerId);
         eventManager.publishEvent(new SelectRobotEvent(workerId));
     }
 }
