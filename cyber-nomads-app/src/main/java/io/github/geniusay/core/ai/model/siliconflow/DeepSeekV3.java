@@ -24,6 +24,6 @@ public class DeepSeekV3 extends AbstractSiliconflowModel {
 
     @Override
     protected String getModelVersion() {
-        return "Pro/deepseek-ai/DeepSeek-V3";
+        return DEEP_SEEK_V3;
     }
 }

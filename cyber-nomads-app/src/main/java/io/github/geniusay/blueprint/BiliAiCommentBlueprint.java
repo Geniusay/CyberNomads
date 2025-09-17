@@ -39,9 +39,6 @@ public class BiliAiCommentBlueprint extends AbstractTaskBlueprint {
     @Resource
     TaskPluginFactory taskPluginFactory;
 
-    private AbstractGetVideoPlugin getVideoPlugin;
-    private AbstractCommentGenerate commentGenerate;
-
     @Override
     public String platform() {
         return BILIBILI;
@@ -54,12 +51,14 @@ public class BiliAiCommentBlueprint extends AbstractTaskBlueprint {
 
     @Override
     public void initBlueprint(Task task) {
-        getVideoPlugin = taskPluginFactory.<AbstractGetVideoPlugin>buildPluginWithGroup(GET_VIDEO_GROUP_NAME, task);
-        commentGenerate = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task);
+
     }
 
     @Override
     protected void executeTask(RobotWorker robot, Task task) throws Exception {
+        AbstractCommentGenerate commentGenerate = taskPluginFactory.<AbstractCommentGenerate>buildPluginWithGroup(COMMENT_GROUP_NAME, task);
+        AbstractGetVideoPlugin getVideoPlugin = taskPluginFactory.<AbstractGetVideoPlugin>buildPluginWithGroup(GET_VIDEO_GROUP_NAME, task);
+
         BilibiliVideoDetail videoDetail = getVideoPlugin.getHandleVideo(robot, task);
         String comment = commentGenerate.generateComment();
 

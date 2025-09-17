@@ -38,7 +38,7 @@ public class ITaskLogService implements TaskLogService {
     @Async
     @Override
     public void logTaskResult(RobotWorker robotWorker, String finalLastWord) {
-        log.info("开始记录日志, robotName:{}, finalLstWord:{}", robotWorker.getNickname(), finalLastWord);
+        log.info("【{}】开始记录日志, finalLstWord:{}", robotWorker.getNickname(), finalLastWord);
         Task task = robotWorker.getCurrentTask();
         boolean success = LastWordUtil.isSuccess(finalLastWord);
         // 构建 TaskLogDO 对象

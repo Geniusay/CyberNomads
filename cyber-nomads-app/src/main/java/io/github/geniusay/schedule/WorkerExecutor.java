@@ -40,15 +40,15 @@ public class WorkerExecutor implements WorkerExecute {
         try {
             Task currentTask = taskSelector.select(worker);
             if(currentTask==null){
-                log.debug("当前没有任务,机器人等待中,robotName:{}",worker.getNickname());
+                log.debug("【{}】当前没有任务,机器人等待中",worker.getNickname());
                 workerStorage.reJoinRobotWorker(worker.getId());
                 return;
             }
-            log.info("当前任务 robotName:{}, taskName:{}",worker.getNickname(), currentTask.getTaskName());
+            log.info("【{}】挑选任务成功设置任务信息 , taskName:{}",worker.getNickname(), currentTask.getTaskName());
             worker.setTask(currentTask);
             executeStrategy.execute(worker);
         }catch (RuntimeException e){
-            log.error("挑选任务异常:{}:{}",worker.getId(),e.getMessage());
+            log.error("【{}】挑选任务异常:{}",worker.getNickname(),e.getMessage());
         }
     }
 
